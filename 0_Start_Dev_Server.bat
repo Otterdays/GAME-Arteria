@@ -12,6 +12,6 @@ echo 1. Ensure you have the Development Client APK installed on your phone.
 echo 2. Open the app on your phone.
 echo 3. It will connect to this server and update instantly when you save code.
 echo.
-cd /d "%~dp0"
-npm run mobile -- --clear
+cd /d "%~dp0\apps\mobile"
+npx expo start -c
 pause

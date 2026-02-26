@@ -72,7 +72,17 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 
 ---
 
-## 🚀 5. Daily Workflow Summary
+## 📁 5. Monorepo Configuration Details
+
+Because Arteria isolates its game engine from its mobile UI (a Monorepo workspace), NPM hoists overlapping packages to the very root desktop folder.
+To prevent Metro and Babel from crashing (such as the `EXPO_ROUTER_APP_ROOT` environment error), we use a specific structure:
+1. **The root `package.json`** directly requires `expo-router` so Babel does not ignore it.
+2. **We maintain two `babel.config.js` files**: One at the root (to process hoisted modules), and one in `apps/mobile`.
+3. **Custom entry proxy**: `apps/mobile/index.js` acts as a middleman importer to ensure Babel does not skip the `expo-router` context provider.
+
+---
+
+## 🚀 6. Daily Workflow Summary
 
 **Step 1:** Download the latest Development Client APK to your phone (if you haven't already, or if you recently installed a native NPM package).
 
@@ -89,7 +99,7 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 
 ---
 
-## 🔄 6. Pushing Updates to Players
+## 🔄 7. Pushing Updates to Players
 
 When you're ready to share your updates, you have three distinct methods depending on *what* you changed. We have created batch scripts in the project root to automate these!
 
