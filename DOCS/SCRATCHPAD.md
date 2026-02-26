@@ -21,6 +21,10 @@
 - [x] **Deleted `android/` directory** to fully adopt Expo's Continuous Native Generation (CNG) model.
 - [x] Configured EAS (`eas.json`) in preparation for cloud development builds.
 - [x] Installed `expo-dev-client` to support MMKV and Native modules in a custom dev build.
+- [x] Created batch scripts (Update_1-4) and updated `EXPO_GUIDE.md` for team update procedures.
+- [x] Created `MY_ADHD.md` for quick reference on deploying updates.
+
+
 
 ## Next Up
 - [ ] Run an EAS build to generate the APK `eas build -p android --profile development`

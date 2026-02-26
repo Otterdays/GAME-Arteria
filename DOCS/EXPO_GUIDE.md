@@ -31,11 +31,12 @@ When you run `npx expo start` on your computer, it starts a local server (Metro 
 
 ---
 
-## 🚦 3. The Golden Rule: When do I need to rebuild?
+## 🚦 3. The Golden Rule: Do I have to build every time? (NO! ⚡)
 
-Because the Development Client just streams your TypeScript code, **you rarely need to build a new APK.**
+Because the Development Client just streams your TypeScript code, **you rarely need to build a new APK to test or send updates.**
+Do not sit around waiting for a 10-minute EAS cloud build just to see your changes! 
 
-### 🟢 DO NOT Rebuild (Just `npx expo start`)
+### 🟢 DO NOT Rebuild (Just click `0_Start_Dev_Server.bat`)
 You **do not** need to run an EAS build if you are only changing:
 - React components (`.tsx` files).
 - Styling, colors, or CSS.
@@ -43,8 +44,7 @@ You **do not** need to run an EAS build if you are only changing:
 - Game engine math or mechanics.
 - Assets (images, fonts).
 
-*Just hit save, and it instantly updates on your phone.*
-
+*Just hit save, and it instantly updates on your phone in under a second (Fast Refresh).*
 ### 🔴 YOU MUST Rebuild (`eas build`)
 You **must** generate a new EAS build (APK) if you:
 - Install a new NPM package that contains **custom native code** (e.g., you add a camera package, a Bluetooth package, or an audio player).
@@ -78,12 +78,33 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 
 **Step 2:** Open your terminal on your PC.
 
-**Step 3:** Start the streaming server:
+**Step 3:** Start the streaming server! Either run `npm run mobile` or just double-click:
 ```bash
-cd apps/mobile
-npx expo start
+0_Start_Dev_Server.bat
 ```
 
 **Step 4:** Open the Arteria Development app on your phone, and connect to your PC's IP address (or scan the QR code printed by `npx expo start`).
 
 **Step 5:** Code! Hit save in VSCode and watch it instantly update on your phone.
+
+---
+
+## 🔄 6. Pushing Updates to Players
+
+When you're ready to share your updates, you have three distinct methods depending on *what* you changed. We have created batch scripts in the project root to automate these!
+
+### 1. Pushing code to GitHub (Version Control)
+*Use this when: You want to save your progress or back up your code to GitHub.*
+This doesn't send code to players, only to the repository. 
+* **Run:** `Update_1_Git_Push.bat`
+
+### 2. Over-the-Air (OTA) Updates ⚡ (Fast)
+*Use this when: You change TypeScript/JavaScript logic, UI components, colors, text, or styling.*
+EAS has a feature called **EAS Update** that bypasses App Store reviews! When returning players open the app, it pulls down your new JavaScript bundle instantly over Wi-Fi.
+* **Run:** `Update_2_EAS_OTA_Update.bat`
+
+### 3. Native App Store Updates 🏗️ (Slow, requires Review)
+*Use this when: You upgrade Expo SDK versions, install new libraries with native code (like adding a custom native module), change app icons, or change permissions.*
+OTA updates can't add or remove native C++/Java code. To do that, you must rebuild the application binary (APK/AAB) and submit it to the Google Play Store.
+* **Run:** `Update_3_EAS_Build_Android_Dev.bat` (For internal testing)
+* **Run:** `Update_4_EAS_Build_Android_Prod.bat` (For final App Store release)
