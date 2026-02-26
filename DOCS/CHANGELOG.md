@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [Unreleased]
+### Fixed
+- **EAS CLI not found** — Batch scripts `Update_2_EAS_OTA_Update.bat`, `Update_3_EAS_Build_Android_Dev.bat`, and `Update_4_EAS_Build_Android_Prod.bat` now invoke `npx eas-cli` instead of `eas`, so no global EAS install is required.
+
 ## [0.3.0] - 2026-02-26
 ### Added
 - Batch scripts for deployment workflows:

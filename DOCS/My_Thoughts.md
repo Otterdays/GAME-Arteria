@@ -3,5 +3,5 @@ The user is experiencing the slow turnaround time of Cloud Builds (Free Tier EAS
 
 I need to explain the "Aha!" moment of Expo: Fast Refresh and OTA Updates.
 1. **Testing is instant**: Once the Custom Dev Client is installed on their phone, they never have to build to test. They just run `npx expo start`, hit save in VSCode, and the app updates instantly over Wi-Fi (Fast Refresh).
-2. **Updates are fast (OTA)**: Pushing simple logic/UI updates doesn't require a build. `eas update` sends it straight to the players.
+2. **Updates are fast (OTA)**: Pushing simple logic/UI updates doesn't require a build. Run `Update_2_EAS_OTA_Update.bat` or `npx eas-cli update` — no global EAS install needed.
 3. **Why build?**: They only wait in this EAS queue when they change something *native* (like adding a new C++ module) or when they want to put a final `.aab` on the Google Play Store. And if they really hated the wait for native builds, they *could* build locally using standard Gradle (`npx expo run:android`), but sticking to EAS is safer for maintaining an ephemeral `android` folder.

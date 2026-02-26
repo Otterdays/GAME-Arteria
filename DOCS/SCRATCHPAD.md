@@ -3,6 +3,7 @@
 **Current Focus:** Ready to wire game loop and test on device.
 
 ## History (Compacted)
+- EAS batch scripts (Update_2, 3, 4) updated to use `npx eas-cli` so EAS works without global install; EXPO_GUIDE and CHANGELOG updated.
 - Planning phase complete, implementation plan approved.
 - Phase 1 complete: Engine package, Redux store, Expo SDK 54 scaffold.
 - Phase 2 UI: All screens built, Gradle 9 configured, EAS configured.
