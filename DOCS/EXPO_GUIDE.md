@@ -45,7 +45,7 @@ You **do not** need to run an EAS build if you are only changing:
 - Assets (images, fonts).
 
 *Just hit save, and it instantly updates on your phone in under a second (Fast Refresh).*
-### 🔴 YOU MUST Rebuild (`eas build`)
+### 🔴 YOU MUST Rebuild (EAS build)
 You **must** generate a new EAS build (APK) if you:
 - Install a new NPM package that contains **custom native code** (e.g., you add a camera package, a Bluetooth package, or an audio player).
 - Change the app's Icon or Splash Screen.
@@ -59,14 +59,14 @@ You **must** generate a new EAS build (APK) if you:
 Because we deleted the `android/` folder, we don't build the app locally on your computer anymore. We outsource the heavy lifting to Expo's cloud servers using **EAS**.
 
 ### How to trigger a cloud build:
-1. Make sure you are in the `apps/mobile` directory.
-2. Run the build command:
+1. Run **`Update_3_EAS_Build_Android_Dev.bat`** (recommended), or from `apps/mobile`:
    ```bash
-   eas build --profile development --platform android
+   npx eas-cli build --profile development --platform android
    ```
-3. EAS will zip up your project, send it to the cloud, and build it on their high-end Linux servers.
-4. When it finishes (~5 minutes), your terminal will display a **QR Code**.
-5. Scan the QR code with your Android phone's camera, download the `.apk`, and install it.
+   *No global EAS install needed — the batch scripts and this command use `npx eas-cli`.*
+2. EAS will zip up your project, send it to the cloud, and build it on their high-end Linux servers.
+3. When it finishes (~5 minutes), your terminal will display a **QR Code**.
+4. Scan the QR code with your Android phone's camera, download the `.apk`, and install it.
 
 *Note on Monorepos: Because we are in a Monorepo (`packages/engine` and `apps/mobile`), EAS needs to know to install dependencies at the root level. If a build fails on "Install Dependencies", it's usually a monorepo root path issue.*
 

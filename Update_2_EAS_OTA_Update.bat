@@ -16,7 +16,7 @@ if "%msg%"=="" (
     exit /b
 )
 echo Executing EAS Update...
-eas update --branch production --message "%msg%"
+npx eas-cli update --branch production --message "%msg%"
 echo.
 echo [COMPLETE] Players will download this update the next time they open the app!
 pause

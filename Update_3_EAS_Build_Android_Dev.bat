@@ -10,7 +10,7 @@ echo It will generate an APK tailored for the Expo Development Client.
 echo The build takes ~5-10 minutes.
 echo.
 cd /d "%~dp0\apps\mobile"
-eas build -p android --profile development
+npx eas-cli build -p android --profile development
 echo.
 echo [COMPLETE] Please check your EAS dashboard or scan the QR code above!
 pause

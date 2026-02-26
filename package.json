@@ -15,8 +15,12 @@
   },
   "dependencies": {
     "expo": "~54.0.33",
-    "expo-router": "*",
+    "expo-router": "~6.0.23",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "react-native-nitro-modules": "^0.34.0"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^55.0.8"
   }
 }

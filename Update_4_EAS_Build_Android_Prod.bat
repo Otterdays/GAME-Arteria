@@ -16,7 +16,7 @@ if /I "%confirm%" neq "Y" (
     exit /b
 )
 cd /d "%~dp0\apps\mobile"
-eas build -p android --profile production
+npx eas-cli build -p android --profile production
 echo.
 echo [COMPLETE] Your production build is compiling in the cloud!
 pause
