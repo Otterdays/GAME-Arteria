@@ -1,0 +1,21 @@
+{
+  "name": "arteria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Arteria — a math-heavy, incremental idle RPG for Android.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "mobile": "cd apps/mobile && expo start",
+    "android": "cd apps/mobile && expo start --android",
+    "test:engine": "cd packages/engine && npm test",
+    "ios": "expo run:ios"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  }
+}

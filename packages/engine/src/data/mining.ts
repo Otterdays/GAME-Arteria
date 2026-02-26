@@ -1,0 +1,87 @@
+/**
+ * Skill data definitions — mining actions.
+ * These define what each rock type produces, its XP rates, and requirements.
+ */
+
+import type { ActionDefinition } from '../TickSystem';
+
+export const MINING_ACTIONS: ActionDefinition[] = [
+    {
+        id: 'copper_ore',
+        skillId: 'mining',
+        intervalMs: 3000,
+        xpPerTick: 17.5,
+        itemsPerTick: [{ id: 'copper_ore', quantity: 1 }],
+        levelRequired: 1,
+        masteryXpPerTick: 2,
+    },
+    {
+        id: 'tin_ore',
+        skillId: 'mining',
+        intervalMs: 3000,
+        xpPerTick: 17.5,
+        itemsPerTick: [{ id: 'tin_ore', quantity: 1 }],
+        levelRequired: 1,
+        masteryXpPerTick: 2,
+    },
+    {
+        id: 'iron_ore',
+        skillId: 'mining',
+        intervalMs: 4000,
+        xpPerTick: 35,
+        itemsPerTick: [{ id: 'iron_ore', quantity: 1 }],
+        levelRequired: 15,
+        masteryXpPerTick: 3,
+        successRate: 0.95,
+    },
+    {
+        id: 'coal_ore',
+        skillId: 'mining',
+        intervalMs: 5000,
+        xpPerTick: 50,
+        itemsPerTick: [{ id: 'coal', quantity: 1 }],
+        levelRequired: 30,
+        masteryXpPerTick: 4,
+        successRate: 0.9,
+    },
+    {
+        id: 'gold_ore',
+        skillId: 'mining',
+        intervalMs: 6000,
+        xpPerTick: 65,
+        itemsPerTick: [{ id: 'gold_ore', quantity: 1 }],
+        levelRequired: 40,
+        masteryXpPerTick: 5,
+        successRate: 0.85,
+    },
+    {
+        id: 'mithril_ore',
+        skillId: 'mining',
+        intervalMs: 7000,
+        xpPerTick: 80,
+        itemsPerTick: [{ id: 'mithril_ore', quantity: 1 }],
+        levelRequired: 55,
+        masteryXpPerTick: 6,
+        successRate: 0.8,
+    },
+    {
+        id: 'adamantite_ore',
+        skillId: 'mining',
+        intervalMs: 8000,
+        xpPerTick: 95,
+        itemsPerTick: [{ id: 'adamantite_ore', quantity: 1 }],
+        levelRequired: 70,
+        masteryXpPerTick: 7,
+        successRate: 0.75,
+    },
+    {
+        id: 'runite_ore',
+        skillId: 'mining',
+        intervalMs: 10000,
+        xpPerTick: 125,
+        itemsPerTick: [{ id: 'runite_ore', quantity: 1 }],
+        levelRequired: 85,
+        masteryXpPerTick: 10,
+        successRate: 0.7,
+    },
+];
