@@ -3,6 +3,19 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+## [0.4.5] - 2026-02-27
+### Added
+- **Horizon System:** A 3-tier goal HUD (Immediate / Session / Grind) at the top of the Skills screen for persistent micro-goal tracking.
+- **Unique Gathering Mechanics:**
+    - **Mining:** Added rare gem drop logic (1% chance for Uncut Sapphire from Copper/Tin).
+    - **Fishing:** Added mythic fish drop logic (0.5% chance for Golden Carp from Bait fishing).
+    - **Logging:** Implemented **Seasonal Rotation** (1.5x yield on even weeks, 1.0x on odd weeks).
+- **Premium HUD Styling:** Integrated `expo-linear-gradient` and glassmorphism for the Horizon system.
+- **Palette Expansion:** Added `purple` to the core design tokens.
+
+### Fixed
+- **ReferenceError:** Resolved potential `GlobalActionTicker` reference error by cleaning up unused imports and ensuring proper export patterns.
+
 ## [0.4.4] - 2026-02-26
 ### Added
 - **Patch Notes Screen:** Full changelog from v0.1.0 to present, accessible from Settings → Patch Notes.

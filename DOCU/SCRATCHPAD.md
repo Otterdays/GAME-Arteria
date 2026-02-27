@@ -2,8 +2,8 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Phase 2.2 — Horizon System & Unique Mechanics
-**Current Focus:** v0.4.3 Bank & Juice shipped. Next: Horizon System or unique gathering mechanics.
+**Active Task:** Finalizing local APK build & Phase 2.2 Polish
+**Current Focus:** Fixed "No device found" error in APK build by using direct Gradle assembly.
 
 ## [2026-02-26] Bundling Fix — "Unable to resolve ../../App"
 - **Symptom:** `Android Bundling failed … Unable to resolve "../../App" from "node_modules\expo\AppEntry.js"` when starting Expo from monorepo root.
@@ -11,9 +11,10 @@
 - **Fix:** Root `package.json` now has `"main": "apps/mobile/index.js"`. When Expo runs from root, Metro uses that entry (expo-router) instead of AppEntry.js.
 - **Recommendation:** Prefer running from `apps/mobile`: use `0_Start_Dev_Server.bat`, or `npm run mobile` from root, or `cd apps/mobile && npx expo start`.
 
-## [2026-02-26] APK Build Fix
-- **Root cause:** `2_Build_APK_Local.bat` ran `gradlew assembleRelease` from root `android/`, causing Metro to resolve `./index.js` from monorepo root (Arteria) instead of `apps/mobile`.
-- **Fix:** Switched to `npx expo run:android --variant release` from `apps/mobile` so bundler uses correct project root.
+## [2026-02-27] APK Build Fix (V2)
+- **Problem:** `2_Build_APK_Local.bat` used `npx expo run:android --variant release`, which crashes if no Android device is connected.
+- **Fix:** Switched to `cd apps/mobile/android && gradlew assembleRelease`. This compiles the APK without requiring a connected device.
+- **Output:** APK is successfully generated at `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`.
 
 ## Active Sprint: v0.4.3 "Bank & Juice"
 - [x] **Z. Bank Search + Filters:** Search bar, Ores/Bars/Other filters, shared items.ts.

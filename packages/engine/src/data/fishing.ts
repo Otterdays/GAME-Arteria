@@ -34,6 +34,8 @@ export const FISHING_ACTIONS: ActionDefinition[] = [
         levelRequired: 10,
         masteryXpPerTick: 2,
         successRate: 0.9,
+        rareChance: 0.005,
+        rareItems: [{ id: 'golden_carp', quantity: 1 }],
     },
     {
         id: 'fly_fishing_trout',

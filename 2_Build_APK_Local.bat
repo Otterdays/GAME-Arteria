@@ -15,15 +15,18 @@ pause
 
 cd /d "%~dp0"
 
-REM Run from apps/mobile so Metro/Expo use correct project root (fixes index.js resolution)
-cd apps\mobile
+REM Run from apps/mobile/android to use Gradle directly
+REM This avoids the "No device found" error from 'npx expo run:android'
+cd apps\mobile\android
 
-echo Building release APK via Expo (correct monorepo context)...
-npx expo run:android --variant release
+echo Building release APK via Gradle (assembleRelease)...
+echo This might take a few minutes...
+call gradlew.bat assembleRelease
 
 if %ERRORLEVEL% neq 0 (
     echo.
     echo Build FAILED. Check errors above.
+    echo Ensure Android SDK and JAVA_HOME are correctly set.
     cd /d "%~dp0"
     pause
     exit /b 1

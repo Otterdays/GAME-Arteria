@@ -38,6 +38,7 @@
 | 2026-02-26 | expo-font                       | 14.0.11   | 55.0.4    | Jan 2026             | Custom font loading                    |
 | 2026-02-26 | expo-haptics                    | 15.0.8    | 55.0.8    | Jan 2026             | Haptic feedback                        |
 | 2026-02-26 | expo-image                      | 3.0.11    | 55.0.5    | Jan 2026             | Image component                        |
+| 2026-02-27 | expo-linear-gradient           | 14.0.2    | 55.0.4    | Jan 2026             | Gradient backgrounds                   |
 | 2026-02-26 | expo-linking                    | 8.0.11    | 55.0.7    | Jan 2026             | Deep linking                           |
 | 2026-02-26 | expo-router                     | 6.0.23    | 55.0.2    | Jan 2026             | File-based routing                     |
 | 2026-02-26 | expo-splash-screen              | 31.0.13   | 55.0.9    | Jan 2026             | Splash screen                          |

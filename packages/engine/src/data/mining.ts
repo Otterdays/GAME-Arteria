@@ -14,6 +14,8 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         itemsPerTick: [{ id: 'copper_ore', quantity: 1 }],
         levelRequired: 1,
         masteryXpPerTick: 2,
+        rareChance: 0.01,
+        rareItems: [{ id: 'uncut_sapphire', quantity: 1 }],
     },
     {
         id: 'tin_ore',
@@ -23,6 +25,8 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         itemsPerTick: [{ id: 'tin_ore', quantity: 1 }],
         levelRequired: 1,
         masteryXpPerTick: 2,
+        rareChance: 0.01,
+        rareItems: [{ id: 'uncut_sapphire', quantity: 1 }],
     },
     {
         id: 'iron_ore',

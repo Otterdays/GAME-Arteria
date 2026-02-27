@@ -29,6 +29,12 @@ export interface ActionDefinition {
     masteryXpPerTick: number;
     /** Optional success rate 0–1 (1 = always succeeds) */
     successRate?: number;
+    /** Unique Mechanic: Chance (0-1) per tick to find a rare bonus item (found in Fishing, Mining) */
+    rareChance?: number;
+    /** Unique Mechanic: Bonus items to award if rareChance succeeds */
+    rareItems?: InventoryItem[];
+    /** Unique Mechanic: Yield multiplier (1.0 = base, 1.2 = +20% yield) used for Seasonal Rotation */
+    yieldMultiplier?: number;
 }
 
 export const TickSystem = {
@@ -69,9 +75,15 @@ export const TickSystem = {
 
         // Process each tick
         let successfulTicks = 0;
+        let rareItemCount = 0;
+
         for (let i = 0; i < fullTicks; i++) {
             if (rng() <= successRate) {
                 successfulTicks++;
+                // Check for rare item drop (Unique Mechanic)
+                if (action.rareChance && action.rareItems && rng() <= action.rareChance) {
+                    rareItemCount++;
+                }
             }
         }
 
@@ -83,16 +95,35 @@ export const TickSystem = {
                     (result.xpGained[action.skillId] || 0) + action.xpPerTick * successfulTicks;
             }
 
-            // Aggregate items
+            // Aggregate base items
+            const multiplier = action.yieldMultiplier ?? 1;
             for (const item of action.itemsPerTick) {
+                const quantity = Math.floor(item.quantity * successfulTicks * multiplier);
+                if (quantity <= 0) continue;
+
                 const existing = result.itemsGained.find((i) => i.id === item.id);
                 if (existing) {
-                    existing.quantity += item.quantity * successfulTicks;
+                    existing.quantity += quantity;
                 } else {
                     result.itemsGained.push({
                         id: item.id,
-                        quantity: item.quantity * successfulTicks,
+                        quantity: quantity,
                     });
+                }
+            }
+
+            // Aggregate rare items (Unique Mechanic: Mythic Fish / Gems)
+            if (rareItemCount > 0 && action.rareItems) {
+                for (const item of action.rareItems) {
+                    const existing = result.itemsGained.find((i) => i.id === item.id);
+                    if (existing) {
+                        existing.quantity += item.quantity * rareItemCount;
+                    } else {
+                        result.itemsGained.push({
+                            id: item.id,
+                            quantity: item.quantity * rareItemCount,
+                        });
+                    }
                 }
             }
 

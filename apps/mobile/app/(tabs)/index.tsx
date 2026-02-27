@@ -22,6 +22,7 @@ import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
+import { HorizonHUD } from '@/components/HorizonHUD';
 
 // ─── Skill metadata ───────────────────────────────────────────────────────────
 
@@ -288,6 +289,7 @@ export default function SkillsScreen() {
               : 'Awaiting action...'}
           </Text>
         </View>
+        <HorizonHUD />
       </View>
 
       {/* A. Skill list — grouped by pillar */}

@@ -66,15 +66,20 @@ export class GameEngine {
         }
 
         const task = playerState.activeTask;
-        const action = this.actionRegistry.get(task.actionId);
+        const baseAction = this.actionRegistry.get(task.actionId);
 
-        if (!action) {
+        if (!baseAction) {
             // Unknown action; just update timestamp
             playerState.lastSaveTimestamp = now;
             return report;
         }
 
-        // Run the tick system over the entire elapsed time
+        // Apply Seasonal Rotation for Logging (Unique Mechanic)
+        const action = { ...baseAction };
+        if (action.skillId === 'logging') {
+            action.yieldMultiplier = this.getLoggingSeasonalMultiplier();
+        }
+
         const tickResult = TickSystem.processDelta(elapsedMs, task, action);
 
         report.ticksProcessed = tickResult.ticksProcessed;
@@ -135,8 +140,8 @@ export class GameEngine {
         }
 
         const task = playerState.activeTask;
-        const action = this.actionRegistry.get(task.actionId);
-        if (!action) {
+        const baseAction = this.actionRegistry.get(task.actionId);
+        if (!baseAction) {
             return {
                 elapsedMs: deltaMs,
                 ticksProcessed: 0,
@@ -144,6 +149,12 @@ export class GameEngine {
                 itemsGained: [],
                 levelsGained: {},
             };
+        }
+
+        // Apply Seasonal Rotation for Logging (Unique Mechanic)
+        const action = { ...baseAction };
+        if (action.skillId === 'logging') {
+            action.yieldMultiplier = this.getLoggingSeasonalMultiplier();
         }
 
         const tickResult = TickSystem.processDelta(deltaMs, task, action);
@@ -207,5 +218,18 @@ export class GameEngine {
     /** Get the config */
     getConfig(): Readonly<GameConfig> {
         return this.config;
+    }
+
+    /**
+     * Unique Mechanic: Logging Seasonal Rotation
+     * Returns a yield multiplier that changes weekly.
+     */
+    private getLoggingSeasonalMultiplier(): number {
+        const now = Date.now();
+        const weekMs = 7 * 24 * 60 * 60 * 1000;
+        const weekNumber = Math.floor(now / weekMs);
+
+        // Return 1.5x on even weeks, 1.0x on odd weeks
+        return (weekNumber % 2 === 0) ? 1.5 : 1.0;
     }
 }

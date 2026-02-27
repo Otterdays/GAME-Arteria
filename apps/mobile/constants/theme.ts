@@ -41,6 +41,7 @@ export const Palette = {
   divider: '#252837',
 
   // Misc
+  purple: '#9b59b6',
   white: '#ffffff',
   black: '#000000',
   transparent: 'transparent',

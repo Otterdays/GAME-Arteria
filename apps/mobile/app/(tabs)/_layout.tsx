@@ -10,7 +10,6 @@ import { INVENTORY_SLOT_CAP } from '@/constants/game';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppSelector } from '@/store/hooks';
 
-import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
