@@ -13,6 +13,20 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
+    version: '0.4.5',
+    date: '2026-02-27',
+    added: [
+      'Horizon System: 3-tier goal HUD (Immediate / Session / Grind) for persistent tracking.',
+      'Unique Mechanics: Rare gem drops (Mining), Mythic fish (Fishing), and Seasonal Rotation (Logging).',
+      'Premium HUD Styling: Glassmorphism and gradients for the new goal tracking system.',
+      'Palette Expansion: Added purple accent to core design tokens.',
+    ],
+    fixed: [
+      'APK Build: Fixed "No device found" error by using direct Gradle assembly.',
+      'GlobalActionTicker: Cleaned up unused imports to prevent reference errors.',
+    ],
+  },
+  {
     version: '0.4.4',
     date: '2026-02-26',
     added: ['Patch Notes Screen: Full changelog from v0.1.0, accessible from Settings.'],

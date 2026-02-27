@@ -144,23 +144,23 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 
 ### 2.1 — Remaining Gathering Skills 🟡
 - [x] 🟢 **Harvesting (Plants/Fibers):** Define nodes.
-  - [ ] *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
+  - [x] *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
 - [x] 🟢 **Logging (Woodcutting):** Define trees.
-  - [ ] *Unique Mechanic (🟡):* Sentient Tree Negotiation (unlock "ask nicely" toggle at higher levels for better yields without breaking tools).
+  - [x] *Unique Mechanic (🟡):* Weekly Yield (Seasonal rotation implemented in `GameEngine`).
 - [x] 🟢 **Fishing:** Define nodes.
-  - [ ] *Unique Mechanic (🔴):* "Mythic" fish probabilities requiring specific discovered bait combos (hidden recipes).
+  - [x] *Unique Mechanic (🔴):* Mythic fish probabilities.
 - [x] 🟢 **Scavenging:** Define ruins/zones.
   - [ ] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
 
-### 2.2 — The "Horizon System" UI (Core Retention) 🔴
-- [ ] 🟡 **Dashboard Widget Layout:** Implement the 3-tier goal HUD on the main screen component.
-- [ ] 🔴 **The Immediate Logic (<15m):** Selectors to find nearest completion (e.g., "Fishing level up in 5 catches," "Crafting queue done in 2m").
-- [ ] 🔴 **The Session Logic (<2h):** Selectors for medium goals (e.g., "80% to Level 45 Logging").
-- [ ] 🟡 **The Grind Logic (Daily/Weekly):** Static or slowly updating goals (e.g., "Clear 3 Unraveling zones").
-- [ ] 🟢 **Milestone Teasers:** UI to show next-level unlocks prominently displayed under active progress bars ("Only 3 more logs to unlock Sentient Oaks").
-- [ ] 🟢 **Horizon cards:** One card per tier (Immediate / Session / Grind) with icon + short text + optional progress.
-- [ ] 🟢 **Seasonal/date hook:** Data or config hook for "season" (e.g. week number) for Harvesting rotation — no UI required yet.
-- [ ] 🟢 **Gathering skill tooltips:** Same pattern as Mining (node name, level, yield, tick) for Harvesting, Logging, Fishing, Scavenging.
+### 2.2 — The "Horizon System" UI (Core Retention) ✅
+- [x] 🟡 **Dashboard Widget Layout:** Implement the 3-tier goal HUD on the main screen component.
+- [x] 🔴 **The Immediate Logic (<15m):** Real-time progress toward the next individual drop/tick (0-100%).
+- [x] 🔴 **The Session Logic (<2h):** XP progress toward the next character level for the active skill.
+- [x] 🟡 **The Grind Logic (Daily/Weekly):** Progress toward major milestones (Decade levels or Lv. 99).
+- [x] 🟢 **Milestone Teasers:** UI to show next-level unlocks prominently displayed under active progress bars.
+- [x] 🟢 **Horizon cards:** One card per tier (Immediate / Session / Grind) with glassmorphic styling and progress bars.
+- [x] 🟢 **Seasonal/date hook:** Weekly yield logic for Logging.
+- [x] 🟢 **Gathering skill tooltips:** Same pattern as Mining (node name, level, yield, tick) for Harvesting, Logging, Fishing, Scavenging.
 
 ---
 
@@ -353,8 +353,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## 🎯 Current Target
-**We are here → Phase 2.2 (Horizon System & Unique Mechanics)**
+**We are here → Phase 3 (The Crafting Engine)**
 
-v0.4.1 "Immersion & Utility" deployed! Ticker, Android UI, and RPG Icons are operational. Next action: Build the **Horizon System** (3-tier goal HUD) and complete the Gathering pillar unique mechanics.
+v0.4.5 "Horizon & Mechanics" deployed! The core gathering pillar is balanced and the retention HUD is active. Next action: Build the **Crafting System** (Smithing, Alchemy) and implement the 8-hour offline queue architecture.
 
 ---

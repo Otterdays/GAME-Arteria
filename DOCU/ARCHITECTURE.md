@@ -89,3 +89,13 @@ Arteria/
 - **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).
 - **Manual Inset Management:** Uses `useSafeAreaInsets` instead of `SafeAreaView` to ensure edge-to-edge content flows correctly under translucent system bars.
 - **Node-local State:** Screens (like Mining) subscribe to `activeTask` directly to render micro-progress visuals synchronized with the global ticker.
+
+## Horizon System & Action Mechanics
+- **Horizon HUD:** A 3-tier goal tracking system (`ImmediateGoal`, `SessionGoal`, `GrindGoal`). 
+  - `Immediate`: Real-time progress toward the next individual drop/tick (0-100%).
+  - `Session`: XP progress toward the next character level for the active skill.
+  - `Grind`: Progress toward major milestones (Decade levels or Lv. 99).
+- **Extended Action Logic:** The `TickSystem` handles non-linear loot logic:
+  - `rareChance`: Probability-based bonus item rolls per tick (e.g. Gems/Mythic fish).
+  - `yieldMultiplier`: Variable yield scaling (e.g. Logging Seasonal Rotation).
+  - Multipliers are applied during both `processOffline` and `processRealtime`.

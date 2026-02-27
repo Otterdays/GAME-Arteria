@@ -9,7 +9,7 @@
 
 ---
 
-[![v0.4.0](https://img.shields.io/badge/Version-0.4.0-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
+[![v0.4.5](https://img.shields.io/badge/Version-0.4.5-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
 [![Build Status](https://img.shields.io/badge/Build-Success-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
 [![Tests](https://img.shields.io/badge/Tests-30+_Passing-f59e0b?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -34,14 +34,13 @@ Arteria is a hard-math, incremental idle RPG inspired by the deep progression sy
 
 ---
 
-## 🚀 The Latest: v0.4.0 "The QoL Sprint"
+## 🚀 The Latest: v0.4.5 "Horizon & Mechanics"
 
-We've just finished a massive polish pass to make the experience feel premium:
-*   **Skill Pillars:** Reorganized UI for logical progression paths.
-*   **Floating XP VFX:** Real-time visual feedback with item icons and gain pop-ups.
-*   **Total Level Badge:** Track your global mastery across all 25 skills.
-*   **Android Optimized:** Dynamic safe-area padding for gesture navigation.
-*   **Enhanced Navigation:** Full skill-card click-through for seamless gameplay.
+This update adds long-term depth and premium visuals to the core gameplay:
+*   **Horizon System:** A 3-tier goal HUD (Immediate / Session / Grind) for persistent micro-goal tracking.
+*   **Unique Gathering Mechanics:** Rare gems (Mining), Mythic fish (Fishing), and Seasonal Rotation (Logging).
+*   **Premium HUD Styling:** Integrated glassmorphism and custom gradients.
+*   **Local APK Fix:** Improved build pipeline to generate shareable APKs without a connected device.
 
 ---
 

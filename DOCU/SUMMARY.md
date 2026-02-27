@@ -39,15 +39,14 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
-**Current Status (Phase 2.2 — Immersion & Utility):**
+**Current Status (Phase 2.2 — Horizon & Mechanics):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.4.5 (Horizon & Mechanics):** 3-tier goal HUD (Horizon system); Rare gems, Mythic fish, and Seasonal Logging yield; Local APK build fix.
+- **v0.4.4 (Patch History):** Patch history screen accessible from settings.
 - **v0.4.3 (Bank & Juice):** Bank search + filters; Train toast; Pulsing tab glow; Loot vacuum animation.
-- **v0.4.2 (QoL O/P/V + Polish):** XP Bar Pulse; Haptic Heartbeat; Inventory Full Warning; Smooth progress bars; APK build fix.
-- **v0.4.1 (Immersion Update):** Global "Heartbeat" Action Ticker; Skills Header XP Dashboard; Android Edge-to-Edge; Node-level Action Progress.
-- **v0.4.0 (QoL Polish):** Skills screen Pillars; Total Level badge; XP progress tracking; efficiency stats.
 
-**Next Steps (Phase 2.2 — Horizon & Combat):**
-- Implement unique mechanics for new gathering skills (Seasonal Rotation, Sentient Trees, Mythic Fish).
-- Horizon System: 3-tier goal HUD (Immediate / Session / Grind goals) for retention.
-- Begin Combat system foundation: stats infrastructure, loadouts, auto-combat.
+**Next Steps (Phase 3 — Combat Foundation):**
+- Finalize gathering pillar balancing and drop tables.
+- Begin Combat system alpha: loadouts, weapon stats, health/damage infrastructure.
+- Mastery System: Spend skill-specific mastery points for permanent buffs.
 
