@@ -6,6 +6,7 @@
 **Current Focus:** Building the active Mining UI, ore drop rates, and mapping actions to our working background tick loop.
 
 ## History (Compacted)
+- **[2026-02-26] Concept art section removed from docs site:** Section (Gallery/Concept Art + art-grid styles) removed from `docs/index.html` — doesn’t work on GitHub Pages (asset paths/behavior). Nav had no #art link; no other references.
 - **[2026-02-26] GitHub Pages fix:** Added `docs/` folder (lowercase) with landing page (`index.html` + `assets/`) and `.nojekyll` to bypass Jekyll. GitHub Pages expects `docs` (Linux is case-sensitive); `.nojekyll` serves static HTML without Jekyll processing. Push to trigger redeploy.
 - **[2026-02-26] SDK 55 + test suite:** Upgraded to Expo SDK 55 (React 19.2.4, RN 0.83.2). Created root `tests/` folder: `unit/engine/` (API tests for XPTable, TickSystem, GameEngine), `integration/`, `e2e/` placeholders. Root `npm test` runs both `packages/engine` and `tests/` (Jest multi-project). Retained all existing engine tests; 25 tests pass.
 - **[2026-02-26] Research session:** Researched SDK 55 migration, MMKV v4 best practices, idle game loop patterns. Created `DOCS/FUTURE_NOTES.md`. Updated `ARCHITECTURE.md` with SDK 55 warning, autolinking tip, and Offline Progression Architecture section.
