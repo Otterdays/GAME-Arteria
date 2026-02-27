@@ -16,6 +16,7 @@ import {
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
+import { router } from 'expo-router';
 
 // Map of skill IDs to display info
 const SKILL_META: Record<
@@ -121,26 +122,10 @@ export default function SkillsScreen() {
     (skillId: SkillId) => {
       if (activeTask?.skillId === skillId) {
         dispatch(gameActions.stopTask());
-      } else {
-        // For now, only mining works; others will just set the task
-        const actionMap: Partial<Record<SkillId, string>> = {
-          mining: 'copper_ore',
-        };
-        const actionId = actionMap[skillId];
-        if (actionId) {
-          dispatch(
-            gameActions.startTask({
-              type: 'skilling',
-              skillId,
-              actionId,
-              intervalMs: 3000,
-              partialTickMs: 0,
-            })
-          );
-        }
-      }
-    },
-    [activeTask, dispatch]
+        // Route to the skill drill-down screen
+        router.push(`/skills/${skillId}`);
+      },
+      [activeTask, dispatch]
   );
 
   const skillOrder: SkillId[] = [

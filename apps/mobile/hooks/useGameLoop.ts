@@ -43,56 +43,17 @@ interface ActionDef {
     masteryXp: number;
 }
 
-const ACTION_DEFS: Record<string, ActionDef> = {
-    copper_ore: {
-        xpPerTick: 17.5,
-        items: [{ id: 'copper_ore', quantity: 1 }],
-        successRate: 1,
-        masteryXp: 2,
-    },
-    tin_ore: {
-        xpPerTick: 17.5,
-        items: [{ id: 'tin_ore', quantity: 1 }],
-        successRate: 1,
-        masteryXp: 2,
-    },
-    iron_ore: {
-        xpPerTick: 35,
-        items: [{ id: 'iron_ore', quantity: 1 }],
-        successRate: 0.95,
-        masteryXp: 3,
-    },
-    coal_ore: {
-        xpPerTick: 50,
-        items: [{ id: 'coal', quantity: 1 }],
-        successRate: 0.9,
-        masteryXp: 4,
-    },
-    gold_ore: {
-        xpPerTick: 65,
-        items: [{ id: 'gold_ore', quantity: 1 }],
-        successRate: 0.85,
-        masteryXp: 5,
-    },
-    mithril_ore: {
-        xpPerTick: 80,
-        items: [{ id: 'mithril_ore', quantity: 1 }],
-        successRate: 0.8,
-        masteryXp: 6,
-    },
-    adamantite_ore: {
-        xpPerTick: 95,
-        items: [{ id: 'adamantite_ore', quantity: 1 }],
-        successRate: 0.75,
-        masteryXp: 7,
-    },
-    runite_ore: {
-        xpPerTick: 125,
-        items: [{ id: 'runite_ore', quantity: 1 }],
-        successRate: 0.7,
-        masteryXp: 10,
-    },
-};
+import { MINING_NODES } from '@/constants/mining';
+
+const ACTION_DEFS: Record<string, ActionDef> = {};
+MINING_NODES.forEach((node) => {
+    ACTION_DEFS[node.id] = {
+        xpPerTick: node.xpPerTick,
+        items: node.items,
+        successRate: node.successRate,
+        masteryXp: node.masteryXp,
+    };
+});
 
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
