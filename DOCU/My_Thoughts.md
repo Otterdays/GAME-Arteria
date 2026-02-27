@@ -15,3 +15,5 @@ The jump from "basic AFK loop" to "Immersive RPG" happened here.
 - **Icon Senses**: Swapping generic Material icons for `MaterialCommunityIcons` changed the vibe instantly. `pickaxe` and `sword-cross` are much more thematic.
 - **The "Ticker" Pulse (Relocated v0.4.1.1)**: Initially at the top, the ticker felt like a jarring overlay. I've relocated it to a **Bottom Dock** (above the Tab Bar). This merges it with the navigation UI, keeping headers clean while maintaining task visibility.
 - **Android "Native" Feel**: Edge-to-edge layout with translucent bars removes the "web-wrapper" feel.
+- **Universal Heartbeat (v0.4.1.3)**: Moving the ticker to the root `_layout.tsx` was critical. RPG players hate losing feedback when they "dive" into a skill screen. Now, the ticker intelligently ducks behind the tab bar or hugs the bottom bezel depending on where the user is.
+- **Dual-Layer Progression**: The header now handles the "Long Grind" (XP Bar), while the Ticker handles the "Instant Pulse" (Tick bar). This dual-feedback loop is what makes "number go up" feel satisfying.

@@ -15,11 +15,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
 import { formatNumber } from '@/utils/formatNumber';
+import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 
 // ─── Skill metadata ───────────────────────────────────────────────────────────
 
@@ -156,15 +158,20 @@ function SkillCard({
       {/* XP Bar */}
       <View style={styles.xpBarContainer}>
         <View style={styles.xpBarBg}>
-          <View
-            style={[
-              styles.xpBarFill,
-              {
-                width: `${Math.max(2, progress)}%`,
-                backgroundColor: isImplemented ? meta.color : Palette.border,
-              },
-            ]}
-          />
+          {isImplemented ? (
+            <ProgressBarWithPulse
+              progress={progress}
+              fillColor={meta.color}
+              widthPercent={progress}
+            />
+          ) : (
+            <View
+              style={[
+                styles.xpBarFill,
+                { width: `${Math.max(2, progress)}%`, backgroundColor: Palette.border },
+              ]}
+            />
+          )}
         </View>
         <Text style={styles.xpText}>
           {skill.level >= 99
@@ -197,6 +204,10 @@ export default function SkillsScreen() {
   const skills = useAppSelector((s) => s.game.player.skills);
   const activeSkillId = activeTask?.skillId ?? null;
 
+  useFocusEffect(useCallback(() => {
+    dispatch(gameActions.clearPulseTab('skills'));
+  }, [dispatch]));
+
   // B. Total level — sum of all skill levels
   const totalLevel = Object.values(skills).reduce((sum, s) => sum + (s?.level ?? 0), 0);
 
@@ -219,23 +230,64 @@ export default function SkillsScreen() {
     []
   );
 
+  // Calculate active skill progress for the header
+  const activeSkill = activeTask ? skills[activeTask.skillId as SkillId] : null;
+  const activeMeta = activeTask ? SKILL_META[activeTask.skillId as SkillId] : null;
+
+  const currentLevelXP = activeSkill ? xpForLevel(activeSkill.level) : 0;
+  const nextLevelXP = activeSkill ? xpForLevel(activeSkill.level + 1) : 0;
+  const xpIntoLevel = activeSkill ? Math.max(0, Math.floor(activeSkill.xp - currentLevelXP)) : 0;
+  const xpNeeded = activeSkill ? Math.max(1, nextLevelXP - currentLevelXP) : 0;
+  const progress = activeSkill ? progressPercent(activeSkill.xp, activeSkill.level) : 0;
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Skills</Text>
-          {/* B. Total level badge */}
-          <Text style={styles.totalLevel}>Total Lv. {totalLevel}</Text>
-        </View>
-        {activeTask && (
-          <View style={styles.activeIndicator}>
-            <View style={styles.activeDot} />
-            <Text style={styles.activeText}>
-              {SKILL_META[activeTask.skillId as SkillId]?.label ?? 'Active'}
-            </Text>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.headerTitle}>Skills</Text>
+            <Text style={styles.totalLevel}>Total Lv. {totalLevel}</Text>
           </View>
-        )}
+          {activeTask ? (
+            <View style={styles.activeSkillBadge}>
+              <Text style={styles.activeSkillEmoji}>{activeMeta?.emoji}</Text>
+              <Text style={styles.activeSkillText}>{activeMeta?.label} Lv. {activeSkill?.level}</Text>
+            </View>
+          ) : (
+            <View style={styles.idleBadge}>
+              <View style={styles.idleDot} />
+              <Text style={styles.idleText}>Idle</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Global XP Bar in Header */}
+        <View style={styles.headerXpSection}>
+          <View style={styles.headerXpBarBg}>
+            {activeMeta ? (
+              <ProgressBarWithPulse
+                progress={progress}
+                fillColor={activeMeta.color}
+                widthPercent={progress}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.headerXpBarFill,
+                  { width: `${Math.max(2, progress)}%`, backgroundColor: Palette.border },
+                ]}
+              />
+            )}
+          </View>
+          <Text style={styles.headerXpText}>
+            {activeTask && activeSkill
+              ? activeSkill.level >= 99
+                ? `${formatNumber(activeSkill.xp)} XP — MAX`
+                : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`
+              : 'Awaiting action...'}
+          </Text>
+        </View>
       </View>
 
       {/* A. Skill list — grouped by pillar */}
@@ -271,48 +323,88 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.bgApp,
   },
   header: {
+    padding: Spacing.lg,
+    backgroundColor: Palette.bgCard,
+    borderBottomWidth: 1,
+    borderBottomColor: Palette.border,
+  },
+  headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.xl,
-    paddingBottom: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.md,
   },
   headerTitle: {
     fontSize: FontSize.xl,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: Palette.textPrimary,
   },
-  // B. Total level
   totalLevel: {
     fontSize: FontSize.sm,
     color: Palette.gold,
     fontWeight: '600',
     marginTop: 2,
   },
-  activeIndicator: {
+  activeSkillBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Palette.bgCard,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: Palette.bgApp,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
     borderRadius: Radius.full,
     borderWidth: 1,
-    borderColor: Palette.green,
-    marginTop: 4,
+    borderColor: Palette.border,
+    gap: 6,
   },
-  activeDot: {
+  activeSkillEmoji: {
+    fontSize: 14,
+  },
+  activeSkillText: {
+    color: Palette.white,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  idleBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Palette.bgApp,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Palette.border,
+    gap: 6,
+  },
+  idleDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Palette.green,
-    marginRight: 4,
+    backgroundColor: Palette.textDisabled,
   },
-  activeText: {
-    fontSize: 11,
-    color: Palette.green,
-    fontWeight: '700',
-    textTransform: 'uppercase',
+  idleText: {
+    color: Palette.textSecondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  headerXpSection: {
+    gap: 4,
+  },
+  headerXpBarBg: {
+    height: 6,
+    backgroundColor: Palette.bgApp,
+    borderRadius: Radius.full,
+    overflow: 'hidden',
+  },
+  headerXpBarFill: {
+    height: '100%',
+    borderRadius: Radius.full,
+  },
+  headerXpText: {
+    fontSize: 10,
+    color: Palette.textSecondary,
+    textAlign: 'center',
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   scrollView: {
     flex: 1,

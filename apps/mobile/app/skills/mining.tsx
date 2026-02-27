@@ -10,6 +10,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import * as Haptics from 'expo-haptics';
 import { formatNumber, formatXpHr } from '@/utils/formatNumber';
 import { FloatingXpPop } from '@/components/FloatingXpPop';
+import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
+import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 
 function xpForLevel(level: number): number {
     if (level <= 1) return 0;
@@ -107,7 +109,11 @@ export default function MiningScreen() {
                 {/* XP progress [current/next] */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
-                        <View style={[styles.xpBarFill, { width: `${Math.max(1, pct)}%` }]} />
+                        <ProgressBarWithPulse
+                            progress={pct}
+                            fillColor={Palette.skillMining}
+                            widthPercent={pct}
+                        />
                     </View>
                     <Text style={styles.xpText}>
                         {miningSkill.level >= 99
@@ -187,6 +193,13 @@ export default function MiningScreen() {
                                 <View style={[styles.trainButton, isActive && styles.trainButtonActive]}>
                                     <Text style={styles.trainButtonText}>{isActive ? 'Stop Mining' : 'Mine'}</Text>
                                 </View>
+                            )}
+                            {isActive && activeTask && (
+                                <SmoothProgressBar
+                                    partialTickMs={activeTask.partialTickMs}
+                                    intervalMs={activeTask.intervalMs}
+                                    fillColor={Palette.skillMining}
+                                />
                             )}
                             {isLocked && (
                                 <View style={[styles.trainButton, styles.trainButtonLocked]}>
@@ -363,5 +376,16 @@ const styles = StyleSheet.create({
         fontSize: FontSize.xs,
         color: Palette.textSecondary,
         textAlign: 'center',
+    },
+    nodeProgressBg: {
+        height: 4,
+        backgroundColor: Palette.bgApp,
+        borderRadius: 2,
+        marginTop: Spacing.sm,
+        overflow: 'hidden',
+    },
+    nodeProgressFill: {
+        height: '100%',
+        backgroundColor: Palette.accentPrimary,
     },
 });

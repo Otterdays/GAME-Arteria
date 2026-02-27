@@ -82,9 +82,10 @@ Arteria/
 - `metro.config.js` sets `watchFolders` to the workspace root and `nodeModulesPaths` to both local and root `node_modules`.
 - **SDK 54 Autolinking improvement:** Set `experiments.autolinkingModuleResolution: "yarn-workspaces"` in `app.json` for more reliable native module resolution in monorepos. This becomes automatic in SDK 55.
 
-## Offline Progression Architecture
-- Strategy: **Timestamp-based calculation** (not a background loop). This is battery-friendly and works on all platforms.
-- On background: save `PlayerState` + `Date.now()` to MMKV.
-- On foreground: compute `elapsed = now - lastSaved`, run `GameEngine.processOffline(elapsed)` to batch-apply ticks.
 - Offline time is capped at **24 hours** to prevent clock manipulation exploits.
 - Formula: `gained = Math.floor(elapsed / TICK_MS) * ratePerTick`
+
+## Universal UI Components
+- **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).
+- **Manual Inset Management:** Uses `useSafeAreaInsets` instead of `SafeAreaView` to ensure edge-to-edge content flows correctly under translucent system bars.
+- **Node-local State:** Screens (like Mining) subscribe to `activeTask` directly to render micro-progress visuals synchronized with the global ticker.

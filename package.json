@@ -2,6 +2,7 @@
   "name": "arteria",
   "version": "1.0.0",
   "private": true,
+  "main": "apps/mobile/index.js",
   "description": "Arteria — a math-heavy, incremental idle RPG for Android.",
   "workspaces": [
     "apps/*",

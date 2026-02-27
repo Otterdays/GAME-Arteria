@@ -32,6 +32,8 @@ When you run `npx expo start` on your computer, it starts a local server (Metro 
 
 *Every time you hit save in VS Code, the app updates on your phone in less than a second (Fast Refresh).*
 
+**Where to run from:** Start the dev server from **`apps/mobile`** (e.g. double-click `0_Start_Dev_Server.bat`, or from root run `npm run mobile`). If you run `npx expo start` from the monorepo root, the root `package.json` has `"main": "apps/mobile/index.js"` so Metro still uses the correct Expo Router entry; without that, you would see "Unable to resolve '../../App'" because Expo's default entry expects a root `App` component.
+
 ---
 
 ## 🚦 3. The Golden Rule: Do I have to build every time? (NO! ⚡)
@@ -59,9 +61,12 @@ You **must** generate a new EAS build (APK) if you:
 
 ## ☁️ 4. EAS (Expo Application Services)
 
+> [!CAUTION]
+> **EAS Credits Exhausted (as of 2026):** Cloud builds via EAS are currently unavailable due to depleted build credits. Use the **local APK build** (Section 4b) instead.
+
 Because we deleted the `android/` folder, we don't build the app locally on your computer anymore. We outsource the heavy lifting to Expo's cloud servers using **EAS**.
 
-### How to trigger a cloud build:
+### How to trigger a cloud build (when credits available):
 1. Run **`Update_3_EAS_Build_Android_Dev.bat`** (recommended), or from `apps/mobile`:
    ```bash
    npx eas-cli build --profile development --platform android
@@ -72,6 +77,23 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 4. Scan the QR code with your Android phone's camera, download the `.apk`, and install it.
 
 *Note on Monorepos: Because we are in a Monorepo (`packages/engine` and `apps/mobile`), EAS needs to know to install dependencies at the root level. If a build fails on "Install Dependencies", it's usually a monorepo root path issue.*
+
+### 4b. Local APK Build (No EAS Credits Required)
+
+When EAS credits are exhausted, use the **local build** to produce a shareable APK on your machine.
+
+**Requirements:** Android Studio + Android SDK installed (same as `1_Run_Local_Android_Build.bat`).
+
+**Run:** `2_Build_APK_Local.bat`
+
+This runs `npx expo run:android --variant release` from `apps/mobile`, ensuring Metro uses the correct monorepo project root (avoids "Unable to resolve module ./index.js" when bundling from root).
+
+APK output:
+```
+apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+```
+
+You can copy this `.apk` file and share it (e.g. via USB, cloud drive, or direct transfer). Recipients may need to enable "Install from unknown sources" to sideload it.
 
 ---
 

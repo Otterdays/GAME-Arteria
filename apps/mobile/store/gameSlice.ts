@@ -7,6 +7,7 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { INVENTORY_SLOT_CAP } from '@/constants/game';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
 // We inline these so the mobile app doesn't need to resolve
@@ -180,11 +181,21 @@ export interface LevelUpEvent {
     level: number;
 }
 
+export interface LootVacuumEvent {
+    id: string;
+    itemId: string;
+    quantity: number;
+}
+
 interface GameState {
     player: PlayerState;
     isLoaded: boolean;
     offlineReport: OfflineReport | null;
     levelUpQueue: LevelUpEvent[];
+    /** X. Pulsing Tab Glow — which tab should pulse gold until visited */
+    pulseTab: 'skills' | 'bank' | null;
+    /** S. Loot Vacuum — queue of items to animate flying to Bank */
+    lootVacuumQueue: LootVacuumEvent[];
 }
 
 const initialState: GameState = {
@@ -192,6 +203,8 @@ const initialState: GameState = {
     isLoaded: false,
     offlineReport: null,
     levelUpQueue: [],
+    pulseTab: null,
+    lootVacuumQueue: [],
 };
 
 export const gameSlice = createSlice({
@@ -202,6 +215,8 @@ export const gameSlice = createSlice({
         loadPlayer(state, action: PayloadAction<PlayerState>) {
             state.player = migratePlayer(action.payload);
             state.isLoaded = true;
+            state.pulseTab = null;
+            state.lootVacuumQueue = [];
         },
 
         /** Start a new game */
@@ -209,6 +224,8 @@ export const gameSlice = createSlice({
             state.player = createFreshPlayer();
             if (action.payload) state.player.name = action.payload;
             state.isLoaded = true;
+            state.pulseTab = null;
+            state.lootVacuumQueue = [];
         },
 
         /** Set the active task */
@@ -230,25 +247,34 @@ export const gameSlice = createSlice({
                 skill.xp += xp;
                 skill.level = levelForXP(skill.xp);
 
-                // If we leveled up, queue a toast!
+                // If we leveled up, queue a toast and pulse Skills tab
                 if (skill.level > oldLevel) {
                     state.levelUpQueue.push({
                         id: Math.random().toString(36).substring(7),
                         skillId,
                         level: skill.level,
                     });
+                    state.pulseTab = 'skills';
                 }
             }
         },
 
-        /** Add items to inventory */
+        /** Add items to inventory. V: Respect slot cap. S: Queue loot vacuum (max 5). X: Pulse Bank tab. */
         addItems(state, action: PayloadAction<InventoryItem[]>) {
+            state.pulseTab = 'bank';
             for (const item of action.payload) {
                 const existing = state.player.inventory.find((i) => i.id === item.id);
                 if (existing) {
                     existing.quantity += item.quantity;
-                } else {
+                } else if (state.player.inventory.length < INVENTORY_SLOT_CAP) {
                     state.player.inventory.push({ ...item });
+                }
+                if (state.lootVacuumQueue.length < 5) {
+                    state.lootVacuumQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        itemId: item.id,
+                        quantity: item.quantity,
+                    });
                 }
             }
         },
@@ -288,6 +314,16 @@ export const gameSlice = createSlice({
         /** Dismiss the oldest level up toast */
         popLevelUp(state) {
             state.levelUpQueue.shift();
+        },
+
+        /** X. Clear tab pulse when user visits that tab */
+        clearPulseTab(state, action: PayloadAction<'skills' | 'bank'>) {
+            if (state.pulseTab === action.payload) state.pulseTab = null;
+        },
+
+        /** S. Remove completed loot vacuum animation */
+        popLootVacuum(state, action: PayloadAction<string>) {
+            state.lootVacuumQueue = state.lootVacuumQueue.filter((e) => e.id !== action.payload);
         },
     },
 });

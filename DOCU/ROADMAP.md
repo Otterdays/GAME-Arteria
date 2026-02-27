@@ -118,22 +118,22 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 
 ### 🎨 VFX & Feedback
 - [x] 🟡 **N. XP Floating Pop-ups** — When XP is gained, show a floating `+XP [Icon]` animation below the XP bar areas. (Includes node icon!)
-- [ ] 🟢 **O. XP Bar "Pulse"** — Subtle glow or flash effect on the XP bar fill when it moves.
+- [x] 🟢 **O. XP Bar "Pulse"** — Subtle glow or flash effect on the XP bar fill when it moves.
 
 ### ⚡ Juice & Polish (QoL Backlog)
-- [ ] 🟢 **P. Haptic Heartbeat** — Subtle haptic pulse when a progress bar reaches 100% and resets.
+- [x] 🟢 **P. Haptic Heartbeat** — Subtle haptic pulse when a progress bar reaches 100% and resets.
 - [ ] 🟢 **Q. Screen Shake (Gentle)** — Tiny "thud" shake effect when completing a heavy action (e.g. crushing a rock).
 - [ ] 🟢 **R. Contextual Ambience** — Subtle loop icons/animations (birds for logging, waves for fishing) in the screen background.
-- [ ] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
+- [x] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
 - [ ] 🟢 **T. Critical Hit VFX** — Larger, golden pop-up for "Critical Gains" (double loot/xp random procs).
 - [ ] 🟢 **U. Quick-Switch Sidebar** — A drawer or small icon set to jump between gathering skills without going back to the Skill list.
-- [ ] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
+- [x] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
 - [x] 🟡 **W. Universal Action Ticker** — A persistent, slim progress bar at the top/bottom of the screen showing the *current action loop* (e.g., a 4-second bar for Mining Iron) with the skill emoji. Keeps the "heartbeat" of the game visible even in the Bank/Settings.
 
 ### 🌟 Advanced UX & Immersion
-- [ ] 🟢 **X. Pulsing Tab Glow** — Tab icons pulse gold when a level-up occurs or a task finishes until the user visits that screen.
+- [x] 🟢 **X. Pulsing Tab Glow** — Tab icons pulse gold when a level-up occurs or a task finishes until the user visits that screen.
 - [ ] 🟡 **Y. Adaptive App Shortcuts** — Support for Android app icon shortcuts to jump directly into the active skill or Bank.
-- [ ] 🟢 **Z. Advanced Bank Search** — Add a real-time search bar and "Type" filters (Ore, Bar, Item) to the Bank UI.
+- [x] 🟢 **Z. Advanced Bank Search** — Add a real-time search bar and "Type" filters (Ore, Bar, Item) to the Bank UI.
 - [ ] 🟢 **ZA. Action Haptic Sequence** — A unique rhythmic vibration pattern when starting/stopping different types of skills.
 - [ ] 🟢 **ZB. Skill-Specific Ambience** — Subtle background soundscapes (birds, echoes, waves) that activate based on the open skill screen.
 
@@ -275,7 +275,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **7-Day Login Bonus:** Escalating reward array, capped at Cosmic Essence on Day 7. Tracks consecutive days.
 - [ ] 🔴 **Push Notifications Architecture:** Local push notifications for "Crafting Ready" or "Idle Cap Reached" using `expo-notifications`.
 - [ ] 🔴 **Performance Audit:** React Native Flamegraph checks, eliminate re-renders in FlatLists, `npx expo-doctor`.
-- [ ] 🟡 **EAS Production:** Generate Android App Bundle (.aab), target API 36 (Android 16), update Keystores.
+- [ ] 🟡 **EAS Production:** Generate Android App Bundle (.aab), target API 36 (Android 16), update Keystores. *Note: EAS credits exhausted as of 2026 — use `2_Build_APK_Local.bat` for local APK builds.*
 - [ ] 🟢 **Login bonus UI:** Calendar or day strip showing Days 1–7 and claimed state.
 - [ ] 🟢 **Notification settings:** Per-type toggles (crafting done, idle cap, level up) persisted to MMKV/settings.
 - [ ] 🟢 **Sound/music placeholder:** Settings toggles for SFX and BGM; wire to no-op or minimal sounds first.

@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Switch, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Alert } from 'react-native';
+import { router } from 'expo-router';
+import Constants from 'expo-constants';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -63,7 +65,11 @@ export default function SettingsScreen() {
             <View style={styles.header}>
                 <Text style={styles.title}>Settings</Text>
             </View>
-
+            <ScrollView
+                style={styles.scroll}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Gameplay</Text>
                 <SettingsRow
@@ -96,8 +102,19 @@ export default function SettingsScreen() {
                 <Text style={styles.sectionTitle}>About</Text>
                 <View style={styles.row}>
                     <Text style={styles.rowLabel}>Version</Text>
-                    <Text style={styles.versionText}>0.4.0</Text>
+                    <Text style={styles.versionText}>{Constants.expoConfig?.version ?? '0.1.0'}</Text>
                 </View>
+                <TouchableOpacity
+                    style={styles.row}
+                    onPress={() => router.push('/patches')}
+                    activeOpacity={0.7}
+                >
+                    <View style={styles.rowInfo}>
+                        <Text style={styles.rowLabel}>Patch Notes</Text>
+                        <Text style={styles.rowDesc}>View full changelog from v0.1.0</Text>
+                    </View>
+                    <Text style={styles.arrow}>›</Text>
+                </TouchableOpacity>
             </View>
 
             {/* QoL I — Developer / Reset */}
@@ -111,6 +128,7 @@ export default function SettingsScreen() {
                     <Text style={styles.dangerArrow}>›</Text>
                 </TouchableOpacity>
             </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -122,6 +140,8 @@ const styles = StyleSheet.create({
         paddingTop: Spacing.xl,
         paddingBottom: Spacing.md,
     },
+    scroll: { flex: 1 },
+    scrollContent: { paddingBottom: Spacing['2xl'] },
     title: {
         fontSize: FontSize.xl,
         fontWeight: '700',
@@ -185,5 +205,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: Palette.red,
         fontWeight: '700',
+    },
+    arrow: {
+        fontSize: 20,
+        color: Palette.textSecondary,
+        fontWeight: '600',
     },
 });

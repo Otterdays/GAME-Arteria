@@ -11,6 +11,9 @@ import { usePersistence } from '@/hooks/usePersistence';
 import UpdatesModal from '@/components/UpdatesModal';
 import WhileYouWereAway from '@/components/WhileYouWereAway';
 import LevelUpToast from '@/components/LevelUpToast';
+import TrainToast from '@/components/TrainToast';
+import LootVacuum from '@/components/LootVacuum';
+import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -31,11 +34,15 @@ function AppShell() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="patches" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <UpdatesModal />
       <WhileYouWereAway />
       <LevelUpToast />
+      <TrainToast />
+      <LootVacuum />
+      <GlobalActionTicker />
       <StatusBar style="light" translucent backgroundColor="transparent" />
     </ThemeProvider>
   );

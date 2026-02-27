@@ -55,15 +55,17 @@ export default function UpdatesModal() {
               The modal will automatically reappear whenever you bump the version in app.json 
             */}
                         <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>🚀 What's New</Text>
-                            <Text style={styles.changeText}>• Brand new 'Updates' modal to track new feature drops! (Yes, this modal!)</Text>
-                            <Text style={styles.changeText}>• Proper internal dev logging infrastructure added.</Text>
+                            <Text style={styles.changeHeader}>✨ v0.4.3 — Bank & Juice</Text>
+                            <Text style={styles.changeText}>• Bank Search + Filters: Find items fast (Ores, Bars, Other).</Text>
+                            <Text style={styles.changeText}>• Train Toast: "Mining: Iron Vein" when you start.</Text>
+                            <Text style={styles.changeText}>• Pulsing Tab Glow: Tab icons pulse gold on level-up or loot.</Text>
+                            <Text style={styles.changeText}>• Loot Vacuum: Item icons fly to Bank when you gain loot!</Text>
                         </View>
 
                         <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>⛏️ Next Up (Coming Soon)</Text>
-                            <Text style={styles.changeText}>• Phase 1.2: Interactive Mining skill screen with proper node selection and item drops directly to the bank.</Text>
-                            <Text style={styles.changeText}>• The 'While you were away' offline reporting system.</Text>
+                            <Text style={styles.changeText}>• Horizon System: 3-tier goal HUD (Immediate / Session / Grind).</Text>
+                            <Text style={styles.changeText}>• Unique gathering mechanics: Seasonal Rotation, Sentient Trees, Mythic Fish.</Text>
                         </View>
 
                         <Text style={styles.footerNote}>Thanks for playing the Alpha!</Text>

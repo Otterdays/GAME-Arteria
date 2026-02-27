@@ -30,6 +30,9 @@
 | **apps/mobile/README.md** | Expo app quick start (boilerplate). |
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
+
+**Entry point (2026-02-26):** If you start the dev server from the repo root, root `package.json` now has `"main": "apps/mobile/index.js"` so Metro uses Expo Router instead of the default AppEntry (which expected a root `App`). Prefer running from `apps/mobile` (e.g. `0_Start_Dev_Server.bat` or `npm run mobile`).
+
 **Platform:** Modern Android (React Native via Expo SDK 54)
 **Timeline Base:** February 26, 2026
 
@@ -38,8 +41,10 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Current Status (Phase 2.2 — Immersion & Utility):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
-- **v0.4.1 (Immersion Update):** Global Action Ticker for persistent feedback; Android Edge-to-Edge layout; RPG Icon set (MaterialCommunityIcons); Immersive navigation headers.
-- **v0.4.0 (QoL Polish):** Skills screen Pillars; Total Level badge; XP progress tracking; Ticks-to-level estimates.
+- **v0.4.3 (Bank & Juice):** Bank search + filters; Train toast; Pulsing tab glow; Loot vacuum animation.
+- **v0.4.2 (QoL O/P/V + Polish):** XP Bar Pulse; Haptic Heartbeat; Inventory Full Warning; Smooth progress bars; APK build fix.
+- **v0.4.1 (Immersion Update):** Global "Heartbeat" Action Ticker; Skills Header XP Dashboard; Android Edge-to-Edge; Node-level Action Progress.
+- **v0.4.0 (QoL Polish):** Skills screen Pillars; Total Level badge; XP progress tracking; efficiency stats.
 
 **Next Steps (Phase 2.2 — Horizon & Combat):**
 - Implement unique mechanics for new gathering skills (Seasonal Rotation, Sentient Trees, Mythic Fish).

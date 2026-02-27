@@ -2,7 +2,7 @@
   "expo": {
     "name": "Arteria",
     "slug": "arteria",
-    "version": "0.2.0",
+    "version": "0.4.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "arteria",

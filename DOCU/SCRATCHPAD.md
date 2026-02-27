@@ -3,10 +3,37 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Active Task:** Phase 2.2 — Horizon System & Unique Mechanics
-**Current Focus:** Implementing the 3-tier goal HUD (Horizon System) and specialized gathering mechanics (Seasonal Rotation).
+**Current Focus:** v0.4.3 Bank & Juice shipped. Next: Horizon System or unique gathering mechanics.
 
-## Active Sprint: v0.4.1 "Immersion & Utility"
+## [2026-02-26] Bundling Fix — "Unable to resolve ../../App"
+- **Symptom:** `Android Bundling failed … Unable to resolve "../../App" from "node_modules\expo\AppEntry.js"` when starting Expo from monorepo root.
+- **Cause:** Running `npx expo start` from repo root (Arteria) made Metro use default `expo/AppEntry.js`, which expects a root `App` component; this project uses Expo Router with entry at `apps/mobile/index.js`.
+- **Fix:** Root `package.json` now has `"main": "apps/mobile/index.js"`. When Expo runs from root, Metro uses that entry (expo-router) instead of AppEntry.js.
+- **Recommendation:** Prefer running from `apps/mobile`: use `0_Start_Dev_Server.bat`, or `npm run mobile` from root, or `cd apps/mobile && npx expo start`.
+
+## [2026-02-26] APK Build Fix
+- **Root cause:** `2_Build_APK_Local.bat` ran `gradlew assembleRelease` from root `android/`, causing Metro to resolve `./index.js` from monorepo root (Arteria) instead of `apps/mobile`.
+- **Fix:** Switched to `npx expo run:android --variant release` from `apps/mobile` so bundler uses correct project root.
+
+## Active Sprint: v0.4.3 "Bank & Juice"
+- [x] **Z. Bank Search + Filters:** Search bar, Ores/Bars/Other filters, shared items.ts.
+- [x] **Train Toast:** "Mining: Iron Vein" on start (2s).
+- [x] **X. Pulsing Tab Glow:** Skills/Bank tabs pulse gold; clear on visit.
+- [x] **S. Loot Vacuum:** Icon flies to Bank tab on loot gain.
+
+## History: v0.4.2 "QoL Polish"
+- [x] **O. XP Bar Pulse:** ProgressBarWithPulse component; white glow on XP bar fill change (Skills, Mining); intensity bumped (opacity 1, 550ms).
+- [x] **P. Haptic Heartbeat:** Light haptic when GlobalActionTicker progress resets (100% → 0%).
+- [x] **V. Inventory Full Warning:** INVENTORY_SLOT_CAP (50); "!" on Bank tab; addItems respects cap; Bank header shows slots.
+- [x] **Smooth Progress Bars:** useInterpolatedProgress + SmoothProgressBar; 60fps interpolation between Redux updates (GlobalActionTicker, Mining node bar).
+- [x] **GlobalActionTicker Hooks Fix:** Moved useRef/useEffect before early return (Rules of Hooks).
+
+## History: v0.4.1 "Immersion & Utility"
 - [x] **Global Action Ticker:** Persistent progress bar + skill emoji visible on all screens.
+- [x] **Header XP Pulse:** Integrated a real-time XP progress bar + level badge into the main Skills header.
+- [x] **Universal Action Ticker:** Promoted ticker to root layout; stays visible inside specific skill screens.
+- [x] **Bugfix (Heartbeat):** Fixed missing action progress bar in sub-screens + added node-local pulse.
+- [x] **Documentation Sync:** Updated all core docs (SUMMARY, CHANGELOG, ARCHITECTURE, Thoughts) for v0.4.1.3.
 - [x] **Android Edge-to-Edge:** Full translucent system bars + manual safe area handling for premium layout.
 - [x] **RPG Icon Set:** Migrated to MaterialCommunityIcons for pickaxes, swords, and treasure chests.
 - [x] **Navigation Update:** Immersive back buttons and full skill-card click-through.
@@ -32,7 +59,8 @@
 > **For future standard AI assistants:**
 > 1. **Dev Logging:** ALWAYS use the `logger.ts` wrapper (`import { logger } from '@/utils/logger'`). Log format is `logger.info('Module', 'Message', {data})`. Do not use naked `console.log`.
 > 2. **Versioning & Updates Modal:** When shipping a new feature phase, bump the version in `apps/mobile/app.json`. The user sees an automatic changelog modal upon relaunch! Update the hardcoded text inside `apps/mobile/components/UpdatesModal.tsx` for whatever features you just built.
-> 3. **Never Delete Documentation:** As stated by the user rules and warnings, always compact and append, do not delete existing context.
+> 3. **Patch History:** Update `apps/mobile/constants/patchHistory.ts` when shipping a new version — it powers the "Patch Notes" screen in Settings (full changelog from v0.1.0).
+> 4. **Never Delete Documentation:** As stated by the user rules and warnings, always compact and append, do not delete existing context.
 
 ## Phase 2 Progress
 - [x] Upgraded Gradle wrapper from 8.14.3 → **9.3.1** (Jan 2026 release)

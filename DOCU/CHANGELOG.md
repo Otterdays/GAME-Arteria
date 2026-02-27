@@ -3,13 +3,44 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+## [0.4.4] - 2026-02-26
+### Added
+- **Patch Notes Screen:** Full changelog from v0.1.0 to present, accessible from Settings → Patch Notes.
+
+### Fixed
+- **Bundling from monorepo root:** Resolved "Unable to resolve '../../App' from node_modules/expo/AppEntry.js" by adding `"main": "apps/mobile/index.js"` to root `package.json`, so Expo uses the Expo Router entry when started from the repo root.
+
+## [0.4.3] - 2026-02-26
+### Added
+- **Z. Bank Search + Filters:** Real-time search bar and type filters (All / Ores / Bars / Other). Shared `constants/items.ts` with ItemMeta.
+- **Train Toast:** "Mining: Iron Vein" confirmation when starting a skill action (2s non-blocking).
+- **X. Pulsing Tab Glow:** Skills tab pulses gold on level-up, Bank tab on loot; clears when visited.
+- **S. Loot Vacuum:** Item icon flies from center toward Bank tab when gaining loot.
+
+## [0.4.2] - 2026-02-26
+### Added
+- **O. XP Bar Pulse:** Subtle glow animation when XP bar fill moves (Skills screen, Mining header).
+- **P. Haptic Heartbeat:** Light haptic pulse when action progress bar reaches 100% and resets (GlobalActionTicker).
+- **V. Inventory Full Warning:** "!" badge on Bank tab when inventory is full; slot cap (50) enforced; Bank header shows "X / 50 slots — Full!".
+- **Smooth Progress Bars:** `useInterpolatedProgress` hook + `SmoothProgressBar` component; interpolates at ~60fps between 100ms Redux updates to eliminate jumpy progress.
+
+### Changed
+- **XP Bar Pulse Glow:** Increased intensity — white overlay at full opacity, 550ms duration (was 0.6 opacity, 400ms).
+
+### Fixed
+- **APK Build:** `2_Build_APK_Local.bat` now runs `npx expo run:android --variant release` from `apps/mobile` to fix "Unable to resolve module ./index.js" (Metro was resolving from monorepo root).
+- **GlobalActionTicker Hooks:** Moved `useRef`/`useEffect` before early return to fix "Rendered more hooks than during the previous render".
+
 ## [0.4.1] - 2026-02-26
 ### Added
-- **Global Action Ticker:** A persistent, minimal progress bar at the top of the screen tracking active tasks across ALL tabs.
+- **Global Action Ticker:** A persistent, minimal progress bar tracking active tasks across ALL screens. Promoted to root layout for universal visibility.
+- **Header XP Dashboard:** Integrated real-time XP [current/next] tracking and level badges into the Skills header.
 - **RPG Icon Overhaul:** Switched `IconSymbol` to use `MaterialCommunityIcons`. Mapped thematic symbols: `pickaxe`, `sword-cross`, `treasure-chest`, `script-text`.
 - **Custom Back Navigation:** Immersive, theme-aligned back buttons in skill screens (Mining).
 
 ### Fixed
+- **Action 'Heartbeat' Visibility:** Fixed a bug where action progress was missing in sub-screens (Mining) by promoting the ticker to the root layout and adding adaptive tab-bar offsets.
+- **Node-level Feedback:** Added localized progress bars to Mining nodes for immediate rhythmic feedback.
 - **Android "Full Immersion" Layout:** Enabled edge-to-edge rendering with translucent Status and Navigation bars.
 - **Android Overlay Mess:** Resolved double-padding issues by moving to manual inset padding via `useSafeAreaInsets`.
 - **Gesture Bar Overlap:** Adjusted Tab Bar height and padding for Android gesture handle clearance.
