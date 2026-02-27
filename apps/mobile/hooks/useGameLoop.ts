@@ -9,7 +9,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { gameActions, SkillId } from '@/store/gameSlice';
+import { gameActions, SkillId, OfflineReport } from '@/store/gameSlice';
 import { logger } from '@/utils/logger';
 
 // ── Inline engine math (mirrors @arteria/engine) ──
@@ -67,9 +67,10 @@ export function useGameLoop() {
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
     const hasProcessedOfflineRef = useRef(false);
 
-    // Process a delta of time
+    // Process a delta of time.
+    // If accumulator is passed, results are added into it instead of dispatching immediately.
     const processDelta = useCallback(
-        (deltaMs: number) => {
+        (deltaMs: number, accumulator?: OfflineReport) => {
             if (!activeTask) return;
 
             const action = ACTION_DEFS[activeTask.actionId];
@@ -97,21 +98,23 @@ export function useGameLoop() {
                 const skillId = activeTask.skillId as SkillId;
                 const totalXP = action.xpPerTick * successfulTicks;
 
-                // We need current XP to compute new level — read from store via ref
-                // For simplicity, dispatch and let the slice handle it
-                dispatch(
-                    gameActions.applyXP({
-                        skillId,
-                        xp: totalXP,
-                    })
-                );
+                dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
 
-                // Add items
                 const items = action.items.map((item) => ({
                     id: item.id,
                     quantity: item.quantity * successfulTicks,
                 }));
                 dispatch(gameActions.addItems(items));
+
+                // If accumulating for an offline report, add to it
+                if (accumulator) {
+                    accumulator.xpGained[skillId] = (accumulator.xpGained[skillId] ?? 0) + totalXP;
+                    for (const item of items) {
+                        const existing = accumulator.itemsGained.find((i) => i.id === item.id);
+                        if (existing) existing.quantity += item.quantity;
+                        else accumulator.itemsGained.push({ ...item });
+                    }
+                }
             }
         },
         [activeTask, dispatch]
@@ -148,9 +151,16 @@ export function useGameLoop() {
             }
 
             if (elapsed > 1000) {
-                processDelta(elapsed);
-                logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)} seconds of progress.`);
-                // TODO: Dispatch a "While You Were Away" report modal payload here later.
+                const wasCapped = (now - lastSaveTimestamp) > 24 * 60 * 60 * 1000;
+                const report: OfflineReport = {
+                    elapsedMs: elapsed,
+                    xpGained: {},
+                    itemsGained: [],
+                    wasCapped,
+                };
+                processDelta(elapsed, report);
+                dispatch(gameActions.setOfflineReport(report));
+                logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)}s. Items: ${report.itemsGained.length}`);
             }
         }
     }, [isLoaded, activeTask, lastSaveTimestamp, processDelta]);

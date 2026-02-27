@@ -135,14 +135,23 @@ function createFreshPlayer(): PlayerState {
 
 // ─── Slice ───
 
+export interface OfflineReport {
+    elapsedMs: number;
+    xpGained: Partial<Record<SkillId, number>>;
+    itemsGained: InventoryItem[];
+    wasCapped: boolean;
+}
+
 interface GameState {
     player: PlayerState;
     isLoaded: boolean;
+    offlineReport: OfflineReport | null;
 }
 
 const initialState: GameState = {
     player: createFreshPlayer(),
     isLoaded: false,
+    offlineReport: null,
 };
 
 export const gameSlice = createSlice({
@@ -214,6 +223,16 @@ export const gameSlice = createSlice({
         /** Mark a version as seen by the user (clears updates modal) */
         updateSeenVersion(state, action: PayloadAction<string>) {
             state.player.lastSeenVersion = action.payload;
+        },
+
+        /** Store the offline catchup report so the WYWA modal can display it */
+        setOfflineReport(state, action: PayloadAction<OfflineReport>) {
+            state.offlineReport = action.payload;
+        },
+
+        /** Clear the offline report once the player has dismissed the modal */
+        clearOfflineReport(state) {
+            state.offlineReport = null;
         },
     },
 });

@@ -1,4 +1,4 @@
-# Deploy docs/ as static site — no Jekyll. Use Settings → Pages → Source: GitHub Actions.
+# Deploy repo root as static site — no Jekyll. Use Settings → Pages → Source: GitHub Actions.
 name: Pages (static)
 
 on:
@@ -28,7 +28,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
