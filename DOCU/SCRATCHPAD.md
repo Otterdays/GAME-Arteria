@@ -6,6 +6,7 @@
 **Current Focus:** Building the active Mining UI, ore drop rates, and mapping actions to our working background tick loop.
 
 ## History (Compacted)
+- **[2026-02-26] Website overhaul + doc corrections:** Updated `index.html` with 4 new sections (World & Lore with 6 Valdoria regions + 4 factions, Companions with Barnaby/Yvette/Reginald cards, "A Day in Arteria" timeline, CSS floating particles). Added missing skills (Research, Celestial Binding). Fixed stale roadmap (Phase 1.2→1.5 marked done, Phase 2 now current). Fixed hero badge to "Phase 1 Complete". Updated nav links. Fixed SUMMARY.md, ROADMAP.md current target, ARCHITECTURE.md tech stack (SDK 54→55, EAS→local builds).
 - **[2026-02-26] Concept art section removed from docs site:** Section (Gallery/Concept Art + art-grid styles) removed from `docs/index.html` — doesn’t work on GitHub Pages (asset paths/behavior). Nav had no #art link; no other references.
 - **[2026-02-26] GitHub Pages fix:** Added `docs/` folder (lowercase) with landing page (`index.html` + `assets/`) and `.nojekyll` to bypass Jekyll. GitHub Pages expects `docs` (Linux is case-sensitive); `.nojekyll` serves static HTML without Jekyll processing. Push to trigger redeploy.
 - **[2026-02-26] SDK 55 + test suite:** Upgraded to Expo SDK 55 (React 19.2.4, RN 0.83.2). Created root `tests/` folder: `unit/engine/` (API tests for XPTable, TickSystem, GameEngine), `integration/`, `e2e/` placeholders. Root `npm test` runs both `packages/engine` and `tests/` (Jest multi-project). Retained all existing engine tests; 25 tests pass.

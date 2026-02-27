@@ -719,6 +719,281 @@
       margin: 0;
     }
 
+    /* ==================== FLOATING PARTICLES ==================== */
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0);
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) scale(1);
+      }
+    }
+
+    /* ==================== WORLD / LORE ==================== */
+    .lore-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .lore-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .lore-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    }
+
+    .lore-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--lore-accent, var(--accent));
+      opacity: 0.7;
+    }
+
+    .lore-emoji {
+      font-size: 2rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .lore-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .lore-desc {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ==================== FACTION CARDS ==================== */
+    .faction-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+    }
+
+    .faction-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .faction-card:hover {
+      border-color: var(--accent);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .faction-emoji {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .faction-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .faction-flavor {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+
+    /* ==================== COMPANIONS ==================== */
+    .companion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .companion-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .companion-card:hover {
+      border-color: var(--comp-accent, var(--accent));
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .companion-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, var(--comp-glow, rgba(139, 92, 246, 0.06)) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .companion-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: var(--comp-bg, rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: var(--space-sm);
+    }
+
+    .companion-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .companion-role {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--comp-accent, var(--accent-2));
+      margin-bottom: var(--space-sm);
+    }
+
+    .companion-desc {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .companion-trait {
+      margin-top: var(--space-sm);
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .companion-trait strong {
+      color: var(--comp-accent, var(--accent-2));
+    }
+
+    /* ==================== TIMELINE ==================== */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--gold), var(--accent));
+      opacity: 0.4;
+    }
+
+    .timeline-item {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      transition: border-color 0.2s;
+    }
+
+    .timeline-item:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -27px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-app);
+      box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+    }
+
+    .timeline-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .timeline-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
+
     /* ==================== SCROLL FADE-IN ==================== */
     .fade-in {
       opacity: 0;
@@ -752,6 +1027,7 @@
 
   <div class="nebula"></div>
   <div class="stars"></div>
+  <div class="particles" id="particles"></div>
 
   <!-- NAV -->
   <nav>
@@ -759,8 +1035,9 @@
       <a href="#" class="nav-logo">ARTERIA</a>
       <ul class="nav-links">
         <li><a href="#systems">Systems</a></li>
+        <li><a href="#world">World</a></li>
         <li><a href="#skills">Skills</a></li>
-        <li><a href="#tech">Tech Stack</a></li>
+        <li><a href="#companions">Companions</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="https://github.com/Otterdays/GAME-Arteria" class="nav-cta" target="_blank">GitHub ↗</a></li>
       </ul>
@@ -771,7 +1048,7 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">Phase 1.1 Complete — Core Game Loop Live</div>
+        <div class="hero-badge">Phase 1 Complete — Combat & Gathering Next</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
           A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel
@@ -1027,7 +1304,88 @@
 
   <hr class="divider" />
 
+  <!-- WORLD & LORE -->
+  <section class="section" id="world">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">World</div>
+        <h2>The Kingdom of Valdoria</h2>
+        <p class="section-desc">A cosmic peninsula where bright Luminar energy and dark Voidmire essence clash — and
+          reality itself sometimes glitches.</p>
+      </div>
+      <div class="lore-grid fade-in">
+        <div class="lore-card" style="--lore-accent:#a78bfa;">
+          <div class="lore-emoji">🏰</div>
+          <div class="lore-title">The Crownlands</div>
+          <div class="lore-desc">Central hub and player home territory. A bustling capital where cosmic knights patrol
+            streets lit by floating Luminar lanterns.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#22c55e;">
+          <div class="lore-emoji">🌲</div>
+          <div class="lore-title">The Whispering Woods</div>
+          <div class="lore-desc">An enchanted forest with sentient trees that gossip about passing adventurers.
+            Higher-level trees can be negotiated with for better yields.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#ef4444;">
+          <div class="lore-emoji">🌋</div>
+          <div class="lore-title">The Scorched Reach</div>
+          <div class="lore-desc">A volcanic region where Voidmire pools underground. Rich in rare ores, but cursed items
+            drop more frequently here.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#38bdf8;">
+          <div class="lore-emoji">🏔️</div>
+          <div class="lore-title">The Skyward Peaks</div>
+          <div class="lore-desc">Mountains that pierce the lower Celestial Spires. Home to the Celestial Bureaucracy —
+            angels obsessed with paperwork.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#f59e0b;">
+          <div class="lore-emoji">📜</div>
+          <div class="lore-title">The Sunken Archives</div>
+          <div class="lore-desc">Underground ruins of previous civilizations. Contains knowledge of previous Anchors who
+            failed to stabilize reality.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#f472b6;">
+          <div class="lore-emoji">🎪</div>
+          <div class="lore-title">The Fey Markets</div>
+          <div class="lore-desc">Planar crossover point where otherworldly traders appear on rotation. Limited-time rare
+            recipes and exotic materials.</div>
+        </div>
+      </div>
 
+      <div class="faction-strip fade-in">
+        <div class="faction-card">
+          <div class="faction-emoji">⚖️</div>
+          <div>
+            <div class="faction-name">The Order of the Balanced Scale</div>
+            <div class="faction-flavor">Led by a sentient suit of empty armor. Perfectly normal.</div>
+          </div>
+        </div>
+        <div class="faction-card">
+          <div class="faction-emoji">🌑</div>
+          <div>
+            <div class="faction-name">The Void-Touched Collective</div>
+            <div class="faction-flavor">Not evil — just unsettling vibes and excellent parties.</div>
+          </div>
+        </div>
+        <div class="faction-card">
+          <div class="faction-emoji">📋</div>
+          <div>
+            <div class="faction-name">The Celestial Bureaucracy</div>
+            <div class="faction-flavor">Angels who require divine blessings in triplicate.</div>
+          </div>
+        </div>
+        <div class="faction-card">
+          <div class="faction-emoji">🤡</div>
+          <div>
+            <div class="faction-name">Cult of Blibbertooth</div>
+            <div class="faction-flavor">Their temples are comedy clubs. Quests accidentally save the world.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
 
   <!-- SKILLS -->
   <section class="section" id="skills">
@@ -1175,6 +1533,12 @@
             <div class="skill-meta">Support</div>
           </div>
         </div>
+        <div class="skill-pill"><span class="skill-emoji">📚</span>
+          <div>
+            <div class="skill-name">Research</div>
+            <div class="skill-meta">Support</div>
+          </div>
+        </div>
         <!-- Cosmic -->
         <div class="skill-pill"><span class="skill-emoji">🌌</span>
           <div>
@@ -1188,11 +1552,192 @@
             <div class="skill-meta">Cosmic (Endgame)</div>
           </div>
         </div>
+        <div class="skill-pill"><span class="skill-emoji">👼</span>
+          <div>
+            <div class="skill-name">Celestial Binding</div>
+            <div class="skill-meta">Cosmic (Endgame)</div>
+          </div>
+        </div>
         <div class="skill-pill"><span class="skill-emoji">⏳</span>
           <div>
             <div class="skill-name">Chronomancy</div>
             <div class="skill-meta">Cosmic (Endgame)</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- COMPANIONS -->
+  <section class="section" id="companions">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">Wandering Souls</div>
+        <h2>Companions</h2>
+        <p class="section-desc">Hire Wandering Souls — NPCs with their own skills who train, fight, and occasionally
+          cause explosions on your behalf.</p>
+      </div>
+      <div class="companion-grid fade-in">
+        <div class="companion-card"
+          style="--comp-accent:#f59e0b; --comp-bg:rgba(245,158,11,0.1); --comp-glow:rgba(245,158,11,0.06);">
+          <div class="companion-avatar">⚔️</div>
+          <div class="companion-name">Barnaby the Uncertain</div>
+          <div class="companion-role">Warrior · Unlocks at Level 20</div>
+          <div class="companion-desc">A well-meaning warrior who deals devastating damage — when he doesn't accidentally
+            hit himself. Optimistic regardless of outcomes.</div>
+          <div class="companion-trait"><strong>Trait:</strong> 2× damage, but 50% chance to strike himself instead. He
+            calls this "character building."</div>
+        </div>
+        <div class="companion-card"
+          style="--comp-accent:#8b5cf6; --comp-bg:rgba(139,92,246,0.1); --comp-glow:rgba(139,92,246,0.06);">
+          <div class="companion-avatar">🧪</div>
+          <div class="companion-name">Scholar Yvette</div>
+          <div class="companion-role">Researcher · Unlocks at Level 35</div>
+          <div class="companion-desc">A brilliant researcher who dramatically speeds up your crafting queues. Minor side
+            effect: occasional lab explosions.</div>
+          <div class="companion-trait"><strong>Trait:</strong> +30% crafting speed. 5% chance per craft to explode — but
+            you get a partial resource refund and a funny quote.</div>
+        </div>
+        <div class="companion-card"
+          style="--comp-accent:#22c55e; --comp-bg:rgba(34,197,94,0.1); --comp-glow:rgba(34,197,94,0.06);">
+          <div class="companion-avatar">🛡️</div>
+          <div class="companion-name">Sir Reginald Pomp</div>
+          <div class="companion-role">Knight · Unlocks at Level 50</div>
+          <div class="companion-desc">An aristocratic knight who automatically sells your grey-tier loot. He delivers a
+            long, eloquent speech about each discarded item.</div>
+          <div class="companion-trait"><strong>Trait:</strong> Auto-sells junk items for gold. You can't skip the
+            speeches. You learn to love them.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- THE ANCHOR -->
+  <section class="section" id="anchor">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">Protagonist</div>
+        <h2>The Anchor</h2>
+        <p class="section-desc">You aren't just a randomly chosen hero. You are a cosmic accident—an Anchor whose soul
+          is unusually heavy, immune to the chaos of the Unraveling.</p>
+      </div>
+      <div class="lore-grid fade-in">
+        <div class="lore-card" style="--lore-accent:#f472b6;">
+          <div class="lore-emoji">🧬</div>
+          <div class="lore-title">Ancestries</div>
+          <div class="lore-desc">Play as a standard Human, a time-dilated Elf, a cosmic-mining Dwarf, a partially unreal
+            Fey-Touched, or a translucent Void-Blooded character.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#38bdf8;">
+          <div class="lore-emoji">⚖️</div>
+          <div class="lore-title">Affinities</div>
+          <div class="lore-desc">Align yourself with defensive Luminar energy, offensive Voidmire corruption, or walk
+            the slow but perfectly flexible path of the Balanced.</div>
+        </div>
+        <div class="lore-card" style="--lore-accent:#f59e0b;">
+          <div class="lore-emoji">🃏</div>
+          <div class="lore-title">Cosmic Quirks</div>
+          <div class="lore-desc">Roll a random comedic modifier on creation. You might attract sentient furniture, or
+            find your hair changing color when someone lies nearby.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- THE ENCOUNTER -->
+  <section class="section" id="dungeons">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">Combat System</div>
+        <h2>The Encounter</h2>
+        <p class="section-desc">Combat occurs in pocket dimensions where time moves differently, allowing offline
+          progression. Auto-combat learns your preferences and auto-flees to save your loot.</p>
+      </div>
+      <div class="systems-grid fade-in">
+        <div class="system-card" style="--card-accent:#ef4444; --card-bg:rgba(239,68,68,0.08);">
+          <div class="system-header">
+            <div class="system-icon">⚔️</div>
+            <div>
+              <div class="system-name">Quick Hits</div>
+              <div class="system-title">Delves</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Short 5-10 minute active experiences, or 1-hour offline auto-clears. Perfect for a quick lunch break or
+            queuing up right before a meeting.
+          </p>
+        </div>
+        <div class="system-card" style="--card-accent:#8b5cf6; --card-bg:rgba(139,92,246,0.08);">
+          <div class="system-header">
+            <div class="system-icon">🗺️</div>
+            <div>
+              <div class="system-name">Deep Dives</div>
+              <div class="system-title">Expeditions</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Multi-floor gauntlets spanning up to 30 minutes active or 4 hours offline. Prepare your loadout and limited
+            consumables wisely before heading in.
+          </p>
+        </div>
+        <div class="system-card" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.08);">
+          <div class="system-header">
+            <div class="system-icon">🌀</div>
+            <div>
+              <div class="system-name">Weekly Rules</div>
+              <div class="system-title">Cosmic Modifiers</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Dungeons rotate modifiers weekly. "Gravity's Suggestion" reverses fall damage (falling up hurts).
+            "Blibbertooth's Blessing" makes enemies explode into confetti on crits.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- A DAY IN ARTERIA -->
+  <section class="section" id="daily">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">Lifestyle</div>
+        <h2>A Day in Arteria</h2>
+        <p class="section-desc">Designed to respect your time. Progress happens whether you play for 2 minutes or 2
+          hours.</p>
+      </div>
+      <div class="timeline fade-in">
+        <div class="timeline-item">
+          <div class="timeline-time">9:00 AM — Morning Commute (2 min)</div>
+          <div class="timeline-label">📱 Collect & Queue</div>
+          <div class="timeline-desc">Open the "While You Were Away" report. Grab overnight combat loot. Start a 2-hour
+            crafting queue. Check daily quests.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">12:30 PM — Lunch Break (15 min)</div>
+          <div class="timeline-label">⛏️ Active Play</div>
+          <div class="timeline-desc">Mine 10 Silver Ore for a daily quest. Run a dungeon in active mode for bonus loot.
+            Collect finished crafts and restart the queue.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">6:00 PM — Evening Session (45 min)</div>
+          <div class="timeline-label">⚔️ Deep Play</div>
+          <div class="timeline-desc">Test a new combat ability. Visit the Fey Market for rare recipes. Start an 8-hour
+            legendary craft. Harvest your garden.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">10:00 PM — Bedtime (3 min)</div>
+          <div class="timeline-label">🌙 Queue Overnight</div>
+          <div class="timeline-desc">Set auto-combat in a new area. Queue long crafts. Set a push notification for when
+            your Fey-Touched Sword finishes. Sleep well.</div>
         </div>
       </div>
     </div>
@@ -1238,44 +1783,57 @@
       </div>
       <div class="roadmap-list fade-in">
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">✓ Done</span>
-          <div class="roadmap-text"><strong>Phase 1.0</strong> — Project scaffold, monorepo, engine package, Redux
-            store, dark UI theme, 5 tab screens.</div>
+          <span class="roadmap-badge badge-done">✓ Feb 25</span>
+          <div class="roadmap-text"><strong>v0.1.0: Foundation</strong> — Project scaffold, monorepo setup, engine
+            package, Redux store, dark UI theme, 5 tab screens.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">✓ Done</span>
-          <div class="roadmap-text"><strong>Phase 1.1</strong> — MMKV v4 persistence, AppState lifecycle, real-time
-            100ms tick loop, 24h offline catchup, unit tests (25 passing), local native build pipeline.</div>
+          <span class="roadmap-badge badge-done">✓ Feb 26</span>
+          <div class="roadmap-text"><strong>v0.2.0: Persistence &amp; Pipeline</strong> — MMKV v4 wired to AppState for
+            saving, local Android build pipeline established (bypassing EAS limits), Jest test suite (25 passing).</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Feb 26</span>
+          <div class="roadmap-text"><strong>v0.3.0: Core Gameplay Loop</strong> — Real-time 100ms tick loop &amp; 24h
+            offline catchup built. Mining skill (Copper to Cosmic Stone) fully working with XP tracking and level
+            gating.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Feb 26</span>
+          <div class="roadmap-text"><strong>v0.4.0: Inventory &amp; Phase 1 Complete</strong> — Bank UI with 4-column
+            grid &amp; item modals, "While You Were Away" catch-up modal, haptics, level-up toasts. Phase 1 concluded!
+          </div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Current</span>
-          <div class="roadmap-text"><strong>Phase 1.2</strong> — Mining skill: Copper, Iron, Silver, Gold node
-            definitions. Ore drop rates, Bank screen inventory integration.</div>
-        </div>
-        <div class="roadmap-item future">
-          <span class="roadmap-badge badge-future">Phase 2</span>
-          <div class="roadmap-text"><strong>Crafting &amp; Combat</strong> — Smithing, Alchemy basics. Auto-combat loop
-            vs. Void-Touched Wildlife. "While You Were Away" summary modal.</div>
+          <div class="roadmap-text"><strong>Phase 2: Gathering Expansion</strong> — Harvesting, Logging, Fishing,
+            Scavenging + Combat system foundation (stats, loadouts, auto-combat).</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>
-          <div class="roadmap-text"><strong>Content Expansion</strong> — Woodcutting, Fishing, Cooking, Farming.
-            Companion system (Barnaby, Yvette). First act of narrative ("The Unraveling Begins").</div>
+          <div class="roadmap-text"><strong>Crafting Engine</strong> — Queue system, Smithing, Alchemy, Cooking.
+            Cross-skill dependencies. Active minigame multipliers.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 4</span>
-          <div class="roadmap-text"><strong>Player Home &amp; Quests</strong> — Housing plot, radiant quest generator,
-            daily check-in loop, The Horizon System UI.</div>
+          <div class="roadmap-text"><strong>Combat &amp; Dungeons</strong> — 12 enemy factions, auto-combat vs. active
+            mode,
+            dungeon system (Delves, Expeditions), companion integration.</div>
         </div>
         <div class="roadmap-item future">
-          <span class="roadmap-badge badge-future">Year 1</span>
-          <div class="roadmap-text"><strong>Post-Launch</strong> — Guild system, PvP async arena, The Shimmering Sea
-            region, Cosmic Skills (Aether Weaving, Chronomancy), Blibbertooth Festival event.</div>
+          <span class="roadmap-badge badge-future">Phase 5</span>
+          <div class="roadmap-text"><strong>Connective Tissue</strong> — Character creation, support skills, companion
+            system (Barnaby, Yvette, Reginald), quest engine.</div>
         </div>
         <div class="roadmap-item future">
-          <span class="roadmap-badge badge-future">Year 2+</span>
-          <div class="roadmap-text"><strong>Endgame &amp; Economy</strong> — The Cosmic Plane (roguelike), player
-            auction house, second kingdom, level 100 content with Cosmic Tiers.</div>
+          <span class="roadmap-badge badge-future">Phase 6–7</span>
+          <div class="roadmap-text"><strong>Narrative &amp; Economy</strong> — Main storyline (4 Acts), factions, Lumina
+            shop, battle pass, login bonuses, push notifications.</div>
+        </div>
+        <div class="roadmap-item future">
+          <span class="roadmap-badge badge-future">Year 1+</span>
+          <div class="roadmap-text"><strong>Post-Launch</strong> — Guilds, PvP arena, The Shimmering Sea, Cosmic Skills,
+            The Infinite Stair, Blibbertooth Festival.</div>
         </div>
       </div>
     </div>
@@ -1312,6 +1870,22 @@
       el.style.transitionDelay = `${(i % 4) * 80}ms`;
       observer.observe(el);
     });
+
+    // Floating particles
+    (function () {
+      const container = document.getElementById('particles');
+      const colors = ['rgba(139,92,246,0.6)', 'rgba(245,158,11,0.5)', 'rgba(167,139,250,0.4)', 'rgba(251,191,36,0.3)'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.animationDuration = (12 + Math.random() * 20) + 's';
+        p.style.animationDelay = (Math.random() * 15) + 's';
+        container.appendChild(p);
+      }
+    })();
   </script>
 </body>
 

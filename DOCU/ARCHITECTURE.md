@@ -7,14 +7,14 @@
 > SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
 
 ## Tech Stack (as of Feb 2026)
-- **Framework:** Expo SDK 54 (React Native 0.81.5, New Architecture enabled)
+- **Framework:** Expo SDK 55 (React Native 0.83.2, New Architecture mandatory)
 - **Language:** TypeScript 5.9 (strict mode)
 - **State Management:** Redux Toolkit (RTK) 2.11.2 + react-redux 9.2.0
 - **Local Storage:** react-native-mmkv 4.1.2 (fast synchronous KV store for saves)
 - **Routing:** Expo Router v6.0.23 (file-based)
 - **Animations:** React Native Reanimated v4.1.6
 - **Testing:** Jest 29.7 + ts-jest 29.4 (engine package)
-- **Build System:** EAS (Expo Application Services) — cloud builds, no local android/ folder
+- **Build System:** Local Android builds via `npx expo run:android` (primary) + EAS for cloud/production builds
 
 ## Monorepo Structure (npm workspaces)
 

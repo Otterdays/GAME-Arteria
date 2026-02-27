@@ -26,6 +26,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## ✅ Phase 0 — Foundation (COMPLETE)
+> **Completed:** Feb 25, 2026 (v0.1.0)
 > The scaffolding is done. Do not rebuild unless absolutely necessary.
 - [x] 🟢 Expo SDK 54 monorepo (npm workspaces)
 - [x] 🟢 TypeScript strict mode
@@ -44,7 +45,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 
 ---
 
-## ⚙️ Phase 1 — "The Core Engine" (Playable Loop)
+## ✅ Phase 1 — "The Core Engine" (COMPLETE)
+> **Completed:** Feb 26, 2026 (v0.4.0)
 > **Goal:** The vertical slice. One skill working end-to-end with real persistence and UI.
 
 ### 1.1 — Game Loop & App Lifecycle 🔴
@@ -302,6 +304,6 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## 🎯 Current Target
-**We are here → Phase 1.2 (Mining: The Foundation Skill)**
+**We are here → Phase 2 (Gathering Expansion & Combat Foundation)**
 
-Next action: Build the Mining skill screen UI and set up the active task triggers to feed into the newly built offline-capable game loop.
+Phase 1 complete! Next action: Expand gathering skills (Harvesting, Logging, Fishing, Scavenging) and begin combat system stats infrastructure.
