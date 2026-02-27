@@ -10,6 +10,7 @@ import { useGameLoop } from '@/hooks/useGameLoop';
 import { usePersistence } from '@/hooks/usePersistence';
 import UpdatesModal from '@/components/UpdatesModal';
 import WhileYouWereAway from '@/components/WhileYouWereAway';
+import LevelUpToast from '@/components/LevelUpToast';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -34,6 +35,7 @@ function AppShell() {
       </Stack>
       <UpdatesModal />
       <WhileYouWereAway />
+      <LevelUpToast />
       <StatusBar style="light" />
     </ThemeProvider>
   );

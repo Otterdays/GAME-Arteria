@@ -142,16 +142,24 @@ export interface OfflineReport {
     wasCapped: boolean;
 }
 
+export interface LevelUpEvent {
+    id: string; // unique ID for the toast
+    skillId: SkillId;
+    level: number;
+}
+
 interface GameState {
     player: PlayerState;
     isLoaded: boolean;
     offlineReport: OfflineReport | null;
+    levelUpQueue: LevelUpEvent[];
 }
 
 const initialState: GameState = {
     player: createFreshPlayer(),
     isLoaded: false,
     offlineReport: null,
+    levelUpQueue: [],
 };
 
 export const gameSlice = createSlice({
@@ -186,8 +194,18 @@ export const gameSlice = createSlice({
             const { skillId, xp } = action.payload;
             const skill = state.player.skills[skillId];
             if (skill) {
+                const oldLevel = skill.level;
                 skill.xp += xp;
                 skill.level = levelForXP(skill.xp);
+
+                // If we leveled up, queue a toast!
+                if (skill.level > oldLevel) {
+                    state.levelUpQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        skillId,
+                        level: skill.level,
+                    });
+                }
             }
         },
 
@@ -233,6 +251,11 @@ export const gameSlice = createSlice({
         /** Clear the offline report once the player has dismissed the modal */
         clearOfflineReport(state) {
             state.offlineReport = null;
+        },
+
+        /** Dismiss the oldest level up toast */
+        popLevelUp(state) {
+            state.levelUpQueue.shift();
         },
     },
 });

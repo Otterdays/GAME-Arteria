@@ -19,16 +19,17 @@ export default function MiningScreen() {
     const handleNodePress = (node: MiningNode) => {
         if (miningSkill.level < node.levelReq) {
             Alert.alert("Locked", `Requires Mining Level ${node.levelReq}`);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             return;
         }
 
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
         if (activeNodeId === node.id) {
             // Stop if already training this node
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
             dispatch(gameActions.stopTask());
         } else {
             // Start this node
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             dispatch(
                 gameActions.startTask({
                     type: 'skilling',
@@ -81,6 +82,9 @@ export default function MiningScreen() {
                             ]}
                             activeOpacity={0.7}
                             onPress={() => handleNodePress(node)}
+                            accessibilityRole="button"
+                            accessibilityState={{ disabled: isLocked, selected: isActive }}
+                            accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Mine for ${node.xpPerTick} XP`}`}
                         >
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>
