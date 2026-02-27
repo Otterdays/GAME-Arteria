@@ -18,5 +18,5 @@ export type {
     OfflineReport,
     ActiveTask,
 } from './types';
-export { MINING_ACTIONS, createNewPlayer } from './data';
+export { MINING_ACTIONS, LOGGING_ACTIONS, HARVESTING_ACTIONS, FISHING_ACTIONS, SCAVENGING_ACTIONS, createNewPlayer } from './data';
 export type { ActionDefinition } from './TickSystem';

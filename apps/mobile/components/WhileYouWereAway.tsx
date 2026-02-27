@@ -21,7 +21,9 @@ import { logger } from '@/utils/logger';
 
 const SKILL_NAMES: Partial<Record<SkillId, string>> = {
     mining: '⛏️ Mining',
-    woodcutting: '🪓 Woodcutting',
+    logging: '🪓 Logging',
+    harvesting: '🪴 Harvesting',
+    scavenging: '🏕️ Scavenging',
     fishing: '🎣 Fishing',
     cooking: '🍳 Cooking',
     smithing: '🔨 Smithing',

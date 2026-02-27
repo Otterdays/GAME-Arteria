@@ -6,7 +6,9 @@ import type { PlayerState, SkillId, SkillState } from '../types';
 
 const ALL_SKILLS: SkillId[] = [
     'mining',
-    'woodcutting',
+    'logging',
+    'harvesting',
+    'scavenging',
     'fishing',
     'cooking',
     'smithing',

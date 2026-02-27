@@ -5,8 +5,10 @@
 /** Unique identifier for a skill */
 export type SkillId =
     | 'mining'
-    | 'woodcutting'
+    | 'logging'
     | 'fishing'
+    | 'harvesting'
+    | 'scavenging'
     | 'cooking'
     | 'smithing'
     | 'crafting'

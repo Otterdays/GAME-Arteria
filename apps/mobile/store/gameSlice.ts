@@ -15,8 +15,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type SkillId =
     | 'mining'
-    | 'woodcutting'
+    | 'logging'
     | 'fishing'
+    | 'harvesting'
+    | 'scavenging'
     | 'cooking'
     | 'smithing'
     | 'crafting'
@@ -79,7 +81,7 @@ export interface PlayerState {
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
-    'mining', 'woodcutting', 'fishing', 'cooking', 'smithing',
+    'mining', 'logging', 'fishing', 'harvesting', 'scavenging', 'cooking', 'smithing',
     'crafting', 'farming', 'herblore', 'agility',
     'attack', 'strength', 'defence', 'hitpoints',
 ];

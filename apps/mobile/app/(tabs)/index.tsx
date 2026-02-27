@@ -25,7 +25,9 @@ const SKILL_META: Record<
   { label: string; color: string; emoji: string }
 > = {
   mining: { label: 'Mining', color: Palette.skillMining, emoji: '⛏️' },
-  woodcutting: { label: 'Woodcutting', color: Palette.skillWoodcutting, emoji: '🪓' },
+  logging: { label: 'Logging', color: Palette.skillLogging, emoji: '🪓' },
+  harvesting: { label: 'Harvesting', color: Palette.skillHarvesting, emoji: '🪴' },
+  scavenging: { label: 'Scavenging', color: Palette.skillScavenging, emoji: '🏕️' },
   fishing: { label: 'Fishing', color: Palette.skillFishing, emoji: '🎣' },
   cooking: { label: 'Cooking', color: Palette.skillCooking, emoji: '🍳' },
   smithing: { label: 'Smithing', color: Palette.skillSmithing, emoji: '🔨' },
@@ -136,7 +138,9 @@ export default function SkillsScreen() {
 
   const skillOrder: SkillId[] = [
     'mining',
-    'woodcutting',
+    'logging',
+    'harvesting',
+    'scavenging',
     'fishing',
     'cooking',
     'smithing',

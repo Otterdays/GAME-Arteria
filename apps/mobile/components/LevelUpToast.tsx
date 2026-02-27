@@ -14,7 +14,9 @@ import * as Haptics from 'expo-haptics';
 
 const SKILL_EMOJIS: Partial<Record<SkillId, string>> = {
     mining: '⛏️',
-    woodcutting: '🪓',
+    logging: '🪓',
+    harvesting: '🪴',
+    scavenging: '🏕️',
     fishing: '🎣',
     cooking: '🍳',
     smithing: '🔨',

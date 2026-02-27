@@ -98,10 +98,14 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Expand gathering options and implement the core retention UI hooks.
 
 ### 2.1 — Remaining Gathering Skills 🟡
-- [ ] 🟢 **Harvesting (Plants/Fibers):** Define nodes. *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
-- [ ] 🟢 **Logging (Woodcutting):** Define trees. *Unique Mechanic (🟡):* Sentient Tree Negotiation (unlock "ask nicely" toggle at higher levels for better yields without breaking tools).
-- [ ] 🟢 **Fishing:** Define nodes. *Unique Mechanic (🔴):* "Mythic" fish probabilities requiring specific discovered bait combos (hidden recipes).
-- [ ] 🟢 **Scavenging:** Define ruins/zones. *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
+- [x] 🟢 **Harvesting (Plants/Fibers):** Define nodes.
+  - [ ] *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
+- [x] 🟢 **Logging (Woodcutting):** Define trees.
+  - [ ] *Unique Mechanic (🟡):* Sentient Tree Negotiation (unlock "ask nicely" toggle at higher levels for better yields without breaking tools).
+- [x] 🟢 **Fishing:** Define nodes.
+  - [ ] *Unique Mechanic (🔴):* "Mythic" fish probabilities requiring specific discovered bait combos (hidden recipes).
+- [x] 🟢 **Scavenging:** Define ruins/zones.
+  - [ ] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
 
 ### 2.2 — The "Horizon System" UI (Core Retention) 🔴
 - [ ] 🟡 **Dashboard Widget Layout:** Implement the 3-tier goal HUD on the main screen component.

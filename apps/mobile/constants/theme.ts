@@ -47,7 +47,9 @@ export const Palette = {
 
   // Skill Colors (for progress bars & icons)
   skillMining: '#b87333',     // copper/bronze
-  skillWoodcutting: '#6d9b3a',
+  skillLogging: '#6d9b3a',
+  skillHarvesting: '#f1c40f',
+  skillScavenging: '#808e9b',
   skillFishing: '#4a90e2',
   skillCooking: '#e67e22',
   skillSmithing: '#95a5a6',
