@@ -56,10 +56,11 @@
 - [x] MMKV save/load round-trip confirmed on device
 - [x] Phase 1.3: Bank & Inventory UI — 4-col grid, item detail modal, filter stub, worth estimate
 - [x] Phase 1.4: "While You Were Away" offline catchup modal (XP + items + cap warning)
-- [ ] Phase 1.5: UI Polish — haptics on mine/stop, level-up toast, accessibility labels
+- [x] Phase 1.5: UI Polish — haptics on mine/stop, level-up toast, accessibility labels
 
 ## Current Target
-→ **Phase 1.5 — UI Polish & Hooks**
+→ **Phase 1 Complete! Engine, background loop, UI, Bank, offline catchup are all wired up.**
+→ **Next step: Combat System & Skill Progression Balancing (Phase 2)**
 - **[2026-02-26] EAS Concurrency Limit:** Hit custom dev client build limits on Expo cloud. Swapped testing pipeline to pure local Android builds (`npx expo run:android`) using local machine Gradle architecture via `1_Run_Local_Android_Build.bat`.
 
 > Full phased plan in `DOCS/ROADMAP.md`
