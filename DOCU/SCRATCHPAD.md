@@ -51,11 +51,11 @@
 - [x] `AppState` listener → save to MMKV on background, load on foreground
 - [x] Foreground tick loop (`setInterval` ~100ms → `engine.processRealtime` → dispatch)
 - [x] Offline calc on app open (`engine.processOffline`) + 24h cap
-- [ ] "Welcome Back" summary modal
-- [ ] Mining skill screen: ore veins, Train button, XP bar, drops to Bank
-- [ ] MMKV save/load round-trip confirmed on device
-
-## Blocker Log
+- [x] Mining skill screen: ore veins, Train button, XP bar, tooltips, locks, highlight
+- [x] MMKV save/load round-trip confirmed on device
+- [ ] Phase 1.3: Bank & Inventory UI — Grid, Item Badges, Sort Placeholder
+- [ ] Phase 1.4: "While You Were Away" offline catchup modal and 24h F2P limit UX
+- [ ] Phase 1.5: UI Polish (Haptics, toast notifications, accessibility)
 - **[2026-02-26] EAS Concurrency Limit:** Hit custom dev client build limits on Expo cloud. Swapped testing pipeline to pure local Android builds (`npx expo run:android`) using local machine Gradle architecture via `1_Run_Local_Android_Build.bat`.
 
 > Full phased plan in `DOCS/ROADMAP.md`

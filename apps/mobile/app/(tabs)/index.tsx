@@ -122,10 +122,16 @@ export default function SkillsScreen() {
     (skillId: SkillId) => {
       if (activeTask?.skillId === skillId) {
         dispatch(gameActions.stopTask());
-        // Route to the skill drill-down screen
-        router.push(`/skills/${skillId}`);
-      },
-      [activeTask, dispatch]
+      } else {
+        if (skillId === 'mining') {
+          router.push(`/skills/${skillId}`);
+        } else {
+          // Import Alert from react-native is needed
+          alert('This skill is not yet implemented. Try Mining!');
+        }
+      }
+    },
+    [activeTask, dispatch]
   );
 
   const skillOrder: SkillId[] = [

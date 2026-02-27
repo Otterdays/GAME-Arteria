@@ -59,14 +59,14 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟡 **Tick Dispatch:** Dispatch processed ticks to Redux to update UI state smoothly.
 
 ### 1.2 — Mining: The Foundation Skill 🟡
-- [ ] 🟢 **Data definitions:** Define initial Ore veins (Copper, Iron, Silver, Gold, Cosmic Stone) with XP yields, tick durations, and level requirements in `engine/data/mining.ts`.
-- [ ] 🟢 **UI Implementation:** Mining skill screen with a list of nodes (Card layout).
-- [ ] 🟡 **Action State:** "Train" button sets the active `PlayerAction` (e.g., `{ type: 'MINING', targetId: 'iron_vein' }`) in Redux.
-- [ ] 🟡 **Progression:** XP bar fills up, calculates level-ups, unlocks new veins dynamically based on current skill level.
+- [x] 🟢 **Data definitions:** Define initial Ore veins (Copper, Iron, Silver, Gold, Cosmic Stone) with XP yields, tick durations, and level requirements in `engine/data/mining.ts`.
+- [x] 🟢 **UI Implementation:** Mining skill screen with a list of nodes (Card layout).
+- [x] 🟡 **Action State:** "Train" button sets the active `PlayerAction` (e.g., `{ type: 'MINING', targetId: 'iron_vein' }`) in Redux.
+- [x] 🟡 **Progression:** XP bar fills up, calculates level-ups, unlocks new veins dynamically based on current skill level.
 - [ ] 🔴 **Vein Depletion Mechanic:** Implement the "Vein Exhaustion" array (veins deplete after X actions and respawn over time).
-- [ ] 🟢 **Mining tooltips:** Per-vein tooltip with name, level req, XP/item, base tick time.
-- [ ] 🟢 **Locked vein state:** Grey out or hide veins above current Mining level; show "Unlocks at level X".
-- [ ] 🟢 **Active node highlight:** Clear visual state for "currently training" vein (e.g. border or accent).
+- [x] 🟢 **Mining tooltips:** Per-vein tooltip with name, level req, XP/item, base tick time.
+- [x] 🟢 **Locked vein state:** Grey out or hide veins above current Mining level; show "Unlocks at level X".
+- [x] 🟢 **Active node highlight:** Clear visual state for "currently training" vein (e.g. border or accent).
 
 ### 1.3 — Bank & Inventory UI 🟡
 - [ ] 🟢 **Grid System:** Render a responsive grid (using `FlatList` or `FlashList`) of owned items (ores, materials).
