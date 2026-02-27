@@ -1,44 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arteria — The Idle RPG</title>
-  <meta name="description" content="Arteria is a cosmic idle RPG built on React Native + Expo. Train skills, gather resources, fight monsters — even while you sleep." />
+  <meta name="description"
+    content="Arteria is a cosmic idle RPG built on React Native + Expo. Train skills, gather resources, fight monsters — even while you sleep." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
   <style>
     /* ==================== RESET ==================== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     /* ==================== DESIGN TOKENS ==================== */
     :root {
-      --bg-app:      #0a0b0f;
-      --bg-card:     #11131a;
-      --bg-card2:    #161921;
-      --border:      #1e2230;
+      --bg-app: #0a0b0f;
+      --bg-card: #11131a;
+      --bg-card2: #161921;
+      --border: #1e2230;
       --border-glow: rgba(139, 92, 246, 0.4);
-      --accent:      #8b5cf6;
-      --accent-2:    #a78bfa;
-      --accent-3:    #c4b5fd;
-      --gold:        #f59e0b;
-      --gold-light:  #fbbf24;
-      --red:         #ef4444;
-      --green:       #22c55e;
-      --text-1:      #f1f5f9;
-      --text-2:      #94a3b8;
-      --text-3:      #64748b;
-      --space-xs:    4px;
-      --space-sm:    8px;
-      --space-md:    16px;
-      --space-lg:    24px;
-      --space-xl:    40px;
-      --space-2xl:   80px;
-      --radius-sm:   6px;
-      --radius-md:   12px;
-      --radius-lg:   20px;
-      --radius-xl:   32px;
+      --accent: #8b5cf6;
+      --accent-2: #a78bfa;
+      --accent-3: #c4b5fd;
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --red: #ef4444;
+      --green: #22c55e;
+      --text-1: #f1f5f9;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 40px;
+      --space-2xl: 80px;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 32px;
     }
 
     /* ==================== GLOBALS ==================== */
@@ -57,6 +70,7 @@
       z-index: 0;
       pointer-events: none;
     }
+
     .nebula::before {
       content: '';
       position: absolute;
@@ -64,9 +78,10 @@
       left: -10%;
       width: 700px;
       height: 700px;
-      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
       animation: drift 18s ease-in-out infinite alternate;
     }
+
     .nebula::after {
       content: '';
       position: absolute;
@@ -74,12 +89,18 @@
       right: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
       animation: drift 22s ease-in-out infinite alternate-reverse;
     }
+
     @keyframes drift {
-      from { transform: translate(0, 0) rotate(0deg); }
-      to   { transform: translate(40px, 30px) rotate(10deg); }
+      from {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      to {
+        transform: translate(40px, 30px) rotate(10deg);
+      }
     }
 
     .stars {
@@ -87,15 +108,15 @@
       inset: 0;
       z-index: 0;
       background-image:
-        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.25) 0%, transparent 100%),
-        radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,0.35) 0%, transparent 100%),
-        radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
-        radial-gradient(1px 1px at 55% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 92% 70%, rgba(255,255,255,0.25) 0%, transparent 100%),
-        radial-gradient(2px 2px at 30% 10%, rgba(167,139,250,0.5) 0%, transparent 100%),
-        radial-gradient(2px 2px at 75% 90%, rgba(251,191,36,0.4) 0%, transparent 100%);
+        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 15%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 60%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 45%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 10% 80%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 85%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(2px 2px at 30% 10%, rgba(167, 139, 250, 0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 75% 90%, rgba(251, 191, 36, 0.4) 0%, transparent 100%);
       pointer-events: none;
     }
 
@@ -111,12 +132,15 @@
     /* ==================== NAV ==================== */
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       backdrop-filter: blur(16px);
       background: rgba(10, 11, 15, 0.8);
       border-bottom: 1px solid var(--border);
     }
+
     .nav-inner {
       max-width: 1200px;
       margin: 0 auto;
@@ -126,6 +150,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .nav-logo {
       font-family: 'Cinzel', serif;
       font-size: 1.2rem;
@@ -136,11 +161,13 @@
       background-clip: text;
       text-decoration: none;
     }
+
     .nav-links {
       display: flex;
       gap: var(--space-lg);
       list-style: none;
     }
+
     .nav-links a {
       color: var(--text-2);
       text-decoration: none;
@@ -148,7 +175,11 @@
       font-weight: 500;
       transition: color 0.2s;
     }
-    .nav-links a:hover { color: var(--text-1); }
+
+    .nav-links a:hover {
+      color: var(--text-1);
+    }
+
     .nav-cta {
       background: var(--accent);
       color: #fff !important;
@@ -156,7 +187,10 @@
       border-radius: var(--radius-sm);
       transition: background 0.2s !important;
     }
-    .nav-cta:hover { background: var(--accent-2) !important; }
+
+    .nav-cta:hover {
+      background: var(--accent-2) !important;
+    }
 
     /* ==================== HERO ==================== */
     .hero {
@@ -166,15 +200,17 @@
       padding-top: 60px;
       position: relative;
     }
+
     .hero-content {
       max-width: 720px;
     }
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: var(--space-sm);
-      background: rgba(139,92,246,0.12);
-      border: 1px solid rgba(139,92,246,0.3);
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
       border-radius: var(--radius-xl);
       padding: 6px 16px;
       font-size: 0.75rem;
@@ -184,10 +220,12 @@
       letter-spacing: 0.1em;
       margin-bottom: var(--space-lg);
     }
+
     .hero-badge::before {
       content: '⚡';
       font-size: 0.8rem;
     }
+
     .hero h1 {
       font-family: 'Cinzel', serif;
       font-size: clamp(3rem, 7vw, 5.5rem);
@@ -199,6 +237,7 @@
       background-clip: text;
       margin-bottom: var(--space-md);
     }
+
     .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.25rem);
       color: var(--text-2);
@@ -206,11 +245,13 @@
       margin-bottom: var(--space-xl);
       font-weight: 400;
     }
+
     .hero-actions {
       display: flex;
       gap: var(--space-md);
       flex-wrap: wrap;
     }
+
     .btn-primary {
       display: inline-flex;
       align-items: center;
@@ -223,12 +264,14 @@
       font-size: 0.95rem;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 8px 32px rgba(139,92,246,0.35);
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.35);
     }
+
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(139,92,246,0.5);
+      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.5);
     }
+
     .btn-secondary {
       display: inline-flex;
       align-items: center;
@@ -243,10 +286,12 @@
       border: 1px solid var(--border);
       transition: border-color 0.2s, background 0.2s;
     }
+
     .btn-secondary:hover {
       border-color: var(--accent);
-      background: rgba(139,92,246,0.08);
+      background: rgba(139, 92, 246, 0.08);
     }
+
     .hero-mockup {
       position: absolute;
       right: -60px;
@@ -256,10 +301,18 @@
       opacity: 0.7;
       display: none;
     }
-    @media (min-width: 1000px) { .hero-mockup { display: block; } }
+
+    @media (min-width: 1000px) {
+      .hero-mockup {
+        display: block;
+      }
+    }
 
     /* ==================== SECTION HEADERS ==================== */
-    .section { padding: var(--space-2xl) 0; }
+    .section {
+      padding: var(--space-2xl) 0;
+    }
+
     .section-label {
       display: inline-flex;
       align-items: center;
@@ -271,6 +324,7 @@
       color: var(--accent-2);
       margin-bottom: var(--space-sm);
     }
+
     .section-label::before {
       content: '';
       display: block;
@@ -278,6 +332,7 @@
       height: 1px;
       background: var(--accent-2);
     }
+
     h2 {
       font-family: 'Cinzel', serif;
       font-size: clamp(1.6rem, 3.5vw, 2.4rem);
@@ -285,6 +340,7 @@
       color: var(--text-1);
       margin-bottom: var(--space-sm);
     }
+
     .section-desc {
       color: var(--text-2);
       max-width: 560px;
@@ -298,6 +354,7 @@
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: var(--space-md);
     }
+
     .system-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -311,21 +368,28 @@
       position: relative;
       overflow: hidden;
     }
+
     .system-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 2px;
       background: var(--card-accent, var(--accent));
       opacity: 0.6;
       transition: opacity 0.25s;
     }
+
     .system-card:hover {
       border-color: var(--card-accent, var(--accent));
       transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
     }
-    .system-card:hover::before { opacity: 1; }
+
+    .system-card:hover::before {
+      opacity: 1;
+    }
 
     .system-icon {
       width: 48px;
@@ -335,15 +399,17 @@
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
-      background: var(--card-bg, rgba(139,92,246,0.12));
-      border: 1px solid rgba(255,255,255,0.06);
+      background: var(--card-bg, rgba(139, 92, 246, 0.12));
+      border: 1px solid rgba(255, 255, 255, 0.06);
       flex-shrink: 0;
     }
+
     .system-header {
       display: flex;
       align-items: center;
       gap: var(--space-md);
     }
+
     .system-name {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
@@ -353,29 +419,33 @@
       letter-spacing: 0.08em;
       margin-bottom: 2px;
     }
+
     .system-title {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-1);
     }
+
     .system-desc {
       font-size: 0.9rem;
       color: var(--text-2);
       line-height: 1.65;
     }
+
     .system-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-top: auto;
     }
+
     .tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
       font-weight: 600;
       padding: 3px 10px;
       border-radius: var(--radius-xl);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
       color: var(--text-3);
     }
@@ -387,6 +457,7 @@
       gap: var(--space-md);
       margin-bottom: var(--space-2xl);
     }
+
     .stat-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -394,6 +465,7 @@
       padding: var(--space-lg);
       text-align: center;
     }
+
     .stat-value {
       font-family: 'Cinzel', serif;
       font-size: 2rem;
@@ -403,6 +475,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .stat-label {
       font-size: 0.8rem;
       color: var(--text-3);
@@ -417,6 +490,7 @@
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: var(--space-md);
     }
+
     .feature-item {
       display: flex;
       gap: var(--space-md);
@@ -427,18 +501,24 @@
       border-radius: var(--radius-md);
       transition: border-color 0.2s;
     }
-    .feature-item:hover { border-color: rgba(139,92,246,0.3); }
+
+    .feature-item:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
     .feature-icon {
       font-size: 1.5rem;
       flex-shrink: 0;
       width: 40px;
       text-align: center;
     }
+
     .feature-title {
       font-weight: 700;
       margin-bottom: 4px;
       color: var(--text-1);
     }
+
     .feature-desc {
       font-size: 0.875rem;
       color: var(--text-2);
@@ -450,6 +530,7 @@
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: var(--space-sm);
     }
+
     .skill-pill {
       display: flex;
       align-items: center;
@@ -460,16 +541,22 @@
       border-radius: var(--radius-md);
       transition: border-color 0.2s, background 0.2s;
     }
+
     .skill-pill:hover {
       border-color: var(--accent);
-      background: rgba(139,92,246,0.08);
+      background: rgba(139, 92, 246, 0.08);
     }
-    .skill-emoji { font-size: 1.3rem; }
+
+    .skill-emoji {
+      font-size: 1.3rem;
+    }
+
     .skill-name {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-1);
     }
+
     .skill-meta {
       font-size: 0.7rem;
       color: var(--text-3);
@@ -482,6 +569,7 @@
       flex-wrap: wrap;
       gap: var(--space-sm);
     }
+
     .stack-pill {
       display: flex;
       align-items: center;
@@ -495,10 +583,12 @@
       color: var(--text-2);
       transition: border-color 0.2s, color 0.2s;
     }
+
     .stack-pill:hover {
       border-color: var(--accent);
       color: var(--text-1);
     }
+
     .stack-dot {
       width: 6px;
       height: 6px;
@@ -513,6 +603,7 @@
       flex-direction: column;
       gap: var(--space-sm);
     }
+
     .roadmap-item {
       display: flex;
       align-items: flex-start;
@@ -523,9 +614,20 @@
       border-radius: var(--radius-md);
       transition: border-color 0.2s;
     }
-    .roadmap-item.done { border-left: 3px solid var(--green); }
-    .roadmap-item.active { border-left: 3px solid var(--accent); }
-    .roadmap-item.future { border-left: 3px solid var(--border); opacity: 0.7; }
+
+    .roadmap-item.done {
+      border-left: 3px solid var(--green);
+    }
+
+    .roadmap-item.active {
+      border-left: 3px solid var(--accent);
+    }
+
+    .roadmap-item.future {
+      border-left: 3px solid var(--border);
+      opacity: 0.7;
+    }
+
     .roadmap-badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
@@ -535,11 +637,33 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .badge-done { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-    .badge-active { background: rgba(139,92,246,0.15); color: var(--accent-2); border: 1px solid rgba(139,92,246,0.25); }
-    .badge-future { background: rgba(100,116,139,0.1); color: var(--text-3); border: 1px solid var(--border); }
-    .roadmap-text { font-size: 0.9rem; color: var(--text-2); }
-    .roadmap-text strong { color: var(--text-1); }
+
+    .badge-done {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .badge-active {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-2);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .badge-future {
+      background: rgba(100, 116, 139, 0.1);
+      color: var(--text-3);
+      border: 1px solid var(--border);
+    }
+
+    .roadmap-text {
+      font-size: 0.9rem;
+      color: var(--text-2);
+    }
+
+    .roadmap-text strong {
+      color: var(--text-1);
+    }
 
     /* ==================== FOOTER ==================== */
     footer {
@@ -547,6 +671,7 @@
       padding: var(--space-xl) 0;
       margin-top: var(--space-2xl);
     }
+
     .footer-inner {
       display: flex;
       align-items: center;
@@ -554,6 +679,7 @@
       flex-wrap: wrap;
       gap: var(--space-md);
     }
+
     .footer-logo {
       font-family: 'Cinzel', serif;
       font-size: 1rem;
@@ -563,22 +689,28 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .footer-text {
       font-size: 0.8rem;
       color: var(--text-3);
     }
+
     .footer-links {
       display: flex;
       gap: var(--space-lg);
       list-style: none;
     }
+
     .footer-links a {
       font-size: 0.83rem;
       color: var(--text-3);
       text-decoration: none;
       transition: color 0.2s;
     }
-    .footer-links a:hover { color: var(--accent-2); }
+
+    .footer-links a:hover {
+      color: var(--accent-2);
+    }
 
     /* ==================== DIVIDER ==================== */
     .divider {
@@ -593,6 +725,7 @@
       transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
+
     .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
@@ -600,12 +733,21 @@
 
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .hero h1 { font-size: 2.6rem; }
-      .hero-mockup { display: none; }
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.6rem;
+      }
+
+      .hero-mockup {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <div class="nebula"></div>
@@ -632,7 +774,8 @@
         <div class="hero-badge">Phase 1.1 Complete — Core Game Loop Live</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
-          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel the mysteries of Valdoria — even while you sleep.
+          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel
+          the mysteries of Valdoria — even while you sleep.
         </p>
         <div class="hero-actions">
           <a href="https://github.com/Otterdays/GAME-Arteria" class="btn-primary" target="_blank">
@@ -685,7 +828,8 @@
         <div class="section-label">Architecture</div>
         <h2>Core Systems</h2>
         <p class="section-desc">
-          Arteria is a fully modular monorepo. Each layer of the game is a self-contained, independently testable system.
+          Arteria is a fully modular monorepo. Each layer of the game is a self-contained, independently testable
+          system.
         </p>
       </div>
 
@@ -700,7 +844,9 @@
             </div>
           </div>
           <p class="system-desc">
-            A pure TypeScript package with zero React dependencies. Houses the RuneScape-style XP table, the delta-time tick processor (TickSystem), and the GameEngine orchestrator that handles both realtime and offline batch processing. Independently unit-tested with Jest.
+            A pure TypeScript package with zero React dependencies. Houses the RuneScape-style XP table, the delta-time
+            tick processor (TickSystem), and the GameEngine orchestrator that handles both realtime and offline batch
+            processing. Independently unit-tested with Jest.
           </p>
           <div class="system-tags">
             <span class="tag">XPTable.ts</span>
@@ -719,7 +865,9 @@
             </div>
           </div>
           <p class="system-desc">
-            The single source of truth for all game state. Built with Redux Toolkit's gameSlice, managing player skills, inventory, active tasks, and gold. Fully typed with RTK and react-redux hooks. Wired into the UI layer via typed useAppSelector / useAppDispatch.
+            The single source of truth for all game state. Built with Redux Toolkit's gameSlice, managing player skills,
+            inventory, active tasks, and gold. Fully typed with RTK and react-redux hooks. Wired into the UI layer via
+            typed useAppSelector / useAppDispatch.
           </p>
           <div class="system-tags">
             <span class="tag">RTK 2.11</span>
@@ -737,7 +885,9 @@
             </div>
           </div>
           <p class="system-desc">
-            Synchronous C++ key-value storage powered by react-native-mmkv v4. The usePersistence hook listens to React Native's AppState. On background, it snapshots Redux state + timestamp to MMKV. On foreground, it loads the save, calculates elapsed time, and hydrates the store.
+            Synchronous C++ key-value storage powered by react-native-mmkv v4. The usePersistence hook listens to React
+            Native's AppState. On background, it snapshots Redux state + timestamp to MMKV. On foreground, it loads the
+            save, calculates elapsed time, and hydrates the store.
           </p>
           <div class="system-tags">
             <span class="tag">MMKV v4</span>
@@ -755,7 +905,9 @@
             </div>
           </div>
           <p class="system-desc">
-            useGameLoop drives the realtime experience — a 100ms setInterval that feeds delta-time into the engine and dispatches results to Redux. On first load it calculates offline catch-up via a timestamp diff, capped at 24 hours for F2P fairness.
+            useGameLoop drives the realtime experience — a 100ms setInterval that feeds delta-time into the engine and
+            dispatches results to Redux. On first load it calculates offline catch-up via a timestamp diff, capped at 24
+            hours for F2P fairness.
           </p>
           <div class="system-tags">
             <span class="tag">100ms tick</span>
@@ -773,7 +925,9 @@
             </div>
           </div>
           <p class="system-desc">
-            Built on Expo SDK 55 with Expo Router v6 for file-based navigation. Features a dark Melvor-inspired theme with 30+ design tokens, 5 tab screens (Skills, Combat, Bank, Shop, Settings), skill cards with animated XP bars, and real-time train/stop dispatch buttons.
+            Built on Expo SDK 55 with Expo Router v6 for file-based navigation. Features a dark Melvor-inspired theme
+            with 30+ design tokens, 5 tab screens (Skills, Combat, Bank, Shop, Settings), skill cards with animated XP
+            bars, and real-time train/stop dispatch buttons.
           </p>
           <div class="system-tags">
             <span class="tag">Expo SDK 55</span>
@@ -792,7 +946,9 @@
             </div>
           </div>
           <p class="system-desc">
-            Multi-project Jest configuration at the monorepo root. Unit tests for XPTable (verifying the RuneScape exponential XP curve) and TickSystem (partial tick carryover, RNG success rates, offline batching). Placeholders for integration and E2E test layers.
+            Multi-project Jest configuration at the monorepo root. Unit tests for XPTable (verifying the RuneScape
+            exponential XP curve) and TickSystem (partial tick carryover, RNG success rates, offline batching).
+            Placeholders for integration and E2E test layers.
           </p>
           <div class="system-tags">
             <span class="tag">Jest 29</span>
@@ -813,54 +969,116 @@
       <div class="fade-in">
         <div class="section-label">Gameplay</div>
         <h2>Game Features</h2>
-        <p class="section-desc">Everything you'd expect from a premium idle RPG, built from scratch on mobile-first architecture.</p>
+        <p class="section-desc">Everything you'd expect from a premium idle RPG, built from scratch on mobile-first
+          architecture.</p>
       </div>
       <div class="features-grid fade-in">
         <div class="feature-item">
           <div class="feature-icon">⛏️</div>
           <div>
             <div class="feature-title">Skill Training</div>
-            <div class="feature-desc">Train 25 skills across 5 pillars. RuneScape-style XP curve with level gating and mastery tiers.</div>
+            <div class="feature-desc">Train 25 skills across 5 pillars. RuneScape-style XP curve with level gating and
+              mastery tiers.</div>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon">🌙</div>
           <div>
             <div class="feature-title">Offline Progression</div>
-            <div class="feature-desc">The engine runs even when you're away. Come back to hours of accumulated resources, XP, and loot.</div>
+            <div class="feature-desc">The engine runs even when you're away. Come back to hours of accumulated
+              resources, XP, and loot.</div>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon">⚔️</div>
           <div>
             <div class="feature-title">Auto-Combat</div>
-            <div class="feature-desc">Fight 12 enemy factions — from Void-Touched Wildlife to Primordial Fragments — actively or offline.</div>
+            <div class="feature-desc">Fight 12 enemy factions — from Void-Touched Wildlife to Primordial Fragments —
+              actively or offline.</div>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon">🔨</div>
           <div>
             <div class="feature-title">Crafting Chains</div>
-            <div class="feature-desc">Skills interlock. Smithing needs Mining. Alchemy needs Farming. Every action feeds another.</div>
+            <div class="feature-desc">Skills interlock. Smithing needs Mining. Alchemy needs Farming. Every action feeds
+              another.</div>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon">🌌</div>
           <div>
             <div class="feature-title">Cosmic Lore</div>
-            <div class="feature-desc">Unravel the mysteries of Valdoria and the Luminar/Voidmire cosmic balance. Cosmic-flavored absurdist narrative.</div>
+            <div class="feature-desc">Unravel the mysteries of Valdoria and the Luminar/Voidmire cosmic balance.
+              Cosmic-flavored absurdist narrative.</div>
           </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon">💎</div>
           <div>
             <div class="feature-title">F2P Friendly</div>
-            <div class="feature-desc">All gameplay is free. Premium is convenience only — no pay-to-win. Patron's Blessing extends offline cap to 12h.</div>
+            <div class="feature-desc">All gameplay is free. Premium is convenience only — no pay-to-win. Patron's
+              Blessing extends offline cap to 12h.</div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <hr class="divider" />
+
+  <!-- CONCEPT ART -->
+  <section class="section" id="art">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">Gallery</div>
+        <h2>Concept Art</h2>
+        <p class="section-desc">A glimpse into the cosmic, eldritch, and vibrant world of Aetheria (Arteria).</p>
+      </div>
+      <div class="art-grid fade-in">
+        <div class="art-card">
+          <img src="assets/aetheria_cosmic_split.png" alt="Cosmic Split Concept Art" loading="lazy" />
+        </div>
+        <div class="art-card">
+          <img src="assets/aetheria_mining.png" alt="Glowing Miner Scene" loading="lazy" />
+        </div>
+        <div class="art-card">
+          <img src="assets/aetheria_companion.png" alt="Eldritch Pet Companion" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .art-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    .art-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .art-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(139, 92, 246, 0.3);
+      border-color: var(--accent);
+    }
+
+    .art-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      aspect-ratio: 1 / 1;
+    }
+  </style>
 
   <hr class="divider" />
 
@@ -870,39 +1088,165 @@
       <div class="fade-in">
         <div class="section-label">25 Skills</div>
         <h2>Skill System</h2>
-        <p class="section-desc">Five interconnected pillars — every skill level opens new recipes, areas, and story content.</p>
+        <p class="section-desc">Five interconnected pillars — every skill level opens new recipes, areas, and story
+          content.</p>
       </div>
       <div class="skills-grid fade-in">
         <!-- Gathering -->
-        <div class="skill-pill"><span class="skill-emoji">⛏️</span><div><div class="skill-name">Mining</div><div class="skill-meta">Gathering</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🪵</span><div><div class="skill-name">Logging</div><div class="skill-meta">Gathering</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🎣</span><div><div class="skill-name">Fishing</div><div class="skill-meta">Gathering</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🌿</span><div><div class="skill-name">Harvesting</div><div class="skill-meta">Gathering</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🗺️</span><div><div class="skill-name">Scavenging</div><div class="skill-meta">Gathering</div></div></div>
+        <div class="skill-pill"><span class="skill-emoji">⛏️</span>
+          <div>
+            <div class="skill-name">Mining</div>
+            <div class="skill-meta">Gathering</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🪵</span>
+          <div>
+            <div class="skill-name">Logging</div>
+            <div class="skill-meta">Gathering</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🎣</span>
+          <div>
+            <div class="skill-name">Fishing</div>
+            <div class="skill-meta">Gathering</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🌿</span>
+          <div>
+            <div class="skill-name">Harvesting</div>
+            <div class="skill-meta">Gathering</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🗺️</span>
+          <div>
+            <div class="skill-name">Scavenging</div>
+            <div class="skill-meta">Gathering</div>
+          </div>
+        </div>
         <!-- Crafting -->
-        <div class="skill-pill"><span class="skill-emoji">🔨</span><div><div class="skill-name">Smithing</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🧶</span><div><div class="skill-name">Tailoring</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">⚗️</span><div><div class="skill-name">Alchemy</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">✨</span><div><div class="skill-name">Runecrafting</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🍳</span><div><div class="skill-name">Cooking</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🏠</span><div><div class="skill-name">Construction</div><div class="skill-meta">Crafting</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🏹</span><div><div class="skill-name">Fletching</div><div class="skill-meta">Crafting</div></div></div>
+        <div class="skill-pill"><span class="skill-emoji">🔨</span>
+          <div>
+            <div class="skill-name">Smithing</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🧶</span>
+          <div>
+            <div class="skill-name">Tailoring</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">⚗️</span>
+          <div>
+            <div class="skill-name">Alchemy</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">✨</span>
+          <div>
+            <div class="skill-name">Runecrafting</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🍳</span>
+          <div>
+            <div class="skill-name">Cooking</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🏠</span>
+          <div>
+            <div class="skill-name">Construction</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🏹</span>
+          <div>
+            <div class="skill-name">Fletching</div>
+            <div class="skill-meta">Crafting</div>
+          </div>
+        </div>
         <!-- Combat -->
-        <div class="skill-pill"><span class="skill-emoji">⚔️</span><div><div class="skill-name">Attack</div><div class="skill-meta">Combat</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">💪</span><div><div class="skill-name">Strength</div><div class="skill-meta">Combat</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🛡️</span><div><div class="skill-name">Defence</div><div class="skill-meta">Combat</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🏹</span><div><div class="skill-name">Ranged</div><div class="skill-meta">Combat</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🔮</span><div><div class="skill-name">Magic</div><div class="skill-meta">Combat</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">❤️</span><div><div class="skill-name">Constitution</div><div class="skill-meta">Combat</div></div></div>
+        <div class="skill-pill"><span class="skill-emoji">⚔️</span>
+          <div>
+            <div class="skill-name">Attack</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">💪</span>
+          <div>
+            <div class="skill-name">Strength</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🛡️</span>
+          <div>
+            <div class="skill-name">Defence</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🏹</span>
+          <div>
+            <div class="skill-name">Ranged</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🔮</span>
+          <div>
+            <div class="skill-name">Magic</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">❤️</span>
+          <div>
+            <div class="skill-name">Constitution</div>
+            <div class="skill-meta">Combat</div>
+          </div>
+        </div>
         <!-- Support -->
-        <div class="skill-pill"><span class="skill-emoji">🗺️</span><div><div class="skill-name">Exploration</div><div class="skill-meta">Support</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">✝️</span><div><div class="skill-name">Cleansing</div><div class="skill-meta">Support</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🤝</span><div><div class="skill-name">Barter</div><div class="skill-meta">Support</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">👑</span><div><div class="skill-name">Leadership</div><div class="skill-meta">Support</div></div></div>
+        <div class="skill-pill"><span class="skill-emoji">🗺️</span>
+          <div>
+            <div class="skill-name">Exploration</div>
+            <div class="skill-meta">Support</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">✝️</span>
+          <div>
+            <div class="skill-name">Cleansing</div>
+            <div class="skill-meta">Support</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🤝</span>
+          <div>
+            <div class="skill-name">Barter</div>
+            <div class="skill-meta">Support</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">👑</span>
+          <div>
+            <div class="skill-name">Leadership</div>
+            <div class="skill-meta">Support</div>
+          </div>
+        </div>
         <!-- Cosmic -->
-        <div class="skill-pill"><span class="skill-emoji">🌌</span><div><div class="skill-name">Aether Weaving</div><div class="skill-meta">Cosmic (Endgame)</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">🕳️</span><div><div class="skill-name">Void Walking</div><div class="skill-meta">Cosmic (Endgame)</div></div></div>
-        <div class="skill-pill"><span class="skill-emoji">⏳</span><div><div class="skill-name">Chronomancy</div><div class="skill-meta">Cosmic (Endgame)</div></div></div>
+        <div class="skill-pill"><span class="skill-emoji">🌌</span>
+          <div>
+            <div class="skill-name">Aether Weaving</div>
+            <div class="skill-meta">Cosmic (Endgame)</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">🕳️</span>
+          <div>
+            <div class="skill-name">Void Walking</div>
+            <div class="skill-meta">Cosmic (Endgame)</div>
+          </div>
+        </div>
+        <div class="skill-pill"><span class="skill-emoji">⏳</span>
+          <div>
+            <div class="skill-name">Chronomancy</div>
+            <div class="skill-meta">Cosmic (Endgame)</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -942,40 +1286,49 @@
       <div class="fade-in">
         <div class="section-label">Development</div>
         <h2>Roadmap</h2>
-        <p class="section-desc">From engine to endgame — every milestone is tracked and nothing is deleted from this history.</p>
+        <p class="section-desc">From engine to endgame — every milestone is tracked and nothing is deleted from this
+          history.</p>
       </div>
       <div class="roadmap-list fade-in">
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Done</span>
-          <div class="roadmap-text"><strong>Phase 1.0</strong> — Project scaffold, monorepo, engine package, Redux store, dark UI theme, 5 tab screens.</div>
+          <div class="roadmap-text"><strong>Phase 1.0</strong> — Project scaffold, monorepo, engine package, Redux
+            store, dark UI theme, 5 tab screens.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Done</span>
-          <div class="roadmap-text"><strong>Phase 1.1</strong> — MMKV v4 persistence, AppState lifecycle, real-time 100ms tick loop, 24h offline catchup, unit tests (25 passing), local native build pipeline.</div>
+          <div class="roadmap-text"><strong>Phase 1.1</strong> — MMKV v4 persistence, AppState lifecycle, real-time
+            100ms tick loop, 24h offline catchup, unit tests (25 passing), local native build pipeline.</div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Current</span>
-          <div class="roadmap-text"><strong>Phase 1.2</strong> — Mining skill: Copper, Iron, Silver, Gold node definitions. Ore drop rates, Bank screen inventory integration.</div>
+          <div class="roadmap-text"><strong>Phase 1.2</strong> — Mining skill: Copper, Iron, Silver, Gold node
+            definitions. Ore drop rates, Bank screen inventory integration.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 2</span>
-          <div class="roadmap-text"><strong>Crafting &amp; Combat</strong> — Smithing, Alchemy basics. Auto-combat loop vs. Void-Touched Wildlife. "While You Were Away" summary modal.</div>
+          <div class="roadmap-text"><strong>Crafting &amp; Combat</strong> — Smithing, Alchemy basics. Auto-combat loop
+            vs. Void-Touched Wildlife. "While You Were Away" summary modal.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>
-          <div class="roadmap-text"><strong>Content Expansion</strong> — Woodcutting, Fishing, Cooking, Farming. Companion system (Barnaby, Yvette). First act of narrative ("The Unraveling Begins").</div>
+          <div class="roadmap-text"><strong>Content Expansion</strong> — Woodcutting, Fishing, Cooking, Farming.
+            Companion system (Barnaby, Yvette). First act of narrative ("The Unraveling Begins").</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 4</span>
-          <div class="roadmap-text"><strong>Player Home &amp; Quests</strong> — Housing plot, radiant quest generator, daily check-in loop, The Horizon System UI.</div>
+          <div class="roadmap-text"><strong>Player Home &amp; Quests</strong> — Housing plot, radiant quest generator,
+            daily check-in loop, The Horizon System UI.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Year 1</span>
-          <div class="roadmap-text"><strong>Post-Launch</strong> — Guild system, PvP async arena, The Shimmering Sea region, Cosmic Skills (Aether Weaving, Chronomancy), Blibbertooth Festival event.</div>
+          <div class="roadmap-text"><strong>Post-Launch</strong> — Guild system, PvP async arena, The Shimmering Sea
+            region, Cosmic Skills (Aether Weaving, Chronomancy), Blibbertooth Festival event.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Year 2+</span>
-          <div class="roadmap-text"><strong>Endgame &amp; Economy</strong> — The Cosmic Plane (roguelike), player auction house, second kingdom, level 100 content with Cosmic Tiers.</div>
+          <div class="roadmap-text"><strong>Endgame &amp; Economy</strong> — The Cosmic Plane (roguelike), player
+            auction house, second kingdom, level 100 content with Cosmic Tiers.</div>
         </div>
       </div>
     </div>
@@ -1014,4 +1367,5 @@
     });
   </script>
 </body>
+
 </html>
