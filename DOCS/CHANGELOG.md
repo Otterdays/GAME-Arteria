@@ -1,6 +1,16 @@
 # CHANGELOG
 
 ## [Unreleased]
+### Added
+- **Phase 1.1 Complete (Core Game Loop):** Fixed MMKV v4 native C++ module initialization. Integrated the foreground tick loop (`setInterval`) and offline catchup logic (F2P 24-hour cap) with React Native `AppState` and Redux.
+- **Local Native Pipeline:** Established an `npx expo run:android` build script bypassing EAS concurrency limits.
+- **Expo SDK 55** — Upgraded from SDK 54: expo ~55.0.0, react 19.2.4, react-native 0.83.2; expo-* packages aligned to SDK 55; `newArchEnabled` removed from app.json (New Arch only in SDK 55).
+- **Test suite folder** — Root `tests/` with `unit/engine/` (API tests for XPTable, TickSystem, GameEngine), `integration/`, `e2e/` placeholders. Root `npm test` runs Jest multi-project (packages/engine + tests). Retained all existing engine tests; 25 tests pass. See `tests/README.md`.
+
+### Fixed
+- **UI Scaling:** Minimized the active task indicator and train buttons on the Skills card to fit better on standard mobile screen widths.
+- **React Native Worklets Crash:** Fixed native Babel plugin version mismatch (0.7.2 vs 0.7.4) that was causing React `<Provider>` to fail to render.
+
 ### Fixed
 - **EAS CLI not found** — Batch scripts `Update_2_EAS_OTA_Update.bat`, `Update_3_EAS_Build_Android_Dev.bat`, and `Update_4_EAS_Build_Android_Prod.bat` now invoke `npx eas-cli` instead of `eas`, so no global EAS install is required.
 

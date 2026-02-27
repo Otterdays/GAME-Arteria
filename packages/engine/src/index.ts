@@ -16,6 +16,7 @@ export type {
     GameConfig,
     TickResult,
     OfflineReport,
+    ActiveTask,
 } from './types';
 export { MINING_ACTIONS, createNewPlayer } from './data';
 export type { ActionDefinition } from './TickSystem';

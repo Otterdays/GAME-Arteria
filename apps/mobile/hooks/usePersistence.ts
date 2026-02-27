@@ -38,7 +38,7 @@ export function usePersistence() {
         if (!isLoaded) return;
 
         const intervalId = setInterval(() => {
-            savePlayerState(player);
+            savePlayerState({ ...player, lastSaveTimestamp: Date.now() });
         }, AUTO_SAVE_INTERVAL_MS);
 
         return () => clearInterval(intervalId);
@@ -54,7 +54,7 @@ export function usePersistence() {
                     nextState.match(/inactive|background/)
                 ) {
                     // Going to background — save immediately
-                    savePlayerState(player);
+                    savePlayerState({ ...player, lastSaveTimestamp: Date.now() });
                 }
                 appStateRef.current = nextState;
             }

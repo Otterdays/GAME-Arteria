@@ -214,23 +214,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Palette.bgCard,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: Radius.full,
     borderWidth: 1,
     borderColor: Palette.green,
   },
   activeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: Palette.green,
-    marginRight: Spacing.xs,
+    marginRight: 4,
   },
   activeText: {
-    fontSize: FontSize.sm,
+    fontSize: 11,
     color: Palette.green,
-    fontWeight: '600',
+    fontWeight: '700',
+    textTransform: 'uppercase',
   },
   scrollView: {
     flex: 1,
@@ -277,9 +278,9 @@ const styles = StyleSheet.create({
   },
   trainButton: {
     backgroundColor: Palette.accentPrimary,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: Radius.sm,
   },
   trainButtonActive: {
     backgroundColor: Palette.red,
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
   trainButtonText: {
     color: Palette.white,
     fontWeight: '700',
-    fontSize: FontSize.sm,
+    fontSize: 12,
   },
 
   // XP Bar

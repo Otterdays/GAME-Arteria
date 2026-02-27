@@ -6,9 +6,9 @@
  * which is critical for an idle game that saves frequently.
  */
 
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 
-const storage = new MMKV({ id: 'arteria-save' });
+const storage = createMMKV({ id: 'arteria-save' });
 
 const SAVE_KEY = 'player_state';
 
@@ -44,7 +44,7 @@ export function loadPlayerState<T>(): T | null {
  * Delete the saved player state.
  */
 export function deleteSave(): void {
-    storage.delete(SAVE_KEY);
+    storage.remove(SAVE_KEY);
 }
 
 /**

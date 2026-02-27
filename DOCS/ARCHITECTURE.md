@@ -1,5 +1,8 @@
 # ARCHITECTURE
 
+> **⚠️ SDK 55 Note:** Expo SDK 54 is the last version supporting the Legacy Architecture.
+> SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
+
 ## Tech Stack (as of Feb 2026)
 - **Framework:** Expo SDK 54 (React Native 0.81.5, New Architecture enabled)
 - **Language:** TypeScript 5.9 (strict mode)
@@ -74,3 +77,11 @@ Arteria/
 - The root `babel.config.js` exists because NPM hoists `expo-router` to root `node_modules`, and Babel needs to process it with the Expo preset.
 - `apps/mobile/index.js` is a thin proxy (`import "expo-router/entry"`) that keeps the entry point inside the project directory so Babel doesn't skip it.
 - `metro.config.js` sets `watchFolders` to the workspace root and `nodeModulesPaths` to both local and root `node_modules`.
+- **SDK 54 Autolinking improvement:** Set `experiments.autolinkingModuleResolution: "yarn-workspaces"` in `app.json` for more reliable native module resolution in monorepos. This becomes automatic in SDK 55.
+
+## Offline Progression Architecture
+- Strategy: **Timestamp-based calculation** (not a background loop). This is battery-friendly and works on all platforms.
+- On background: save `PlayerState` + `Date.now()` to MMKV.
+- On foreground: compute `elapsed = now - lastSaved`, run `GameEngine.processOffline(elapsed)` to batch-apply ticks.
+- Offline time is capped at **24 hours** to prevent clock manipulation exploits.
+- Formula: `gained = Math.floor(elapsed / TICK_MS) * ratePerTick`

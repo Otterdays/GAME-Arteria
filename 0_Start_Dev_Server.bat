@@ -13,5 +13,5 @@ echo 2. Open the app on your phone.
 echo 3. It will connect to this server and update instantly when you save code.
 echo.
 cd /d "%~dp0\apps\mobile"
-npx expo start -c
+npx expo start -c --localhost
 pause

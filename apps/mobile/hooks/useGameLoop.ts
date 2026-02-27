@@ -98,8 +98,12 @@ const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 export function useGameLoop() {
     const dispatch = useAppDispatch();
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const lastSaveTimestamp = useAppSelector((s) => s.game.player.lastSaveTimestamp);
+    const isLoaded = useAppSelector((s) => s.game.isLoaded);
+
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
+    const hasProcessedOfflineRef = useRef(false);
 
     // Process a delta of time
     const processDelta = useCallback(
@@ -153,7 +157,7 @@ export function useGameLoop() {
 
     // Main game loop interval
     useEffect(() => {
-        if (!activeTask) return;
+        if (!activeTask || !isLoaded) return;
 
         lastTickRef.current = Date.now();
 
@@ -165,7 +169,29 @@ export function useGameLoop() {
         }, TICK_INTERVAL_MS);
 
         return () => clearInterval(intervalId);
-    }, [activeTask, processDelta]);
+    }, [activeTask, isLoaded, processDelta]);
+
+    // Handle initial offline catch-up when app loads
+    useEffect(() => {
+        if (isLoaded && !hasProcessedOfflineRef.current && activeTask) {
+            hasProcessedOfflineRef.current = true;
+
+            const now = Date.now();
+            let elapsed = now - lastSaveTimestamp;
+
+            // 24-hour offline cap for F2P
+            const CAP_MS = 24 * 60 * 60 * 1000;
+            if (elapsed > CAP_MS) {
+                elapsed = CAP_MS;
+            }
+
+            if (elapsed > 1000) {
+                processDelta(elapsed);
+                console.log(`[Offline] Caught up ${Math.floor(elapsed / 1000)} seconds of progress.`);
+                // TODO: Dispatch a "While You Were Away" report modal payload here later.
+            }
+        }
+    }, [isLoaded, activeTask, lastSaveTimestamp, processDelta]);
 
     // Handle app going to background / foreground
     useEffect(() => {

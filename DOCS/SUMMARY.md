@@ -7,16 +7,14 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
-**Current Status (Phase 2):**
-- Engine package complete (XP curves, TickSystem, GameEngine, offline/realtime processing).
+**Current Status (Phase 1.1 Complete):**
+- Engine package complete (XP curves, TickSystem, GameEngine, offline/realtime processing) and unit tested via Jest.
+- Local Android native build pipeline established over USB debugging to bypass EAS concurrency limits.
+- MMKV v4 save/load state wired to React Native `AppState`.
+- Real-time tick loop and 24-hour capped Offline catchup functioning.
 - Redux store fully wired with gameSlice (skills, inventory, gold, active actions).
 - All 5 tab screens built (Skills, Combat, Bank, Shop, Settings) with dark Melvor theme.
-- Monorepo metro/babel configs fixed for Expo Router compatibility.
-- EAS configured for cloud builds; Development Client APK built successfully.
-- Batch scripts created for all deployment workflows (Git, OTA, Dev Build, Prod Build).
-- Dev server confirmed booting cleanly with zero crashes.
 
-**Next Steps:**
-- Wire real-time tick loop (setInterval → engine.processRealtime → Redux dispatch).
-- Implement MMKV save/load persistence.
-- Add skill detail screens (mine-specific ores within mining).
+**Next Steps (Phase 1.2):**
+- Expand Mining skill logic (Copper, Iron, Silver, Gold node definitions).
+- Hook actual ore gathering loop to fill Redux inventory/Bank UI.

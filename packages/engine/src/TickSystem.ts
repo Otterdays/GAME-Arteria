@@ -77,28 +77,30 @@ export const TickSystem = {
 
         result.ticksProcessed = fullTicks;
 
-        if (successfulTicks > 0 && action.skillId) {
-            result.xpGained[action.skillId] =
-                (result.xpGained[action.skillId] || 0) + action.xpPerTick * successfulTicks;
-        }
-
-        // Aggregate items
-        for (const item of action.itemsPerTick) {
-            const existing = result.itemsGained.find((i) => i.id === item.id);
-            if (existing) {
-                existing.quantity += item.quantity * successfulTicks;
-            } else {
-                result.itemsGained.push({
-                    id: item.id,
-                    quantity: item.quantity * successfulTicks,
-                });
+        if (successfulTicks > 0) {
+            if (action.skillId) {
+                result.xpGained[action.skillId] =
+                    (result.xpGained[action.skillId] || 0) + action.xpPerTick * successfulTicks;
             }
-        }
 
-        // Mastery
-        if (action.masteryXpPerTick > 0) {
-            result.masteryGained[action.id] =
-                (result.masteryGained[action.id] || 0) + action.masteryXpPerTick * successfulTicks;
+            // Aggregate items
+            for (const item of action.itemsPerTick) {
+                const existing = result.itemsGained.find((i) => i.id === item.id);
+                if (existing) {
+                    existing.quantity += item.quantity * successfulTicks;
+                } else {
+                    result.itemsGained.push({
+                        id: item.id,
+                        quantity: item.quantity * successfulTicks,
+                    });
+                }
+            }
+
+            // Mastery
+            if (action.masteryXpPerTick > 0) {
+                result.masteryGained[action.id] =
+                    (result.masteryGained[action.id] || 0) + action.masteryXpPerTick * successfulTicks;
+            }
         }
 
         return result;

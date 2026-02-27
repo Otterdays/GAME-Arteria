@@ -1,9 +1,10 @@
 # SCRATCHPAD
-**Active Task:** Phase 2 UI — Monorepo metro/babel fix complete, dev server confirmed running.
-**Current Focus:** Ready to wire game loop and test on device.
+**Active Task:** Phase 1.2 — Mining Skill (Foundation)
+**Current Focus:** Building the active Mining UI, ore drop rates, and mapping actions to our working background tick loop.
 
 ## History (Compacted)
-- EAS batch scripts (Update_2, 3, 4) updated to use `npx eas-cli` so EAS works without global install; EXPO_GUIDE and CHANGELOG updated.
+- **[2026-02-26] SDK 55 + test suite:** Upgraded to Expo SDK 55 (React 19.2.4, RN 0.83.2). Created root `tests/` folder: `unit/engine/` (API tests for XPTable, TickSystem, GameEngine), `integration/`, `e2e/` placeholders. Root `npm test` runs both `packages/engine` and `tests/` (Jest multi-project). Retained all existing engine tests; 25 tests pass.
+- **[2026-02-26] Research session:** Researched SDK 55 migration, MMKV v4 best practices, idle game loop patterns. Created `DOCS/FUTURE_NOTES.md`. Updated `ARCHITECTURE.md` with SDK 55 warning, autolinking tip, and Offline Progression Architecture section.
 - Planning phase complete, implementation plan approved.
 - Phase 1 complete: Engine package, Redux store, Expo SDK 54 scaffold.
 - Phase 2 UI: All screens built, Gradle 9 configured, EAS configured.
@@ -36,10 +37,17 @@
 - [x] Full SBOM update with exact installed versions from `npm ls`.
 - [x] All docs updated: SBOM, CHANGELOG (v0.3.0), SUMMARY, ARCHITECTURE, EXPO_GUIDE, SCRATCHPAD.
 
-## Next Up
-- [ ] Confirm all 5 tabs load on device (scan QR code from dev server)
-- [ ] Wire real-time tick loop (setInterval → engine.processRealtime → Redux dispatch)
-- [ ] Implement MMKV save/load persistence
-- [ ] Add skill detail screens (mine-specific ores within mining)
+## Next Up (Phase 1 — Core Loop)
+- [x] `AppState` listener → save to MMKV on background, load on foreground
+- [x] Foreground tick loop (`setInterval` ~100ms → `engine.processRealtime` → dispatch)
+- [x] Offline calc on app open (`engine.processOffline`) + 24h cap
+- [ ] "Welcome Back" summary modal
+- [ ] Mining skill screen: ore veins, Train button, XP bar, drops to Bank
+- [ ] MMKV save/load round-trip confirmed on device
+
+## Blocker Log
+- **[2026-02-26] EAS Concurrency Limit:** Hit custom dev client build limits on Expo cloud. Swapped testing pipeline to pure local Android builds (`npx expo run:android`) using local machine Gradle architecture via `1_Run_Local_Android_Build.bat`.
+
+> Full phased plan in `DOCS/ROADMAP.md`
 
 *Keep updates concise. Do not delete history, only compact.*

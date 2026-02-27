@@ -11,16 +11,23 @@
     "mobile": "cd apps/mobile && expo start",
     "android": "cd apps/mobile && expo start --android",
     "test:engine": "cd packages/engine && npm test",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "build": "npm run build --workspace=@arteria/engine",
+    "postinstall": "npm run build",
+    "test": "jest",
+    "test:suite": "jest --selectProjects suite"
   },
   "dependencies": {
-    "expo": "~54.0.33",
-    "expo-router": "~6.0.23",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
+    "expo": "~55.0.0",
+    "expo-router": "~55.0.0",
+    "react": "19.2.4",
+    "react-native": "0.83.2",
     "react-native-nitro-modules": "^0.34.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^55.0.8"
+    "babel-preset-expo": "^55.0.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.0",
+    "@types/jest": "^29.5.0"
   }
 }
