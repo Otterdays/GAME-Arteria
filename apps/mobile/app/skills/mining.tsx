@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     trainButtonActive: {
-        backgroundColor: Palette.error,
+        backgroundColor: Palette.redDim,
     },
     trainButtonLocked: {
         backgroundColor: Palette.bgCard,

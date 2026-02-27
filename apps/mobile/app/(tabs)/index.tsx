@@ -12,6 +12,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -124,10 +125,9 @@ export default function SkillsScreen() {
         dispatch(gameActions.stopTask());
       } else {
         if (skillId === 'mining') {
-          router.push(`/skills/${skillId}`);
+          router.push(`/skills/${skillId}` as any);
         } else {
-          // Import Alert from react-native is needed
-          alert('This skill is not yet implemented. Try Mining!');
+          Alert.alert('Coming Soon', 'This skill is not yet implemented. Try Mining!');
         }
       }
     },
