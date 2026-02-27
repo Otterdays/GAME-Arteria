@@ -1,4 +1,7 @@
 # Thoughts on EAS Build Times & User Confusion
+
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 The user is experiencing the slow turnaround time of Cloud Builds (Free Tier EAS queues can take a few minutes). They are concerned that they have to wait 5-10 minutes every time they want to test a change or push an update.
 
 I need to explain the "Aha!" moment of Expo: Fast Refresh and OTA Updates.

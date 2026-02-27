@@ -1,5 +1,8 @@
 # CHANGELOG
 
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 ## [Unreleased]
 ### Added
 - **Phase 1.1 Complete (Core Game Loop):** Fixed MMKV v4 native C++ module initialization. Integrated the foreground tick loop (`setInterval`) and offline catchup logic (F2P 24-hour cap) with React Native `AppState` and Redux.

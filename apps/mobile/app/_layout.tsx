@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { store } from '@/store';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { usePersistence } from '@/hooks/usePersistence';
+import UpdatesModal from '@/components/UpdatesModal';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -30,6 +31,7 @@ function AppShell() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
+      <UpdatesModal />
       <StatusBar style="light" />
     </ThemeProvider>
   );

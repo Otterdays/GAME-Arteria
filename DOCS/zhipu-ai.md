@@ -1,3 +1,6 @@
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 This is a comprehensive research breakdown and baseline feature sheet for a mobile application like **Melvor Idle**.
 
 Melvor Idle is essentially a deconstructed RPG (Role-Playing Game) stripped of the exploration and real-time action, focusing entirely on the math, progression, and resource management systems found in games like *RuneScape*.

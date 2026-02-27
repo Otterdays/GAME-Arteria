@@ -1,5 +1,8 @@
 # 📘 The Arteria Expo & EAS Guide
 
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 Welcome to Expo! If you're coming from traditional React Native (or standard native development), Expo's philosophy is a huge paradigm shift. 
 This guide explains how Expo works, how we build the app, and the golden rules for when you actually need to trigger a build.
 

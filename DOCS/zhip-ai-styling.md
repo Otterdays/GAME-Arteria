@@ -1,3 +1,6 @@
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 Here’s a practical style guide you can hand to a designer and developer to “build and style and section out” a game like Melvor Idle, focused on UI/UX, structure, and visual style.
 
 ---

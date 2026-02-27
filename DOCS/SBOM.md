@@ -1,5 +1,8 @@
 # SBOM (Security Bill of Materials)
 
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 *All installed packages and libraries tracked here with versions, available updates, and perceived release dates for security and freshness.*
 
 **Table columns:** **Current** = installed version · **Available** = latest on npm · **Release** = perceived/known release date of Available.

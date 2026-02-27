@@ -7,6 +7,8 @@
  */
 
 import { createMMKV } from 'react-native-mmkv';
+import { PlayerState } from './gameSlice';
+import { logger } from '@/utils/logger';
 
 const storage = createMMKV({ id: 'arteria-save' });
 
@@ -21,7 +23,7 @@ export function savePlayerState(playerState: unknown): void {
         const json = JSON.stringify(playerState);
         storage.set(SAVE_KEY, json);
     } catch (e) {
-        console.error('[Save] Failed to save player state:', e);
+        logger.error('Save', 'Failed to save player state:', e);
     }
 }
 
@@ -35,7 +37,7 @@ export function loadPlayerState<T>(): T | null {
         if (!json) return null;
         return JSON.parse(json) as T;
     } catch (e) {
-        console.error('[Save] Failed to load player state:', e);
+        logger.error('Save', 'Failed to load player state:', e);
         return null;
     }
 }

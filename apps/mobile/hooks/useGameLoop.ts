@@ -10,6 +10,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
+import { logger } from '@/utils/logger';
 
 // ── Inline engine math (mirrors @arteria/engine) ──
 // We inline the XP + tick logic here so we don't need
@@ -187,7 +188,7 @@ export function useGameLoop() {
 
             if (elapsed > 1000) {
                 processDelta(elapsed);
-                console.log(`[Offline] Caught up ${Math.floor(elapsed / 1000)} seconds of progress.`);
+                logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)} seconds of progress.`);
                 // TODO: Dispatch a "While You Were Away" report modal payload here later.
             }
         }

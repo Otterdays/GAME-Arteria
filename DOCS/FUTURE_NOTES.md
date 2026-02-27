@@ -1,4 +1,7 @@
 # FUTURE NOTES — Research & Forward Planning
+
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Last Updated:** 2026-02-26 | **Source:** Arize MCP + Web Research
 
 This document captures research-based insights to guide future development decisions for Arteria.

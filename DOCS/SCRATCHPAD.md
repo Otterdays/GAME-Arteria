@@ -1,4 +1,7 @@
 # SCRATCHPAD
+
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Active Task:** Phase 1.2 — Mining Skill (Foundation)
 **Current Focus:** Building the active Mining UI, ore drop rates, and mapping actions to our working background tick loop.
 
@@ -11,6 +14,12 @@
 - Monorepo crash (`EXPO_ROUTER_APP_ROOT`) debugged and resolved (root babel, index.js proxy, pinned expo-router).
 - All files recovered after accidental reset-project wipe (git restore).
 - Batch scripts created (0_Start, Update_1-4). Docs updated (EXPO_GUIDE, MY_ADHD, SBOM, CHANGELOG, ARCHITECTURE, SUMMARY).
+
+## Documentation & AI Developer Guidelines
+> **For future standard AI assistants:**
+> 1. **Dev Logging:** ALWAYS use the `logger.ts` wrapper (`import { logger } from '@/utils/logger'`). Log format is `logger.info('Module', 'Message', {data})`. Do not use naked `console.log`.
+> 2. **Versioning & Updates Modal:** When shipping a new feature phase, bump the version in `apps/mobile/app.json`. The user sees an automatic changelog modal upon relaunch! Update the hardcoded text inside `apps/mobile/components/UpdatesModal.tsx` for whatever features you just built.
+> 3. **Never Delete Documentation:** As stated by the user rules and warnings, always compact and append, do not delete existing context.
 
 ## Phase 2 Progress
 - [x] Upgraded Gradle wrapper from 8.14.3 → **9.3.1** (Jan 2026 release)

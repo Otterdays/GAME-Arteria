@@ -63,7 +63,7 @@ interface ActiveTask {
     partialTickMs: number;
 }
 
-interface PlayerState {
+export interface PlayerState {
     name: string;
     skills: Record<SkillId, SkillState>;
     inventory: InventoryItem[];
@@ -72,6 +72,8 @@ interface PlayerState {
     combatStats: CombatStats;
     activeTask: ActiveTask | null;
     lastSaveTimestamp: number;
+    /** Standard version tracking for updates modal (e.g. "0.3.0") */
+    lastSeenVersion?: string;
 }
 
 // ─── Helpers ───
@@ -207,6 +209,11 @@ export const gameSlice = createSlice({
         /** Add gold */
         addGold(state, action: PayloadAction<number>) {
             state.player.gold += action.payload;
+        },
+
+        /** Mark a version as seen by the user (clears updates modal) */
+        updateSeenVersion(state, action: PayloadAction<string>) {
+            state.player.lastSeenVersion = action.payload;
         },
     },
 });

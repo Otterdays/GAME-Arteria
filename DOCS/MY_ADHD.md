@@ -1,5 +1,8 @@
 # The ADHD Guide to Arteria Updates
 
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
 **Q: How do I test the app while I'm coding?**
 A: Double-click `0_Start_Dev_Server.bat` in the root folder.
 

@@ -1,4 +1,7 @@
 # ARTERIA — EXPANDED MASTER ROADMAP
+
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Synthesized from:** `MASTER_DESIGN_DOC.md` (Aetheria: The Idle Chronicles)
 **Last Updated:** 2026-02-26
 **Philosophy:** KISS · YAGNI · Ship the core loop first, but plan for the entire cosmos.
@@ -33,6 +36,12 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 Dark Melvor theme + design tokens
 - [x] 🟡 EAS Dev Build (APK on phone) + dev server workflows
 
+### Phase 0 — Optional polish (backlog, do not block)
+- [ ] 🟢 Root Jest multi-project + `npm test` (engine + tests/); already present — verify and document.
+- [ ] 🟢 Error boundary wrapper around root layout (graceful crash UI).
+- [ ] 🟢 Lint/format on pre-commit or CI (ESLint, Prettier if desired).
+- [ ] 🟢 STYLE_GUIDE.md creation (trace tags, line limits, comment rules) if not yet in repo.
+
 ---
 
 ## ⚙️ Phase 1 — "The Core Engine" (Playable Loop)
@@ -55,6 +64,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Action State:** "Train" button sets the active `PlayerAction` (e.g., `{ type: 'MINING', targetId: 'iron_vein' }`) in Redux.
 - [ ] 🟡 **Progression:** XP bar fills up, calculates level-ups, unlocks new veins dynamically based on current skill level.
 - [ ] 🔴 **Vein Depletion Mechanic:** Implement the "Vein Exhaustion" array (veins deplete after X actions and respawn over time).
+- [ ] 🟢 **Mining tooltips:** Per-vein tooltip with name, level req, XP/item, base tick time.
+- [ ] 🟢 **Locked vein state:** Grey out or hide veins above current Mining level; show "Unlocks at level X".
+- [ ] 🟢 **Active node highlight:** Clear visual state for "currently training" vein (e.g. border or accent).
 
 ### 1.3 — Bank & Inventory UI 🟡
 - [ ] 🟢 **Grid System:** Render a responsive grid (using `FlatList` or `FlashList`) of owned items (ores, materials).
@@ -62,6 +74,21 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Gold Currency UI:** Persistent gold tracking at the top of the Bank screen.
 - [ ] 🟡 **Data Roundtrip Test:** Verify player mines item -> item appears in Bank -> item persists after restarting app.
 - [ ] 🟡 **Item Details Modal:** Tap item to see description, sell value, and "used in" recipes.
+- [ ] 🟢 **Empty slots:** Show placeholder or empty cell for unused bank slots (if slot limit exists).
+- [ ] 🟢 **Sort/filter placeholder:** UI hook for "All / Ores / Bars / Other" or sort by name/quantity (can stub).
+
+### 1.4 — Welcome Back & Offline UX 🟡
+- [ ] 🟢 **"While You Were Away" modal:** Show on foreground after offline calc (XP gained, items looted, time elapsed).
+- [ ] 🟢 **Dismiss/ack:** Single "Got it" or "Collect" so modal doesn’t reappear until next return.
+- [ ] 🟡 **Cap messaging:** If player was away >24h, mention "Capped at 24h offline progress (F2P)."
+- [ ] 🟢 **MMKV round-trip test on device:** Confirm save on background, load on foreground, state matches.
+
+### 1.5 — Phase 1 polish & hooks (small bits)
+- [ ] 🟢 **Haptic feedback:** Light haptic on Train/Stop (expo-haptics already in stack).
+- [ ] 🟢 **Toast/snackbar:** "Mining started: Iron" / "Level up: Mining 12" (non-blocking).
+- [ ] 🟢 **Analytics/events placeholder:** Log or no-op for "skill_started", "level_up" (for future analytics).
+- [ ] 🟢 **Accessibility:** Ensure skill cards and main CTAs have accessible labels; touch targets ≥44px where possible.
+- [ ] 🟢 **Settings persistence:** If any new settings (e.g. sound on/off), persist via MMKV or existing store.
 
 ---
 
@@ -80,6 +107,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **The Session Logic (<2h):** Selectors for medium goals (e.g., "80% to Level 45 Logging").
 - [ ] 🟡 **The Grind Logic (Daily/Weekly):** Static or slowly updating goals (e.g., "Clear 3 Unraveling zones").
 - [ ] 🟢 **Milestone Teasers:** UI to show next-level unlocks prominently displayed under active progress bars ("Only 3 more logs to unlock Sentient Oaks").
+- [ ] 🟢 **Horizon cards:** One card per tier (Immediate / Session / Grind) with icon + short text + optional progress.
+- [ ] 🟢 **Seasonal/date hook:** Data or config hook for "season" (e.g. week number) for Harvesting rotation — no UI required yet.
+- [ ] 🟢 **Gathering skill tooltips:** Same pattern as Mining (node name, level, yield, tick) for Harvesting, Logging, Fishing, Scavenging.
 
 ---
 
@@ -100,6 +130,10 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Fletching:** Arrows, bows, throwable cosmos.
 - [ ] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time).
 - [ ] 🔴 **Construction:** Housing, storage. *Blueprint System:* Requires multi-skill inputs (e.g., Nails from Smithing + Planks from Logging).
+- [ ] 🟢 **Crafting queue UI:** List of queued items with name, progress bar, ETA, cancel button.
+- [ ] 🟢 **Recipe browser:** Per-skill list of recipes with inputs/outputs and level requirement.
+- [ ] 🟡 **Partial queue completion:** If offline interrupted, grant outputs for completed items and refund or retain partial inputs (design decision + impl).
+- [ ] 🟢 **Crafting speed indicator:** Show "1x offline" vs "1.5x active" in UI.
 
 ---
 
@@ -125,6 +159,10 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Data Structures:** Define the 12 Enemy Factions (The Unraveled, Celestial Constructs, Void wildlife, Astral Pirates, Cosmic Vermin, etc.) with stat blocks and loot tables.
 - [ ] 🟡 **Dungeon Modes:** Logic for Delves (5-10 min active / 1h idle clear), Expeditions (30 min / 4h idle max).
 - [ ] 🔴 **Dungeon Modifiers Engine:** Random weekly rules applied to combat math (e.g., "Gravity's Suggestion" reverses fall damage, "Blibbertooth's Blessing" causes confetti visual effects).
+- [ ] 🟢 **Enemy bestiary stub:** Simple list or modal of encountered enemies with name, level, faction.
+- [ ] 🟢 **Combat log scroll:** Last N messages (damage, flee, loot) with optional "clear" or max lines.
+- [ ] 🟢 **Loot popup/toast:** On kill or dungeon clear, brief summary of gold + items gained.
+- [ ] 🟡 **Auto-combat settings UI:** HP threshold for potion use, flee-at-HP%, enable/disable auto-flee.
 
 ---
 
@@ -146,6 +184,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Companion Roster Data:** Define Barnaby the Uncertain, Scholar Yvette, Sir Reginald Pomp (stats, flavor text, unlock condition).
 - [ ] 🟡 **Companion Tasks UI:** Drag-and-drop or select menu to assign companions to Auto-Gather or Auto-Combat.
 - [ ] 🔴 **Companion Traits Logic:** Hook traits into Engine math (e.g., Barnaby's 50% hit-self chance but 2x damage modifier).
+- [ ] 🟢 **Companion detail panel:** Tap companion to see stats, trait description, current task.
+- [ ] 🟢 **Leadership cap display:** Show "Companions: 2/3" (or current max) in UI.
+- [ ] 🟢 **Unlock teaser:** "Unlock Barnaby at Level 20" style messaging.
 
 ---
 
@@ -160,6 +201,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ### 6.2 — Factions & Dialogue 🟡
 - [ ] 🟢 **Dialogue UI:** Simple, punchy text boxes (visual novel style) for The Order of the Balanced Scale, The Celestial Bureaucracy, and The Cult of Blibbertooth.
 - [ ] 🟡 **Reputation Tracking:** Global integer state flags for decisions made, altering shop prices or available quests per faction.
+- [ ] 🟢 **Quest log UI:** List active and completed quests with short description and objectives.
+- [ ] 🟢 **Story milestone modal:** Popup at Total Level thresholds with Act title and short flavor text.
+- [ ] 🟢 **Radiant quest reroll:** If Cosmic Essence is implemented, "Reroll daily" button and cost display.
 
 ---
 
@@ -181,6 +225,10 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **Push Notifications Architecture:** Local push notifications for "Crafting Ready" or "Idle Cap Reached" using `expo-notifications`.
 - [ ] 🔴 **Performance Audit:** React Native Flamegraph checks, eliminate re-renders in FlatLists, `npx expo-doctor`.
 - [ ] 🟡 **EAS Production:** Generate Android App Bundle (.aab), target API 36 (Android 16), update Keystores.
+- [ ] 🟢 **Login bonus UI:** Calendar or day strip showing Days 1–7 and claimed state.
+- [ ] 🟢 **Notification settings:** Per-type toggles (crafting done, idle cap, level up) persisted to MMKV/settings.
+- [ ] 🟢 **Sound/music placeholder:** Settings toggles for SFX and BGM; wire to no-op or minimal sounds first.
+- [ ] 🟢 **Onboarding/tutorial stub:** First-launch flow (optional): "Tap Skills → Mining → Train" (can be minimal).
 
 ---
 
@@ -203,6 +251,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **PvP Arena:** Asynchronous AI-controlled "Defense Teams" (Companions + your Character build) attacking each other.
 - [ ] 🟡 **The Infinite Stair:** Procedurally generated endless dungeon with server-sided leaderboard chasing.
 - [ ] � **New Region: The Shimmering Sea:** Naval combat mechanics and underwater gathering skills.
+- [ ] 🟢 **Guild roster UI:** List members, roles, contribution (stub if backend not ready).
+- [ ] 🟢 **PvP defense setup UI:** Equip "defense team" loadout and companions for async attacks.
+- [ ] 🟢 **Leaderboard placeholder:** Screen or section for Infinite Stair / seasonal rankings (mock or real API).
 
 ---
 
@@ -213,6 +264,40 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **Player Economy:** Full asynchronous Auction House and player-run shops (High risk of duping, requires rigid validation).
 - [ ] � **The Cosmic Plane:** True endgame dimension featuring roguelike elements (perma-death runs with persistent meta-progression).
 - [ ] 🔴 **Horizontal Crossover Skills:** Creating completely new interactions between existing level 99 skills.
+- [ ] 🟢 **Second Kingdom map UI:** Region selector and travel gate (stub until backend).
+- [ ] 🟢 **Auction House UI:** Browse, search, list, buy/sell (depends on validation/backend).
+- [ ] 🟢 **Cosmic Plane entry UI:** "Enter run" button, meta-progression display, run modifiers summary.
+
+---
+
+## 🔧 Cross-Cutting & Meta (Ongoing / Backlog)
+> **Goal:** Quality, maintainability, and future-proofing. Do not delete; only append.
+
+### Docs & Process
+- [ ] 🟢 **STYLE_GUIDE.md:** Trace tag format, line/function limits, comment prefixes (TODO/FIXME/NOTE).
+- [ ] 🟢 **Doc freshness:** When touching a doc, refresh obviously stale bullets (e.g. "SDK 54" if already on 55).
+- [ ] 🟢 **SCRATCHPAD compact:** Keep SCRATCHPAD under 500 lines; compact history, keep last 5 actions + next steps.
+
+### QA & Tooling
+- [ ] 🟢 **Integration test placeholder:** At least one test in `tests/integration/` (e.g. load save → dispatch → assert state).
+- [ ] 🟢 **E2E placeholder:** Document or stub Playwright (or Detox) target for one critical path (e.g. open app → Skills → Train Mining).
+- [ ] 🟢 **CI checklist:** Lint, typecheck, unit tests on push/PR (when CI is added).
+- [ ] 🟢 **expo-doctor:** Run periodically; fix or document any new warnings.
+
+### Accessibility & Theming
+- [ ] 🟢 **Screen reader labels:** Ensure all interactive elements have accessible labels.
+- [ ] 🟢 **Reduce motion:** Respect system or in-app "reduce motion" for animations.
+- [ ] 🟢 **Theme tokens:** Centralize light/dark (or future "forest"/"arcane") in theme; avoid hardcoded hex in components.
+- [ ] 🟢 **Font scaling:** Support dynamic type / large text where applicable.
+
+### Localization & i18n (Future)
+- [ ] 🟢 **i18n placeholder:** Decide strategy (expo-localization, react-i18next, or JSON + key lookup); add to FUTURE_NOTES if not building yet.
+- [ ] 🟢 **String extraction:** Keep user-facing strings in one layer (e.g. `constants/strings.ts` or JSON) for future translation.
+
+### Performance Checkpoints
+- [ ] 🟢 **Bank/Inventory:** Use FlatList/FlashList with stable keys; avoid inline object creation in render.
+- [ ] 🟢 **Tick loop:** Ensure single source of truth; avoid dispatching every tick if batching is possible.
+- [ ] 🟢 **MMKV read frequency:** Don't read full save on every tick; only on foreground load and save on background.
 
 ---
 
