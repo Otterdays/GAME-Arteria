@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
 import { logger } from '@/utils/logger';
+import { formatNumber } from '@/utils/formatNumber';
 
 const SKILL_NAMES: Partial<Record<SkillId, string>> = {
     mining: '⛏️ Mining',
@@ -86,7 +87,7 @@ export default function WhileYouWereAway() {
                                         <Text style={styles.rowLabel}>
                                             {SKILL_NAMES[skillId] ?? skillId}
                                         </Text>
-                                        <Text style={styles.rowValue}>+{Math.floor(xp).toLocaleString()} XP</Text>
+                                        <Text style={styles.rowValue}>+{formatNumber(xp)} XP</Text>
                                     </View>
                                 ))}
                             </View>

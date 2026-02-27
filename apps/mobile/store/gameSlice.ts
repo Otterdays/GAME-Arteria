@@ -135,6 +135,36 @@ function createFreshPlayer(): PlayerState {
     };
 }
 
+/**
+ * Migrates a saved PlayerState to the current schema.
+ * - Renames old skill IDs (woodcutting -> logging)
+ * - Fills in any missing skills with a fresh level-1 state
+ * This prevents crashes when loading an older save after skill additions/renames.
+ */
+function migratePlayer(saved: PlayerState): PlayerState {
+    const skills = { ...saved.skills } as Record<string, SkillState>;
+
+    // Rename legacy skill IDs
+    if (skills['woodcutting'] && !skills['logging']) {
+        skills['logging'] = { ...skills['woodcutting'], id: 'logging' };
+        delete skills['woodcutting'];
+    }
+
+    // Ensure every current skill exists (fill missing ones at level 1)
+    for (const id of ALL_SKILLS) {
+        if (!skills[id]) {
+            skills[id] = {
+                id,
+                xp: id === 'hitpoints' ? 1154 : 0,
+                level: id === 'hitpoints' ? 10 : 1,
+                mastery: {},
+            };
+        }
+    }
+
+    return { ...saved, skills: skills as Record<SkillId, SkillState> };
+}
+
 // ─── Slice ───
 
 export interface OfflineReport {
@@ -170,7 +200,7 @@ export const gameSlice = createSlice({
     reducers: {
         /** Load a saved player state */
         loadPlayer(state, action: PayloadAction<PlayerState>) {
-            state.player = action.payload;
+            state.player = migratePlayer(action.payload);
             state.isLoaded = true;
         },
 

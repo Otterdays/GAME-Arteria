@@ -3,7 +3,34 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-## [Unreleased]
+## [0.4.1] - 2026-02-26
+### Added
+- **Global Action Ticker:** A persistent, minimal progress bar at the top of the screen tracking active tasks across ALL tabs.
+- **RPG Icon Overhaul:** Switched `IconSymbol` to use `MaterialCommunityIcons`. Mapped thematic symbols: `pickaxe`, `sword-cross`, `treasure-chest`, `script-text`.
+- **Custom Back Navigation:** Immersive, theme-aligned back buttons in skill screens (Mining).
+
+### Fixed
+- **Android "Full Immersion" Layout:** Enabled edge-to-edge rendering with translucent Status and Navigation bars.
+- **Android Overlay Mess:** Resolved double-padding issues by moving to manual inset padding via `useSafeAreaInsets`.
+- **Gesture Bar Overlap:** Adjusted Tab Bar height and padding for Android gesture handle clearance.
+
+## [0.4.0] - 2026-02-26
+### Added
+- **Phase 2.1 — Gathering Skills Foundation:** Added Data definitions for Logging, Harvesting, Fishing, and Scavenging.
+- **Skill Pillars:** Reorganized Skills screen into logical groups: Gathering, Combat, Crafting, Support.
+- **Total Level Badge:** Shows current sum of all levels in the header.
+- **XP [current/next] Display:** XP cards now show exact progress toward the next level.
+- **Ticks-to-level:** Mining nodes now display an estimated number of actions until level up.
+- **Wipe Save Data:** Added a developer/debugger tool in Settings to reset progress.
+- **XP/hr Stat:** Real-time XP efficiency tracking for active nodes.
+
+### Fixed
+- **State Migration (woodcutting -> logging):** Added `migratePlayer` bridge in Redux to prevent crashes on old save files after skill rename.
+- **Level Up Toast:** Fixed a bug where toasts would get stuck or dismiss prematurely due to re-render loops.
+- **Android Tab Bar Insets:** Fixed overlap between bottom tabs and the Android gesture navigation bar.
+- **Skill Card Navigation:** Tapping anywhere on a skill card now correctly navigates into the skill detail page.
+
+
 ### Added
 - **Phase 1.1 Complete (Core Game Loop):** Fixed MMKV v4 native C++ module initialization. Integrated the foreground tick loop (`setInterval`) and offline catchup logic (F2P 24-hour cap) with React Native `AppState` and Redux.
 - **Local Native Pipeline:** Established an `npx expo run:android` build script bypassing EAS concurrency limits.

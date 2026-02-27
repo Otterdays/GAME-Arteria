@@ -2,10 +2,19 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Phase 1.2 — Mining Skill (Foundation)
-**Current Focus:** Building the active Mining UI, ore drop rates, and mapping actions to our working background tick loop.
+**Active Task:** Phase 2.2 — Horizon System & Unique Mechanics
+**Current Focus:** Implementing the 3-tier goal HUD (Horizon System) and specialized gathering mechanics (Seasonal Rotation).
+
+## Active Sprint: v0.4.1 "Immersion & Utility"
+- [x] **Global Action Ticker:** Persistent progress bar + skill emoji visible on all screens.
+- [x] **Android Edge-to-Edge:** Full translucent system bars + manual safe area handling for premium layout.
+- [x] **RPG Icon Set:** Migrated to MaterialCommunityIcons for pickaxes, swords, and treasure chests.
+- [x] **Navigation Update:** Immersive back buttons and full skill-card click-through.
 
 ## History (Compacted)
+- **[2026-02-26] v0.4.1 — Immersion Update:** Integrated `GlobalActionTicker` for real-time background task visibility. Refactored `index.tsx` and `mining.tsx` to handle Android view insets manually (edge-to-edge). Upgraded `IconSymbol` to use `MaterialCommunityIcons` with RPG mappings (`pickaxe`, `sword-cross`, `treasure-chest`).
+- **[2026-02-26] QoL E-M + Bugfixes (v0.4.0):** (E) Added ticks-to-level estimates in Mining. (J) Fixed LevelUpToast re-render loop/timer bug. (K) Fixed Android bottom nav bar overlap using safe area insets. (L) Upgraded XP display to "current / goal" format. (M) Enabled full-card navigation on Skills screen. Implemented "wipe save" debug tool. Updated all project docs.
+- **[2026-02-26] QoL A/B/C — Skills Screen Polish:** Rewrote `index.tsx`. (A) Skills now grouped into 4 pillars: Gathering, Combat, Crafting, Support with divider headers. (B) "Total Lv. X" badge in gold shown under the "Skills" title. (C) Unimplemented skills show a greyed-out locked card with "Phase 2 ›" badge instead of jarring Alert popup. Also added `migratePlayer()` to `gameSlice.ts` to prevent `xp of undefined` crash when loading old saves after skill renames.
 - **[2026-02-26] Phase 2.1 — Gathering Skill Data Definitions:** Created `logging.ts`, `harvesting.ts`, `fishing.ts`, `scavenging.ts` in `packages/engine/src/data/`. Renamed `woodcutting` → `logging` across entire codebase (`types.ts`, `gameSlice.ts`, `playerFactory.ts`, `theme.ts`, `index.tsx`, `LevelUpToast.tsx`, `WhileYouWereAway.tsx`). Added `skillLogging`, `skillHarvesting`, `skillScavenging` colour tokens. Exported all new action arrays from `engine/src/index.ts`. Engine tests: 10/10 passing (0 regressions). Unique mechanics (Seasonal Rotation, Mythic fish, Curse Chance) left as open sub-tasks in ROADMAP.md.
 - **[2026-02-26] Website overhaul + doc corrections:** Updated `index.html` with 4 new sections (World & Lore with 6 Valdoria regions + 4 factions, Companions with Barnaby/Yvette/Reginald cards, "A Day in Arteria" timeline, CSS floating particles). Added missing skills (Research, Celestial Binding). Fixed stale roadmap (Phase 1.2→1.5 marked done, Phase 2 now current). Fixed hero badge to "Phase 1 Complete". Updated nav links. Fixed SUMMARY.md, ROADMAP.md current target, ARCHITECTURE.md tech stack (SDK 54→55, EAS→local builds).
 - **[2026-02-26] Concept art section removed from docs site:** Section (Gallery/Concept Art + art-grid styles) removed from `docs/index.html` — doesn’t work on GitHub Pages (asset paths/behavior). Nav had no #art link; no other references.

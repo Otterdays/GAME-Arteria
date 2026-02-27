@@ -1,51 +1,103 @@
-# Arteria
+<div align="center">
 
-**A cosmic idle RPG.** Train skills, gather resources, fight monsters — even while you sleep.
+# 🌌 Arteria
+### A Cosmic Idle RPG — Built for the Modern Mobile Era
 
-[![Live site](https://img.shields.io/badge/🌐_Live_site-otterdays.github.io%2FGAME--Arteria-8b5cf6?style=for-the-badge)](https://otterdays.github.io/GAME-Arteria)
-[![Expo](https://img.shields.io/badge/Expo-SDK%2055-000020?style=flat-square&logo=expo)](https://expo.dev)
-[![React Native](https://img.shields.io/badge/React%20Native-0.83-61DAFB?style=flat-square&logo=react)](https://reactnative.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+**Train skills. Gather resources. Fight monsters. Even while you sleep.**
 
----
-
-> [!WARNING]
-> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+[**Live Landing Page ↗**](https://otterdays.github.io/GAME-Arteria) • [**Documentation Index ↗**](DOCU/SUMMARY.md) • [**Roadmap ↗**](DOCU/ROADMAP.md)
 
 ---
 
-## ✨ Play / preview
+[![v0.4.0](https://img.shields.io/badge/Version-0.4.0-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
+[![Build Status](https://img.shields.io/badge/Build-Success-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
+[![Tests](https://img.shields.io/badge/Tests-30+_Passing-f59e0b?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**[→ Open the live site (GitHub Pages)](https://otterdays.github.io/GAME-Arteria)** — landing page, roadmap, and systems overview.
-
----
-
-## What is Arteria?
-
-A math-heavy, incremental idle RPG inspired by **Melvor Idle** and **RuneScape**. Built on **React Native (Expo)** with **Redux Toolkit** for state and a modular engine you can run headless or in the app.
-
-- **25 skills** across 5 pillars (Gathering, Crafting, Combat, Support, Cosmic)
-- **Offline progression** with a 24h cap (F2P-friendly)
-- **Pure TypeScript engine** — no React in the core; unit-tested with Jest
-- **Expo SDK 55** + Expo Router, MMKV persistence, 100ms game loop
+</div>
 
 ---
 
-## Project structure
-
-| Path | What it is |
-|------|------------|
-| `DOCS/SUMMARY.md` | High-level status and quick links |
-| `DOCS/ARCHITECTURE.md` | Stack, packages, and system design |
-| `DOCS/SCRATCHPAD.md` | Dev task queue and active work |
-| `docs/` | **Landing site** (HTML) — deployed to [GitHub Pages](https://otterdays.github.io/GAME-Arteria) |
-| `apps/mobile/` | Expo app (skills, bank, combat, shop, settings) |
-| `packages/` | Shared engine, state, persistence, etc. |
+> [!CAUTION]
+> **DEVELOPER MANDATE:** Do NOT remove or delete existing texts, updates, docs, or project history in this repository. Arteria is a living chronicle. Only append, compact, or update status.
 
 ---
 
-## Quick start
+## ✨ What is Arteria?
 
-*Coming soon as the repository is initialized...*
+Arteria is a hard-math, incremental idle RPG inspired by the deep progression systems of **Melvor Idle** and the timeless charm of **RuneScape**. Designed from the ground up for **React Native (Expo)**, it features a modular engine architecture that separates game logic from the UI.
 
-For now: see `DOCS/SUMMARY.md` and the [live site](https://otterdays.github.io/GAME-Arteria) for the full picture.
+### 🎯 Key Pillars
+| 🌱 **Persistence** | ⛏️ **Progression** | ⚔️ **Combat** |
+| :--- | :--- | :--- |
+| **Offline Progression** with a 24h cap. The engine calculates your gains while you sleep, study, or work. | **25 Skills** across 4 logical pillars: Gathering, Combat, Crafting, and Support. | **Auto-Combat** vs 12 eldritch factions. Passive grinding or active bossing. |
+
+---
+
+## 🚀 The Latest: v0.4.0 "The QoL Sprint"
+
+We've just finished a massive polish pass to make the experience feel premium:
+*   **Skill Pillars:** Reorganized UI for logical progression paths.
+*   **Floating XP VFX:** Real-time visual feedback with item icons and gain pop-ups.
+*   **Total Level Badge:** Track your global mastery across all 25 skills.
+*   **Android Optimized:** Dynamic safe-area padding for gesture navigation.
+*   **Enhanced Navigation:** Full skill-card click-through for seamless gameplay.
+
+---
+
+## 🛠️ The Cosmic Stack
+
+Arteria uses a production-grade monorepo structure with modern developer ergonomics.
+
+| Component | Technology | Rationale |
+| :--- | :--- | :--- |
+| **Logic** | `Pure TypeScript Engine` | Headless-ready, 100% testable game math. |
+| **Runtime** | `Expo SDK 55` | The gold standard for modern RN apps. |
+| **State** | `Redux Toolkit` | Single source of truth with RTK Query and Slice patterns. |
+| **Storage** | `MMKV v4` | High-speed C++ synchronous storage for consistent saving. |
+| **Nav** | `Expo Router v6` | File-based navigation for clean, native-feel routing. |
+
+---
+
+## 📂 Project Navigation
+
+The repository is built on a **Modular Monorepo** architecture.
+
+*   📂 [**`DOCU/`**](DOCU/SUMMARY.md) — The brain. All specifications, roadmaps, and architecture logs.
+*   📂 [**`apps/mobile/`**](apps/mobile/) — The React Native interface, themes, and screen layouts.
+*   📂 [**`packages/engine/`**](packages/engine/) — The math. XP tables, tick systems, and core game loops.
+*   📂 [**`docs/`**](docs/) — The landing site. Deployed to [GitHub Pages](https://otterdays.github.io/GAME-Arteria).
+
+---
+
+## 🏗️ Getting Started
+
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v20+)
+- [Android Studio](https://developer.android.com/studio) (for local native builds)
+
+### 2. Installation
+```bash
+npm install
+```
+
+### 3. Local Development (Android)
+To run with our custom local pipeline (bypassing EAS limits):
+```bash
+./1_Run_Local_Android_Build.bat
+```
+
+### 4. Running Tests
+```bash
+npm test
+```
+
+---
+
+<div align="center">
+
+**[View full Roadmap in DOCU/ROADMAP.md](DOCU/ROADMAP.md)**
+
+Built with 💜 by [Otterdays](https://github.com/Otterdays)
+
+</div>

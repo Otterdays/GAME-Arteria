@@ -36,18 +36,13 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
-**Current Status (Phase 1 Complete):**
-- Engine package complete (XP curves, TickSystem, GameEngine, offline/realtime processing) and unit tested via Jest.
-- Local Android native build pipeline established over USB debugging to bypass EAS concurrency limits.
-- MMKV v4 save/load state wired to React Native `AppState`.
-- Real-time tick loop and 24-hour capped Offline catchup functioning.
-- Redux store fully wired with gameSlice (skills, inventory, gold, active actions).
-- All 5 tab screens built (Skills, Combat, Bank, Shop, Settings) with dark Melvor theme.
-- Mining skill working end-to-end with ore nodes, XP bars, level gating, and tooltips.
-- Bank & Inventory UI with 4-col grid, item detail modal, gold badge.
-- "While You Were Away" offline catchup modal with XP/items/cap warning.
-- UI polish: haptics, level-up toast, accessibility labels.
+**Current Status (Phase 2.2 — Immersion & Utility):**
+- **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.4.1 (Immersion Update):** Global Action Ticker for persistent feedback; Android Edge-to-Edge layout; RPG Icon set (MaterialCommunityIcons); Immersive navigation headers.
+- **v0.4.0 (QoL Polish):** Skills screen Pillars; Total Level badge; XP progress tracking; Ticks-to-level estimates.
 
-**Next Steps (Phase 2 — Gathering & Combat):**
-- Expand gathering skills: Harvesting, Logging, Fishing, Scavenging.
+**Next Steps (Phase 2.2 — Horizon & Combat):**
+- Implement unique mechanics for new gathering skills (Seasonal Rotation, Sentient Trees, Mythic Fish).
+- Horizon System: 3-tier goal HUD (Immediate / Session / Grind goals) for retention.
 - Begin Combat system foundation: stats infrastructure, loadouts, auto-combat.
+

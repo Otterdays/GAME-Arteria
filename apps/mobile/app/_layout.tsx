@@ -36,7 +36,7 @@ function AppShell() {
       <UpdatesModal />
       <WhileYouWereAway />
       <LevelUpToast />
-      <StatusBar style="light" />
+      <StatusBar style="light" translucent backgroundColor="transparent" />
     </ThemeProvider>
   );
 }

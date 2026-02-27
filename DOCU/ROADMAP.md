@@ -94,6 +94,51 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 
 ---
 
+## ✨ QoL — Polish & Improvements (Ongoing)
+> Small, high-impact improvements that can be done any time. Prioritise when a phase is complete or between sprints.
+
+### Skills Screen
+- [x] 🟢 **A. Skill Pillars/Grouping** — Dividers grouping skills into ⛏️ Gathering / ⚔️ Combat / 🔨 Crafting / ✨ Support.
+- [x] 🟢 **B. Total Level Badge** — Sum of all skill levels shown in the header (e.g. "Total Lv. 247").
+- [x] 🟢 **C. Coming Soon Tags** — Replace Alert popup with an inline locked-card style + "Phase 2 ›" tag for unimplemented skills.
+- [x] 🟡 **D. XP/hr Estimate** — Show "~1,200 XP/hr" under each active node. Math: `xpPerTick * (1000 / intervalMs) * 3600`. Uses `formatNumber` utility.
+- [x] 🟢 **E. Ticks-to-level** — Under the active node, show "~14 more actions to level up". Math: `Math.ceil((nextLevelXp - currentXp) / xpPerAction)`.
+
+### Persistence
+- [x] 🟡 **F. Restore Active Task on Relaunch** — Verified: `usePersistence` saves full `player` (incl. `activeTask`) on background/30s auto-save. Works by design.
+
+### Accessibility & Readability
+- [x] 🟢 **G. Haptic on level-up** — Already fires in LevelUpToast via `Haptics.notificationAsync`. Verified fires for any skill. No code change needed.
+- [x] 🟢 **H. Long-number formatting** — `utils/formatNumber.ts` created. Applied to XP bars (Skills screen), XP/hr (Mining screen), XP gains (WYWA modal).
+- [x] 🟢 **I. Settings: Reset Save** — "Wipe Save Data" button added to Settings screen behind a two-step destructive Alert.
+- [x] 🟢 **J. Persistent Level Up Toast Fix** — Fixed bug where toast would get stuck or clear its own timer.
+- [x] 🟢 **K. Android Bottom Insets** — Fixed tab bar overlap with gesture navigation bar using `useSafeAreaInsets`.
+- [x] 🟢 **L. XP [current/next] Display** — Replaced flat XP with more informative "current / goal" format.
+- [x] 🟢 **M. Full Card Navigation** — Tapping anywhere on a skill card now navigates into the skill.
+
+### 🎨 VFX & Feedback
+- [x] 🟡 **N. XP Floating Pop-ups** — When XP is gained, show a floating `+XP [Icon]` animation below the XP bar areas. (Includes node icon!)
+- [ ] 🟢 **O. XP Bar "Pulse"** — Subtle glow or flash effect on the XP bar fill when it moves.
+
+### ⚡ Juice & Polish (QoL Backlog)
+- [ ] 🟢 **P. Haptic Heartbeat** — Subtle haptic pulse when a progress bar reaches 100% and resets.
+- [ ] 🟢 **Q. Screen Shake (Gentle)** — Tiny "thud" shake effect when completing a heavy action (e.g. crushing a rock).
+- [ ] 🟢 **R. Contextual Ambience** — Subtle loop icons/animations (birds for logging, waves for fishing) in the screen background.
+- [ ] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
+- [ ] 🟢 **T. Critical Hit VFX** — Larger, golden pop-up for "Critical Gains" (double loot/xp random procs).
+- [ ] 🟢 **U. Quick-Switch Sidebar** — A drawer or small icon set to jump between gathering skills without going back to the Skill list.
+- [ ] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
+- [x] 🟡 **W. Universal Action Ticker** — A persistent, slim progress bar at the top/bottom of the screen showing the *current action loop* (e.g., a 4-second bar for Mining Iron) with the skill emoji. Keeps the "heartbeat" of the game visible even in the Bank/Settings.
+
+### 🌟 Advanced UX & Immersion
+- [ ] 🟢 **X. Pulsing Tab Glow** — Tab icons pulse gold when a level-up occurs or a task finishes until the user visits that screen.
+- [ ] 🟡 **Y. Adaptive App Shortcuts** — Support for Android app icon shortcuts to jump directly into the active skill or Bank.
+- [ ] 🟢 **Z. Advanced Bank Search** — Add a real-time search bar and "Type" filters (Ore, Bar, Item) to the Bank UI.
+- [ ] 🟢 **ZA. Action Haptic Sequence** — A unique rhythmic vibration pattern when starting/stopping different types of skills.
+- [ ] 🟢 **ZB. Skill-Specific Ambience** — Subtle background soundscapes (birds, echoes, waves) that activate based on the open skill screen.
+
+---
+
 ## 🌾 Phase 2 — "The Gathering Pillar & Horizon"
 > **Goal:** Expand gathering options and implement the core retention UI hooks.
 
@@ -308,6 +353,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## 🎯 Current Target
-**We are here → Phase 2 (Gathering Expansion & Combat Foundation)**
+**We are here → Phase 2.2 (Horizon System & Unique Mechanics)**
 
-Phase 1 complete! Next action: Expand gathering skills (Harvesting, Logging, Fishing, Scavenging) and begin combat system stats infrastructure.
+v0.4.1 "Immersion & Utility" deployed! Ticker, Android UI, and RPG Icons are operational. Next action: Build the **Horizon System** (3-tier goal HUD) and complete the Gathering pillar unique mechanics.
+
+---

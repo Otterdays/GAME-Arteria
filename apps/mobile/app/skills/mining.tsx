@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -7,14 +8,49 @@ import { gameActions, SkillId } from '@/store/gameSlice';
 import { MINING_NODES, MiningNode } from '@/constants/mining';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import * as Haptics from 'expo-haptics';
+import { formatNumber, formatXpHr } from '@/utils/formatNumber';
+import { FloatingXpPop } from '@/components/FloatingXpPop';
+
+function xpForLevel(level: number): number {
+    if (level <= 1) return 0;
+    let c = 0;
+    for (let l = 1; l < level; l++) c += Math.floor(l + 300 * Math.pow(2, l / 7)) / 4;
+    return Math.floor(c);
+}
 
 export default function MiningScreen() {
     const dispatch = useAppDispatch();
+    const insets = useSafeAreaInsets();
     const miningSkill = useAppSelector((s) => s.game.player.skills.mining);
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
 
     const isMining = activeTask?.skillId === 'mining';
     const activeNodeId = isMining ? activeTask.actionId : null;
+    const activeNode = MINING_NODES.find(n => n.id === activeNodeId);
+
+    // XP floating pop-up logic
+    const [popTrigger, setPopTrigger] = React.useState(0);
+    const lastXp = React.useRef(miningSkill.xp);
+    const lastGain = React.useRef(0);
+
+    React.useEffect(() => {
+        if (miningSkill.xp > lastXp.current) {
+            const gain = miningSkill.xp - lastXp.current;
+            lastXp.current = miningSkill.xp;
+            lastGain.current = gain;
+            setPopTrigger(t => t + 1);
+        } else {
+            // Keep it in sync if it drops (though it shouldn't)
+            lastXp.current = miningSkill.xp;
+        }
+    }, [miningSkill.xp]);
+
+    // XP progress for header
+    const clvXP = xpForLevel(miningSkill.level);
+    const nlvXP = xpForLevel(miningSkill.level + 1);
+    const xpIntoLevel = Math.max(0, Math.floor(miningSkill.xp - clvXP));
+    const xpNeeded = Math.max(1, nlvXP - clvXP);
+    const pct = miningSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
     const handleNodePress = (node: MiningNode) => {
         if (miningSkill.level < node.levelReq) {
@@ -43,28 +79,48 @@ export default function MiningScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={[styles.container, { paddingTop: insets.top }]}>
             <Stack.Screen
                 options={{
                     title: 'Mining',
-                    headerStyle: { backgroundColor: Palette.bgApp },
-                    headerTintColor: Palette.textPrimary,
-                    headerShadowVisible: false,
-                    headerLeft: () => (
-                        <TouchableOpacity onPress={() => router.back()} style={{ padding: Spacing.sm }}>
-                            <IconSymbol name="chevron.left" size={24} color={Palette.accentPrimary} />
-                        </TouchableOpacity>
-                    ),
+                    headerShown: false, // Use our custom back button layout
                 }}
             />
 
-            {/* Header / Info Section */}
+            <View style={styles.headerRow}>
+                <TouchableOpacity
+                    onPress={() => router.back()}
+                    style={styles.backButton}
+                    accessibilityLabel="Go back"
+                    accessibilityRole="button"
+                >
+                    <Text style={styles.backButtonText}>‹ Back</Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={styles.infoSection}>
                 <View style={styles.levelBadge}>
                     <Text style={styles.levelBadgeText}>Lv. {miningSkill.level}</Text>
                 </View>
                 <Text style={styles.miningTitle}>Mining</Text>
                 <Text style={styles.miningSub}>Swing your pickaxe and gather ores.</Text>
+                {/* XP progress [current/next] */}
+                <View style={styles.xpRow}>
+                    <View style={styles.xpBarBg}>
+                        <View style={[styles.xpBarFill, { width: `${Math.max(1, pct)}%` }]} />
+                    </View>
+                    <Text style={styles.xpText}>
+                        {miningSkill.level >= 99
+                            ? `${formatNumber(miningSkill.xp)} XP — MAX`
+                            : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`}
+                    </Text>
+                    {/* XP Pop-up VFX */}
+                    <FloatingXpPop
+                        amount={lastGain.current}
+                        emoji={activeNode?.emoji || '⛏️'}
+                        triggerKey={popTrigger}
+                    />
+                </View>
             </View>
 
             <ScrollView contentContainerStyle={styles.listContent}>
@@ -101,7 +157,21 @@ export default function MiningScreen() {
                             <View style={[styles.nodeStats, isLocked && { opacity: 0.5 }]}>
                                 <View style={styles.statPill}>
                                     <Text style={styles.statLabel}>XP/Drop</Text>
-                                    <Text style={styles.statValue}>{node.xpPerTick}</Text>
+                                    <Text style={styles.statValue}>{formatNumber(node.xpPerTick)}</Text>
+                                </View>
+                                <View style={styles.statPill}>
+                                    <Text style={styles.statLabel}>XP/hr</Text>
+                                    <Text style={[styles.statValue, { color: Palette.gold }]}>
+                                        {formatXpHr(node.xpPerTick, node.baseTickMs, node.successRate)}
+                                    </Text>
+                                </View>
+                                <View style={styles.statPill}>
+                                    <Text style={styles.statLabel}>To Level</Text>
+                                    <Text style={[styles.statValue, { color: Palette.green }]}>
+                                        {miningSkill.level >= 99
+                                            ? 'MAX'
+                                            : `~${Math.ceil((nlvXP - miningSkill.xp) / node.xpPerTick)}`}
+                                    </Text>
                                 </View>
                                 <View style={styles.statPill}>
                                     <Text style={styles.statLabel}>Time</Text>
@@ -127,7 +197,7 @@ export default function MiningScreen() {
                     );
                 })}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -142,6 +212,22 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: Palette.border,
         backgroundColor: Palette.bgCard,
+    },
+    headerRow: {
+        flexDirection: 'row',
+        paddingHorizontal: Spacing.md,
+        paddingTop: Spacing.sm,
+        paddingBottom: Spacing.xs,
+        backgroundColor: Palette.bgApp,
+    },
+    backButton: {
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 6,
+    },
+    backButtonText: {
+        color: Palette.accentPrimary,
+        fontSize: FontSize.md,
+        fontWeight: '600',
     },
     levelBadge: {
         backgroundColor: Palette.skillMining + '33', // slightly transparent
@@ -254,5 +340,28 @@ const styles = StyleSheet.create({
         color: Palette.white,
         fontWeight: 'bold',
         fontSize: FontSize.base,
+    },
+    // XP progress bar in header
+    xpRow: {
+        width: '100%',
+        marginTop: Spacing.md,
+        gap: 4,
+    },
+    xpBarBg: {
+        height: 6,
+        backgroundColor: Palette.bgApp,
+        borderRadius: Radius.full,
+        overflow: 'hidden',
+        width: '100%',
+    },
+    xpBarFill: {
+        height: '100%',
+        borderRadius: Radius.full,
+        backgroundColor: Palette.skillMining,
+    },
+    xpText: {
+        fontSize: FontSize.xs,
+        color: Palette.textSecondary,
+        textAlign: 'center',
     },
 });
