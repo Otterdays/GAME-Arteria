@@ -35,7 +35,7 @@ interface SkillState {
     mastery: Record<string, number>;
 }
 
-interface InventoryItem {
+export interface InventoryItem {
     id: string;
     quantity: number;
 }

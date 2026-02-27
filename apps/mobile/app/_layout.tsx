@@ -9,6 +9,7 @@ import { store } from '@/store';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { usePersistence } from '@/hooks/usePersistence';
 import UpdatesModal from '@/components/UpdatesModal';
+import WhileYouWereAway from '@/components/WhileYouWereAway';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -32,6 +33,7 @@ function AppShell() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <UpdatesModal />
+      <WhileYouWereAway />
       <StatusBar style="light" />
     </ThemeProvider>
   );
