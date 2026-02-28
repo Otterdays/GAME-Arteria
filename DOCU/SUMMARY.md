@@ -18,6 +18,7 @@
 | **SCRATCHPAD.md** | Active task, history, next steps, blockers. Compact at 500 lines. |
 | **CHANGELOG.md** | Version history (Keep a Changelog format). |
 | **FUTURE_NOTES.md** | Research & forward planning (SDK 55 migration, MMKV, game loop patterns). |
+| **PEOPLE_TO_ADD.md** | Names for future inclusion in the game (NPCs, credits, companions, etc.) — reference only. |
 | **My_Thoughts.md** | Decisions & rationale (e.g. EAS build times, Fast Refresh). |
 | **SBOM.md** | Security Bill of Materials — packages, versions, update tracking. |
 | **EXPO_GUIDE.md** | Expo/EAS workflow, CNG, when to build vs OTA, monorepo config. |

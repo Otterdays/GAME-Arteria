@@ -162,6 +162,14 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Seasonal/date hook:** Weekly yield logic for Logging.
 - [x] 🟢 **Gathering skill tooltips:** Same pattern as Mining (node name, level, yield, tick) for Harvesting, Logging, Fishing, Scavenging.
 
+### 2.3 — Nick's Shop (Gold Vendor) 🟡
+> **Merchant:** Nick (see DOCU/PEOPLE_TO_ADD.md). NPC vendor for gold buy/sell per zhipu-ai.md Shop System.
+- [x] 🟢 **Shop catalog data:** Define items Nick sells (e.g. ores, bars, supplies) and buy price per item (e.g. 2× base value). Shared with ITEM_META where possible. (`SHOP_CATALOG` in `constants/items.ts`.)
+- [x] 🟢 **Redux buyItem:** Action to spend gold and add item(s) to inventory; respect INVENTORY_SLOT_CAP (no buy if at cap unless stacking).
+- [x] 🟢 **Shop screen UI:** Replace placeholder with Buy/Sell toggle, category tabs (General / Resources / Equipment), item list with price and Buy/Sell. Merchant name "Nick" in header or subtitle.
+- [x] 🟢 **Sell from Shop:** Reuse existing sellItem; optional: "Sell" tab shows player inventory with sell prices (or link to Bank for selling).
+- [ ] 🟡 **Sell price multiplier (optional):** Apply merchant sell ratio (e.g. 50% of ITEM_META.sellValue) when selling to Nick; document for future Barter skill hook.
+
 ---
 
 ## 🔨 Phase 3 — "The Crafting Engine"

@@ -70,7 +70,7 @@ Below is a structured baseline sheet divided by functional modules.
 | Feature | Description | Data Requirements |
 | :--- | :--- | :--- |
 | **Bank System** | Infinite or expandable storage for all items. Unlike MMOs, there is no weight limit usually, just slot limits. | `Inventory[]` Array; ItemID & Quantity. |
-| **Shop System** | An NPC vendor to sell items for Gold and buy basic supplies. | Buy/Sell price multipliers (e.g., sell for 10% of value). |
+| **Shop System** | An NPC vendor to sell items for Gold and buy basic supplies. | Buy/Sell price multipliers (e.g., sell for 10% of value). *Merchant NPC is referenced as **Nick** (see DOCU/PEOPLE_TO_ADD.md).* |
 | **Equipment System** | Paper-doll slots (Head, Body, Legs, Weapon, Shield, Boots, Ring, Amulet). Items provide stat bonuses. | EquipReq (Level requirements); StatBonus struct. |
 
 ---

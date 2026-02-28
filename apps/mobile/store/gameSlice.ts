@@ -372,7 +372,7 @@ export const gameSlice = createSlice({
             state.lootVacuumQueue = state.lootVacuumQueue.filter((e) => e.id !== action.payload);
         },
 
-        /** Sell an item */
+        /** Sell an item (to Nick / merchant). */
         sellItem(state, action: PayloadAction<{ id: string; quantity: number; pricePer: number }>) {
             const { id, quantity, pricePer } = action.payload;
             const item = state.player.inventory.find(i => i.id === id);
@@ -382,6 +382,22 @@ export const gameSlice = createSlice({
             }
             // Cleanup zero quantities
             state.player.inventory = state.player.inventory.filter(i => i.quantity > 0);
+        },
+
+        /** Buy item from Nick's Shop. Respects gold and INVENTORY_SLOT_CAP. [TRACE: ROADMAP 2.3] */
+        buyItem(state, action: PayloadAction<{ id: string; quantity: number; totalCost: number }>) {
+            const { id, quantity, totalCost } = action.payload;
+            if (state.player.gold < totalCost || quantity < 1) return;
+            const existing = state.player.inventory.find((i) => i.id === id);
+            const canStack = !!existing;
+            const needNewSlot = !existing && state.player.inventory.length >= INVENTORY_SLOT_CAP;
+            if (needNewSlot) return;
+            state.player.gold -= totalCost;
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                state.player.inventory.push({ id, quantity });
+            }
         },
 
         /** Toggle item lock state */

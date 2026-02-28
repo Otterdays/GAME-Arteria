@@ -29,3 +29,12 @@ const UNKNOWN: ItemMeta = { emoji: '❓', label: 'Unknown Item', sellValue: 1, d
 export function getItemMeta(id: string): ItemMeta {
   return ITEM_META[id] ?? { ...UNKNOWN, label: id.replace(/_/g, ' ') };
 }
+
+/** Nick's Shop — items the merchant sells and their buy price (gold per unit). [TRACE: ROADMAP 2.3] */
+export const SHOP_CATALOG: { id: string; buyPrice: number }[] = [
+  { id: 'copper_ore', buyPrice: 8 },
+  { id: 'tin_ore', buyPrice: 8 },
+  { id: 'iron_ore', buyPrice: 28 },
+  { id: 'coal', buyPrice: 42 },
+  { id: 'gold_ore', buyPrice: 110 },
+];

@@ -2,8 +2,14 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Phase 2.2 Polish & Phase 3 Combat Foundation
-**Current Focus:** Local APK build working (root index.js + gradlew assembleRelease). APK at `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
+**Active Task:** Phase 2.3 Nick's Shop done; Phase 3 Combat Foundation next.
+**Current Focus:** Nick's Shop (Gold Vendor) implemented: SHOP_CATALOG, buyItem, Shop screen with Buy/Sell tabs, Nick in header. APK at `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
+
+## [2026-02-27] People to Add in the Game (future reference)
+- Names for future inclusion in the game: **Ryan**, **James**, **Mike**, **(Another) Ryan**, **Nick**, **Bianca**, **Remington**, **Kate**, **Mini**.
+- Canonical list: **DOCU/PEOPLE_TO_ADD.md** — update there when adding/using names; decide context per name (NPC, credit, companion, etc.) when implementing.
+- **Nick** assigned as **Merchant** — NPC vendor for the Shop screen (gold buy/sell). See PEOPLE_TO_ADD.md "Assigned roles" and zhipu-ai.md Shop System.
+- **Nick's Shop implemented (2026-02-27):** ROADMAP 2.3. `SHOP_CATALOG` in `constants/items.ts` (copper/tin/iron/coal/gold_ore + buy prices). `gameSlice.buyItem` respects gold and slot cap. Shop screen: header "Nick — Merchant", Buy/Sell toggle, Buy list with qty 1/5/10 and Buy button, Sell list with filters (All/Ores/Bars/Other) and Sell 1/Sell All; locked items disabled on Sell tab.
 
 ## [2026-02-27] 5 Quick Wins from Docs
 - **1. Error Boundary (ROADMAP Phase 0):** `ErrorBoundary` component wraps root layout; shows "Something went wrong" + Try Again on render crash.
