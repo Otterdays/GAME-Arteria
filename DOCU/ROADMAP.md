@@ -71,13 +71,13 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Active node highlight:** Clear visual state for "currently training" vein (e.g. border or accent).
 
 ### 1.3 — Bank & Inventory UI 🟡
-- [ ] 🟢 **Grid System:** Render a responsive grid (using `FlatList` or `FlashList`) of owned items (ores, materials).
-- [ ] 🟢 **Item Badges:** Visual count indicators on item icons.
-- [ ] 🟢 **Gold Currency UI:** Persistent gold tracking at the top of the Bank screen.
-- [ ] 🟡 **Data Roundtrip Test:** Verify player mines item -> item appears in Bank -> item persists after restarting app.
-- [ ] 🟡 **Item Details Modal:** Tap item to see description, sell value, and "used in" recipes.
+- [x] 🟢 **Grid System:** Render a responsive grid (using `FlatList` or `FlashList`) of owned items (ores, materials).
+- [x] 🟢 **Item Badges:** Visual count indicators on item icons.
+- [x] 🟢 **Gold Currency UI:** Persistent gold tracking at the top of the Bank screen.
+- [x] 🟡 **Data Roundtrip Test:** Verify player mines item -> item appears in Bank -> item persists after restarting app.
+- [x] 🟡 **Item Details Modal:** Tap item to see description, sell value, and "used in" recipes. (Including Selling support!)
 - [ ] 🟢 **Empty slots:** Show placeholder or empty cell for unused bank slots (if slot limit exists).
-- [ ] 🟢 **Sort/filter placeholder:** UI hook for "All / Ores / Bars / Other" or sort by name/quantity (can stub).
+- [x] 🟢 **Sort/filter placeholder:** UI hook for "All / Ores / Bars / Other" or sort by name/quantity (can stub).
 
 ### 1.4 — Welcome Back & Offline UX 🟡
 - [ ] 🟢 **"While You Were Away" modal:** Show on foreground after offline calc (XP gained, items looted, time elapsed).
@@ -349,6 +349,41 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Bank/Inventory:** Use FlatList/FlashList with stable keys; avoid inline object creation in render.
 - [ ] 🟢 **Tick loop:** Ensure single source of truth; avoid dispatching every tick if batching is possible.
 - [ ] 🟢 **MMKV read frequency:** Don't read full save on every tick; only on foreground load and save on background.
+
+---
+
+## 💡 Brainstormed Additions & Juice Backlog
+> **Goal:** Massive list of granular ideas, deep resource sinks, and thematic absurdities to keep the game infinitely engaging.
+
+### 🎒 Bank & Inventory QoL
+- [x] 🟢 **Item Locking:** A toggle to "Lock" an item so it cannot be sold, consumed, or crafted with accidentally.
+- [ ] 🟡 **Custom Bank Tabs:** Let players buy (with gold) custom tabs and assign an emoji (⚔️, 🐟, 💎) to sort their hoard.
+- [ ] 🟢 **"Sell All Junk" Button:** A one-tap button to clear out grey/common items marked as junk.
+
+### 🎨 UI/UX Juice & Flavor
+- [ ] 🟢 **Battery Saver Mode:** Dim, 1 FPS "true black" screen mode that activates if the screen hasn't been touched in 5 minutes, saving battery while keeping the foreground loop active.
+- [ ] 🟡 **Swipe Navigation:** Swipe left/right to instantly jump between gathering skills without returning to the main menu.
+- [ ] 🟢 **Detailed Statistics Page:** A screen showing "Total Ores Mined," "Total Damage Dealt," "Days since you last touched grass," etc.
+- [ ] 🟡 **Dynamic Backgrounds:** Background color/styling subtly shifts based on real-world time of day.
+- [ ] 🟢 **The "Jackpot" Haptic:** When you roll a Mythic drop, the phone vibrates to the tune of a little fanfare.
+- [ ] 🟢 **Idle Soundscapes:** A toggle for "White Noise" (e.g., rhythmic clinking of a forge, swoosh of a fishing rod).
+- [ ] 🟢 **The "Don't Push This" Button:** A literal button deep in settings. Pressing it 1,000 times gives a unique Title: "The Stubborn".
+
+### ♻️ Deep Resource Sinks & Meta-Progression
+- [ ] 🔴 **The "Recycler" / Deconstruction:** A machine/skill to throw obsolete low-tier resources (or old gear) to generate "Cosmic Dust" for endgame upgrades.
+- [ ] 🔴 **Mastery Pools & Item Mastery:** Gain "Mastery XP" for specific items (e.g., crafting Iron Swords). At Lv 50, Copper Veins never deplete. At Lv 99, crafting Iron Sword has 10% duplicate chance.
+- [ ] 🔴 **Relics & The Museum (Collection Log):** 1 in 10,000 chance to find a "Relic" anywhere. Relics give permanent global buffs (e.g., Fossilized Pickaxe = +2% mining speed).
+- [ ] 🟡 **Pets & Familiars:** Very rare drops from activities. Examples: Rocky the Pet Rock (+1% double ore), The Void-Guppy (Eats 10% fish, poops Aether Shards).
+- [ ] 🔴 **Equipment Augmentation / Refining:** Combine 10 base Iron Swords to make an Iron Sword +1. Combine 10 +1s to make a +2. Infinite sink for crafted items.
+
+### 🌌 Cosmic & Blibbertooth Anomalies
+- [ ] 🔴 **Cosmic Weather / Anomalies:** Daily global buffs/debuffs. "Gravity is Hiccuping" (Logging takes 10% longer, Ranged combat +20% damage).
+- [ ] 🟡 **"Cursed" Mechanics (via Scavenging):** Terrible items with hidden uses. "The Heavy Helmet" (-50% attack speed, but confuses enemy turn 1). "Ring of Clumsiness" (5% chance to drop weapon for massive damage).
+
+### ⚔️ Idle Combat Staples
+- [ ] 🔴 **Idle Boss Takedowns:** Bosses with 10 Billion HP. You assign your character to "Auto-Attack" it. Takes 3 real-world days to chip away to 0, granting a massive chest.
+- [ ] 🔴 **The Gambit System (Auto-Combat Programming):** Program offline combat logic. "IF HP < 30% -> USE Health Potion." "IF Enemy Stunned -> USE Heavy Attack."
+- [ ] 🔴 **Offline Raiding Parties:** Assemble a "B-Team" of Companions and send them on a 12-hour real-time Expedition. Return with a report and loot.
 
 ---
 

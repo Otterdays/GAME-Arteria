@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
@@ -30,10 +30,11 @@ export default function MiningScreen() {
     const activeNodeId = isMining ? activeTask.actionId : null;
     const activeNode = MINING_NODES.find(n => n.id === activeNodeId);
 
-    // XP floating pop-up logic
+    // XP floating pop-up logic + Q. Screen shake on tick complete
     const [popTrigger, setPopTrigger] = React.useState(0);
     const lastXp = React.useRef(miningSkill.xp);
     const lastGain = React.useRef(0);
+    const shakeAnim = React.useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
         if (miningSkill.xp > lastXp.current) {
@@ -41,11 +42,15 @@ export default function MiningScreen() {
             lastXp.current = miningSkill.xp;
             lastGain.current = gain;
             setPopTrigger(t => t + 1);
+            // Q. Gentle screen shake when completing a mining tick
+            shakeAnim.setValue(0);
+            Animated.timing(shakeAnim, { toValue: 1, duration: 200, useNativeDriver: true }).start(() => shakeAnim.setValue(0));
         } else {
-            // Keep it in sync if it drops (though it shouldn't)
             lastXp.current = miningSkill.xp;
         }
-    }, [miningSkill.xp]);
+    }, [miningSkill.xp, shakeAnim]);
+
+    const shakeX = shakeAnim.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, 4, -4, 4, 0] });
 
     // XP progress for header
     const clvXP = xpForLevel(miningSkill.level);
@@ -81,7 +86,7 @@ export default function MiningScreen() {
     };
 
     return (
-        <View style={[styles.container, { paddingTop: insets.top }]}>
+        <Animated.View style={[styles.container, { paddingTop: insets.top }, { transform: [{ translateX: shakeX }] }]}>
             <Stack.Screen
                 options={{
                     title: 'Mining',
@@ -210,7 +215,7 @@ export default function MiningScreen() {
                     );
                 })}
             </ScrollView>
-        </View>
+        </Animated.View>
     );
 }
 

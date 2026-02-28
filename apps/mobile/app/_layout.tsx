@@ -14,6 +14,7 @@ import LevelUpToast from '@/components/LevelUpToast';
 import TrainToast from '@/components/TrainToast';
 import LootVacuum from '@/components/LootVacuum';
 import { GlobalActionTicker } from '@/components/GlobalActionTicker';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -51,7 +52,9 @@ function AppShell() {
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <AppShell />
+      <ErrorBoundary>
+        <AppShell />
+      </ErrorBoundary>
     </Provider>
   );
 }

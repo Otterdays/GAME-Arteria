@@ -8,9 +8,15 @@ import { gameActions } from '@/store/gameSlice';
 import { getItemMeta } from '@/constants/items';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const START_Y = SCREEN_HEIGHT * 0.5;
-const END_X = SCREEN_WIDTH * 0.55;
-const END_Y = SCREEN_HEIGHT - 80;
+const ICON_SIZE = 40;
+const HALF = ICON_SIZE / 2;
+// Start: center of screen (icon center at SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+const START_X = SCREEN_WIDTH / 2 - HALF;
+const START_Y = SCREEN_HEIGHT / 2 - HALF;
+// End: center of Bank tab (3rd of 5 tabs ≈ 50% width, bottom area)
+const END_X = SCREEN_WIDTH * 0.5 - HALF;
+const END_Y = SCREEN_HEIGHT - 72;
+const FLY_DURATION = 1200;
 
 function FlyingIcon({
   id,
@@ -22,7 +28,7 @@ function FlyingIcon({
   onComplete: () => void;
 }) {
   const meta = getItemMeta(itemId);
-  const posX = useRef(new Animated.Value(SCREEN_WIDTH / 2 - 20)).current;
+  const posX = useRef(new Animated.Value(START_X)).current;
   const posY = useRef(new Animated.Value(START_Y)).current;
   const opacity = useRef(new Animated.Value(1)).current;
   const scale = useRef(new Animated.Value(1)).current;
@@ -32,17 +38,17 @@ function FlyingIcon({
   useEffect(() => {
     Animated.parallel([
       Animated.timing(posX, {
-        toValue: END_X - 20,
-        duration: 600,
+        toValue: END_X,
+        duration: FLY_DURATION,
         useNativeDriver: true,
       }),
       Animated.timing(posY, {
-        toValue: END_Y - 20,
-        duration: 600,
+        toValue: END_Y,
+        duration: FLY_DURATION,
         useNativeDriver: true,
       }),
       Animated.sequence([
-        Animated.delay(400),
+        Animated.delay(FLY_DURATION - 200),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 200,
@@ -51,7 +57,7 @@ function FlyingIcon({
       ]),
       Animated.timing(scale, {
         toValue: 0.6,
-        duration: 600,
+        duration: FLY_DURATION,
         useNativeDriver: true,
       }),
     ]).start(() => onCompleteRef.current());
@@ -100,8 +106,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    width: 40,
-    height: 40,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 9997,

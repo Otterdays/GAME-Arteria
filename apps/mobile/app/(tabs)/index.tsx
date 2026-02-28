@@ -122,6 +122,8 @@ function SkillCard({
         isActive && styles.skillCardActive,
         !isImplemented && styles.skillCardLocked,
       ]}
+      accessibilityRole="button"
+      accessibilityLabel={`${meta.label}, level ${skill.level}. ${isImplemented ? (isActive ? 'Stop training' : 'Train') : 'Coming in Phase 2'}`}
     >
       {/* Header row */}
       <View style={styles.skillHeader}>
@@ -144,6 +146,8 @@ function SkillCard({
               onTrain(skillId);
             }}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={isActive ? `Stop ${meta.label}` : `Train ${meta.label}`}
           >
             <Text style={styles.trainButtonText}>
               {isActive ? 'Stop' : 'Train'}
@@ -224,6 +228,10 @@ export default function SkillsScreen() {
     [activeTask, dispatch]
   );
 
+  const horizonHudEnabled = useAppSelector(
+    (s) => s.game.player.settings?.horizonHudEnabled ?? true
+  );
+
   const handleNavigate = useCallback(
     (skillId: SkillId) => {
       router.push(`/skills/${skillId}` as any);
@@ -289,7 +297,7 @@ export default function SkillsScreen() {
               : 'Awaiting action...'}
           </Text>
         </View>
-        <HorizonHUD />
+        {horizonHudEnabled && <HorizonHUD />}
       </View>
 
       {/* A. Skill list — grouped by pillar */}

@@ -3,17 +3,19 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpac
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { deleteSave } from '@/store/persistence';
 
 function SettingsRow({
     label,
     value,
+    onValueChange,
     description,
 }: {
     label: string;
     value?: boolean;
+    onValueChange?: (v: boolean) => void;
     description?: string;
 }) {
     return (
@@ -27,6 +29,7 @@ function SettingsRow({
             {value !== undefined && (
                 <Switch
                     value={value}
+                    onValueChange={onValueChange}
                     thumbColor={Palette.white}
                     trackColor={{
                         false: Palette.bgApp,
@@ -40,6 +43,14 @@ function SettingsRow({
 
 export default function SettingsScreen() {
     const dispatch = useAppDispatch();
+    const bankPulseEnabled = useAppSelector(
+        (s) => s.game.player.settings?.bankPulseEnabled ?? true
+    );
+    const horizonHudEnabled = useAppSelector(
+        (s) => s.game.player.settings?.horizonHudEnabled ?? true
+    );
+    const sfxEnabled = useAppSelector((s) => s.game.player.settings?.sfxEnabled ?? true);
+    const bgmEnabled = useAppSelector((s) => s.game.player.settings?.bgmEnabled ?? true);
 
     // QoL I — Reset save with confirmation
     const handleResetSave = () => {
@@ -73,6 +84,18 @@ export default function SettingsScreen() {
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Gameplay</Text>
                 <SettingsRow
+                    label="Bank Tab Pulse"
+                    value={bankPulseEnabled}
+                    onValueChange={(v) => dispatch(gameActions.setBankPulseEnabled(v))}
+                    description="Gold glow on Bank tab when gaining loot"
+                />
+                <SettingsRow
+                    label="Horizon HUD"
+                    value={horizonHudEnabled}
+                    onValueChange={(v) => dispatch(gameActions.setHorizonHudEnabled(v))}
+                    description="Goal cards (Immediate / Session / Grind) on Skills screen"
+                />
+                <SettingsRow
                     label="Offline Progression"
                     value={true}
                     description="Calculate progress while app is closed"
@@ -81,6 +104,22 @@ export default function SettingsScreen() {
                     label="Confirm Task Switch"
                     value={false}
                     description="Ask before switching active tasks"
+                />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Audio</Text>
+                <SettingsRow
+                    label="Sound Effects"
+                    value={sfxEnabled}
+                    onValueChange={(v) => dispatch(gameActions.setSfxEnabled(v))}
+                    description="Haptics, ticks, level-up feedback"
+                />
+                <SettingsRow
+                    label="Background Music"
+                    value={bgmEnabled}
+                    onValueChange={(v) => dispatch(gameActions.setBgmEnabled(v))}
+                    description="Ambient music (coming soon)"
                 />
             </View>
 

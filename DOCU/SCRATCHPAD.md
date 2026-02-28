@@ -2,8 +2,21 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Finalizing local APK build & Phase 2.2 Polish
-**Current Focus:** Fixed "No device found" error in APK build by using direct Gradle assembly.
+**Active Task:** Phase 2.2 Polish & Phase 3 Combat Foundation
+**Current Focus:** Local APK build working (root index.js + gradlew assembleRelease). APK at `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
+
+## [2026-02-27] 5 Quick Wins from Docs
+- **1. Error Boundary (ROADMAP Phase 0):** `ErrorBoundary` component wraps root layout; shows "Something went wrong" + Try Again on render crash.
+- **2. Screen Shake (ROADMAP Q):** Gentle 4px shake on Mining screen when XP gains (tick complete). Animated sequence 200ms.
+- **3. Accessibility (ROADMAP Phase 1.5):** Skill cards + Train buttons have `accessibilityRole` and `accessibilityLabel`. Mining nodes already had them.
+- **4. Settings: Sound/Music (ROADMAP Phase 7.3):** SFX and BGM toggles in Settings → Audio. Persisted in player.settings. No-op for now.
+- **5. Analytics Placeholder (ROADMAP Phase 1.5):** `logger.info('Analytics', 'skill_started', {...})` and `level_up` in gameSlice. Logger extended with 'Analytics' module.
+
+## [2026-02-27] Yellow & Blue on Skills/Mining Screen — Source
+- **Reported:** "Weird yellow and blue thinings" on the mining/Skills screen.
+- **Source (recent, v0.4.5):** `HorizonHUD` — three gradient cards: **Immediate** (blue: accentPrimary→accentDim), **Session** (gold/yellow: gold→goldDim), **Grind** (purple). These sit below the header XP bar on the Skills screen.
+- **Also:** Mining XP bar uses `Palette.skillMining` (#b87333, copper/orange); active skill card border uses `Palette.accentPrimary` (blue). Design spec (zhip-ai-styling.md §4.1) says "Positive → XP gains, progress bars" should use green (#4caf50), not skill-specific colors.
+- **If adjusting:** Consider aligning XP bars with design spec (green) or toning Horizon gradients to match the dark theme.
 
 ## [2026-02-26] Bundling Fix — "Unable to resolve ../../App"
 - **Symptom:** `Android Bundling failed … Unable to resolve "../../App" from "node_modules\expo\AppEntry.js"` when starting Expo from monorepo root.
@@ -11,10 +24,11 @@
 - **Fix:** Root `package.json` now has `"main": "apps/mobile/index.js"`. When Expo runs from root, Metro uses that entry (expo-router) instead of AppEntry.js.
 - **Recommendation:** Prefer running from `apps/mobile`: use `0_Start_Dev_Server.bat`, or `npm run mobile` from root, or `cd apps/mobile && npx expo start`.
 
-## [2026-02-27] APK Build Fix (V2)
-- **Problem:** `2_Build_APK_Local.bat` used `npx expo run:android --variant release`, which crashes if no Android device is connected.
-- **Fix:** Switched to `cd apps/mobile/android && gradlew assembleRelease`. This compiles the APK without requiring a connected device.
-- **Output:** APK is successfully generated at `apps/mobile/android/app/build/outputs/apk/release/app-release.apk`.
+## [2026-02-27] APK Build — What Was Wrong & How It Works Now
+- **Problem:** `2_Build_APK_Local.bat` used `npx expo run:android --variant release`, which expects a connected device/emulator; with none, the build fails or misbehaves.
+- **Fix (batch file):** Script now `cd`s to `apps\mobile\android` and runs `gradlew.bat assembleRelease`. Gradle runs the JS bundle via Expo (`bundleCommand = "export:embed"`) with project root `apps/mobile`, so no device is required. APK output: `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
+- **If you run Gradle manually in PowerShell:** (1) You must be in `apps\mobile\android` (where `gradlew.bat` lives). (2) PowerShell does not run scripts from the current directory unless you prefix them: use **`.\gradlew.bat assembleRelease`**, not `gradlew`. (3) Do not use `&&` in PowerShell (use `;` or separate commands). Prefer running `2_Build_APK_Local.bat` so CMD handles the path and invocation.
+- **[2026-02-27] "Unable to resolve module ./index.js from C:\\...\\Arteria/.":** Metro resolves from repo root; RN Gradle plugin ignores `root`. `expo run:android --no-install` still requires a device. **Fix:** Created root `index.js` that `require("./apps/mobile/index.js")` so Metro finds ./index.js when resolving from Arteria. Batch file reverted to `gradlew assembleRelease` from apps\mobile\android (no device). **Result:** APK builds successfully without a connected device.
 
 ## Active Sprint: v0.4.3 "Bank & Juice"
 - [x] **Z. Bank Search + Filters:** Search bar, Ores/Bars/Other filters, shared items.ts.

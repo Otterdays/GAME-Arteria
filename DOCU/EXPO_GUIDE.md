@@ -86,7 +86,7 @@ When EAS credits are exhausted, use the **local build** to produce a shareable A
 
 **Run:** `2_Build_APK_Local.bat`
 
-This runs `npx expo run:android --variant release` from `apps/mobile`, ensuring Metro uses the correct monorepo project root (avoids "Unable to resolve module ./index.js" when bundling from root).
+This runs `gradlew assembleRelease` from `apps\mobile\android` (no device required). Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`, fixing "Unable to resolve module ./index.js".
 
 APK output:
 ```

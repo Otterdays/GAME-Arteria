@@ -25,10 +25,11 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, InventoryItem } from '@/store/gameSlice';
 
 // ── Item Cell ────────────────────────────────────────────────────────────────
-function ItemCell({ item, onPress }: { item: InventoryItem; onPress: (item: InventoryItem) => void }) {
+function ItemCell({ item, onPress }: { item: InventoryItem; onPress: (itemId: string) => void }) {
     const meta = getItemMeta(item.id);
     return (
-        <TouchableOpacity style={styles.cell} onPress={() => onPress(item)} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.cell} onPress={() => onPress(item.id)} activeOpacity={0.7}>
+            {item.isLocked && <Text style={styles.cellLocked}>🔒</Text>}
             <Text style={styles.cellEmoji}>{meta.emoji}</Text>
             <Text style={styles.cellQty}>{item.quantity >= 1000
                 ? `${(item.quantity / 1000).toFixed(1)}k`
@@ -40,7 +41,9 @@ function ItemCell({ item, onPress }: { item: InventoryItem; onPress: (item: Inve
 }
 
 // ── Item Detail Modal ────────────────────────────────────────────────────────
-function ItemDetailModal({ item, onClose }: { item: InventoryItem | null; onClose: () => void }) {
+function ItemDetailModal({ itemId, onClose }: { itemId: string | null; onClose: () => void }) {
+    const dispatch = useAppDispatch();
+    const item = useAppSelector((s) => s.game.player.inventory.find((i) => i.id === itemId));
     if (!item) return null;
     const meta = getItemMeta(item.id);
     return (
@@ -73,6 +76,39 @@ function ItemDetailModal({ item, onClose }: { item: InventoryItem | null; onClos
                     <View style={styles.detailSeparator} />
                     <Text style={styles.detailRecipeHint}>⚗️ Used in recipes: Coming in Phase 1.3+</Text>
 
+                    <View style={styles.detailActionRow}>
+                        <TouchableOpacity
+                            style={[styles.detailSellButton, item.isLocked && styles.detailSellButtonDisabled]}
+                            disabled={item.isLocked}
+                            onPress={() => dispatch(gameActions.sellItem({ id: item.id, quantity: 1, pricePer: meta.sellValue }))}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={styles.detailSellText}>Sell 1</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.detailSellButton, item.isLocked && styles.detailSellButtonDisabled]}
+                            disabled={item.isLocked}
+                            onPress={() => {
+                                dispatch(gameActions.sellItem({ id: item.id, quantity: item.quantity, pricePer: meta.sellValue }));
+                                onClose();
+                            }}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={styles.detailSellText}>Sell All</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity
+                        style={[styles.detailLockButton, item.isLocked && styles.detailLockButtonActive]}
+                        onPress={() => dispatch(gameActions.toggleItemLock(item.id))}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={[styles.detailLockText, item.isLocked && styles.detailLockTextActive]}>
+                            {item.isLocked ? '🔒 Item Locked' : '🔓 Unlocked (Tap to Lock)'}
+                        </Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity style={styles.detailClose} onPress={onClose} activeOpacity={0.8}>
                         <Text style={styles.detailCloseText}>Close</Text>
                     </TouchableOpacity>
@@ -94,7 +130,7 @@ export default function BankScreen() {
     const dispatch = useAppDispatch();
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const gold = useAppSelector((s) => s.game.player.gold);
-    const [selected, setSelected] = useState<InventoryItem | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState<ItemType | 'all'>('all');
 
@@ -115,7 +151,7 @@ export default function BankScreen() {
     }, [dispatch]));
 
     const renderItem = ({ item }: ListRenderItemInfo<InventoryItem>) => (
-        <ItemCell item={item} onPress={setSelected} />
+        <ItemCell item={item} onPress={setSelectedId} />
     );
 
     const totalWorth = inventory.reduce((acc, item) => {
@@ -200,7 +236,7 @@ export default function BankScreen() {
             )}
 
             {/* Item Detail Modal */}
-            <ItemDetailModal item={selected} onClose={() => setSelected(null)} />
+            <ItemDetailModal itemId={selectedId} onClose={() => setSelectedId(null)} />
         </SafeAreaView>
     );
 }
@@ -312,6 +348,12 @@ const styles = StyleSheet.create({
         padding: Spacing.xs,
     },
     cellEmoji: { fontSize: 28, marginBottom: 2 },
+    cellLocked: {
+        fontSize: FontSize.xs,
+        position: 'absolute',
+        top: 6,
+        left: 6,
+    },
     cellQty: {
         fontSize: FontSize.sm,
         fontWeight: '700',
@@ -385,9 +427,44 @@ const styles = StyleSheet.create({
         color: Palette.textMuted,
         textAlign: 'center',
         fontStyle: 'italic',
+        marginBottom: Spacing.md,
     },
+    detailActionRow: {
+        flexDirection: 'row',
+        gap: Spacing.sm,
+        marginTop: Spacing.xs,
+    },
+    detailSellButton: {
+        flex: 1,
+        backgroundColor: Palette.bgCard,
+        paddingVertical: 10,
+        borderRadius: Radius.md,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: Palette.gold,
+    },
+    detailSellButtonDisabled: {
+        borderColor: Palette.border,
+        opacity: 0.5,
+    },
+    detailSellText: { color: Palette.gold, fontWeight: '700', fontSize: FontSize.sm },
+    detailLockButton: {
+        marginTop: Spacing.md,
+        backgroundColor: Palette.bgApp,
+        paddingVertical: 10,
+        borderRadius: Radius.md,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: Palette.border,
+    },
+    detailLockButtonActive: {
+        borderColor: Palette.red,
+        backgroundColor: Palette.red + '11',
+    },
+    detailLockText: { color: Palette.textSecondary, fontWeight: '600', fontSize: FontSize.sm },
+    detailLockTextActive: { color: Palette.red },
     detailClose: {
-        marginTop: Spacing.lg,
+        marginTop: Spacing.md,
         backgroundColor: Palette.accentPrimary,
         paddingVertical: 12,
         borderRadius: Radius.md,

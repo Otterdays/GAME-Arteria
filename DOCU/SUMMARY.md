@@ -33,6 +33,8 @@
 
 **Entry point (2026-02-26):** If you start the dev server from the repo root, root `package.json` now has `"main": "apps/mobile/index.js"` so Metro uses Expo Router instead of the default AppEntry (which expected a root `App`). Prefer running from `apps/mobile` (e.g. `0_Start_Dev_Server.bat` or `npm run mobile`).
 
+**Local APK build (2026-02-27):** `2_Build_APK_Local.bat` produces a release APK without a connected device. Uses `gradlew assembleRelease` from `apps\mobile\android`. Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`. Output: `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
+
 **Platform:** Modern Android (React Native via Expo SDK 54)
 **Timeline Base:** February 26, 2026
 

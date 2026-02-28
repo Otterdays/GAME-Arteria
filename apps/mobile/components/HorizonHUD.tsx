@@ -115,7 +115,7 @@ export const HorizonHUD = () => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: Spacing.sm,
+        paddingVertical: Spacing.md,
         backgroundColor: Palette.bgCard,
     },
     scrollContent: {
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         width: 180,
+        minHeight: 120,
         borderRadius: Radius.lg,
         overflow: 'hidden',
         elevation: 8,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: Spacing.sm,
     },
     goalLabel: {
         fontSize: 10,

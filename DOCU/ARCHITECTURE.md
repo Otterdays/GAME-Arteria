@@ -14,15 +14,17 @@
 - **Routing:** Expo Router v6.0.23 (file-based)
 - **Animations:** React Native Reanimated v4.1.6
 - **Testing:** Jest 29.7 + ts-jest 29.4 (engine package)
-- **Build System:** Local Android builds via `npx expo run:android` (primary) + EAS for cloud/production builds
+- **Build System:** Local APK via `2_Build_APK_Local.bat` (Gradle from `apps/mobile/android`, no device) + EAS for cloud/production builds
 
 ## Monorepo Structure (npm workspaces)
 
 ```
 Arteria/
 ├── babel.config.js          # Root Babel config (required for monorepo hoisting)
+├── index.js                 # Metro entry redirect (Gradle resolves from Arteria → apps/mobile)
 ├── package.json             # Root monorepo config (workspaces, hoisted deps)
 ├── 0_Start_Dev_Server.bat   # Starts Metro dev server
+├── 2_Build_APK_Local.bat    # Local release APK (gradlew, no device)
 ├── Update_1_Git_Push.bat    # Git commit + push
 ├── Update_2_EAS_OTA_Update.bat  # OTA update to players
 ├── Update_3_EAS_Build_Android_Dev.bat   # Dev APK build

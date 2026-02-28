@@ -8,6 +8,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { INVENTORY_SLOT_CAP } from '@/constants/game';
+import { logger } from '@/utils/logger';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
 // We inline these so the mobile app doesn't need to resolve
@@ -41,6 +42,7 @@ interface SkillState {
 export interface InventoryItem {
     id: string;
     quantity: number;
+    isLocked?: boolean;
 }
 
 type EquipSlot =
@@ -77,6 +79,13 @@ export interface PlayerState {
     lastSaveTimestamp: number;
     /** Standard version tracking for updates modal (e.g. "0.3.0") */
     lastSeenVersion?: string;
+    /** UI preferences (persisted with save) */
+    settings?: {
+        bankPulseEnabled?: boolean;
+        horizonHudEnabled?: boolean;
+        sfxEnabled?: boolean;
+        bgmEnabled?: boolean;
+    };
 }
 
 // ─── Helpers ───
@@ -133,6 +142,7 @@ function createFreshPlayer(): PlayerState {
         },
         activeTask: null,
         lastSaveTimestamp: Date.now(),
+        settings: { bankPulseEnabled: true, horizonHudEnabled: true, sfxEnabled: true, bgmEnabled: true },
     };
 }
 
@@ -163,7 +173,12 @@ function migratePlayer(saved: PlayerState): PlayerState {
         }
     }
 
-    return { ...saved, skills: skills as Record<SkillId, SkillState> };
+    const settings = {
+        bankPulseEnabled: saved.settings?.bankPulseEnabled ?? true,
+        sfxEnabled: saved.settings?.sfxEnabled ?? true,
+        bgmEnabled: saved.settings?.bgmEnabled ?? true,
+    };
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings };
 }
 
 // ─── Slice ───
@@ -231,6 +246,10 @@ export const gameSlice = createSlice({
         /** Set the active task */
         startTask(state, action: PayloadAction<ActiveTask>) {
             state.player.activeTask = action.payload;
+            logger.info('Analytics', 'skill_started', {
+                skillId: action.payload.skillId,
+                actionId: action.payload.actionId,
+            });
         },
 
         /** Clear the active task */
@@ -255,13 +274,16 @@ export const gameSlice = createSlice({
                         level: skill.level,
                     });
                     state.pulseTab = 'skills';
+                    logger.info('Analytics', 'level_up', { skillId, level: skill.level });
                 }
             }
         },
 
         /** Add items to inventory. V: Respect slot cap. S: Queue loot vacuum (max 5). X: Pulse Bank tab. */
         addItems(state, action: PayloadAction<InventoryItem[]>) {
-            state.pulseTab = 'bank';
+            if (state.player.settings?.bankPulseEnabled !== false) {
+                state.pulseTab = 'bank';
+            }
             for (const item of action.payload) {
                 const existing = state.player.inventory.find((i) => i.id === item.id);
                 if (existing) {
@@ -321,9 +343,53 @@ export const gameSlice = createSlice({
             if (state.pulseTab === action.payload) state.pulseTab = null;
         },
 
+        /** Toggle Bank tab pulse on loot (Settings) */
+        setBankPulseEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.bankPulseEnabled = action.payload;
+        },
+
+        /** Toggle Horizon HUD (Settings) */
+        setHorizonHudEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.horizonHudEnabled = action.payload;
+        },
+
+        /** Toggle SFX (Settings) — placeholder, no-op for now */
+        setSfxEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.sfxEnabled = action.payload;
+        },
+
+        /** Toggle BGM (Settings) — placeholder, no-op for now */
+        setBgmEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.bgmEnabled = action.payload;
+        },
+
         /** S. Remove completed loot vacuum animation */
         popLootVacuum(state, action: PayloadAction<string>) {
             state.lootVacuumQueue = state.lootVacuumQueue.filter((e) => e.id !== action.payload);
+        },
+
+        /** Sell an item */
+        sellItem(state, action: PayloadAction<{ id: string; quantity: number; pricePer: number }>) {
+            const { id, quantity, pricePer } = action.payload;
+            const item = state.player.inventory.find(i => i.id === id);
+            if (item && !item.isLocked && item.quantity >= quantity) {
+                state.player.gold += quantity * pricePer;
+                item.quantity -= quantity;
+            }
+            // Cleanup zero quantities
+            state.player.inventory = state.player.inventory.filter(i => i.quantity > 0);
+        },
+
+        /** Toggle item lock state */
+        toggleItemLock(state, action: PayloadAction<string>) {
+            const item = state.player.inventory.find((i) => i.id === action.payload);
+            if (item) {
+                item.isLocked = !item.isLocked;
+            }
         },
     },
 });

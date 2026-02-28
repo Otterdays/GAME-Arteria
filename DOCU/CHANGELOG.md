@@ -15,6 +15,7 @@
 
 ### Fixed
 - **ReferenceError:** Resolved potential `GlobalActionTicker` reference error by cleaning up unused imports and ensuring proper export patterns.
+- **Local APK build (monorepo):** Fixed "Unable to resolve module ./index.js from Arteria/." — Metro resolves from repo root; RN Gradle plugin ignores `root`. Added root `index.js` that `require("./apps/mobile/index.js")` so Metro finds the entry. `2_Build_APK_Local.bat` runs `gradlew assembleRelease` from `apps\mobile\android` (no device required). APK output: `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
 
 ## [0.4.4] - 2026-02-26
 ### Added

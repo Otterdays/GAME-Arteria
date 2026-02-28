@@ -13,7 +13,7 @@
  */
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-type LogModule = 'Engine' | 'UI' | 'Redux' | 'Save' | 'Dev';
+type LogModule = 'Engine' | 'UI' | 'Redux' | 'Save' | 'Dev' | 'Analytics';
 
 class Logger {
     private isDev: boolean = __DEV__;
