@@ -10,10 +10,10 @@ I need to explain the "Aha!" moment of Expo: Fast Refresh and OTA Updates.
 3. **Why build?**: They only wait in this EAS queue when they change something *native* (like adding a new C++ module) or when they want to put a final `.aab` on the Google Play Store. And if they really hated the wait for native builds, they *could* build locally using standard Gradle (`npx expo run:android`), but sticking to EAS is safer for maintaining an ephemeral `android` folder.
 4. **Local Builds (Run Android)**: I've successfully transitioned to local builds via `1_Run_Local_Android_Build.bat`. This is much faster for dev iteration.
 
-# The Immersion Pivot (v0.4.1)
+# The Immersion Pivot (v0.2.1)
 The jump from "basic AFK loop" to "Immersive RPG" happened here.
 - **Icon Senses**: Swapping generic Material icons for `MaterialCommunityIcons` changed the vibe instantly. `pickaxe` and `sword-cross` are much more thematic.
-- **The "Ticker" Pulse (Relocated v0.4.1.1)**: Initially at the top, the ticker felt like a jarring overlay. I've relocated it to a **Bottom Dock** (above the Tab Bar). This merges it with the navigation UI, keeping headers clean while maintaining task visibility.
+- **The "Ticker" Pulse (Relocated v0.2.1)**: Initially at the top, the ticker felt like a jarring overlay. I've relocated it to a **Bottom Dock** (above the Tab Bar). This merges it with the navigation UI, keeping headers clean while maintaining task visibility.
 - **Android "Native" Feel**: Edge-to-edge layout with translucent bars removes the "web-wrapper" feel.
-- **Universal Heartbeat (v0.4.1.3)**: Moving the ticker to the root `_layout.tsx` was critical. RPG players hate losing feedback when they "dive" into a skill screen. Now, the ticker intelligently ducks behind the tab bar or hugs the bottom bezel depending on where the user is.
+- **Universal Heartbeat (v0.2.1)**: Moving the ticker to the root `_layout.tsx` was critical. RPG players hate losing feedback when they "dive" into a skill screen. Now, the ticker intelligently ducks behind the tab bar or hugs the bottom bezel depending on where the user is.
 - **Dual-Layer Progression**: The header now handles the "Long Grind" (XP Bar), while the Ticker handles the "Instant Pulse" (Tick bar). This dual-feedback loop is what makes "number go up" feel satisfying.

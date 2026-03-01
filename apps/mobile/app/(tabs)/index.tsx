@@ -12,7 +12,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -23,6 +22,9 @@ import { router } from 'expo-router';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
+import { BouncyButton } from '@/components/BouncyButton';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
+import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 
 // ─── Skill metadata ───────────────────────────────────────────────────────────
 
@@ -114,17 +116,21 @@ function SkillCard({
   const xpNeeded = Math.max(1, nextLevelXP - currentLevelXP);
 
   return (
-    <TouchableOpacity
-      activeOpacity={isImplemented ? 0.7 : 1.0}
+    <BouncyButton
+      scaleTo={0.97}
+      hapticFeedback={false}
       onPress={() => isImplemented && onNavigate(skillId)}
+      disabled={!isImplemented}
+      accessibilityRole="button"
+      accessibilityLabel={`${meta.label}, level ${skill.level}. ${isImplemented ? (isActive ? 'Stop training' : 'Train') : 'Coming in Phase 2'}`}
       style={[
         styles.skillCard,
         isActive && styles.skillCardActive,
         !isImplemented && styles.skillCardLocked,
+        { overflow: 'hidden' } // For infinite glow
       ]}
-      accessibilityRole="button"
-      accessibilityLabel={`${meta.label}, level ${skill.level}. ${isImplemented ? (isActive ? 'Stop training' : 'Train') : 'Coming in Phase 2'}`}
     >
+      {isActive && <ActivePulseGlow color={meta.color} />}
       {/* Header row */}
       <View style={styles.skillHeader}>
         <Text style={[styles.skillEmoji, !isImplemented && styles.lockedEmoji]}>
@@ -139,20 +145,20 @@ function SkillCard({
 
         {/* C. Real button for implemented; locked badge otherwise */}
         {isImplemented ? (
-          <TouchableOpacity
+          <BouncyButton
+            scaleTo={0.9}
             style={[styles.trainButton, isActive && styles.trainButtonActive]}
             onPress={(e) => {
               e.stopPropagation(); // Don't trigger card navigation
               onTrain(skillId);
             }}
-            activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={isActive ? `Stop ${meta.label}` : `Train ${meta.label}`}
           >
             <Text style={styles.trainButtonText}>
               {isActive ? 'Stop' : 'Train'}
             </Text>
-          </TouchableOpacity>
+          </BouncyButton>
         ) : (
           <View style={styles.lockedBadge}>
             <Text style={styles.lockedBadgeText}>Phase 2 ›</Text>
@@ -178,13 +184,16 @@ function SkillCard({
             />
           )}
         </View>
-        <Text style={styles.xpText}>
-          {skill.level >= 99
-            ? `${formatNumber(skill.xp)} XP — MAX`
-            : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`}
-        </Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.xpText}>
+            {skill.level >= 99 ? '' : <AnimatedNumber value={xpIntoLevel} formatValue={(v) => formatNumber(v)} />}
+            {skill.level >= 99
+              ? `${formatNumber(skill.xp)} XP — MAX`
+              : ` / ${formatNumber(xpNeeded)} XP`}
+          </Text>
+        </View>
       </View>
-    </TouchableOpacity>
+    </BouncyButton>
   );
 }
 

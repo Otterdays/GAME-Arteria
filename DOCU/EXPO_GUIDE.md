@@ -62,7 +62,7 @@ You **must** generate a new EAS build (APK) if you:
 ## ☁️ 4. EAS (Expo Application Services)
 
 > [!CAUTION]
-> **EAS Credits Exhausted (as of 2026):** Cloud builds via EAS are currently unavailable due to depleted build credits. Use the **local APK build** (Section 4b) instead.
+> **EAS unavailable (credits or concurrency):** When EAS credits are exhausted or you hit "Build concurrency limit reached" (builds queue), use the **local APK build** (Section 4b) instead. Run `2_Build_APK_Local.bat`.
 
 Because we deleted the `android/` folder, we don't build the app locally on your computer anymore. We outsource the heavy lifting to Expo's cloud servers using **EAS**.
 
@@ -78,9 +78,9 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 
 *Note on Monorepos: Because we are in a Monorepo (`packages/engine` and `apps/mobile`), EAS needs to know to install dependencies at the root level. If a build fails on "Install Dependencies", it's usually a monorepo root path issue.*
 
-### 4b. Local APK Build (No EAS Credits Required)
+### 4b. Local APK Build (primary when EAS is queued or credits exhausted)
 
-When EAS credits are exhausted, use the **local build** to produce a shareable APK on your machine.
+When EAS is unavailable (concurrency limit or credits exhausted), use the **local build** to produce a shareable APK on your machine.
 
 **Requirements:** Android Studio + Android SDK installed (same as `1_Run_Local_Android_Build.bat`).
 
@@ -88,11 +88,14 @@ When EAS credits are exhausted, use the **local build** to produce a shareable A
 
 This runs `gradlew assembleRelease` from `apps\mobile\android` (no device required). Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`, fixing "Unable to resolve module ./index.js".
 
-APK output:
+`2_Build_APK_Local.bat` sets `ARTERIA_LEAN_PROD=1` so Expo autolinking excludes dev-client native modules in release builds (smaller APKs while keeping dev dependencies for development workflows).
+
+APK output folder:
 ```
-apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+apps/mobile/android/app/build/outputs/apk/release/
 ```
 
+Preferred file for modern phones: `app-arm64-v8a-release.apk` (smaller than universal).
 You can copy this `.apk` file and share it (e.g. via USB, cloud drive, or direct transfer). Recipients may need to enable "Install from unknown sources" to sideload it.
 
 ---

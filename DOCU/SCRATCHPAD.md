@@ -4,6 +4,39 @@
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Active Task:** Hooking up Harvesting / Fishing / Scavenging UI screens to wrap up Phase 2 Gathering.
 
+## [2026-02-28] Version restructure to 0.2.x
+- **Rationale:** Project was at 0.4.8; restructured to 0.2.5 so versioning reflects early-stage development.
+- **CHANGELOG.md:** Consolidated 0.3.x/0.4.x into 0.2.0–0.2.5. Added restructure note at top. Current release [0.2.5].
+- **patchHistory.ts:** Replaced with 0.2.x entries (0.2.5 → 0.1.0). In-app Patch Notes now show 0.2.5 as latest.
+- **index.html:** Hero badge and Latest Update v0.2.5; changelog and roadmap sections use v0.2.0–v0.2.5.
+- **app.json, build.gradle, README.md:** Version set to 0.2.5. SUMMARY.md Current Status bullets updated to v0.2.x.
+
+## [2026-02-27] Lean production build toggle (dev-client stripped)
+- **New config:** Added `apps/mobile/app.config.js` with env-driven autolinking excludes for Expo dev-client native modules (`expo-dev-client`, `expo-dev-launcher`, `expo-dev-menu`, etc.) when `ARTERIA_LEAN_PROD=1`.
+- **Local build script:** `2_Build_APK_Local.bat` now sets `ARTERIA_LEAN_PROD=1` before `gradlew assembleRelease`, so release APKs are built in lean mode by default.
+- **Goal:** Keep dev workflow dependencies in repo while producing smaller production APK outputs.
+
+## [2026-02-27] Local release APK now split by ABI
+- **Size win confirmed:** `assembleRelease` now outputs split APKs instead of one universal APK. Current files: `app-arm64-v8a-release.apk` **31.23 MB** and `app-armeabi-v7a-release.apk` **25.15 MB** (down from ~93 MB universal).
+- **Share target:** Prefer `app-arm64-v8a-release.apk` for modern Android phones.
+- **Build script:** `2_Build_APK_Local.bat` updated to show split output folder and prefer arm64 APK path.
+
+## [2026-02-27] Release APK size reduction
+- **gradle.properties:** R8 minify + resource shrinking on for release; `reactNativeArchitectures` set to `armeabi-v7a,arm64-v8a` only (dropped x86/x86_64) so release APK is smaller. Rebuild with `2_Build_APK_Local.bat` to get a smaller APK.
+- **proguard-rules.pro:** Added keep rules for React Native and Hermes so minification doesn't break the app.
+
+## [2026-02-27] EAS concurrency → local build
+- **EAS build queued:** "Build concurrency limit reached for your account." Archive uploaded fine (11.2 MB after .easignore). Using **local build** for now: run `2_Build_APK_Local.bat` from repo root. APK output folder: `apps\mobile\android\app\build\outputs\apk\release\` (prefer `app-arm64-v8a-release.apk`). To add EAS concurrency later: https://expo.dev/accounts/afykirby/settings/billing.
+
+## [2026-02-27] EAS Build archive size
+- **.easignore added** at repo root to reduce upload size and time. EAS was reporting 1.0 GB archive; excludes DOCU/, debugs/, .git/, coverage/, .idea/, .vscode/, *.log, **/android/**/build/, **/.gradle/ on top of .gitignore. See https://expo.fyi/eas-build-archive. Re-run EAS build to see smaller archive.
+
+## [2026-02-28] v0.2.4 / v0.2.5 Premium UI & Build
+- **AnimatedNumber:** Implemented a new primitive `AnimatedNumber.tsx` that uses requestAnimationFrame and an ease-out exponential curve to spin up gold and XP values rather than janky snapping. Applied to Header XP, Bank total worth, and Shop player gold.
+- **BouncyButton:** Built a reanimated tactile button wrapper `BouncyButton.tsx` that replaces `TouchableOpacity` for all interactable Skill/Node cards. Adds physics-based scaling and deep haptics.
+- **ActivePulseGlow:** Created an infinitely breathing gradient/fill component that sits behind the active NodeCard, casting a subtle skill-colored shimmer.
+- **Tick Shake Effect:** Added a very subtle X-axis animated translation to the Logging and Mining container layout. Providing a satisfying "thud/shake" when an action tick completes and resources are gathered.
+
 ## [2026-02-28] Mechanics Implementation & Logging UI
 - **Curse Chance:** Implemented the `curseChance` loop in `TickSystem.processDelta`. Normal item output is partially converted into `cursed_{id}` equivalent based on RNG.
 - **Cursed Ores:** Temporarily added `curseChance` of 10-25% to all Mining nodes so cursed ores can trigger for testing the mechanic. Registered all cursed ores into `ITEM_META` in `constants/items.ts`.
@@ -39,7 +72,7 @@
 
 ## [2026-02-27] Yellow & Blue on Skills/Mining Screen — Source
 - **Reported:** "Weird yellow and blue thinings" on the mining/Skills screen.
-- **Source (recent, v0.4.5):** `HorizonHUD` — three gradient cards: **Immediate** (blue: accentPrimary→accentDim), **Session** (gold/yellow: gold→goldDim), **Grind** (purple). These sit below the header XP bar on the Skills screen.
+- **Source (recent, v0.2.3):** `HorizonHUD` — three gradient cards: **Immediate** (blue: accentPrimary→accentDim), **Session** (gold/yellow: gold→goldDim), **Grind** (purple). These sit below the header XP bar on the Skills screen.
 - **Also:** Mining XP bar uses `Palette.skillMining` (#b87333, copper/orange); active skill card border uses `Palette.accentPrimary` (blue). Design spec (zhip-ai-styling.md §4.1) says "Positive → XP gains, progress bars" should use green (#4caf50), not skill-specific colors.
 - **If adjusting:** Consider aligning XP bars with design spec (green) or toning Horizon gradients to match the dark theme.
 
@@ -55,32 +88,32 @@
 - **If you run Gradle manually in PowerShell:** (1) You must be in `apps\mobile\android` (where `gradlew.bat` lives). (2) PowerShell does not run scripts from the current directory unless you prefix them: use **`.\gradlew.bat assembleRelease`**, not `gradlew`. (3) Do not use `&&` in PowerShell (use `;` or separate commands). Prefer running `2_Build_APK_Local.bat` so CMD handles the path and invocation.
 - **[2026-02-27] "Unable to resolve module ./index.js from C:\\...\\Arteria/.":** Metro resolves from repo root; RN Gradle plugin ignores `root`. `expo run:android --no-install` still requires a device. **Fix:** Created root `index.js` that `require("./apps/mobile/index.js")` so Metro finds ./index.js when resolving from Arteria. Batch file reverted to `gradlew assembleRelease` from apps\mobile\android (no device). **Result:** APK builds successfully without a connected device.
 
-## Active Sprint: v0.4.3 "Bank & Juice"
+## Active Sprint: v0.2.2 "Bank & Juice"
 - [x] **Z. Bank Search + Filters:** Search bar, Ores/Bars/Other filters, shared items.ts.
 - [x] **Train Toast:** "Mining: Iron Vein" on start (2s).
 - [x] **X. Pulsing Tab Glow:** Skills/Bank tabs pulse gold; clear on visit.
 - [x] **S. Loot Vacuum:** Icon flies to Bank tab on loot gain.
 
-## History: v0.4.2 "QoL Polish"
+## History: v0.2.2 "QoL Polish"
 - [x] **O. XP Bar Pulse:** ProgressBarWithPulse component; white glow on XP bar fill change (Skills, Mining); intensity bumped (opacity 1, 550ms).
 - [x] **P. Haptic Heartbeat:** Light haptic when GlobalActionTicker progress resets (100% → 0%).
 - [x] **V. Inventory Full Warning:** INVENTORY_SLOT_CAP (50); "!" on Bank tab; addItems respects cap; Bank header shows slots.
 - [x] **Smooth Progress Bars:** useInterpolatedProgress + SmoothProgressBar; 60fps interpolation between Redux updates (GlobalActionTicker, Mining node bar).
 - [x] **GlobalActionTicker Hooks Fix:** Moved useRef/useEffect before early return (Rules of Hooks).
 
-## History: v0.4.1 "Immersion & Utility"
+## History: v0.2.1 "Immersion & Utility"
 - [x] **Global Action Ticker:** Persistent progress bar + skill emoji visible on all screens.
 - [x] **Header XP Pulse:** Integrated a real-time XP progress bar + level badge into the main Skills header.
 - [x] **Universal Action Ticker:** Promoted ticker to root layout; stays visible inside specific skill screens.
 - [x] **Bugfix (Heartbeat):** Fixed missing action progress bar in sub-screens + added node-local pulse.
-- [x] **Documentation Sync:** Updated all core docs (SUMMARY, CHANGELOG, ARCHITECTURE, Thoughts) for v0.4.1.3.
+- [x] **Documentation Sync:** Updated all core docs (SUMMARY, CHANGELOG, ARCHITECTURE, Thoughts) for v0.2.1.
 - [x] **Android Edge-to-Edge:** Full translucent system bars + manual safe area handling for premium layout.
 - [x] **RPG Icon Set:** Migrated to MaterialCommunityIcons for pickaxes, swords, and treasure chests.
 - [x] **Navigation Update:** Immersive back buttons and full skill-card click-through.
 
 ## History (Compacted)
-- **[2026-02-26] v0.4.1 — Immersion Update:** Integrated `GlobalActionTicker` for real-time background task visibility. Refactored `index.tsx` and `mining.tsx` to handle Android view insets manually (edge-to-edge). Upgraded `IconSymbol` to use `MaterialCommunityIcons` with RPG mappings (`pickaxe`, `sword-cross`, `treasure-chest`).
-- **[2026-02-26] QoL E-M + Bugfixes (v0.4.0):** (E) Added ticks-to-level estimates in Mining. (J) Fixed LevelUpToast re-render loop/timer bug. (K) Fixed Android bottom nav bar overlap using safe area insets. (L) Upgraded XP display to "current / goal" format. (M) Enabled full-card navigation on Skills screen. Implemented "wipe save" debug tool. Updated all project docs.
+- **[2026-02-26] v0.2.1 — Immersion Update:** Integrated `GlobalActionTicker` for real-time background task visibility. Refactored `index.tsx` and `mining.tsx` to handle Android view insets manually (edge-to-edge). Upgraded `IconSymbol` to use `MaterialCommunityIcons` with RPG mappings (`pickaxe`, `sword-cross`, `treasure-chest`).
+- **[2026-02-26] QoL E-M + Bugfixes (v0.2.0):** (E) Added ticks-to-level estimates in Mining. (J) Fixed LevelUpToast re-render loop/timer bug. (K) Fixed Android bottom nav bar overlap using safe area insets. (L) Upgraded XP display to "current / goal" format. (M) Enabled full-card navigation on Skills screen. Implemented "wipe save" debug tool. Updated all project docs.
 - **[2026-02-26] QoL A/B/C — Skills Screen Polish:** Rewrote `index.tsx`. (A) Skills now grouped into 4 pillars: Gathering, Combat, Crafting, Support with divider headers. (B) "Total Lv. X" badge in gold shown under the "Skills" title. (C) Unimplemented skills show a greyed-out locked card with "Phase 2 ›" badge instead of jarring Alert popup. Also added `migratePlayer()` to `gameSlice.ts` to prevent `xp of undefined` crash when loading old saves after skill renames.
 - **[2026-02-26] Phase 2.1 — Gathering Skill Data Definitions:** Created `logging.ts`, `harvesting.ts`, `fishing.ts`, `scavenging.ts` in `packages/engine/src/data/`. Renamed `woodcutting` → `logging` across entire codebase (`types.ts`, `gameSlice.ts`, `playerFactory.ts`, `theme.ts`, `index.tsx`, `LevelUpToast.tsx`, `WhileYouWereAway.tsx`). Added `skillLogging`, `skillHarvesting`, `skillScavenging` colour tokens. Exported all new action arrays from `engine/src/index.ts`. Engine tests: 10/10 passing (0 regressions). Unique mechanics (Seasonal Rotation, Mythic fish, Curse Chance) left as open sub-tasks in ROADMAP.md.
 - **[2026-02-26] Website overhaul + doc corrections:** Updated `index.html` with 4 new sections (World & Lore with 6 Valdoria regions + 4 factions, Companions with Barnaby/Yvette/Reginald cards, "A Day in Arteria" timeline, CSS floating particles). Added missing skills (Research, Celestial Binding). Fixed stale roadmap (Phase 1.2→1.5 marked done, Phase 2 now current). Fixed hero badge to "Phase 1 Complete". Updated nav links. Fixed SUMMARY.md, ROADMAP.md current target, ARCHITECTURE.md tech stack (SDK 54→55, EAS→local builds).

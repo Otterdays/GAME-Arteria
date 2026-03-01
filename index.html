@@ -1072,7 +1072,7 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">v0.4.6 — Logging, Barter & Curses</div>
+        <div class="hero-badge">v0.2.5 — Build &amp; Release</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
           A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel
@@ -1128,10 +1128,9 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest Update v0.4.6</div>
-        <h2>Logging, Barter & Curses</h2>
-        <p class="section-desc">Fully mapped Logging UI, 50% Shop Barter baseline, Scavenging Curse drops, and expanded
-          bank/shop filtering.</p>
+        <div class="section-label">Latest Update v0.2.5</div>
+        <h2>Build &amp; Release</h2>
+        <p class="section-desc">Smaller release APKs: split by ABI (arm64 / armv7) and lean production mode (dev-client excluded). Prefer <code>app-arm64-v8a-release.apk</code> for modern devices.</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#8b5cf6; --card-bg:rgba(139,92,246,0.1);">
@@ -1876,46 +1875,28 @@
             EXPO_ROUTER_APP_ROOT fix (root babel, index proxy, metro watchFolders). EAS CLI via npx.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.0</span>
-          <div class="roadmap-text"><strong>QoL & Gathering Foundation</strong> — Skill Pillars, Total Level badge, XP
-            [current/next], ticks-to-level, wipe save, XP/hr. Logging/Harvesting/Fishing/Scavenging data. migratePlayer,
-            Level Up Toast fix, Android tab bar fix.</div>
+          <span class="roadmap-badge badge-done">v0.2.0</span>
+          <div class="roadmap-text"><strong>Pipeline &amp; Gathering</strong> — Gradle, prebuild, Melvor palette, tabs. Batch scripts, core loop, Mining, Skill Pillars, Total Level, XP [current/next], ticks-to-level, wipe save. EXPO fix, state migration, Level Up Toast, tab insets.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.1</span>
-          <div class="roadmap-text"><strong>Immersion</strong> — Global Action Ticker (all screens), Header XP
-            dashboard, MaterialCommunityIcons (pickaxe, sword-cross, treasure-chest). Edge-to-edge Android, back
-            buttons, node progress bars.</div>
+          <span class="roadmap-badge badge-done">v0.2.1</span>
+          <div class="roadmap-text"><strong>Immersion</strong> — Global Action Ticker, Header XP dashboard, MaterialCommunityIcons, edge-to-edge Android, back buttons, node progress bars.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.2</span>
-          <div class="roadmap-text"><strong>Juice</strong> — XP Bar Pulse, Haptic Heartbeat, Inventory Full "!" (50 slot
-            cap), SmoothProgressBar (60fps), GlobalActionTicker hooks fix.</div>
+          <span class="roadmap-badge badge-done">v0.2.2</span>
+          <div class="roadmap-text"><strong>Juice</strong> — Bank search + filters, Train Toast, pulsing tab glow, Loot Vacuum. XP Bar Pulse, Haptic Heartbeat, Inventory Full "!". SmoothProgressBar (60fps).</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.3</span>
-          <div class="roadmap-text"><strong>Bank & VFX</strong> — Bank search + filters (Ores/Bars/Other), Train Toast,
-            Pulsing tab glow (Skills/Bank), Loot Vacuum (icon flies to Bank).</div>
+          <span class="roadmap-badge badge-done">v0.2.3</span>
+          <div class="roadmap-text"><strong>Horizon &amp; Logging</strong> — Logging UI, log items, Logs filter. Shop 50% sell, Curse system. Horizon (3-tier HUD), rare gems, mythic fish, Seasonal Rotation. Patch Notes screen. Local APK fix.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.4</span>
-          <div class="roadmap-text"><strong>Patch Notes</strong> — Full changelog in-app (Settings → Patch Notes).
-            Bundling fix for monorepo root (main in package.json).</div>
+          <span class="roadmap-badge badge-done">v0.2.4</span>
+          <div class="roadmap-text"><strong>Premium UI Polish</strong> — AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake (Mining, Logging).</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.5</span>
-          <div class="roadmap-text"><strong>Horizon & Mechanics</strong> — 3-tier goal HUD (Immediate/Session/Grind),
-            glassmorphism, purple token. Mining: rare gems (Uncut Sapphire). Fishing: mythic fish (Golden Carp).
-            Logging: Seasonal Rotation (1.5x even weeks). Local APK build fix (root index.js, gradlew, no device).
-            Settings: Bank pulse toggle, Horizon HUD toggle, SFX/BGM placeholders. Error boundary, screen shake,
-            accessibility labels, analytics placeholder. Loot vacuum slower + centered.</div>
-        </div>
-        <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.4.6</span>
-          <div class="roadmap-text"><strong>Logging & Barter Hooks</strong> — Full Logging UI implementation, mapped 9
-            log tiers. 50% sell price modifier integrated into Shop to establish Future Barter skill logic. TickSystem
-            enhanced to generate "Cursed" item variants based on drop RNG, laying groundwork for Scavenging & Cleansing.
-            Log filters added to Bank and Shop.</div>
+          <span class="roadmap-badge badge-done">v0.2.5</span>
+          <div class="roadmap-text"><strong>Build &amp; Release</strong> — Smaller APKs: ABI split (arm64/armv7), lean prod (ARTERIA_LEAN_PROD=1), R8 minify. Prefer app-arm64-v8a-release.apk.</div>
         </div>
       </div>
     </div>
@@ -1951,22 +1932,15 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Feb 26</span>
-          <div class="roadmap-text"><strong>v0.4.0: QoL & Polish Sprint</strong> — Completed Phase 1 with massive
-            polish: Skill Pillars grouping, Total Level badge, XP [current/next] tracking, Floating XP VFX with item
-            icons, and Android bottom-bar layout fixes.
-          </div>
+          <div class="roadmap-text"><strong>v0.2.0: Pipeline &amp; Gathering</strong> — Gradle, prebuild, Melvor palette, tabs. Core loop, Mining, Skill Pillars, Total Level, XP tracking. EXPO fix, state migration.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Feb 27</span>
-          <div class="roadmap-text"><strong>v0.4.5: Horizon & Unique Mechanics</strong> — Implemented the 3-tier goal
-            HUD (Immediate/Session/Grind) with premium glassmorphism. Added Rare Gem drops (Mining), Mythic Fish
-            (Fishing), and Seasonal Rotation logic (Logging). Fixed local APK build pipeline.</div>
+          <div class="roadmap-text"><strong>v0.2.3: Horizon &amp; Logging</strong> — 3-tier goal HUD, rare gems, mythic fish, Seasonal Rotation. Logging UI, Shop 50% sell, Curse system. Patch Notes, local APK fix.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Feb 28</span>
-          <div class="roadmap-text"><strong>v0.4.6: Logging & Economy Groundwork</strong> — Unlocked the Logging skill
-            UI and expanded items catalog. Implemented 50% markdown on NPC shop trades for Barter mechanics. Wired the
-            engine to support RNG Cursed Item variants for the Scavenging overhaul.</div>
+          <div class="roadmap-text"><strong>v0.2.5: Build &amp; Release</strong> — Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.</div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Current</span>

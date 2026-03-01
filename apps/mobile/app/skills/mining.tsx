@@ -12,6 +12,9 @@ import { formatNumber, formatXpHr } from '@/utils/formatNumber';
 import { FloatingXpPop } from '@/components/FloatingXpPop';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { SmoothProgressBar } from '@/components/SmoothProgressBar';
+import { BouncyButton } from '@/components/BouncyButton';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
+import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 
 function xpForLevel(level: number): number {
     if (level <= 1) return 0;
@@ -120,11 +123,14 @@ export default function MiningScreen() {
                             widthPercent={pct}
                         />
                     </View>
-                    <Text style={styles.xpText}>
-                        {miningSkill.level >= 99
-                            ? `${formatNumber(miningSkill.xp)} XP — MAX`
-                            : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={styles.xpText}>
+                            {miningSkill.level >= 99 ? '' : <AnimatedNumber value={xpIntoLevel} formatValue={(v) => formatNumber(v)} />}
+                            {miningSkill.level >= 99
+                                ? `${formatNumber(miningSkill.xp)} XP — MAX`
+                                : ` / ${formatNumber(xpNeeded)} XP`}
+                        </Text>
+                    </View>
                     {/* XP Pop-up VFX */}
                     <FloatingXpPop
                         amount={lastGain.current}
@@ -140,19 +146,20 @@ export default function MiningScreen() {
                     const isActive = activeNodeId === node.id;
 
                     return (
-                        <TouchableOpacity
+                        <BouncyButton
                             key={node.id}
                             style={[
                                 styles.nodeCard,
                                 isLocked && styles.nodeCardLocked,
                                 isActive && styles.nodeCardActive,
                             ]}
-                            activeOpacity={0.7}
+                            scaleTo={0.98}
                             onPress={() => handleNodePress(node)}
                             accessibilityRole="button"
                             accessibilityState={{ disabled: isLocked, selected: isActive }}
                             accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Mine for ${node.xpPerTick} XP`}`}
                         >
+                            {isActive && <ActivePulseGlow color={Palette.skillMining} />}
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>
                                 <View style={styles.nodeTitleContainer}>
@@ -211,7 +218,7 @@ export default function MiningScreen() {
                                     <IconSymbol name="lock.fill" size={16} color={Palette.textDisabled} />
                                 </View>
                             )}
-                        </TouchableOpacity>
+                        </BouncyButton>
                     );
                 })}
             </ScrollView>

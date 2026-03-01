@@ -16,6 +16,7 @@ import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
 
 type TabMode = 'buy' | 'sell';
 
@@ -162,7 +163,11 @@ export default function ShopScreen() {
                 </View>
                 <View style={styles.goldBadge}>
                     <Text style={styles.goldEmoji}>💰</Text>
-                    <Text style={styles.goldText}>{gold.toLocaleString()}</Text>
+                    <AnimatedNumber
+                        value={gold}
+                        style={styles.goldText}
+                        formatValue={(v) => v.toLocaleString()}
+                    />
                 </View>
             </View>
 

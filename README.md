@@ -9,7 +9,7 @@
 
 ---
 
-[![v0.4.5](https://img.shields.io/badge/Version-0.4.5-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
+[![v0.2.5](https://img.shields.io/badge/Version-0.2.5-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
 [![Build Status](https://img.shields.io/badge/Build-Success-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
 [![Tests](https://img.shields.io/badge/Tests-30+_Passing-f59e0b?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -34,13 +34,12 @@ Arteria is a hard-math, incremental idle RPG inspired by the deep progression sy
 
 ---
 
-## 🚀 The Latest: v0.4.5 "Horizon & Mechanics"
+## 🚀 The Latest: v0.2.5 "Build & Release"
 
-This update adds long-term depth and premium visuals to the core gameplay:
-*   **Horizon System:** A 3-tier goal HUD (Immediate / Session / Grind) for persistent micro-goal tracking.
-*   **Unique Gathering Mechanics:** Rare gems (Mining), Mythic fish (Fishing), and Seasonal Rotation (Logging).
-*   **Premium HUD Styling:** Integrated glassmorphism and custom gradients.
-*   **Local APK Fix:** Improved build pipeline to generate shareable APKs without a connected device.
+Current release focuses on distribution and polish:
+*   **Smaller APKs:** ABI split (arm64 / armv7) and lean production mode (dev-client excluded). Prefer `app-arm64-v8a-release.apk` for modern devices.
+*   **Premium UI:** AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake. Horizon (3-tier goal HUD), Logging UI, Shop 50% sell, Curse system.
+*   **Local build:** `2_Build_APK_Local.bat` with ARTERIA_LEAN_PROD=1; output folder shows split APKs (~31 MB / ~25 MB).
 
 ---
 

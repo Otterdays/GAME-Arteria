@@ -46,7 +46,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## ✅ Phase 1 — "The Core Engine" (COMPLETE)
-> **Completed:** Feb 26, 2026 (v0.4.0)
+> **Completed:** Feb 26, 2026 (v0.2.0)
 > **Goal:** The vertical slice. One skill working end-to-end with real persistence and UI.
 
 ### 1.1 — Game Loop & App Lifecycle 🔴
@@ -399,6 +399,6 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ## 🎯 Current Target
 **We are here → Phase 3 (The Crafting Engine)**
 
-v0.4.5 "Horizon & Mechanics" deployed! The core gathering pillar is balanced and the retention HUD is active. Next action: Build the **Crafting System** (Smithing, Alchemy) and implement the 8-hour offline queue architecture.
+v0.2.5 "Build & Release" deployed! The core gathering pillar is balanced and the retention HUD is active. Next action: Build the **Crafting System** (Smithing, Alchemy) and implement the 8-hour offline queue architecture.
 
 ---

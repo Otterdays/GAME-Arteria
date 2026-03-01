@@ -23,6 +23,7 @@ import { getItemMeta, type ItemType } from '@/constants/items';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, InventoryItem } from '@/store/gameSlice';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
 
 // ── Item Cell ────────────────────────────────────────────────────────────────
 function ItemCell({ item, onPress }: { item: InventoryItem; onPress: (itemId: string) => void }) {
@@ -177,13 +178,18 @@ export default function BankScreen() {
                 <View style={styles.headerRight}>
                     <View style={styles.goldBadge}>
                         <Text style={styles.goldEmoji}>💰</Text>
-                        <Text style={styles.goldText}>{gold.toLocaleString()}</Text>
+                        <AnimatedNumber
+                            value={gold}
+                            style={styles.goldText}
+                            formatValue={(v) => v.toLocaleString()}
+                        />
                     </View>
                     {inventory.length > 0 && (
                         <Text style={styles.worthText}>
-                            Worth ~{totalWorth >= 1000
-                                ? `${(totalWorth / 1000).toFixed(1)}k`
-                                : totalWorth.toLocaleString()} gp
+                            Worth ~<AnimatedNumber
+                                value={totalWorth}
+                                formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toLocaleString()}
+                            /> gp
                         </Text>
                     )}
                 </View>

@@ -1,6 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
+ * Version restructure: project uses 0.2.x; current release is 0.2.5.
  */
 
 export interface PatchEntry {
@@ -13,117 +14,59 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
-    version: '0.4.5',
+    version: '0.2.5',
+    date: '2026-02-28',
+    added: [
+      'Release build: Smaller APKs via ABI split (arm64 + armv7) and lean production mode (dev-client excluded).',
+      'Local build script sets ARTERIA_LEAN_PROD=1; output: app-arm64-v8a-release.apk (~31 MB), app-armeabi-v7a-release.apk (~25 MB).',
+    ],
+  },
+  {
+    version: '0.2.4',
+    date: '2026-02-28',
+    added: [
+      'AnimatedNumber: Smooth XP and Gold tickers. BouncyButton across Skills and nodes. ActivePulseGlow and tick shake (Mining, Logging).',
+    ],
+  },
+  {
+    version: '0.2.3',
     date: '2026-02-27',
     added: [
-      'Horizon System: 3-tier goal HUD (Immediate / Session / Grind) for persistent tracking.',
-      'Unique Mechanics: Rare gem drops (Mining), Mythic fish (Fishing), and Seasonal Rotation (Logging).',
-      'Premium HUD Styling: Glassmorphism and gradients for the new goal tracking system.',
-      'Palette Expansion: Added purple accent to core design tokens.',
+      'Logging skill UI, log items, Logs filter. Shop 50% sell modifier. Curse system (TickSystem). Horizon (3-tier goal HUD), rare gems, mythic fish, Seasonal Rotation. Patch Notes screen.',
     ],
-    fixed: [
-      'APK Build: Fixed "No device found" error by using direct Gradle assembly.',
-      'GlobalActionTicker: Cleaned up unused imports to prevent reference errors.',
-    ],
+    fixed: ['Slot cap in Bank. Local APK build. Monorepo bundling.'],
   },
   {
-    version: '0.4.4',
-    date: '2026-02-26',
-    added: ['Patch Notes Screen: Full changelog from v0.1.0, accessible from Settings.'],
-  },
-  {
-    version: '0.4.3',
+    version: '0.2.2',
     date: '2026-02-26',
     added: [
-      'Z. Bank Search + Filters: Real-time search bar and type filters (All / Ores / Bars / Other).',
-      'Train Toast: "Mining: Iron Vein" confirmation when starting a skill action.',
-      'X. Pulsing Tab Glow: Skills tab pulses gold on level-up, Bank tab on loot.',
-      'S. Loot Vacuum: Item icon flies from center toward Bank tab when gaining loot.',
+      'Bank search + filters. Train Toast, pulsing tab glow, Loot Vacuum. XP Bar Pulse, Haptic Heartbeat, Inventory Full "!". SmoothProgressBar (60fps).',
     ],
+    fixed: ['GlobalActionTicker hooks. APK build.'],
   },
   {
-    version: '0.4.2',
+    version: '0.2.1',
     date: '2026-02-26',
     added: [
-      'O. XP Bar Pulse: Subtle glow when XP bar fill moves.',
-      'P. Haptic Heartbeat: Light haptic when action progress bar reaches 100%.',
-      'V. Inventory Full Warning: "!" on Bank tab when full; 50-slot cap.',
-      'Smooth Progress Bars: 60fps interpolation between Redux updates.',
+      'Global Action Ticker, Header XP Dashboard, MaterialCommunityIcons. Custom back nav, edge-to-edge Android.',
     ],
-    changed: ['XP Bar Pulse Glow: Increased intensity (white overlay, 550ms).'],
-    fixed: [
-      'APK Build: Metro resolves from apps/mobile correctly.',
-      'GlobalActionTicker Hooks: Rules of Hooks compliance.',
-    ],
-  },
-  {
-    version: '0.4.1',
-    date: '2026-02-26',
-    added: [
-      'Global Action Ticker: Persistent progress bar across all screens.',
-      'Header XP Dashboard: Real-time XP tracking in Skills header.',
-      'RPG Icon Overhaul: MaterialCommunityIcons (pickaxe, sword-cross, etc.).',
-      'Custom Back Navigation: Theme-aligned back buttons.',
-    ],
-    fixed: [
-      "Action 'Heartbeat' Visibility: Progress bar in sub-screens.",
-      'Node-level Feedback: Localized progress bars on Mining nodes.',
-      'Android Full Immersion: Edge-to-edge, translucent bars.',
-      'Gesture Bar Overlap: Tab bar clearance.',
-    ],
-  },
-  {
-    version: '0.4.0',
-    date: '2026-02-26',
-    added: [
-      'Phase 2.1 — Gathering Skills: Logging, Harvesting, Fishing, Scavenging data.',
-      'Skill Pillars: Grouped by Gathering / Combat / Crafting / Support.',
-      'Total Level Badge: Sum of all levels in header.',
-      'XP [current/next] Display: Exact progress toward next level.',
-      'Ticks-to-level: Estimated actions until level up.',
-      'Wipe Save Data: Developer tool in Settings.',
-      'XP/hr Stat: Real-time efficiency tracking.',
-    ],
-    fixed: [
-      'State Migration: woodcutting → logging for old saves.',
-      'Level Up Toast: Re-render loop fix.',
-      'Android Tab Bar Insets: Overlap fix.',
-      'Skill Card Navigation: Full-card tap-through.',
-    ],
-  },
-  {
-    version: '0.3.0',
-    date: '2026-02-26',
-    added: [
-      'Batch scripts: 0_Start, Update_1-4 for deployment.',
-      'EXPO_GUIDE.md, MY_ADHD.md documentation.',
-    ],
-    fixed: [
-      'EXPO_ROUTER_APP_ROOT crash: Babel, metro, index.js proxy.',
-      'Recovered screens after reset-project wipe.',
-    ],
+    fixed: ['Ticker in sub-screens. Node progress bars. Gesture bar overlap.'],
   },
   {
     version: '0.2.0',
     date: '2026-02-26',
     added: [
-      'Gradle 9.3.1, Android prebuild.',
-      'Dark Melvor theme: Palette, Spacing, Radius, FontSize.',
-      'Bottom tab navigation: Skills, Combat, Bank, Shop, Settings.',
-      'Skills screen: 13 skill cards, XP bars, Train/Stop.',
-      'Bank screen: Inventory grid, gold badge.',
-      'Combat + Shop placeholders, Settings toggles.',
+      'Pipeline: Gradle 9.3, prebuild, Melvor palette, tabs (Skills, Bank, Shop, Combat, Settings). Batch scripts, EXPO_GUIDE. Core loop, Mining (Copper–Cosmic). Gathering data, Skill Pillars, Total Level, XP [current/next], ticks-to-level, wipe save, XP/hr.',
+    ],
+    fixed: [
+      'EXPO_ROUTER_APP_ROOT. EAS CLI. State migration. Level Up Toast. Tab insets. Worklets crash.',
     ],
   },
   {
     version: '0.1.0',
     date: '2026-02-26',
     added: [
-      'Initial scaffold: Expo SDK 54, React Native 0.81.5.',
-      'Monorepo: apps/mobile + packages/engine.',
-      '@arteria/engine game engine.',
-      'Redux Toolkit, MMKV persistence.',
-      'Project documentation framework.',
+      'Initial scaffold: Expo SDK 54, monorepo (apps/mobile + packages/engine), @arteria/engine, Redux, MMKV, dark theme, 5 tab screens.',
     ],
   },
 ];

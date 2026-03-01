@@ -55,7 +55,7 @@ export default function UpdatesModal() {
               The modal will automatically reappear whenever you bump the version in app.json 
             */}
                         <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>✨ v0.4.5 — Horizon & Mechanics</Text>
+                            <Text style={styles.changeHeader}>✨ v0.2.5 — Build & Release</Text>
                             <Text style={styles.changeText}>• Horizon System: 3-tier goal HUD (Immediate / Session / Grind).</Text>
                             <Text style={styles.changeText}>• Unique Mechanics: Rare gems in Mining, Mythic fish, and Seasonal Logging.</Text>
                             <Text style={styles.changeText}>• Premium Styling: Glassmorphism and color-coded goal cards.</Text>

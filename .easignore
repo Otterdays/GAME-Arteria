@@ -1,0 +1,40 @@
+# Reduce EAS Build archive size and upload time (https://expo.fyi/eas-build-archive)
+# Include .gitignore contents so EAS ignores the same dev/secret files:
+
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+veda
+.idea/
+.vscode/
+*.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Extra exclusions — not needed for EAS build (we're building a game, not docs/tests)
+DOCU/
+debugs/
+.git/
+coverage/
+*.log
+# Local dev scripts (EAS has its own build in the cloud)
+*.bat
+# Test suites (EAS doesn't run Jest to produce the APK)
+tests/
+**/__tests__/
+# Local build/cache outputs (EAS rebuilds on server)
+**/android/**/build/
+**/.gradle/
+**/.cxx/
+**/dist-android/
+expo-doctor-output.txt
