@@ -4,6 +4,9 @@
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 **Active Task:** Hooking up Harvesting / Fishing / Scavenging UI screens to wrap up Phase 2 Gathering.
 
+## [2026-02-28] Persistence & Deployment in 1.x.x
+- **Changelog / website / in-app:** "Persistence & Pipeline" and "Deployment & Fixes" moved to **1.x.x** section: **v1.0.0** Persistence & Pipeline, **v1.1.0** Deployment & Fixes. CHANGELOG.md, patchHistory.ts, index.html (changelog + roadmap) updated. v0.2.0 is now "Pipeline & Gathering" only.
+
 ## [2026-02-28] Version restructure to 0.2.x
 - **Rationale:** Project was at 0.4.8; restructured to 0.2.5 so versioning reflects early-stage development.
 - **CHANGELOG.md:** Consolidated 0.3.x/0.4.x into 0.2.0–0.2.5. Added restructure note at top. Current release [0.2.5].

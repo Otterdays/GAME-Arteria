@@ -56,10 +56,23 @@ export const PATCH_HISTORY: PatchEntry[] = [
     version: '0.2.0',
     date: '2026-02-26',
     added: [
-      'Pipeline: Gradle 9.3, prebuild, Melvor palette, tabs (Skills, Bank, Shop, Combat, Settings). Batch scripts, EXPO_GUIDE. Core loop, Mining (Copper–Cosmic). Gathering data, Skill Pillars, Total Level, XP [current/next], ticks-to-level, wipe save, XP/hr.',
+      'Pipeline & Gathering: Core loop, Mining (Copper–Cosmic), gathering data, Skill Pillars, Total Level, XP [current/next], ticks-to-level, wipe save, XP/hr.',
     ],
-    fixed: [
-      'EXPO_ROUTER_APP_ROOT. EAS CLI. State migration. Level Up Toast. Tab insets. Worklets crash.',
+    fixed: ['State migration. Level Up Toast. Tab insets. Worklets crash.'],
+  },
+  {
+    version: '1.1.0',
+    date: '2026-02-26',
+    added: [
+      'Deployment & Fixes: Batch scripts (Start, EAS OTA, EAS Build). EXPO_GUIDE, MY_ADHD. EAS CLI via npx.',
+    ],
+    fixed: ['EXPO_ROUTER_APP_ROOT (Babel, metro, index proxy). Recovered screens after reset-project.'],
+  },
+  {
+    version: '1.0.0',
+    date: '2026-02-26',
+    added: [
+      'Persistence & Pipeline: Gradle 9.3, Android prebuild, Melvor palette (30+ tokens), tabs (Skills, Bank, Shop, Combat, Settings). Skills screen, Bank grid, Combat/Shop placeholders. Jest tests.',
     ],
   },
   {
