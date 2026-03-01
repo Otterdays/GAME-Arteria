@@ -441,12 +441,13 @@
       color: var(--text-2);
       line-height: 1.65;
     }
+
     .system-desc code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.85em;
       padding: 2px 6px;
       border-radius: 4px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
     }
 
@@ -1058,9 +1059,11 @@
         <li><a href="#companions">Companions</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="#changelog">Changelog</a></li>
-        <li><a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" title="Project docs (SUMMARY, ROADMAP, ARCHITECTURE)">Docs</a></li>
+        <li><a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank"
+            title="Project docs (SUMMARY, ROADMAP, ARCHITECTURE)">Docs</a></li>
         <li><a href="https://github.com/Otterdays/GAME-Arteria" target="_blank">GitHub</a></li>
-        <li><a href="https://github.com/Otterdays/GAME-Arteria/releases" class="nav-cta" target="_blank" title="Download APK">Download APK ↗</a></li>
+        <li><a href="https://github.com/Otterdays/GAME-Arteria/releases" class="nav-cta" target="_blank"
+            title="Download APK">Download APK ↗</a></li>
       </ul>
     </div>
   </nav>
@@ -1069,14 +1072,15 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">v0.4.5 — Horizon HUD, Unique Drops & Local APK Build</div>
+        <div class="hero-badge">v0.4.6 — Logging, Barter & Curses</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
           A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel
           the mysteries of Valdoria — even while you sleep.
         </p>
         <div class="hero-actions">
-          <a href="https://github.com/Otterdays/GAME-Arteria/releases" class="btn-primary" target="_blank" title="Get the latest APK from Releases">
+          <a href="https://github.com/Otterdays/GAME-Arteria/releases" class="btn-primary" target="_blank"
+            title="Get the latest APK from Releases">
             📦 Download APK
           </a>
           <a href="https://github.com/Otterdays/GAME-Arteria" class="btn-secondary" target="_blank">
@@ -1124,10 +1128,10 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest Update v0.4.5</div>
-        <h2>Horizon, Drops & Polish</h2>
-        <p class="section-desc">Goal HUD, unique gathering mechanics, and a build you can run locally — no device required.
-        </p>
+        <div class="section-label">Latest Update v0.4.6</div>
+        <h2>Logging, Barter & Curses</h2>
+        <p class="section-desc">Fully mapped Logging UI, 50% Shop Barter baseline, Scavenging Curse drops, and expanded
+          bank/shop filtering.</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#8b5cf6; --card-bg:rgba(139,92,246,0.1);">
@@ -1138,7 +1142,8 @@
             </div>
           </div>
           <p class="system-desc">
-            A 3-tier goal tracker (Immediate / Session / Grind) at the top of the Skills screen. Toggle it in Settings. Glassmorphism styling with expo-linear-gradient.
+            A 3-tier goal tracker (Immediate / Session / Grind) at the top of the Skills screen. Toggle it in Settings.
+            Glassmorphism styling with expo-linear-gradient.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.08);">
@@ -1149,7 +1154,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Mining: rare gems (e.g. Uncut Sapphire). Fishing: mythic fish (Golden Carp). Logging: Seasonal Rotation — 1.5× yield on even weeks.
+            Mining: rare gems (e.g. Uncut Sapphire). Fishing: mythic fish (Golden Carp). Logging: Seasonal Rotation —
+            1.5× yield on even weeks.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#22c55e; --card-bg:rgba(34,197,94,0.08);">
@@ -1160,7 +1166,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Build release APK locally with <code>2_Build_APK_Local.bat</code> (no device). Toggles for Bank pulse, Horizon HUD, SFX/BGM. Error boundary, screen shake, accessibility.
+            Build release APK locally with <code>2_Build_APK_Local.bat</code> (no device). Toggles for Bank pulse,
+            Horizon HUD, SFX/BGM. Error boundary, screen shake, accessibility.
           </p>
         </div>
       </div>
@@ -1849,44 +1856,66 @@
       <div class="fade-in">
         <div class="section-label">History</div>
         <h2>Changelog</h2>
-        <p class="section-desc">Every version from foundation to current. Kept in sync with DOCU/CHANGELOG.md and in-app Patch Notes.</p>
+        <p class="section-desc">Every version from foundation to current. Kept in sync with DOCU/CHANGELOG.md and in-app
+          Patch Notes.</p>
       </div>
       <div class="roadmap-list fade-in">
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.1.0</span>
-          <div class="roadmap-text"><strong>Foundation</strong> — Initial scaffold: Expo SDK 54, monorepo (apps/mobile + packages/engine), Redux Toolkit, MMKV, dark theme, 5 tab screens.</div>
+          <div class="roadmap-text"><strong>Foundation</strong> — Initial scaffold: Expo SDK 54, monorepo (apps/mobile +
+            packages/engine), Redux Toolkit, MMKV, dark theme, 5 tab screens.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.2.0</span>
-          <div class="roadmap-text"><strong>Persistence & Pipeline</strong> — Gradle 9.3, Android prebuild, Melvor-style palette (30+ tokens), Skills/Bank/Combat/Shop/Settings screens, Jest tests.</div>
+          <div class="roadmap-text"><strong>Persistence & Pipeline</strong> — Gradle 9.3, Android prebuild, Melvor-style
+            palette (30+ tokens), Skills/Bank/Combat/Shop/Settings screens, Jest tests.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.3.0</span>
-          <div class="roadmap-text"><strong>Deployment & Fixes</strong> — Batch scripts (Start, EAS OTA, EAS Build). EXPO_ROUTER_APP_ROOT fix (root babel, index proxy, metro watchFolders). EAS CLI via npx.</div>
+          <div class="roadmap-text"><strong>Deployment & Fixes</strong> — Batch scripts (Start, EAS OTA, EAS Build).
+            EXPO_ROUTER_APP_ROOT fix (root babel, index proxy, metro watchFolders). EAS CLI via npx.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.0</span>
-          <div class="roadmap-text"><strong>QoL & Gathering Foundation</strong> — Skill Pillars, Total Level badge, XP [current/next], ticks-to-level, wipe save, XP/hr. Logging/Harvesting/Fishing/Scavenging data. migratePlayer, Level Up Toast fix, Android tab bar fix.</div>
+          <div class="roadmap-text"><strong>QoL & Gathering Foundation</strong> — Skill Pillars, Total Level badge, XP
+            [current/next], ticks-to-level, wipe save, XP/hr. Logging/Harvesting/Fishing/Scavenging data. migratePlayer,
+            Level Up Toast fix, Android tab bar fix.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.1</span>
-          <div class="roadmap-text"><strong>Immersion</strong> — Global Action Ticker (all screens), Header XP dashboard, MaterialCommunityIcons (pickaxe, sword-cross, treasure-chest). Edge-to-edge Android, back buttons, node progress bars.</div>
+          <div class="roadmap-text"><strong>Immersion</strong> — Global Action Ticker (all screens), Header XP
+            dashboard, MaterialCommunityIcons (pickaxe, sword-cross, treasure-chest). Edge-to-edge Android, back
+            buttons, node progress bars.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.2</span>
-          <div class="roadmap-text"><strong>Juice</strong> — XP Bar Pulse, Haptic Heartbeat, Inventory Full "!" (50 slot cap), SmoothProgressBar (60fps), GlobalActionTicker hooks fix.</div>
+          <div class="roadmap-text"><strong>Juice</strong> — XP Bar Pulse, Haptic Heartbeat, Inventory Full "!" (50 slot
+            cap), SmoothProgressBar (60fps), GlobalActionTicker hooks fix.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.3</span>
-          <div class="roadmap-text"><strong>Bank & VFX</strong> — Bank search + filters (Ores/Bars/Other), Train Toast, Pulsing tab glow (Skills/Bank), Loot Vacuum (icon flies to Bank).</div>
+          <div class="roadmap-text"><strong>Bank & VFX</strong> — Bank search + filters (Ores/Bars/Other), Train Toast,
+            Pulsing tab glow (Skills/Bank), Loot Vacuum (icon flies to Bank).</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.4</span>
-          <div class="roadmap-text"><strong>Patch Notes</strong> — Full changelog in-app (Settings → Patch Notes). Bundling fix for monorepo root (main in package.json).</div>
+          <div class="roadmap-text"><strong>Patch Notes</strong> — Full changelog in-app (Settings → Patch Notes).
+            Bundling fix for monorepo root (main in package.json).</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.5</span>
-          <div class="roadmap-text"><strong>Horizon & Mechanics</strong> — 3-tier goal HUD (Immediate/Session/Grind), glassmorphism, purple token. Mining: rare gems (Uncut Sapphire). Fishing: mythic fish (Golden Carp). Logging: Seasonal Rotation (1.5x even weeks). Local APK build fix (root index.js, gradlew, no device). Settings: Bank pulse toggle, Horizon HUD toggle, SFX/BGM placeholders. Error boundary, screen shake, accessibility labels, analytics placeholder. Loot vacuum slower + centered.</div>
+          <div class="roadmap-text"><strong>Horizon & Mechanics</strong> — 3-tier goal HUD (Immediate/Session/Grind),
+            glassmorphism, purple token. Mining: rare gems (Uncut Sapphire). Fishing: mythic fish (Golden Carp).
+            Logging: Seasonal Rotation (1.5x even weeks). Local APK build fix (root index.js, gradlew, no device).
+            Settings: Bank pulse toggle, Horizon HUD toggle, SFX/BGM placeholders. Error boundary, screen shake,
+            accessibility labels, analytics placeholder. Loot vacuum slower + centered.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.4.6</span>
+          <div class="roadmap-text"><strong>Logging & Barter Hooks</strong> — Full Logging UI implementation, mapped 9
+            log tiers. 50% sell price modifier integrated into Shop to establish Future Barter skill logic. TickSystem
+            enhanced to generate "Cursed" item variants based on drop RNG, laying groundwork for Scavenging & Cleansing.
+            Log filters added to Bank and Shop.</div>
         </div>
       </div>
     </div>
@@ -1933,10 +1962,16 @@
             HUD (Immediate/Session/Grind) with premium glassmorphism. Added Rare Gem drops (Mining), Mythic Fish
             (Fishing), and Seasonal Rotation logic (Logging). Fixed local APK build pipeline.</div>
         </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Feb 28</span>
+          <div class="roadmap-text"><strong>v0.4.6: Logging & Economy Groundwork</strong> — Unlocked the Logging skill
+            UI and expanded items catalog. Implemented 50% markdown on NPC shop trades for Barter mechanics. Wired the
+            engine to support RNG Cursed Item variants for the Scavenging overhaul.</div>
+        </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Current</span>
-          <div class="roadmap-text"><strong>Phase 2.2: The Gathering Expansion</strong> — Refining drop rates, balancing
-            XP curves for all gathering pillars, and preparing the foundation for the Combat Alpha.</div>
+          <div class="roadmap-text"><strong>Phase 2.2: The Gathering Expansion</strong> — Wrapping up the final
+            gathering screens (Harvesting, Fishing, Scavenging) and connecting their unique node arrays.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>

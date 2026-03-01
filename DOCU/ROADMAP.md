@@ -80,17 +80,17 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Sort/filter placeholder:** UI hook for "All / Ores / Bars / Other" or sort by name/quantity (can stub).
 
 ### 1.4 — Welcome Back & Offline UX 🟡
-- [ ] 🟢 **"While You Were Away" modal:** Show on foreground after offline calc (XP gained, items looted, time elapsed).
-- [ ] 🟢 **Dismiss/ack:** Single "Got it" or "Collect" so modal doesn’t reappear until next return.
-- [ ] 🟡 **Cap messaging:** If player was away >24h, mention "Capped at 24h offline progress (F2P)."
-- [ ] 🟢 **MMKV round-trip test on device:** Confirm save on background, load on foreground, state matches.
+- [x] 🟢 **"While You Were Away" modal:** Show on foreground after offline calc (XP gained, items looted, time elapsed).
+- [x] 🟢 **Dismiss/ack:** Single "Got it" or "Collect" so modal doesn’t reappear until next return.
+- [x] 🟡 **Cap messaging:** If player was away >24h, mention "Capped at 24h offline progress (F2P)."
+- [x] 🟢 **MMKV round-trip test on device:** Confirm save on background, load on foreground, state matches.
 
 ### 1.5 — Phase 1 polish & hooks (small bits)
-- [ ] 🟢 **Haptic feedback:** Light haptic on Train/Stop (expo-haptics already in stack).
-- [ ] 🟢 **Toast/snackbar:** "Mining started: Iron" / "Level up: Mining 12" (non-blocking).
-- [ ] 🟢 **Analytics/events placeholder:** Log or no-op for "skill_started", "level_up" (for future analytics).
-- [ ] 🟢 **Accessibility:** Ensure skill cards and main CTAs have accessible labels; touch targets ≥44px where possible.
-- [ ] 🟢 **Settings persistence:** If any new settings (e.g. sound on/off), persist via MMKV or existing store.
+- [x] 🟢 **Haptic feedback:** Light haptic on Train/Stop (expo-haptics already in stack).
+- [x] 🟢 **Toast/snackbar:** "Mining started: Iron" / "Level up: Mining 12" (non-blocking).
+- [x] 🟢 **Analytics/events placeholder:** Log or no-op for "skill_started", "level_up" (for future analytics).
+- [x] 🟢 **Accessibility:** Ensure skill cards and main CTAs have accessible labels; touch targets ≥44px where possible.
+- [x] 🟢 **Settings persistence:** If any new settings (e.g. sound on/off), persist via MMKV or existing store.
 
 ---
 
@@ -150,7 +150,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Fishing:** Define nodes.
   - [x] *Unique Mechanic (🔴):* Mythic fish probabilities.
 - [x] 🟢 **Scavenging:** Define ruins/zones.
-  - [ ] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
+  - [x] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
 
 ### 2.2 — The "Horizon System" UI (Core Retention) ✅
 - [x] 🟡 **Dashboard Widget Layout:** Implement the 3-tier goal HUD on the main screen component.
@@ -168,7 +168,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Redux buyItem:** Action to spend gold and add item(s) to inventory; respect INVENTORY_SLOT_CAP (no buy if at cap unless stacking).
 - [x] 🟢 **Shop screen UI:** Replace placeholder with Buy/Sell toggle, category tabs (General / Resources / Equipment), item list with price and Buy/Sell. Merchant name "Nick" in header or subtitle.
 - [x] 🟢 **Sell from Shop:** Reuse existing sellItem; optional: "Sell" tab shows player inventory with sell prices (or link to Bank for selling).
-- [ ] 🟡 **Sell price multiplier (optional):** Apply merchant sell ratio (e.g. 50% of ITEM_META.sellValue) when selling to Nick; document for future Barter skill hook.
+- [x] 🟡 **Sell price multiplier (optional):** Apply merchant sell ratio (e.g. 50% of ITEM_META.sellValue) when selling to Nick; document for future Barter skill hook.
 
 ---
 
@@ -276,7 +276,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 
 ### 7.2 — The Lumina Shop 🟡
 - [ ] 🟢 **UI Categories:** Cosmetics, Bank Expansion, Skill Boosts (24h max), Instant Craft Skips.
-- [ ] 🟡 **The Patron's Blessing:** Implement $9.99/mo subscription logic check (12h offline cap, +20% XP, 2x bank slots). *Strictly convenience, no raw power.*
+- [x] 🟡 **Patron's Pack (expansion):** One-time mock purchase. 7-day offline cap (vs 24h F2P), 100 bank slots (vs 50), +20% XP, Patron badge. `player.settings.isPatron`, `app/patron.tsx` purchase screen, Settings → Premium. Real IAP to be wired later.
+- [ ] 🟡 **The Patron's Blessing (subscription):** $9.99/mo subscription logic check (12h offline cap, +20% XP, 2x bank slots). *Strictly convenience, no raw power.*
 - [ ] 🔴 **The Treasure Hunt (Battle Pass):** Setup monthly grid-digging mechanic using daily shovels (complex UI/state).
 
 ### 7.3 — Retention & Polish 🔴

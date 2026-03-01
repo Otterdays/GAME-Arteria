@@ -44,6 +44,7 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Current Status (Phase 2.2 — Horizon & Mechanics):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.4.6 (Logging UI & Mechanics):** Fully scaffolded Logging screen and node progression. Added Shop Barter baseline modifier (50% sell price) and built Scavenging 'Curse' RNG translation logic into `TickSystem`. Integrated logs into `ITEM_META` and UI filters.
 - **v0.4.5 (Horizon & Mechanics):** 3-tier goal HUD (Horizon system); Rare gems, Mythic fish, and Seasonal Logging yield; Local APK build fix.
 - **v0.4.4 (Patch History):** Patch history screen accessible from settings.
 - **v0.4.3 (Bank & Juice):** Bank search + filters; Train toast; Pulsing tab glow; Loot vacuum animation.

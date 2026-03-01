@@ -18,7 +18,7 @@ import {
     TextInput,
 } from 'react-native';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
-import { INVENTORY_SLOT_CAP } from '@/constants/game';
+import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
 import { getItemMeta, type ItemType } from '@/constants/items';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -123,6 +123,7 @@ const FILTER_OPTIONS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'all', label: 'All' },
     { key: 'ore', label: 'Ores' },
     { key: 'bar', label: 'Bars' },
+    { key: 'log', label: 'Logs' },
     { key: 'other', label: 'Other' },
 ];
 
@@ -130,6 +131,9 @@ export default function BankScreen() {
     const dispatch = useAppDispatch();
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const gold = useAppSelector((s) => s.game.player.gold);
+    const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
+    const slotCap = isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
+
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState<ItemType | 'all'>('all');
@@ -165,9 +169,9 @@ export default function BankScreen() {
             <View style={styles.header}>
                 <View>
                     <Text style={styles.screenTitle}>Bank</Text>
-                    <Text style={[styles.screenSub, inventory.length >= INVENTORY_SLOT_CAP && styles.screenSubWarning]}>
-                        {inventory.length} / {INVENTORY_SLOT_CAP} slots
-                        {inventory.length >= INVENTORY_SLOT_CAP && ' — Full!'}
+                    <Text style={[styles.screenSub, inventory.length >= slotCap && styles.screenSubWarning]}>
+                        {inventory.length} / {slotCap} slots
+                        {inventory.length >= slotCap && ' — Full!'}
                     </Text>
                 </View>
                 <View style={styles.headerRight}>

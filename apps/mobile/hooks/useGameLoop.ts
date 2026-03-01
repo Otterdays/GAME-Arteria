@@ -11,6 +11,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions, SkillId, OfflineReport } from '@/store/gameSlice';
 import { logger } from '@/utils/logger';
+import { OFFLINE_CAP_F2P_MS, OFFLINE_CAP_PATRON_MS, XP_BONUS_PATRON } from '@/constants/game';
 
 // ── Inline engine math (mirrors @arteria/engine) ──
 // We inline the XP + tick logic here so we don't need
@@ -62,6 +63,7 @@ export function useGameLoop() {
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
     const lastSaveTimestamp = useAppSelector((s) => s.game.player.lastSaveTimestamp);
     const isLoaded = useAppSelector((s) => s.game.isLoaded);
+    const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
 
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
@@ -106,9 +108,10 @@ export function useGameLoop() {
                 }));
                 dispatch(gameActions.addItems(items));
 
-                // If accumulating for an offline report, add to it
+                // If accumulating for an offline report, add effective XP (reducer applies Patron multiplier)
                 if (accumulator) {
-                    accumulator.xpGained[skillId] = (accumulator.xpGained[skillId] ?? 0) + totalXP;
+                    const effectiveXp = isPatron ? Math.floor(totalXP * XP_BONUS_PATRON) : totalXP;
+                    accumulator.xpGained[skillId] = (accumulator.xpGained[skillId] ?? 0) + effectiveXp;
                     for (const item of items) {
                         const existing = accumulator.itemsGained.find((i) => i.id === item.id);
                         if (existing) existing.quantity += item.quantity;
@@ -117,7 +120,7 @@ export function useGameLoop() {
                 }
             }
         },
-        [activeTask, dispatch]
+        [activeTask, dispatch, isPatron]
     );
 
     // Main game loop interval
@@ -144,29 +147,30 @@ export function useGameLoop() {
             const now = Date.now();
             let elapsed = now - lastSaveTimestamp;
 
-            // 24-hour offline cap for F2P
-            const CAP_MS = 24 * 60 * 60 * 1000;
+            const CAP_MS = isPatron ? OFFLINE_CAP_PATRON_MS : OFFLINE_CAP_F2P_MS;
             if (elapsed > CAP_MS) {
                 elapsed = CAP_MS;
             }
 
             if (elapsed > 1000) {
-                const wasCapped = (now - lastSaveTimestamp) > 24 * 60 * 60 * 1000;
+                const wasCapped = (now - lastSaveTimestamp) > CAP_MS;
                 const report: OfflineReport = {
                     elapsedMs: elapsed,
                     xpGained: {},
                     itemsGained: [],
                     wasCapped,
+                    capLabel: wasCapped ? (isPatron ? '7 days (Patron)' : '24h (F2P limit)') : undefined,
                 };
                 processDelta(elapsed, report);
                 dispatch(gameActions.setOfflineReport(report));
                 logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)}s. Items: ${report.itemsGained.length}`);
             }
         }
-    }, [isLoaded, activeTask, lastSaveTimestamp, processDelta]);
+    }, [isLoaded, activeTask, lastSaveTimestamp, processDelta, isPatron]);
 
     // Handle app going to background / foreground
     useEffect(() => {
+        const capMs = isPatron ? OFFLINE_CAP_PATRON_MS : OFFLINE_CAP_F2P_MS;
         const subscription = AppState.addEventListener(
             'change',
             (nextState: AppStateStatus) => {
@@ -174,11 +178,10 @@ export function useGameLoop() {
                     appStateRef.current.match(/inactive|background/) &&
                     nextState === 'active'
                 ) {
-                    // App came back to foreground — process offline time
                     const now = Date.now();
-                    const offlineDelta = now - lastTickRef.current;
+                    let offlineDelta = now - lastTickRef.current;
+                    if (offlineDelta > capMs) offlineDelta = capMs;
                     if (offlineDelta > 1000) {
-                        // Only process if >1s has passed
                         processDelta(offlineDelta);
                     }
                     lastTickRef.current = now;
@@ -188,5 +191,5 @@ export function useGameLoop() {
         );
 
         return () => subscription.remove();
-    }, [processDelta]);
+    }, [processDelta, isPatron]);
 }

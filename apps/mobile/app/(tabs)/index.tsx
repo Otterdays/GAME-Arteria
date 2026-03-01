@@ -69,7 +69,7 @@ const SKILL_PILLARS: { label: string; emoji: string; skills: SkillId[] }[] = [
 ];
 
 // C. Skills that are implemented and navigable
-const IMPLEMENTED_SKILLS = new Set<SkillId>(['mining']);
+const IMPLEMENTED_SKILLS = new Set<SkillId>(['mining', 'logging']);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -231,6 +231,7 @@ export default function SkillsScreen() {
   const horizonHudEnabled = useAppSelector(
     (s) => s.game.player.settings?.horizonHudEnabled ?? true
   );
+  const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
 
   const handleNavigate = useCallback(
     (skillId: SkillId) => {
@@ -256,7 +257,14 @@ export default function SkillsScreen() {
         <View style={styles.headerTop}>
           <View>
             <Text style={styles.headerTitle}>Skills</Text>
-            <Text style={styles.totalLevel}>Total Lv. {totalLevel}</Text>
+            <View style={styles.totalLevelRow}>
+              <Text style={styles.totalLevel}>Total Lv. {totalLevel}</Text>
+              {isPatron && (
+                <View style={styles.patronBadge}>
+                  <Text style={styles.patronBadgeText}>PATRON</Text>
+                </View>
+              )}
+            </View>
           </View>
           {activeTask ? (
             <View style={styles.activeSkillBadge}>
@@ -349,11 +357,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Palette.textPrimary,
   },
+  totalLevelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: 2,
+  },
   totalLevel: {
     fontSize: FontSize.sm,
     color: Palette.gold,
     fontWeight: '600',
-    marginTop: 2,
+  },
+  patronBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: Radius.sm,
+    backgroundColor: 'rgba(255,202,40,0.2)',
+    borderWidth: 1,
+    borderColor: Palette.gold,
+  },
+  patronBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: Palette.gold,
+    letterSpacing: 0.5,
   },
   activeSkillBadge: {
     flexDirection: 'row',

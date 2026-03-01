@@ -43,6 +43,7 @@ function SettingsRow({
 
 export default function SettingsScreen() {
     const dispatch = useAppDispatch();
+    const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
     const bankPulseEnabled = useAppSelector(
         (s) => s.game.player.settings?.bankPulseEnabled ?? true
     );
@@ -135,6 +136,25 @@ export default function SettingsScreen() {
                     value={true}
                     description="Notify when a task finishes"
                 />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Premium</Text>
+                <TouchableOpacity
+                    style={styles.row}
+                    onPress={() => router.push('/patron')}
+                    activeOpacity={0.7}
+                >
+                    <View style={styles.rowInfo}>
+                        <Text style={styles.rowLabel}>Patron's Pack</Text>
+                        <Text style={styles.rowDesc}>7-day offline cap, 100 slots, +20% XP</Text>
+                    </View>
+                    {isPatron ? (
+                        <Text style={[styles.rowLabel, { color: Palette.gold, fontWeight: '700' }]}>Active</Text>
+                    ) : (
+                        <Text style={styles.arrow}>›</Text>
+                    )}
+                </TouchableOpacity>
             </View>
 
             <View style={styles.section}>

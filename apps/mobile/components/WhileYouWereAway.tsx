@@ -73,7 +73,7 @@ export default function WhileYouWereAway() {
                     <Text style={styles.time}>{formatElapsed(report.elapsedMs)} of progress</Text>
                     {report.wasCapped && (
                         <View style={styles.capBanner}>
-                            <Text style={styles.capText}>⚠️ Capped at 24h (F2P limit)</Text>
+                            <Text style={styles.capText}>⚠️ Capped at {report.capLabel ?? '24h (F2P limit)'}</Text>
                         </View>
                     )}
 

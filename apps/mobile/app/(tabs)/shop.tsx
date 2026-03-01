@@ -16,7 +16,6 @@ import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
-import { INVENTORY_SLOT_CAP } from '@/constants/game';
 
 type TabMode = 'buy' | 'sell';
 
@@ -24,6 +23,7 @@ const SELL_FILTERS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'all', label: 'All' },
     { key: 'ore', label: 'Ores' },
     { key: 'bar', label: 'Bars' },
+    { key: 'log', label: 'Logs' },
     { key: 'other', label: 'Other' },
 ];
 
@@ -141,14 +141,16 @@ export default function ShopScreen() {
 
     const handleSell1 = (id: string) => {
         const meta = getItemMeta(id);
-        dispatch(gameActions.sellItem({ id, quantity: 1, pricePer: meta.sellValue }));
+        const shopSellValue = Math.floor(meta.sellValue * 0.5); // 50% merchant ratio
+        dispatch(gameActions.sellItem({ id, quantity: 1, pricePer: shopSellValue }));
     };
 
     const handleSellAll = (id: string) => {
         const item = inventory.find((i) => i.id === id);
         if (!item) return;
         const meta = getItemMeta(id);
-        dispatch(gameActions.sellItem({ id, quantity: item.quantity, pricePer: meta.sellValue }));
+        const shopSellValue = Math.floor(meta.sellValue * 0.5); // 50% merchant ratio
+        dispatch(gameActions.sellItem({ id, quantity: item.quantity, pricePer: shopSellValue }));
     };
 
     return (

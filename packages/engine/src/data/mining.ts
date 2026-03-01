@@ -16,6 +16,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         masteryXpPerTick: 2,
         rareChance: 0.01,
         rareItems: [{ id: 'uncut_sapphire', quantity: 1 }],
+        curseChance: 0.1,
     },
     {
         id: 'tin_ore',
@@ -27,6 +28,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         masteryXpPerTick: 2,
         rareChance: 0.01,
         rareItems: [{ id: 'uncut_sapphire', quantity: 1 }],
+        curseChance: 0.1,
     },
     {
         id: 'iron_ore',
@@ -37,6 +39,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 15,
         masteryXpPerTick: 3,
         successRate: 0.95,
+        curseChance: 0.1,
     },
     {
         id: 'coal_ore',
@@ -47,6 +50,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 30,
         masteryXpPerTick: 4,
         successRate: 0.9,
+        curseChance: 0.1,
     },
     {
         id: 'gold_ore',
@@ -57,6 +61,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 40,
         masteryXpPerTick: 5,
         successRate: 0.85,
+        curseChance: 0.1,
     },
     {
         id: 'mithril_ore',
@@ -67,6 +72,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 55,
         masteryXpPerTick: 6,
         successRate: 0.8,
+        curseChance: 0.1,
     },
     {
         id: 'adamantite_ore',
@@ -77,6 +83,7 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 70,
         masteryXpPerTick: 7,
         successRate: 0.75,
+        curseChance: 0.2,
     },
     {
         id: 'runite_ore',
@@ -87,5 +94,6 @@ export const MINING_ACTIONS: ActionDefinition[] = [
         levelRequired: 85,
         masteryXpPerTick: 10,
         successRate: 0.7,
+        curseChance: 0.25,
     },
 ];

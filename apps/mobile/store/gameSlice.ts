@@ -7,7 +7,11 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { INVENTORY_SLOT_CAP } from '@/constants/game';
+import {
+    INVENTORY_SLOT_CAP_F2P,
+    INVENTORY_SLOT_CAP_PATRON,
+    XP_BONUS_PATRON,
+} from '@/constants/game';
 import { logger } from '@/utils/logger';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -85,6 +89,8 @@ export interface PlayerState {
         horizonHudEnabled?: boolean;
         sfxEnabled?: boolean;
         bgmEnabled?: boolean;
+        /** Patron's Pack — 7d offline cap, 100 slots, +20% XP, badge */
+        isPatron?: boolean;
     };
 }
 
@@ -142,7 +148,7 @@ function createFreshPlayer(): PlayerState {
         },
         activeTask: null,
         lastSaveTimestamp: Date.now(),
-        settings: { bankPulseEnabled: true, horizonHudEnabled: true, sfxEnabled: true, bgmEnabled: true },
+        settings: { bankPulseEnabled: true, horizonHudEnabled: true, sfxEnabled: true, bgmEnabled: true, isPatron: false },
     };
 }
 
@@ -175,8 +181,10 @@ function migratePlayer(saved: PlayerState): PlayerState {
 
     const settings = {
         bankPulseEnabled: saved.settings?.bankPulseEnabled ?? true,
+        horizonHudEnabled: saved.settings?.horizonHudEnabled ?? true,
         sfxEnabled: saved.settings?.sfxEnabled ?? true,
         bgmEnabled: saved.settings?.bgmEnabled ?? true,
+        isPatron: saved.settings?.isPatron ?? false,
     };
     return { ...saved, skills: skills as Record<SkillId, SkillState>, settings };
 }
@@ -188,6 +196,8 @@ export interface OfflineReport {
     xpGained: Partial<Record<SkillId, number>>;
     itemsGained: InventoryItem[];
     wasCapped: boolean;
+    /** When wasCapped: "24h (F2P)" or "7 days (Patron)" */
+    capLabel?: string;
 }
 
 export interface LevelUpEvent {
@@ -257,13 +267,15 @@ export const gameSlice = createSlice({
             state.player.activeTask = null;
         },
 
-        /** Apply XP gains from a tick result (auto-computes level) */
+        /** Apply XP gains from a tick result (auto-computes level). Patron gets +20%. */
         applyXP(state, action: PayloadAction<{ skillId: SkillId; xp: number }>) {
             const { skillId, xp } = action.payload;
+            const xpMultiplier = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
+            const effectiveXp = Math.floor(xp * xpMultiplier);
             const skill = state.player.skills[skillId];
             if (skill) {
                 const oldLevel = skill.level;
-                skill.xp += xp;
+                skill.xp += effectiveXp;
                 skill.level = levelForXP(skill.xp);
 
                 // If we leveled up, queue a toast and pulse Skills tab
@@ -284,11 +296,12 @@ export const gameSlice = createSlice({
             if (state.player.settings?.bankPulseEnabled !== false) {
                 state.pulseTab = 'bank';
             }
+            const slotCap = state.player.settings?.isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
             for (const item of action.payload) {
                 const existing = state.player.inventory.find((i) => i.id === item.id);
                 if (existing) {
                     existing.quantity += item.quantity;
-                } else if (state.player.inventory.length < INVENTORY_SLOT_CAP) {
+                } else if (state.player.inventory.length < slotCap) {
                     state.player.inventory.push({ ...item });
                 }
                 if (state.lootVacuumQueue.length < 5) {
@@ -367,6 +380,12 @@ export const gameSlice = createSlice({
             state.player.settings.bgmEnabled = action.payload;
         },
 
+        /** Patron's Pack — mock purchase unlocks 7d offline, 100 slots, +20% XP. [TRACE: Patron's Pack] */
+        setPatron(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.isPatron = action.payload;
+        },
+
         /** S. Remove completed loot vacuum animation */
         popLootVacuum(state, action: PayloadAction<string>) {
             state.lootVacuumQueue = state.lootVacuumQueue.filter((e) => e.id !== action.payload);
@@ -384,13 +403,13 @@ export const gameSlice = createSlice({
             state.player.inventory = state.player.inventory.filter(i => i.quantity > 0);
         },
 
-        /** Buy item from Nick's Shop. Respects gold and INVENTORY_SLOT_CAP. [TRACE: ROADMAP 2.3] */
+        /** Buy item from Nick's Shop. Respects gold and slot cap. [TRACE: ROADMAP 2.3] */
         buyItem(state, action: PayloadAction<{ id: string; quantity: number; totalCost: number }>) {
             const { id, quantity, totalCost } = action.payload;
             if (state.player.gold < totalCost || quantity < 1) return;
+            const slotCap = state.player.settings?.isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
             const existing = state.player.inventory.find((i) => i.id === id);
-            const canStack = !!existing;
-            const needNewSlot = !existing && state.player.inventory.length >= INVENTORY_SLOT_CAP;
+            const needNewSlot = !existing && state.player.inventory.length >= slotCap;
             if (needNewSlot) return;
             state.player.gold -= totalCost;
             if (existing) {

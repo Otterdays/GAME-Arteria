@@ -6,7 +6,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TabIconWithPulse } from '@/components/TabIconWithPulse';
 import { Palette } from '@/constants/theme';
-import { INVENTORY_SLOT_CAP } from '@/constants/game';
+import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppSelector } from '@/store/hooks';
 
@@ -16,7 +16,9 @@ export default function TabLayout() {
   const isDark = colorScheme === 'dark';
   const insets = useSafeAreaInsets();
   const inventoryCount = useAppSelector((s) => s.game.player.inventory.length);
-  const isInventoryFull = inventoryCount >= INVENTORY_SLOT_CAP;
+  const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
+  const slotCap = isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
+  const isInventoryFull = inventoryCount >= slotCap;
   const pulseTab = useAppSelector((s) => s.game.pulseTab);
 
   // Add bottom inset so the tab bar clears the Android gesture nav bar

@@ -3,6 +3,17 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+## [0.4.6] - 2026-02-28
+### Added
+- **Logging Skill UI:** Fully scaffolded `logging.tsx`, mapping all normal through cosmic trees from the engine into the visual node list mirroring the `Mining` UX. Unlocked skill from main dashboard.
+- **Log Items Registry:** Expanded `ITEM_META` to include 9 new tiered logs, spanning from basic 'Normal Log' up to 'Cosmic Wood'. Extended `ItemType` enum with `log`.
+- **Bank & Shop Filters:** Added a 'Logs' filter pill to both the Bank and Shop screens for easier inventory sorting.
+- **Shop Buy/Sell Economy:** Implemented a new 50% `sellValue` modifier purely for direct sales to Nick's Shop, establishing merchant margins for future Barter integration.
+- **Curse System (Scavenging hook):** `TickSystem` now intercepts normal output and converts items into `cursed_` variants based on RNG. Added cursed ore prototypes to `ITEM_META` and hooked `curseChance` into Mining drops for testing.
+
+### Fixed
+- **Slot Cap Check:** Resolved a missing `slotCap` logic check in the Bank UI.
+
 ## [0.4.5] - 2026-02-27
 ### Added
 - **Horizon System:** A 3-tier goal HUD (Immediate / Session / Grind) at the top of the Skills screen for persistent micro-goal tracking.

@@ -35,6 +35,8 @@ export interface ActionDefinition {
     rareItems?: InventoryItem[];
     /** Unique Mechanic: Yield multiplier (1.0 = base, 1.2 = +20% yield) used for Seasonal Rotation */
     yieldMultiplier?: number;
+    /** Unique Mechanic: Chance (0-1) per item to drop as a "Cursed" variant (found in Scavenging) */
+    curseChance?: number;
 }
 
 export const TickSystem = {
@@ -76,6 +78,7 @@ export const TickSystem = {
         // Process each tick
         let successfulTicks = 0;
         let rareItemCount = 0;
+        let curseItemProcs = 0;
 
         for (let i = 0; i < fullTicks; i++) {
             if (rng() <= successRate) {
@@ -83,6 +86,10 @@ export const TickSystem = {
                 // Check for rare item drop (Unique Mechanic)
                 if (action.rareChance && action.rareItems && rng() <= action.rareChance) {
                     rareItemCount++;
+                }
+
+                if (action.curseChance && rng() <= action.curseChance) {
+                    curseItemProcs++;
                 }
             }
         }
@@ -98,17 +105,38 @@ export const TickSystem = {
             // Aggregate base items
             const multiplier = action.yieldMultiplier ?? 1;
             for (const item of action.itemsPerTick) {
-                const quantity = Math.floor(item.quantity * successfulTicks * multiplier);
-                if (quantity <= 0) continue;
+                let quantityToGiveNormal = Math.floor(item.quantity * successfulTicks * multiplier);
 
-                const existing = result.itemsGained.find((i) => i.id === item.id);
-                if (existing) {
-                    existing.quantity += quantity;
-                } else {
-                    result.itemsGained.push({
-                        id: item.id,
-                        quantity: quantity,
-                    });
+                // If the curse mechanic triggered, convert some normal output to cursed output
+                if (curseItemProcs > 0 && quantityToGiveNormal > 0) {
+                    const quantityToCurse = Math.min(Math.floor(item.quantity * curseItemProcs * multiplier), quantityToGiveNormal);
+
+                    if (quantityToCurse > 0) {
+                        quantityToGiveNormal -= quantityToCurse;
+
+                        const cursedId = `cursed_${item.id}`;
+                        const existingCursed = result.itemsGained.find((i) => i.id === cursedId);
+                        if (existingCursed) {
+                            existingCursed.quantity += quantityToCurse;
+                        } else {
+                            result.itemsGained.push({
+                                id: cursedId,
+                                quantity: quantityToCurse,
+                            });
+                        }
+                    }
+                }
+
+                if (quantityToGiveNormal > 0) {
+                    const existingNormal = result.itemsGained.find((i) => i.id === item.id);
+                    if (existingNormal) {
+                        existingNormal.quantity += quantityToGiveNormal;
+                    } else {
+                        result.itemsGained.push({
+                            id: item.id,
+                            quantity: quantityToGiveNormal,
+                        });
+                    }
                 }
             }
 
@@ -137,3 +165,4 @@ export const TickSystem = {
         return result;
     },
 };
+

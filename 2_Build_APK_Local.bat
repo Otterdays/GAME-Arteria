@@ -26,6 +26,12 @@ if errorlevel 1 (
 
 set "NODE_ENV=production"
 
+REM Stop stale Gradle daemons so we start fresh (avoids "6 incompatible" buildup).
+call gradlew.bat --stop
+if errorlevel 1 (
+    echo Note: gradlew --stop had an issue (may be first run). Continuing...
+)
+
 REM Gradle only (no device). Root index.js redirects Metro when it resolves from Arteria.
 echo Building release APK via Gradle (no device required)...
 echo This might take a few minutes...

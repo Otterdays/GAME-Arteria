@@ -2,7 +2,26 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Phase 2.3 Nick's Shop done; Phase 3 Combat Foundation next.
+**Active Task:** Hooking up Harvesting / Fishing / Scavenging UI screens to wrap up Phase 2 Gathering.
+
+## [2026-02-28] Mechanics Implementation & Logging UI
+- **Curse Chance:** Implemented the `curseChance` loop in `TickSystem.processDelta`. Normal item output is partially converted into `cursed_{id}` equivalent based on RNG.
+- **Cursed Ores:** Temporarily added `curseChance` of 10-25% to all Mining nodes so cursed ores can trigger for testing the mechanic. Registered all cursed ores into `ITEM_META` in `constants/items.ts`.
+- **Nick's Shop:** Set the sell value of items when sold directly via the Shop to **50% of their base `sellValue`**. Lays the groundwork for the Barter skill. This is functionally completely separate from selling from the Bank directly at this time.
+- **Logging Skill:** Built `logging.tsx` screen, extracted node UI metadata to `constants/logging.ts`. Registered all logs to `ITEM_META` and extended `ItemType`. Unlocked logging in `index.tsx`.
+- **Bank/Shop Filters:** Added a 'Logs' filter button to both interfaces. Fixed missing `slotCap` definition in Bank.
+
+## [2026-02-27] Patron's Pack — Premium Expansion
+- **F2P offline cap:** 24h (OFFLINE_CAP_F2P_MS). **Patron:** 7 days (OFFLINE_CAP_PATRON_MS).
+- **Constants:** `game.ts` — OFFLINE_CAP_F2P_MS, OFFLINE_CAP_PATRON_MS, INVENTORY_SLOT_CAP_F2P/PATRON, XP_BONUS_PATRON.
+- **Redux:** `player.settings.isPatron`, `setPatron` reducer. `applyXP` ×1.2 when patron. `addItems`/`buyItem` slot cap 100 vs 50.
+- **useGameLoop:** Dynamic offline cap (initial load + foreground handler) based on isPatron.
+- **Purchase screen:** `app/patron.tsx` — benefits list, "Unlock Patron's Pack" mock button. Settings → Premium → Patron's Pack.
+- **UI:** Patron badge next to Total Level on Skills header. WYWA cap banner: "Capped at 24h (F2P limit)" or "Capped at 7 days (Patron)".
+
+## [2026-02-27] Gradle Daemon Cleanup
+- **2_Build_APK_Local.bat:** Now runs `gradlew --stop` before `assembleRelease` to clear stale daemons (avoids "6 incompatible" buildup).
+- **0_Stop_Gradle_Daemons.bat:** New script to manually stop Gradle daemons anytime (frees memory). Run from project root.
 **Current Focus:** Nick's Shop (Gold Vendor) implemented: SHOP_CATALOG, buyItem, Shop screen with Buy/Sell tabs, Nick in header. APK at `apps\mobile\android\app\build\outputs\apk\release\app-release.apk`.
 
 ## [2026-02-27] People to Add in the Game (future reference)
