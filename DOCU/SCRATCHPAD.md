@@ -11,6 +11,9 @@
 
 ## [2026-03-02] Narrative & Storyline Architecture
 - **Focus:** Began breaking down `STORYLINE.md` and `MASTER_DESIGN_DOC.md` to design the technical architecture for the game's story system.
+- **Data Models:** Created `packages/engine/src/data/story.ts` defining TypeScript interfaces for `Quest`, `DialogueNode`, `DialogueOption`, `NarrativeRequirement`, `NarrativeReward`, and `PlayerNarrativeState`. Added initial story data `data/quests.ts`.
+- **Redux & Engine Integration:** Added `narrative` to `PlayerState` globally (`gameSlice.ts` and `types.ts`). Initialized `flags`, `activeQuests`, and `completedQuests` on fresh saves and built a backwards-compatible migration for existing local saves. Exposed RTK reducers for `setNarrativeFlag`, `startQuest`, `completeQuestStep`, and `completeQuest`.
+- **Lore UI Layer:** Built a dedicated `QuestsScreen` in `app/(tabs)/quests.tsx`. This screen live-reads Redux `narrative` state against the unified `ALL_QUESTS` engine data and sorts them automatically into Available, Active, or Completed sections. Mapped the screen into Expo Router in `_layout.tsx`.
 - **Goal:** Implement the "Cosmic Comedy" tone and the Act I-IV structure into the game's Redux state, dialogue UI, and quest engine.
 ## [2026-02-28] Persistence & Deployment in 1.x.x
 - **Changelog / website / in-app:** "Persistence & Pipeline" and "Deployment & Fixes" moved to **1.x.x** section: **v1.0.0** Persistence & Pipeline, **v1.1.0** Deployment & Fixes. CHANGELOG.md, patchHistory.ts, index.html (changelog + roadmap) updated. v0.2.0 is now "Pipeline & Gathering" only.

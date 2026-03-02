@@ -70,6 +70,15 @@ export interface PlayerState {
     activeTask: ActiveTask | null;
     /** Unix timestamp (ms) of last save */
     lastSaveTimestamp: number;
+    /** Narrative progression (quests, flags, dialogues) */
+    narrative: PlayerNarrativeState;
+}
+
+/** The narrative and quest progression state of the player */
+export interface PlayerNarrativeState {
+    flags: string[];
+    activeQuests: Record<string, string[]>;
+    completedQuests: string[];
 }
 
 /** Describes what the player is currently doing */

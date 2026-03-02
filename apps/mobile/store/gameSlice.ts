@@ -81,6 +81,12 @@ export interface PlayerState {
     combatStats: CombatStats;
     activeTask: ActiveTask | null;
     lastSaveTimestamp: number;
+    /** Story progression, quests, and flags */
+    narrative: {
+        flags: string[];
+        activeQuests: Record<string, string[]>;
+        completedQuests: string[];
+    };
     /** Standard version tracking for updates modal (e.g. "0.3.0") */
     lastSeenVersion?: string;
     /** UI preferences (persisted with save) */
@@ -148,6 +154,11 @@ function createFreshPlayer(): PlayerState {
         },
         activeTask: null,
         lastSaveTimestamp: Date.now(),
+        narrative: {
+            flags: [],
+            activeQuests: {},
+            completedQuests: [],
+        },
         settings: { bankPulseEnabled: true, horizonHudEnabled: true, sfxEnabled: true, bgmEnabled: true, isPatron: false },
     };
 }
@@ -186,7 +197,15 @@ function migratePlayer(saved: PlayerState): PlayerState {
         bgmEnabled: saved.settings?.bgmEnabled ?? true,
         isPatron: saved.settings?.isPatron ?? false,
     };
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings };
+
+    // Ensure narrative structure exists on older saves
+    const narrative = saved.narrative ?? {
+        flags: [],
+        activeQuests: {},
+        completedQuests: [],
+    };
+
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative };
 }
 
 // ─── Slice ───
@@ -425,6 +444,42 @@ export const gameSlice = createSlice({
             if (item) {
                 item.isLocked = !item.isLocked;
             }
+        },
+
+        // ─── Narrative / Quest Actions ───
+
+        /** Add a narrative flag (if not already present) */
+        setNarrativeFlag(state, action: PayloadAction<string>) {
+            const flag = action.payload;
+            if (!state.player.narrative.flags.includes(flag)) {
+                state.player.narrative.flags.push(flag);
+            }
+        },
+
+        /** Start a new quest */
+        startQuest(state, action: PayloadAction<string>) {
+            const questId = action.payload;
+            if (!state.player.narrative.activeQuests[questId]) {
+                state.player.narrative.activeQuests[questId] = [];
+            }
+        },
+
+        /** Mark a specific step of an active quest as completed */
+        completeQuestStep(state, action: PayloadAction<{ questId: string; stepId: string }>) {
+            const { questId, stepId } = action.payload;
+            const questSteps = state.player.narrative.activeQuests[questId];
+            if (questSteps && !questSteps.includes(stepId)) {
+                questSteps.push(stepId);
+            }
+        },
+
+        /** Mark a quest as fully completed and remove it from active quests */
+        completeQuest(state, action: PayloadAction<string>) {
+            const questId = action.payload;
+            if (!state.player.narrative.completedQuests.includes(questId)) {
+                state.player.narrative.completedQuests.push(questId);
+            }
+            delete state.player.narrative.activeQuests[questId];
         },
     },
 });
