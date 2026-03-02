@@ -2,8 +2,16 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Hooking up Harvesting / Fishing / Scavenging UI screens to wrap up Phase 2 Gathering.
+**Active Task:** Architecting the story and quest system (Phase 6 pre-planning), identifying style and narrative structures based on STORYLINE.md and MASTER_DESIGN_DOC.md.
 
+## [2026-03-02] Skills Screen Layout Refactor (RS Style)
+- **Grid Layout:** Converted the `index.tsx` skills screen from a pillar-based list into a dense, 3-column grid layout inspired by RuneScape's skills interface.
+- **Skill Box Design:** Each skill now renders as a compact gold-bordered box showing its icon, current level, and the maximum level (99).
+- **Total Level Formatter:** Updated the "Total Lv." header to display as `current / max` (e.g., `120 / 1485`), calculating the `maxTotalLevel` by restricting each of the 15 skills to a maximum of 99.
+
+## [2026-03-02] Narrative & Storyline Architecture
+- **Focus:** Began breaking down `STORYLINE.md` and `MASTER_DESIGN_DOC.md` to design the technical architecture for the game's story system.
+- **Goal:** Implement the "Cosmic Comedy" tone and the Act I-IV structure into the game's Redux state, dialogue UI, and quest engine.
 ## [2026-02-28] Persistence & Deployment in 1.x.x
 - **Changelog / website / in-app:** "Persistence & Pipeline" and "Deployment & Fixes" moved to **1.x.x** section: **v1.0.0** Persistence & Pipeline, **v1.1.0** Deployment & Fixes. CHANGELOG.md, patchHistory.ts, index.html (changelog + roadmap) updated. v0.2.0 is now "Pipeline & Gathering" only.
 
