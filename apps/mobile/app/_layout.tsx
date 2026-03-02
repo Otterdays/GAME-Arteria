@@ -15,6 +15,7 @@ import TrainToast from '@/components/TrainToast';
 import LootVacuum from '@/components/LootVacuum';
 import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { DialogueOverlay } from '@/components/DialogueOverlay';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -44,6 +45,7 @@ function AppShell() {
       <TrainToast />
       <LootVacuum />
       <GlobalActionTicker />
+      <DialogueOverlay />
       <StatusBar style="light" translucent backgroundColor="transparent" />
     </ThemeProvider>
   );

@@ -240,6 +240,8 @@ interface GameState {
     pulseTab: 'skills' | 'bank' | null;
     /** S. Loot Vacuum — queue of items to animate flying to Bank */
     lootVacuumQueue: LootVacuumEvent[];
+    /** Active Dialogue Overlay State */
+    activeDialogue: { treeId: string; nodeId: string } | null;
 }
 
 const initialState: GameState = {
@@ -249,6 +251,7 @@ const initialState: GameState = {
     levelUpQueue: [],
     pulseTab: null,
     lootVacuumQueue: [],
+    activeDialogue: null,
 };
 
 export const gameSlice = createSlice({
@@ -480,6 +483,25 @@ export const gameSlice = createSlice({
                 state.player.narrative.completedQuests.push(questId);
             }
             delete state.player.narrative.activeQuests[questId];
+        },
+
+        // ─── Dialogue Modals ───
+
+        /** Start a dialogue tree */
+        startDialogue(state, action: PayloadAction<{ treeId: string; startNodeId: string }>) {
+            state.activeDialogue = {
+                treeId: action.payload.treeId,
+                nodeId: action.payload.startNodeId
+            };
+        },
+
+        /** Progress to the next dialogue node, or end if 'end' */
+        selectDialogueOption(state, action: PayloadAction<string>) {
+            if (action.payload === 'end' || action.payload === '') {
+                state.activeDialogue = null;
+            } else if (state.activeDialogue) {
+                state.activeDialogue.nodeId = action.payload;
+            }
         },
     },
 });

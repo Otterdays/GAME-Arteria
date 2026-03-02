@@ -44,11 +44,21 @@ export default function QuestsScreen() {
         dispatch(gameActions.completeQuest(questId));
     };
 
+    const handleTestDialogue = () => {
+        dispatch(gameActions.startDialogue({ treeId: 'dt_guard_intro', startNodeId: 'node_1' }));
+    };
+
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Lore & Quests</Text>
                 <Text style={styles.headerSubtitle}>The Cosmic Comedy Unfolds...</Text>
+                <BouncyButton
+                    style={[styles.devButton, { marginTop: Spacing.sm, alignSelf: 'flex-start' }]}
+                    onPress={handleTestDialogue}
+                >
+                    <Text style={styles.devBtnText}>[DEV] Play "Guard Intro" Dialogue</Text>
+                </BouncyButton>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>

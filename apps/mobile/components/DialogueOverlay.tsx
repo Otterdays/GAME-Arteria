@@ -1,0 +1,149 @@
+import React from 'react';
+import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { gameActions } from '@/store/gameSlice';
+import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { BouncyButton } from './BouncyButton';
+
+// NOTE: Hardcoded import until alias is linked properly across monorepo
+// @ts-ignore
+import { ALL_DIALOGUES } from '../../../../packages/engine/src/data/dialogues';
+// @ts-ignore
+import { DialogueOption } from '../../../../packages/engine/src/data/story';
+
+export function DialogueOverlay() {
+    const dispatch = useAppDispatch();
+    const activeDialogue = useAppSelector((state) => state.game.activeDialogue);
+    const insets = useSafeAreaInsets();
+
+    if (!activeDialogue) return null;
+
+    const tree = ALL_DIALOGUES[activeDialogue.treeId];
+    if (!tree) return null;
+
+    const node = tree.nodes[activeDialogue.nodeId];
+    if (!node) return null;
+
+    const handleSelectOption = (option: typeof node.options[0]) => {
+        // Handle side-effects of choosing this option
+        if (option.onSelect) {
+            if (option.onSelect.setFlags) {
+                option.onSelect.setFlags.forEach((flag: string) => dispatch(gameActions.setNarrativeFlag(flag)));
+            }
+            if (option.onSelect.startQuest) {
+                dispatch(gameActions.startQuest(option.onSelect.startQuest));
+            }
+            if (option.onSelect.completeQuestStep) {
+                dispatch(gameActions.completeQuestStep(option.onSelect.completeQuestStep));
+            }
+            // TODO: handle giveItems / removeItems when inventory refactor is complete
+        }
+
+        // Move to next node or close
+        dispatch(gameActions.selectDialogueOption(option.nextNodeId));
+    };
+
+    return (
+        <Modal
+            transparent
+            visible={!!activeDialogue}
+            animationType="fade"
+            onRequestClose={() => dispatch(gameActions.selectDialogueOption('end'))}
+        >
+            <View style={styles.overlay}>
+                <TouchableWithoutFeedback onPress={() => { }}>
+                    <View style={styles.backdrop} />
+                </TouchableWithoutFeedback>
+
+                <View style={[styles.dialogueContainer, { paddingBottom: insets.bottom + Spacing.xl }]}>
+                    <View style={styles.speakerBox}>
+                        <Text style={styles.speakerName}>{node.speaker}</Text>
+                    </View>
+
+                    <View style={styles.textBox}>
+                        <Text style={styles.dialogueText}>{node.text}</Text>
+                    </View>
+
+                    <View style={styles.optionsContainer}>
+                        {node.options.map((opt: DialogueOption) => (
+                            <BouncyButton
+                                key={opt.id}
+                                style={styles.optionButton}
+                                onPress={() => handleSelectOption(opt)}
+                            >
+                                <Text style={styles.optionText}>{opt.text}</Text>
+                            </BouncyButton>
+                        ))}
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    );
+}
+
+const styles = StyleSheet.create({
+    overlay: {
+        flex: 1,
+        justifyContent: 'flex-end',
+    },
+    backdrop: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    },
+    dialogueContainer: {
+        backgroundColor: Palette.bgApp,
+        borderTopLeftRadius: Radius.xl,
+        borderTopRightRadius: Radius.xl,
+        padding: Spacing.lg,
+        borderTopWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderColor: Palette.border,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -10 },
+        shadowOpacity: 0.5,
+        shadowRadius: 20,
+        elevation: 20,
+    },
+    speakerBox: {
+        alignSelf: 'flex-start',
+        backgroundColor: Palette.accentPrimary,
+        paddingHorizontal: Spacing.md,
+        paddingVertical: 6,
+        borderRadius: Radius.sm,
+        marginBottom: Spacing.md,
+        transform: [{ translateY: -30 }], // Hang off the top edge
+    },
+    speakerName: {
+        color: Palette.white,
+        fontWeight: '800',
+        fontSize: FontSize.md,
+        letterSpacing: 0.5,
+    },
+    textBox: {
+        marginBottom: Spacing.xl,
+        marginTop: -10, // Adjust for the hanging speaker box
+    },
+    dialogueText: {
+        color: Palette.textPrimary,
+        fontSize: FontSize.lg,
+        lineHeight: 28,
+    },
+    optionsContainer: {
+        gap: Spacing.sm,
+    },
+    optionButton: {
+        backgroundColor: Palette.bgCard,
+        borderWidth: 1,
+        borderColor: Palette.border,
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.lg,
+        borderRadius: Radius.md,
+    },
+    optionText: {
+        color: Palette.textSecondary,
+        fontSize: FontSize.md,
+        fontWeight: '600',
+    }
+});

@@ -17,3 +17,8 @@ The jump from "basic AFK loop" to "Immersive RPG" happened here.
 - **Android "Native" Feel**: Edge-to-edge layout with translucent bars removes the "web-wrapper" feel.
 - **Universal Heartbeat (v0.2.1)**: Moving the ticker to the root `_layout.tsx` was critical. RPG players hate losing feedback when they "dive" into a skill screen. Now, the ticker intelligently ducks behind the tab bar or hugs the bottom bezel depending on where the user is.
 - **Dual-Layer Progression**: The header now handles the "Long Grind" (XP Bar), while the Ticker handles the "Instant Pulse" (Tick bar). This dual-feedback loop is what makes "number go up" feel satisfying.
+
+# The Dialogue System & Story Engine (v1.2.0+)
+- **Global Modals vs Screens**: Decided to build dialogues as an overlay rather than a dedicated route. This keeps the player "grounded" in the game world. When an NPC speaks, it should feel like an interruption, not a completely different app section.
+- **Redux Integration**: By storing `activeDialogueId` in Redux, we ensure dialogues can be triggered from ANY screen - a random event while skilling, checking an item in the bank, or explicitly going to a location.
+- **Tree-based Logic**: The engine is purely functional, storing arrays/objects of `DialogueTree`. The UI is just a dumb renderer, keeping our codebase clean and MVC-aligned.
