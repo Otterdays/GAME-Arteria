@@ -38,9 +38,9 @@
     /* ==================== DESIGN TOKENS ==================== */
     :root {
       --bg-app: #0a0b0f;
-      --bg-card: #11131a;
-      --bg-card2: #161921;
-      --border: #1e2230;
+      --bg-card: rgba(17, 19, 26, 0.65);
+      --bg-card2: rgba(22, 25, 33, 0.65);
+      --border: rgba(30, 34, 48, 0.8);
       --border-glow: rgba(139, 92, 246, 0.4);
       --accent: #8b5cf6;
       --accent-2: #a78bfa;
@@ -146,8 +146,9 @@
       left: 0;
       right: 0;
       z-index: 100;
-      backdrop-filter: blur(16px);
-      background: rgba(10, 11, 15, 0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background: rgba(10, 11, 15, 0.7);
       border-bottom: 1px solid var(--border);
     }
 
@@ -367,6 +368,8 @@
 
     .system-card {
       background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: var(--space-lg);
@@ -479,6 +482,8 @@
 
     .stat-card {
       background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: var(--space-lg);
@@ -516,6 +521,8 @@
       align-items: flex-start;
       padding: var(--space-lg);
       background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       transition: border-color 0.2s;
@@ -556,6 +563,8 @@
       gap: var(--space-sm);
       padding: var(--space-sm) var(--space-md);
       background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       transition: border-color 0.2s, background 0.2s;
@@ -785,6 +794,8 @@
 
     .lore-card {
       background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: var(--space-lg);
@@ -838,6 +849,8 @@
 
     .faction-card {
       background: var(--bg-card2);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: var(--space-md) var(--space-lg);
@@ -1072,11 +1085,11 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">v0.2.5 — Build &amp; Release</div>
+        <div class="hero-badge">v0.2.6 — Deep Narrative Update</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
-          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train 25 skills, battle eldritch monsters, and unravel
-          the mysteries of Valdoria — even while you sleep.
+          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, battle eldritch monsters, talk to NPCs,
+          and experience branching quests.
         </p>
         <div class="hero-actions">
           <a href="https://github.com/Otterdays/GAME-Arteria/releases" class="btn-primary" target="_blank"
@@ -1128,46 +1141,46 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest Update v0.2.5</div>
-        <h2>Build &amp; Release</h2>
-        <p class="section-desc">Smaller release APKs: split by ABI (arm64 / armv7) and lean production mode (dev-client
-          excluded). Prefer <code>app-arm64-v8a-release.apk</code> for modern devices.</p>
+        <div class="section-label">Latest Update v0.2.6</div>
+        <h2>The Lore Expansion</h2>
+        <p class="section-desc">We've added branching dialogues, NPC interactions, and narrative gating to skilling
+          mechanics so you can really sink into the lore of the Cosmic Sneeze.</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#8b5cf6; --card-bg:rgba(139,92,246,0.1);">
           <div class="system-header">
-            <div class="system-icon">🎯</div>
+            <div class="system-icon">💬</div>
             <div>
-              <div class="system-title">Horizon Goal HUD</div>
+              <div class="system-title">Branching NPC Dialogue</div>
             </div>
           </div>
           <p class="system-desc">
-            A 3-tier goal tracker (Immediate / Session / Grind) at the top of the Skills screen. Toggle it in Settings.
-            Glassmorphism styling with expo-linear-gradient.
+            A fully engineered Redux dialogue overlay component allows native 1-on-1 conversations with NPCs. Walk up to
+            Nick the Merchant and start talking.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.08);">
           <div class="system-header">
-            <div class="system-icon">💎</div>
+            <div class="system-icon">🔮</div>
             <div>
-              <div class="system-title">Unique Gathering Drops</div>
+              <div class="system-title">Narrative Node Gating</div>
             </div>
           </div>
           <p class="system-desc">
-            Mining: rare gems (e.g. Uncut Sapphire). Fishing: mythic fish (Golden Carp). Logging: Seasonal Rotation —
-            1.5× yield on even weeks.
+            Skilling areas can now logically track your quest flags and locked items! Find out about the Sneeze Cult
+            before being allowed to interact with the Runite Vein.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#22c55e; --card-bg:rgba(34,197,94,0.08);">
           <div class="system-header">
-            <div class="system-icon">📦</div>
+            <div class="system-icon">📜</div>
             <div>
-              <div class="system-title">Local APK & Settings</div>
+              <div class="system-title">Universal Quest Ledger</div>
             </div>
           </div>
           <p class="system-desc">
-            Build release APK locally with <code>2_Build_APK_Local.bat</code> (no device). Toggles for Bank pulse,
-            Horizon HUD, SFX/BGM. Error boundary, screen shake, accessibility.
+            A brand-new Quests Tab in the application automatically organizes your available, active, and completed
+            journeys natively, reading state variables to grant rewards.
           </p>
         </div>
       </div>

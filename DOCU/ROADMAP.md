@@ -258,9 +258,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Main Storyline (Act I - IV):** Milestone triggers (modal popups) at specific Total Levels leading up to the "Choice" between Luminar, Voidmire, and Absurdity.
 
 ### 6.2 — Factions & Dialogue 🟡
-- [ ] 🟢 **Dialogue UI:** Simple, punchy text boxes (visual novel style) for The Order of the Balanced Scale, The Celestial Bureaucracy, and The Cult of Blibbertooth.
+- [x] 🟢 **Dialogue UI:** Simple, punchy text boxes (visual novel style) for The Order of the Balanced Scale, The Celestial Bureaucracy, and The Cult of Blibbertooth. (Implemented via `DialogueOverlay`).
 - [ ] 🟡 **Reputation Tracking:** Global integer state flags for decisions made, altering shop prices or available quests per faction.
-- [ ] 🟢 **Quest log UI:** List active and completed quests with short description and objectives.
+- [x] 🟢 **Quest log UI:** List active and completed quests with short description and objectives. (Implemented via `QuestsScreen` tab).
 - [ ] 🟢 **Story milestone modal:** Popup at Total Level thresholds with Act title and short flavor text.
 - [ ] 🟢 **Radiant quest reroll:** If Cosmic Essence is implemented, "Reroll daily" button and cost display.
 

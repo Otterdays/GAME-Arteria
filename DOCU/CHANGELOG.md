@@ -7,6 +7,13 @@
 
 ---
 
+## [0.2.6] - 2026-03-02
+### Added
+- **Lore Expansion:** Engineered a complete `DialogueOverlay` modal reading from Redux. NPCs now have branching dialogue trees (`data/dialogues.ts`) with options that trigger narrative flags or start / progress quests.
+- **Narrative Gating:** Created `meetsNarrativeRequirement` utility in engine. Connected to dialogue options to hide/disable choices. Connected to `MiningScreen` to hide Runite Vein until the `knows_about_sneeze_cult` flag is received from Nick.
+- **Quest System:** Created a new `QuestsScreen` tab reading from the unified `ALL_QUESTS` engine data. Automatically sorts Active, Completed, and Available quests natively.
+- **Website Aesthetic:** Overhauled `index.html` moving to premium Glassmorphism cards with dynamic backdrop-blur, capturing the true vibe of the game.
+
 ## [0.2.5] - 2026-02-28
 ### Added
 - **Build & Release:** Smaller release APKs via ABI split (arm64-v8a, armeabi-v7a) and lean production mode. `2_Build_APK_Local.bat` sets `ARTERIA_LEAN_PROD=1` so Expo autolinking excludes dev-client native modules. Output: `app-arm64-v8a-release.apk` (~31 MB) and `app-armeabi-v7a-release.apk` (~25 MB). R8 minify and resource shrinking enabled in release.

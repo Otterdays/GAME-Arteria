@@ -66,6 +66,41 @@ export const ACT_1_DIALOGUES: Record<string, DialogueTree> = {
                 ]
             }
         }
+    },
+    'dt_nick_shop': {
+        id: 'dt_nick_shop',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Nick the Merchant',
+                text: 'Welcome, traveler! Since the cosmic sneeze threw off the property values, prices have been... erratic. What can I do for you?',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'Who are you?',
+                        nextNodeId: 'node_2'
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'Nothing right now.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Nick the Merchant',
+                text: 'I\'m Nick! Chief supply chain officer of whatever is left of the economy. If you find anything shiny, bring it to me. I buy junk, I sell dreams.',
+                options: [
+                    {
+                        id: 'opt_3',
+                        text: 'Good to know. See ya.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            }
+        }
     }
 };
 

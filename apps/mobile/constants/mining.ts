@@ -1,3 +1,5 @@
+import { NarrativeRequirement } from '../../../../packages/engine/src/data/story';
+
 export interface MiningNode {
     id: string;
     name: string;
@@ -8,6 +10,7 @@ export interface MiningNode {
     masteryXp: number;
     items: { id: string; quantity: number }[];
     emoji: string;
+    requirement?: NarrativeRequirement;
 }
 
 export const MINING_NODES: MiningNode[] = [
@@ -98,5 +101,8 @@ export const MINING_NODES: MiningNode[] = [
         masteryXp: 10,
         items: [{ id: 'runite_ore', quantity: 1 }],
         emoji: '🛸',
+        requirement: {
+            flags: ['knows_about_sneeze_cult']
+        }
     }
 ];

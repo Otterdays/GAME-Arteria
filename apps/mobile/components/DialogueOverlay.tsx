@@ -5,16 +5,20 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { BouncyButton } from './BouncyButton';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 // NOTE: Hardcoded import until alias is linked properly across monorepo
 // @ts-ignore
 import { ALL_DIALOGUES } from '../../../../packages/engine/src/data/dialogues';
 // @ts-ignore
 import { DialogueOption } from '../../../../packages/engine/src/data/story';
+// @ts-ignore
+import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
 
 export function DialogueOverlay() {
     const dispatch = useAppDispatch();
     const activeDialogue = useAppSelector((state) => state.game.activeDialogue);
+    const player = useAppSelector((state) => state.game.player);
     const insets = useSafeAreaInsets();
 
     if (!activeDialogue) return null;
@@ -66,15 +70,22 @@ export function DialogueOverlay() {
                     </View>
 
                     <View style={styles.optionsContainer}>
-                        {node.options.map((opt: DialogueOption) => (
-                            <BouncyButton
-                                key={opt.id}
-                                style={styles.optionButton}
-                                onPress={() => handleSelectOption(opt)}
-                            >
-                                <Text style={styles.optionText}>{opt.text}</Text>
-                            </BouncyButton>
-                        ))}
+                        {node.options.map((opt: DialogueOption) => {
+                            const meetsReq = meetsNarrativeRequirement(player, opt.requirements);
+                            return (
+                                <BouncyButton
+                                    key={opt.id}
+                                    style={[styles.optionButton, !meetsReq && styles.optionDisabled]}
+                                    onPress={() => meetsReq && handleSelectOption(opt)}
+                                    disabled={!meetsReq}
+                                >
+                                    <Text style={[styles.optionText, !meetsReq && styles.optionTextDisabled]}>
+                                        {opt.text}
+                                    </Text>
+                                    {!meetsReq && <IconSymbol name="lock.fill" size={16} color={Palette.textDisabled} />}
+                                </BouncyButton>
+                            );
+                        })}
                     </View>
                 </View>
             </View>
@@ -140,10 +151,22 @@ const styles = StyleSheet.create({
         paddingVertical: Spacing.md,
         paddingHorizontal: Spacing.lg,
         borderRadius: Radius.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    optionDisabled: {
+        backgroundColor: Palette.bgApp,
+        borderColor: 'transparent',
+        opacity: 0.6,
     },
     optionText: {
         color: Palette.textSecondary,
         fontSize: FontSize.md,
         fontWeight: '600',
+        flex: 1,
+    },
+    optionTextDisabled: {
+        color: Palette.textDisabled,
     }
 });

@@ -16,6 +16,9 @@ import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 
+// @ts-ignore
+import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
+
 function xpForLevel(level: number): number {
     if (level <= 1) return 0;
     let c = 0;
@@ -26,8 +29,9 @@ function xpForLevel(level: number): number {
 export default function MiningScreen() {
     const dispatch = useAppDispatch();
     const insets = useSafeAreaInsets();
-    const miningSkill = useAppSelector((s) => s.game.player.skills.mining);
-    const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const player = useAppSelector((s) => s.game.player);
+    const miningSkill = player.skills.mining;
+    const activeTask = player.activeTask;
 
     const isMining = activeTask?.skillId === 'mining';
     const activeNodeId = isMining ? activeTask.actionId : null;
@@ -63,6 +67,13 @@ export default function MiningScreen() {
     const pct = miningSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
     const handleNodePress = (node: MiningNode) => {
+        const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+        if (!meetsReq) {
+            Alert.alert("Locked", "You must progress further in the story to interact with this.");
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            return;
+        }
+
         if (miningSkill.level < node.levelReq) {
             Alert.alert("Locked", `Requires Mining Level ${node.levelReq}`);
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -142,7 +153,8 @@ export default function MiningScreen() {
 
             <ScrollView contentContainerStyle={styles.listContent}>
                 {MINING_NODES.map((node) => {
-                    const isLocked = miningSkill.level < node.levelReq;
+                    const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+                    const isLocked = miningSkill.level < node.levelReq || !meetsReq;
                     const isActive = activeNodeId === node.id;
 
                     return (
@@ -164,10 +176,10 @@ export default function MiningScreen() {
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>
                                 <View style={styles.nodeTitleContainer}>
                                     <Text style={[styles.nodeName, isLocked && styles.textLocked]}>
-                                        {node.name}
+                                        {!meetsReq ? '???' : node.name}
                                     </Text>
                                     <Text style={styles.nodeReq}>
-                                        {isLocked ? `Unlocks at Lv. ${node.levelReq}` : `Lv. ${node.levelReq} required`}
+                                        {!meetsReq ? 'Requires narrative progression' : isLocked ? `Unlocks at Lv. ${node.levelReq}` : `Lv. ${node.levelReq} required`}
                                     </Text>
                                 </View>
                             </View>

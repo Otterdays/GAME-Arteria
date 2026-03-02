@@ -20,6 +20,7 @@
 | **FUTURE_NOTES.md** | Research & forward planning (SDK 55 migration, MMKV, game loop patterns). |
 | **PEOPLE_TO_ADD.md** | Names for future inclusion in the game (NPCs, credits, companions, etc.) — reference only. |
 | **My_Thoughts.md** | Decisions & rationale (e.g. EAS build times, Fast Refresh). |
+| **STACK_ASSESSMENT.md** | Current architecture snapshot, versions, and future dependencies. |
 | **SBOM.md** | Security Bill of Materials — packages, versions, update tracking. |
 | **EXPO_GUIDE.md** | Expo/EAS workflow, CNG, when to build vs OTA, monorepo config. |
 | **MY_ADHD.md** | Quick Q&A for deployment and testing. |
@@ -32,9 +33,11 @@
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
 
-**Version scheme:** 0.2.x (current **0.2.5**). Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+**Version scheme:** 0.2.x (current **0.2.6**). Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**v0.2.5 (2026-02-28):** Current release. Changelog, website, in-app Patch History, app.json, build.gradle, README, UpdatesModal updated. See CHANGELOG.md [0.2.5].
+**v0.2.6 (2026-03-02):** The Lore Expansion. Branching NPC dialogue, global DialogueOverlay, Universal Quests Ledger Tab. Narrative gating implemented for Skilling nodes and Dialogue choices. Glassmorphism added to website.
+
+**v0.2.5 (2026-02-28):** Build & Release. Smaller release APKs.
 
 **Build (2026-02-27):** EAS hit account concurrency limit (builds queue). **Use local APK build:** `2_Build_APK_Local.bat` from repo root. Release now outputs split APKs: `app-arm64-v8a-release.apk` (~31 MB) and `app-armeabi-v7a-release.apk` (~25 MB) in `apps\mobile\android\app\build\outputs\apk\release\`. Prefer arm64 for modern phones. Script also sets `ARTERIA_LEAN_PROD=1` to exclude Expo dev-client native modules during release autolinking. See EXPO_GUIDE §4b.
 
@@ -48,8 +51,9 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
-**Current Status (Phase 2.2 — Horizon & Mechanics):**
+**Current Status (Phase 2.3 — Lore & Progression):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.2.6 (Lore Expansion):** Branching NPC dialogue, universal quest ledger, narrative gating for skilling nodes.
 - **v0.2.5 (Build & Release):** Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
 - **v0.2.4 (Premium UI):** AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
 - **v0.2.3 (Horizon & Logging):** Logging UI, Shop 50% sell, Curse system, Horizon HUD, rare gems, mythic fish, Seasonal Rotation, Patch Notes.

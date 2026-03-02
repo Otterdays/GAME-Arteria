@@ -17,6 +17,7 @@ import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
+import { BouncyButton } from '@/components/BouncyButton';
 
 type TabMode = 'buy' | 'sell';
 
@@ -157,9 +158,17 @@ export default function ShopScreen() {
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
-                <View>
+                <View style={{ flex: 1 }}>
                     <Text style={styles.title}>Shop</Text>
-                    <Text style={styles.subtitle}>Nick — Merchant</Text>
+                    <View style={styles.subtitleRow}>
+                        <Text style={styles.subtitle}>Nick — Merchant</Text>
+                        <BouncyButton
+                            style={styles.chatButton}
+                            onPress={() => dispatch(gameActions.startDialogue({ treeId: 'dt_nick_shop', startNodeId: 'node_1' }))}
+                        >
+                            <Text style={styles.chatButtonText}>💬 Talk</Text>
+                        </BouncyButton>
+                    </View>
                 </View>
                 <View style={styles.goldBadge}>
                     <Text style={styles.goldEmoji}>💰</Text>
@@ -266,7 +275,21 @@ const styles = StyleSheet.create({
         borderBottomColor: Palette.border,
     },
     title: { fontSize: FontSize.xl, fontWeight: '700', color: Palette.textPrimary },
-    subtitle: { fontSize: FontSize.sm, color: Palette.textSecondary, marginTop: 2 },
+    subtitleRow: { flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 },
+    subtitle: { fontSize: FontSize.sm, color: Palette.textSecondary },
+    chatButton: {
+        backgroundColor: Palette.bgInput,
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: Palette.border,
+    },
+    chatButtonText: {
+        fontSize: 12,
+        color: Palette.textPrimary,
+        fontWeight: '600',
+    },
     goldBadge: {
         flexDirection: 'row',
         alignItems: 'center',
