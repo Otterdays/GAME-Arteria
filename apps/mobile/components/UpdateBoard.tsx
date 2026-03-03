@@ -68,6 +68,11 @@ export default function UpdateBoard() {
                         </View>
 
                         <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>💬 Feedback Toasts</Text>
+                            <Text style={styles.changeText}>• In-game stylized prompts replace system alerts for locked nodes, no essence, level requirements. Themed variants (locked, warning, error, info), haptics, auto-dismiss.</Text>
+                        </View>
+
+                        <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>⚙️ Settings & Notifications</Text>
                             <Text style={styles.changeText}>• Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Idle Soundscapes. Whole row tap to toggle.</Text>
                             <Text style={styles.changeText}>• Idle Cap Reached: Notify when 24h/7-day offline cap is full.</Text>
