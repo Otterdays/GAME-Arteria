@@ -12,6 +12,7 @@ import {
     INVENTORY_SLOT_CAP_PATRON,
     XP_BONUS_PATRON,
 } from '@/constants/game';
+import type { ThemeId } from '@/constants/theme';
 import { logger } from '@/utils/logger';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -110,6 +111,8 @@ export interface PlayerState {
         notifyIdleCapReached?: boolean;
         /** Idle soundscapes (ambient loops per skill screen) */
         idleSoundscapesEnabled?: boolean;
+        /** UI theme: system, dark, light, sepia. [TRACE: DOCU/THEMING.md] */
+        themeId?: ThemeId;
     };
     /** Easter egg: "Don't Push This" press count. At 1000 unlocks title "The Stubborn". */
     dontPushCount?: number;
@@ -194,6 +197,7 @@ function createFreshPlayer(): PlayerState {
             notifyTaskComplete: true,
             notifyIdleCapReached: true,
             idleSoundscapesEnabled: false,
+            themeId: 'dark' as ThemeId,
         },
         dontPushCount: 0,
         unlockedTitles: [],
@@ -244,6 +248,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
         notifyTaskComplete: saved.settings?.notifyTaskComplete ?? true,
         notifyIdleCapReached: saved.settings?.notifyIdleCapReached ?? true,
         idleSoundscapesEnabled: saved.settings?.idleSoundscapesEnabled ?? false,
+        themeId: (saved.settings?.themeId as ThemeId) ?? 'dark',
     };
 
     // Ensure narrative structure exists on older saves
@@ -540,6 +545,12 @@ export const gameSlice = createSlice({
                     state.player.unlockedTitles = [...titles, 'The Stubborn'];
                 }
             }
+        },
+
+        /** Theme selection (Settings). [TRACE: DOCU/THEMING.md] */
+        setThemeId(state, action: PayloadAction<ThemeId>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.themeId = action.payload;
         },
 
         /** Patron's Pack — mock purchase unlocks 7d offline, 100 slots, +20% XP. [TRACE: Patron's Pack] */

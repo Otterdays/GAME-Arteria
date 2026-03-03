@@ -18,5 +18,8 @@ veda
 .env.test.local
 .env.production.local
 
+# Jest coverage output
+coverage/
+
 # Local build mode cache (dev vs prod app name/package). See EXPO_GUIDE §Dev/Prod.
 **/.arteria-build-mode

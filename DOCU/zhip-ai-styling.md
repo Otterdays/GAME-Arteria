@@ -126,6 +126,8 @@ Apply:
 - Positive → XP gains, progress bars
 - Gold → currency, important rewards
 
+**Arteria implementation:** Uses semantic tokens (`bgApp`, `textPrimary`, `accentPrimary`, etc.) via `useTheme().palette`. See DOCU/THEMING.md and STYLE_GUIDE §7. Themes: dark, light, sepia, system.
+
 ---
 
 ### 4.2 Typography

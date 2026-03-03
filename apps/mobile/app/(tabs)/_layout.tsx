@@ -5,15 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TabIconWithPulse } from '@/components/TabIconWithPulse';
-import { Palette } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppSelector } from '@/store/hooks';
 
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { palette } = useTheme();
   const insets = useSafeAreaInsets();
   const inventoryCount = useAppSelector((s) => s.game.player.inventory.length);
   const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
@@ -28,11 +26,11 @@ export default function TabLayout() {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Palette.accentPrimary,
-          tabBarInactiveTintColor: isDark ? Palette.textDisabled : '#687076',
+          tabBarActiveTintColor: palette.accentPrimary,
+          tabBarInactiveTintColor: palette.textDisabled,
           tabBarStyle: {
-            backgroundColor: isDark ? Palette.bgCard : '#ffffff',
-            borderTopColor: isDark ? Palette.border : '#e0e0e0',
+            backgroundColor: palette.bgCard,
+            borderTopColor: palette.border,
             borderTopWidth: 1,
             height: tabBarHeight,
             paddingBottom: insets.bottom + 6,
@@ -40,9 +38,9 @@ export default function TabLayout() {
             elevation: 8,
           },
           headerStyle: {
-            backgroundColor: isDark ? Palette.bgApp : '#f5f6fa',
+            backgroundColor: palette.bgApp,
           },
-          headerTintColor: isDark ? Palette.textPrimary : '#11181C',
+          headerTintColor: palette.textPrimary,
           headerShown: false,
           tabBarButton: HapticTab,
         }}>

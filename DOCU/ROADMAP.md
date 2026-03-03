@@ -41,7 +41,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟡 EAS Dev Build (APK on phone) + dev server workflows
 
 ### Phase 0 — Optional polish (backlog, do not block)
-- [ ] 🟢 Root Jest multi-project + `npm test` (engine + tests/); already present — verify and document.
+- [x] 🟢 Root Jest multi-project + `npm test` (engine + tests/); 25 tests, 7 suites. test:coverage for engine. Documented in tests/README.md, ARCHITECTURE, index.html.
 - [ ] 🟢 Error boundary wrapper around root layout (graceful crash UI).
 - [ ] 🟢 Lint/format on pre-commit or CI (ESLint, Prettier if desired).
 - [ ] 🟢 STYLE_GUIDE.md creation (trace tags, line limits, comment rules) if not yet in repo.
@@ -129,7 +129,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **R. Contextual Ambience** — Subtle loop icons/animations (birds for logging, waves for fishing) in the screen background.
 - [x] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
 - [ ] 🟢 **T. Critical Hit VFX** — Larger, golden pop-up for "Critical Gains" (double loot/xp random procs).
-- [x] 🟢 **U. Quick-Switch Sidebar** — Floating pill on left edge; slide-in drawer to jump Mining/Logging/Fishing/Runecrafting. (v0.2.9)
+- [x] 🟢 **U. Quick-Switch Sidebar** — Floating pill on left edge; slide-in drawer to jump Mining/Logging/Fishing/Runecrafting. (v0.3.0)
 - [x] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
 - [x] 🟡 **W. Universal Action Ticker** — A persistent, slim progress bar at the top/bottom of the screen showing the *current action loop* (e.g., a 4-second bar for Mining Iron) with the skill emoji. Keeps the "heartbeat" of the game visible even in the Bank/Settings.
 
@@ -141,7 +141,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **ZB. Skill-Specific Ambience** — Subtle background soundscapes (birds, echoes, waves) that activate based on the open skill screen.
 
 ### 🎲 Random Events (Design in FUTURE_NOTES.md)
-- [x] 🟡 **Random Events MVP** — Blibbertooth Blessing (bonus XP), Cosmic Sneeze (duplicate item). Per-tick roll ~0.5%; uses FeedbackToast. (v0.2.8)
+- [x] 🟡 **Random Events MVP** — Blibbertooth Blessing (bonus XP), Cosmic Sneeze (duplicate item). Per-tick roll ~0.5%; uses FeedbackToast. (v0.3.0)
 - [ ] 🟡 **Dialogue Randoms** — Mysterious Stranger (Odd One Out), Nick's Cousin (gift offer). Reuse DialogueOverlay + narrative trees.
 - [ ] 🔴 **Skill Guardians** — Rock Spirit (mining), Wood Wraith (logging), Void Nibble (fishing). Fight or ignore. Requires Phase 4 combat.
 - [ ] 🟢 **Hazard Events** — Cursed Vein, Tangled Roots, Big Catch. Temporary tick modifiers.
@@ -348,6 +348,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **SCRATCHPAD compact:** Keep SCRATCHPAD under 500 lines; compact history, keep last 5 actions + next steps.
 
 ### QA & Tooling
+- [x] 🟢 **Theme Engine (Phase 2+3):** Settings → Appearance → System / Dark / Light / Sepia. Tab bar, headers, StatusBar. (v0.3.0)
 - [ ] 🟢 **Integration test placeholder:** At least one test in `tests/integration/` (e.g. load save → dispatch → assert state).
 - [ ] 🟢 **E2E placeholder:** Document or stub Playwright (or Detox) target for one critical path (e.g. open app → Skills → Train Mining).
 - [ ] 🟢 **CI checklist:** Lint, typecheck, unit tests on push/PR (when CI is added).

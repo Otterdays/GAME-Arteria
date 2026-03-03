@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
-import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import * as Haptics from 'expo-haptics';
+import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { deleteSave } from '@/store/persistence';
@@ -12,12 +14,15 @@ function SettingsRow({
     value,
     onValueChange,
     description,
+    styles,
 }: {
     label: string;
     value?: boolean;
     onValueChange?: (v: boolean) => void;
     description?: string;
+    styles: ReturnType<typeof createSettingsStyles>;
 }) {
+    const { palette } = useTheme();
     const hasToggle = value !== undefined && onValueChange;
     const content = (
         <>
@@ -31,10 +36,10 @@ function SettingsRow({
                 <View pointerEvents="none">
                     <Switch
                         value={value}
-                        thumbColor={Palette.white}
+                        thumbColor={palette.white}
                         trackColor={{
-                            false: Palette.bgApp,
-                            true: Palette.accentPrimary,
+                            false: palette.bgApp,
+                            true: palette.accentPrimary,
                         }}
                     />
                 </View>
@@ -46,7 +51,7 @@ function SettingsRow({
             <Pressable
                 style={styles.row}
                 onPress={() => onValueChange?.(!value)}
-                android_ripple={{ color: Palette.bgCardHover }}
+                android_ripple={{ color: palette.bgCardHover }}
             >
                 {content}
             </Pressable>
@@ -55,8 +60,146 @@ function SettingsRow({
     return <View style={styles.row}>{content}</View>;
 }
 
+function createSettingsStyles(palette: PaletteShape) {
+    return StyleSheet.create({
+        container: { flex: 1 },
+        header: {
+            paddingHorizontal: Spacing.md,
+            paddingTop: Spacing.xl,
+            paddingBottom: Spacing.md,
+        },
+        scroll: { flex: 1 },
+        scrollContent: { paddingBottom: Spacing['2xl'] },
+        title: {
+            fontFamily: FontCinzelBold,
+            fontSize: FontSize.xl,
+            color: palette.textPrimary,
+        },
+        section: { marginBottom: Spacing.lg },
+        sectionTitle: {
+            fontFamily: FontCinzelBold,
+            fontSize: FontSize.md,
+            color: palette.accentWeb,
+            letterSpacing: 1.5,
+            marginBottom: Spacing.sm,
+            marginLeft: Spacing.xs,
+        },
+        sectionCard: {
+            backgroundColor: palette.bgCard,
+            borderWidth: 1,
+            borderColor: palette.border,
+            borderRadius: Radius.md,
+            shadowColor: palette.accentWeb,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+            elevation: 3,
+            overflow: 'hidden',
+            marginHorizontal: Spacing.md,
+        },
+        themeRow: {
+            paddingHorizontal: Spacing.md,
+            paddingTop: Spacing.md,
+            paddingBottom: Spacing.sm,
+        },
+        themeChips: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: Spacing.sm,
+            paddingHorizontal: Spacing.md,
+            paddingBottom: Spacing.md,
+        },
+        themeChip: {
+            paddingVertical: Spacing.sm,
+            paddingHorizontal: Spacing.md,
+            borderRadius: Radius.full,
+            borderWidth: 1,
+        },
+        themeChipText: {
+            fontSize: FontSize.sm,
+            fontWeight: '600',
+        },
+        row: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: palette.bgCard,
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.md,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.divider,
+        },
+        dangerRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: palette.bgCard,
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.md,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.divider,
+            borderLeftWidth: 3,
+            borderLeftColor: palette.red,
+        },
+        easterEggRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: palette.bgCard,
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.md,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.divider,
+            borderLeftWidth: 3,
+            borderLeftColor: palette.gold,
+        },
+        easterEggLabel: {
+            fontSize: FontSize.base,
+            color: palette.gold,
+            fontWeight: '600',
+        },
+        titleBadge: {
+            fontSize: FontSize.sm,
+            color: palette.gold,
+            fontWeight: '700',
+        },
+        rowInfo: { flex: 1, marginRight: Spacing.md },
+        rowLabel: {
+            fontSize: FontSize.base,
+            color: palette.textPrimary,
+            fontWeight: '500',
+        },
+        dangerLabel: {
+            fontSize: FontSize.base,
+            color: palette.red,
+            fontWeight: '600',
+        },
+        rowDesc: {
+            fontSize: FontSize.xs,
+            color: palette.textSecondary,
+            marginTop: 2,
+        },
+        versionText: {
+            fontSize: FontSize.base,
+            color: palette.textSecondary,
+        },
+        dangerArrow: {
+            fontSize: 20,
+            color: palette.red,
+            fontWeight: '700',
+        },
+        arrow: {
+            fontSize: 20,
+            color: palette.textSecondary,
+            fontWeight: '600',
+        },
+    });
+}
+
 export default function SettingsScreen() {
     const dispatch = useAppDispatch();
+    const { palette, themeId, setThemeId } = useTheme();
+    const styles = useMemo(() => createSettingsStyles(palette), [palette]);
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
     const bankPulseEnabled = useAppSelector(
         (s) => s.game.player.settings?.bankPulseEnabled ?? true
@@ -108,9 +251,9 @@ export default function SettingsScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Settings</Text>
+        <SafeAreaView style={[styles.container, { backgroundColor: palette.bgApp }]}>
+                <View style={styles.header}>
+                <Text style={[styles.title, { color: palette.textPrimary }]}>Settings</Text>
             </View>
             <ScrollView
                 style={styles.scroll}
@@ -118,32 +261,79 @@ export default function SettingsScreen() {
                 showsVerticalScrollIndicator={false}
             >
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Gameplay</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Appearance</Text>
+                <View style={styles.sectionCard}>
+                    <View style={styles.themeRow}>
+                        <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Theme</Text>
+                        <Text style={[styles.rowDesc, { color: palette.textSecondary }]}>Follow system or pick a theme</Text>
+                    </View>
+                    <View style={styles.themeChips}>
+                        {THEME_OPTIONS.map((opt) => {
+                            const isActive = themeId === opt.id;
+                            return (
+                                <Pressable
+                                    key={opt.id}
+                                    onPress={() => {
+                                        if (Platform.OS !== 'web') {
+                                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                        }
+                                        setThemeId(opt.id);
+                                    }}
+                                    style={[
+                                        styles.themeChip,
+                                        {
+                                            backgroundColor: isActive ? palette.accentPrimary : palette.bgInput,
+                                            borderColor: isActive ? palette.accentPrimary : palette.border,
+                                        },
+                                    ]}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.themeChipText,
+                                            { color: isActive ? palette.white : palette.textSecondary },
+                                        ]}
+                                    >
+                                        {opt.label}
+                                    </Text>
+                                </Pressable>
+                            );
+                        })}
+                    </View>
+                </View>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Gameplay</Text>
                 <View style={styles.sectionCard}>
                 <SettingsRow
+                    styles={styles}
                     label="Bank Tab Pulse"
                     value={bankPulseEnabled}
                     onValueChange={(v) => dispatch(gameActions.setBankPulseEnabled(v))}
                     description="Gold glow on Bank tab when gaining loot"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Horizon HUD"
                     value={horizonHudEnabled}
                     onValueChange={(v) => dispatch(gameActions.setHorizonHudEnabled(v))}
                     description="Goal cards (Immediate / Session / Grind) on Skills screen"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Offline Progression"
                     value={true}
                     description="Calculate progress while app is closed"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Confirm Task Switch"
                     value={confirmTaskSwitch}
                     onValueChange={(v) => dispatch(gameActions.setConfirmTaskSwitch(v))}
                     description="Ask before switching active tasks"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Battery Saver"
                     value={batterySaverEnabled}
                     onValueChange={(v) => dispatch(gameActions.setBatterySaverEnabled(v))}
@@ -153,21 +343,24 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Audio</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Audio</Text>
                 <View style={styles.sectionCard}>
                 <SettingsRow
+                    styles={styles}
                     label="Sound Effects"
                     value={sfxEnabled}
                     onValueChange={(v) => dispatch(gameActions.setSfxEnabled(v))}
                     description="Haptics, ticks, level-up feedback"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Background Music"
                     value={bgmEnabled}
                     onValueChange={(v) => dispatch(gameActions.setBgmEnabled(v))}
                     description="Ambient music (coming soon)"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Idle Soundscapes"
                     value={idleSoundscapesEnabled}
                     onValueChange={(v) => dispatch(gameActions.setIdleSoundscapesEnabled(v))}
@@ -177,21 +370,24 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Notifications</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Notifications</Text>
                 <View style={styles.sectionCard}>
                 <SettingsRow
+                    styles={styles}
                     label="Level Up Alerts"
                     value={notifyLevelUp}
                     onValueChange={(v) => dispatch(gameActions.setNotifyLevelUp(v))}
                     description="Notify when you gain a level"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Task Complete"
                     value={notifyTaskComplete}
                     onValueChange={(v) => dispatch(gameActions.setNotifyTaskComplete(v))}
                     description="Notify when a task finishes"
                 />
                 <SettingsRow
+                    styles={styles}
                     label="Idle Cap Reached"
                     value={notifyIdleCapReached}
                     onValueChange={(v) => dispatch(gameActions.setNotifyIdleCapReached(v))}
@@ -201,7 +397,7 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Premium</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Premium</Text>
                 <View style={styles.sectionCard}>
                 <TouchableOpacity
                     style={styles.row}
@@ -213,7 +409,7 @@ export default function SettingsScreen() {
                         <Text style={styles.rowDesc}>7-day offline cap, 100 slots, +20% XP</Text>
                     </View>
                     {isPatron ? (
-                        <Text style={[styles.rowLabel, { color: Palette.gold, fontWeight: '700' }]}>Active</Text>
+                        <Text style={[styles.rowLabel, { color: palette.gold, fontWeight: '700' }]}>Active</Text>
                     ) : (
                         <Text style={styles.arrow}>›</Text>
                     )}
@@ -222,7 +418,7 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>About</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>About</Text>
                 <View style={styles.sectionCard}>
                 <View style={styles.row}>
                     <Text style={styles.rowLabel}>Version</Text>
@@ -244,7 +440,7 @@ export default function SettingsScreen() {
 
             {/* Easter egg: "Don't Push This" — 1000 presses unlocks title "The Stubborn" */}
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Easter Egg</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Easter Egg</Text>
                 <View style={styles.sectionCard}>
                 <TouchableOpacity
                     style={styles.easterEggRow}
@@ -270,7 +466,7 @@ export default function SettingsScreen() {
 
             {/* QoL I — Developer / Reset */}
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Developer</Text>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Developer</Text>
                 <View style={styles.sectionCard}>
                 <TouchableOpacity style={styles.dangerRow} onPress={handleResetSave} activeOpacity={0.7}>
                     <View style={styles.rowInfo}>
@@ -286,108 +482,3 @@ export default function SettingsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Palette.bgApp },
-    header: {
-        paddingHorizontal: Spacing.md,
-        paddingTop: Spacing.xl,
-        paddingBottom: Spacing.md,
-    },
-    scroll: { flex: 1 },
-    scrollContent: { paddingBottom: Spacing['2xl'] },
-    title: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.xl,
-        color: Palette.textPrimary,
-    },
-    section: {
-        marginBottom: Spacing.lg,
-    },
-    sectionTitle: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.md,
-        color: Palette.accentWeb,
-        letterSpacing: 1.5,
-        marginBottom: Spacing.sm,
-        marginLeft: Spacing.xs,
-    },
-    sectionCard: {
-        ...CardStyle,
-        overflow: 'hidden',
-        marginHorizontal: Spacing.md,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.divider,
-    },
-    dangerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.divider,
-        borderLeftWidth: 3,
-        borderLeftColor: Palette.red,
-    },
-    easterEggRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.divider,
-        borderLeftWidth: 3,
-        borderLeftColor: Palette.gold,
-    },
-    easterEggLabel: {
-        fontSize: FontSize.base,
-        color: Palette.gold,
-        fontWeight: '600',
-    },
-    titleBadge: {
-        fontSize: FontSize.sm,
-        color: Palette.gold,
-        fontWeight: '700',
-    },
-    rowInfo: { flex: 1, marginRight: Spacing.md },
-    rowLabel: {
-        fontSize: FontSize.base,
-        color: Palette.textPrimary,
-        fontWeight: '500',
-    },
-    dangerLabel: {
-        fontSize: FontSize.base,
-        color: Palette.red,
-        fontWeight: '600',
-    },
-    rowDesc: {
-        fontSize: FontSize.xs,
-        color: Palette.textSecondary,
-        marginTop: 2,
-    },
-    versionText: {
-        fontSize: FontSize.base,
-        color: Palette.textSecondary,
-    },
-    dangerArrow: {
-        fontSize: 20,
-        color: Palette.red,
-        fontWeight: '700',
-    },
-    arrow: {
-        fontSize: 20,
-        color: Palette.textSecondary,
-        fontWeight: '600',
-    },
-});

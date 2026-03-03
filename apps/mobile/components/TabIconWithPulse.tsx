@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Palette } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface TabIconWithPulseProps {
   name: React.ComponentProps<typeof IconSymbol>['name'];
@@ -14,6 +14,7 @@ interface TabIconWithPulseProps {
 }
 
 export function TabIconWithPulse({ name, size, color, pulse }: TabIconWithPulseProps) {
+  const { palette } = useTheme();
   const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export function TabIconWithPulse({ name, size, color, pulse }: TabIconWithPulseP
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
-      <IconSymbol name={name} size={size} color={pulse ? Palette.gold : color} />
+      <IconSymbol name={name} size={size} color={pulse ? palette.gold : color} />
     </Animated.View>
   );
 }

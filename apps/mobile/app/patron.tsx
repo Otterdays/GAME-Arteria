@@ -2,7 +2,7 @@
  * Patron's Pack — Premium expansion purchase screen.
  * [TRACE: Patron's Pack] Mock purchase; real IAP to be wired later.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     View,
     Text,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel } from '@/constants/theme';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzel } from '@/constants/theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 
@@ -24,6 +24,7 @@ const BENEFITS = [
 ];
 
 export default function PatronScreen() {
+    const { palette } = useTheme();
     const insets = useSafeAreaInsets();
     const dispatch = useAppDispatch();
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
@@ -31,6 +32,141 @@ export default function PatronScreen() {
     const handleUnlock = () => {
         dispatch(gameActions.setPatron(true));
     };
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                header: {
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                backButton: {
+                    alignSelf: 'flex-start',
+                    paddingVertical: Spacing.sm,
+                    paddingRight: Spacing.md,
+                },
+                backText: {
+                    fontSize: FontSize.base,
+                    color: palette.accentPrimary,
+                    fontWeight: '600',
+                },
+                title: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                subtitle: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginTop: 2,
+                },
+                scroll: { flex: 1 },
+                scrollContent: {
+                    padding: Spacing.md,
+                    paddingBottom: Spacing['2xl'],
+                },
+                heroCard: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.lg,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    padding: Spacing.xl,
+                    alignItems: 'center',
+                    marginBottom: Spacing.xl,
+                },
+                heroEmoji: { fontSize: 48, marginBottom: Spacing.sm },
+                heroTitle: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                heroPrice: {
+                    fontSize: FontSize.lg,
+                    color: palette.gold,
+                    marginTop: Spacing.sm,
+                    fontWeight: '600',
+                },
+                activeBadge: {
+                    marginTop: Spacing.sm,
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.xs,
+                    borderRadius: Radius.full,
+                    backgroundColor: 'rgba(255,202,40,0.2)',
+                    borderWidth: 1,
+                    borderColor: palette.gold,
+                },
+                activeBadgeText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.gold,
+                },
+                benefitsSection: { marginBottom: Spacing.xl },
+                sectionTitle: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.accentPrimary,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1,
+                    marginBottom: Spacing.md,
+                },
+                benefitRow: {
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    backgroundColor: palette.bgCard,
+                    padding: Spacing.md,
+                    marginBottom: Spacing.sm,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                benefitEmoji: { fontSize: 24, marginRight: Spacing.md },
+                benefitBody: { flex: 1 },
+                benefitLabel: {
+                    fontSize: FontSize.base,
+                    fontWeight: '600',
+                    color: palette.textPrimary,
+                },
+                benefitDesc: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginTop: 2,
+                },
+                unlockButton: {
+                    backgroundColor: palette.green,
+                    borderRadius: Radius.md,
+                    padding: Spacing.lg,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.greenDim,
+                },
+                unlockButtonText: {
+                    fontSize: FontSize.lg,
+                    fontWeight: '700',
+                    color: palette.white,
+                },
+                unlockButtonSub: {
+                    fontSize: FontSize.sm,
+                    color: 'rgba(255,255,255,0.9)',
+                    marginTop: 4,
+                },
+                thankYouNote: {
+                    backgroundColor: 'rgba(74,144,226,0.1)',
+                    borderRadius: Radius.md,
+                    padding: Spacing.lg,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary,
+                },
+                thankYouText: {
+                    fontSize: FontSize.base,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                },
+            }),
+        [palette]
+    );
 
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -109,86 +245,3 @@ export default function PatronScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Palette.bgApp },
-    header: {
-        paddingHorizontal: Spacing.md,
-        paddingBottom: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    backButton: { alignSelf: 'flex-start', paddingVertical: Spacing.sm, paddingRight: Spacing.md },
-    backText: { fontSize: FontSize.base, color: Palette.accentPrimary, fontWeight: '600' },
-    title: { fontSize: FontSize.xl, fontWeight: '700', color: Palette.textPrimary },
-    subtitle: { fontSize: FontSize.sm, color: Palette.textSecondary, marginTop: 2 },
-
-    scroll: { flex: 1 },
-    scrollContent: { padding: Spacing.md, paddingBottom: Spacing['2xl'] },
-
-    heroCard: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.lg,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        padding: Spacing.xl,
-        alignItems: 'center',
-        marginBottom: Spacing.xl,
-    },
-    heroEmoji: { fontSize: 48, marginBottom: Spacing.sm },
-    heroTitle: { fontSize: FontSize.xl, fontWeight: '700', color: Palette.textPrimary },
-    heroPrice: { fontSize: FontSize.lg, color: Palette.gold, marginTop: Spacing.sm, fontWeight: '600' },
-    activeBadge: {
-        marginTop: Spacing.sm,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.xs,
-        borderRadius: Radius.full,
-        backgroundColor: 'rgba(255,202,40,0.2)',
-        borderWidth: 1,
-        borderColor: Palette.gold,
-    },
-    activeBadgeText: { fontSize: FontSize.sm, fontWeight: '700', color: Palette.gold },
-
-    benefitsSection: { marginBottom: Spacing.xl },
-    sectionTitle: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.accentPrimary,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        marginBottom: Spacing.md,
-    },
-    benefitRow: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        backgroundColor: Palette.bgCard,
-        padding: Spacing.md,
-        marginBottom: Spacing.sm,
-        borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    benefitEmoji: { fontSize: 24, marginRight: Spacing.md },
-    benefitBody: { flex: 1 },
-    benefitLabel: { fontSize: FontSize.base, fontWeight: '600', color: Palette.textPrimary },
-    benefitDesc: { fontSize: FontSize.sm, color: Palette.textSecondary, marginTop: 2 },
-
-    unlockButton: {
-        backgroundColor: Palette.green,
-        borderRadius: Radius.md,
-        padding: Spacing.lg,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Palette.greenDim,
-    },
-    unlockButtonText: { fontSize: FontSize.lg, fontWeight: '700', color: Palette.white },
-    unlockButtonSub: { fontSize: FontSize.sm, color: 'rgba(255,255,255,0.9)', marginTop: 4 },
-
-    thankYouNote: {
-        backgroundColor: 'rgba(74,144,226,0.1)',
-        borderRadius: Radius.md,
-        padding: Spacing.lg,
-        borderWidth: 1,
-        borderColor: Palette.accentPrimary,
-    },
-    thankYouText: { fontSize: FontSize.base, color: Palette.textSecondary, textAlign: 'center' },
-});

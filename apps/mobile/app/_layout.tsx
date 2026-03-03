@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -8,7 +8,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Cinzel_400Regular, Cinzel_700Bold } from '@expo-google-fonts/cinzel';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { paletteToNavigationTheme } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
 import { store } from '@/store';
@@ -25,6 +26,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
 import { BatterySaver } from '@/components/BatterySaver';
 import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
+import { ThemeProvider as AppThemeProvider } from '@/contexts/ThemeContext';
 import { QuickSwitchSidebar } from '@/components/QuickSwitchSidebar';
 
 export const unstable_settings = {
@@ -32,11 +34,32 @@ export const unstable_settings = {
 };
 
 /**
+ * Wraps nav with ThemeProvider using our palette. Must be inside AppThemeProvider.
+ */
+function NavThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { palette } = useTheme();
+  const navTheme = paletteToNavigationTheme(palette);
+  return <ThemeProvider value={navTheme}>{children}</ThemeProvider>;
+}
+
+/** StatusBar style from palette (light text on dark bg, dark text on light bg). */
+function StatusBarFromTheme() {
+  const { palette } = useTheme();
+  const navTheme = paletteToNavigationTheme(palette);
+  return (
+    <StatusBar
+      style={navTheme.dark ? 'light' : 'dark'}
+      translucent
+      backgroundColor="transparent"
+    />
+  );
+}
+
+/**
  * Inner app shell — must be inside the Redux Provider
  * so our hooks can access the store.
  */
 function AppShell() {
-  const colorScheme = useColorScheme();
   const [fontsLoaded, fontError] = useFonts({
     Cinzel_400Regular,
     Cinzel_700Bold,
@@ -52,7 +75,8 @@ function AppShell() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <AppThemeProvider>
+      <NavThemeWrapper>
       <QuickSwitchProvider>
       <BatterySaver>
         <Stack>
@@ -69,10 +93,11 @@ function AppShell() {
         <GlobalActionTicker />
         <QuickSwitchSidebar />
         <DialogueOverlay />
-        <StatusBar style="light" translucent backgroundColor="transparent" />
+        <StatusBarFromTheme />
       </BatterySaver>
       </QuickSwitchProvider>
-    </ThemeProvider>
+      </NavThemeWrapper>
+    </AppThemeProvider>
   );
 }
 

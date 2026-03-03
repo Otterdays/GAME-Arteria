@@ -15,7 +15,7 @@
 - **Local Storage:** react-native-mmkv 4.1.2 (fast synchronous KV store for saves)
 - **Routing:** Expo Router v6.0.23 (file-based)
 - **Animations:** React Native Reanimated v4.1.6
-- **Testing:** Jest 29.7 + ts-jest 29.4 (engine package)
+- **Testing:** Jest 29.7 + ts-jest 29.2. Multi-project: `packages/engine` + `tests/` (unit, integration, e2e placeholders). 25 tests, 7 suites. `npm run test:coverage` for engine coverage. See tests/README.md.
 - **Build System:** Local APK via `2_Build_APK_Local.bat` (Gradle from `apps/mobile/android`, no device) + EAS for cloud/production builds
 
 ## Monorepo Structure (npm workspaces)
@@ -55,7 +55,9 @@ Arteria/
 │       │   ├── hooks.ts     # Typed useDispatch/useSelector
 │       │   └── persistence.ts  # MMKV persistence helpers
 │       ├── constants/
-│       │   └── theme.ts     # Dark Melvor palette + design tokens
+│       │   └── theme.ts     # PaletteShape, THEMES (dark/light/sepia), design tokens
+│       ├── contexts/
+│       │   └── ThemeContext.tsx  # ThemeProvider, useTheme
 │       ├── components/      # Reusable UI components
 │       └── hooks/           # Custom hooks (game loop, persistence, etc.)
 ├── packages/

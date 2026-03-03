@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { BouncyButton } from '@/components/BouncyButton';
@@ -13,6 +14,7 @@ import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function QuestsScreen() {
+    const { palette } = useTheme();
     const insets = useSafeAreaInsets();
     const dispatch = useAppDispatch();
     const player = useAppSelector((s) => s.game.player);
@@ -49,6 +51,148 @@ export default function QuestsScreen() {
         dispatch(gameActions.startDialogue({ treeId: 'dt_guard_intro', startNodeId: 'node_1' }));
     };
 
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                header: {
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                headerTitle: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.xl,
+                    color: palette.textPrimary,
+                },
+                headerSubtitle: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginTop: 2,
+                },
+                scrollContent: {
+                    padding: Spacing.md,
+                    paddingBottom: Spacing['2xl'],
+                },
+                section: { marginBottom: Spacing.xl },
+                sectionTitle: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.md,
+                    color: palette.accentWeb,
+                    letterSpacing: 1.2,
+                    marginBottom: Spacing.sm,
+                },
+                questCard: {
+                    backgroundColor: palette.bgCard,
+                    ...CardStyle,
+                    borderColor: palette.border,
+                    padding: Spacing.md,
+                    marginBottom: Spacing.sm,
+                },
+                questActive: {
+                    borderColor: palette.accentWeb,
+                    backgroundColor: palette.bgCardHover,
+                },
+                questCompleted: { opacity: 0.6 },
+                questHeader: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 4,
+                },
+                questTitle: {
+                    fontSize: FontSize.lg,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                    marginBottom: 4,
+                },
+                badgeRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                },
+                difficultyBadge: {
+                    fontSize: FontSize.xs,
+                    fontWeight: '700',
+                    textTransform: 'capitalize',
+                    paddingHorizontal: 6,
+                    paddingVertical: 2,
+                    borderRadius: 4,
+                },
+                diff_novice: {
+                    backgroundColor: palette.green + '40',
+                    color: palette.green,
+                },
+                diff_intermediate: {
+                    backgroundColor: palette.gold + '40',
+                    color: palette.gold,
+                },
+                diff_experienced: {
+                    backgroundColor: palette.accentPrimary + '40',
+                    color: palette.accentPrimary,
+                },
+                diff_master: { backgroundColor: '#6a0dad40', color: '#b794f6' },
+                actTag: {
+                    fontSize: FontSize.xs,
+                    color: palette.accentPrimary,
+                    fontWeight: '800',
+                },
+                questDesc: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    lineHeight: 20,
+                    marginBottom: Spacing.md,
+                },
+                stepsContainer: {
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.sm,
+                    padding: Spacing.sm,
+                    gap: 8,
+                    marginBottom: Spacing.md,
+                },
+                stepRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 8,
+                },
+                stepText: {
+                    flex: 1,
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                },
+                stepCompleted: {
+                    textDecorationLine: 'line-through',
+                    color: palette.textMuted,
+                },
+                startButton: {
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: 10,
+                    borderRadius: Radius.sm,
+                    alignItems: 'center',
+                },
+                startBtnText: {
+                    color: palette.white,
+                    fontWeight: '700',
+                    fontSize: FontSize.sm,
+                },
+                devButton: {
+                    backgroundColor: '#332b22',
+                    borderWidth: 1,
+                    borderColor: palette.gold,
+                    paddingVertical: 8,
+                    borderRadius: Radius.sm,
+                    alignItems: 'center',
+                },
+                devBtnText: {
+                    color: palette.gold,
+                    fontWeight: '700',
+                    fontSize: FontSize.xs,
+                },
+            }),
+        [palette]
+    );
+
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
@@ -80,7 +224,7 @@ export default function QuestsScreen() {
                                             const isDone = completedSteps.includes(step.id);
                                             return (
                                                 <View key={step.id} style={styles.stepRow}>
-                                                    <IconSymbol name={isDone ? "checkmark.circle.fill" : "circle"} size={16} color={isDone ? Palette.green : Palette.textMuted} />
+                                                    <IconSymbol name={isDone ? "checkmark.circle.fill" : "circle"} size={16} color={isDone ? palette.green : palette.textMuted} />
                                                     <Text style={[styles.stepText, isDone && styles.stepCompleted]}>{step.description}</Text>
                                                 </View>
                                             )
@@ -136,8 +280,8 @@ export default function QuestsScreen() {
                         {completedQuests.map(q => (
                             <View key={q.id} style={[styles.questCard, styles.questCompleted]}>
                                 <View style={styles.questHeader}>
-                                    <Text style={[styles.questTitle, { color: Palette.textMuted }]}>{q.title}</Text>
-                                    <IconSymbol name="checkmark.seal.fill" size={20} color={Palette.gold} />
+                                    <Text style={[styles.questTitle, { color: palette.textMuted }]}>{q.title}</Text>
+                                    <IconSymbol name="checkmark.seal.fill" size={20} color={palette.gold} />
                                 </View>
                             </View>
                         ))}
@@ -149,137 +293,3 @@ export default function QuestsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Palette.bgApp,
-    },
-    header: {
-        paddingHorizontal: Spacing.md,
-        paddingBottom: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    headerTitle: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.xl,
-        color: Palette.textPrimary,
-    },
-    headerSubtitle: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        marginTop: 2,
-    },
-    scrollContent: {
-        padding: Spacing.md,
-        paddingBottom: Spacing['2xl'],
-    },
-    section: {
-        marginBottom: Spacing.xl,
-    },
-    sectionTitle: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.md,
-        color: Palette.accentWeb,
-        letterSpacing: 1.2,
-        marginBottom: Spacing.sm,
-    },
-    questCard: {
-        backgroundColor: Palette.bgCard,
-        ...CardStyle,
-        padding: Spacing.md,
-        marginBottom: Spacing.sm,
-    },
-    questActive: {
-        borderColor: Palette.accentWeb,
-        backgroundColor: Palette.bgCardHover,
-    },
-    questCompleted: {
-        opacity: 0.6,
-    },
-    questHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    questTitle: {
-        fontSize: FontSize.lg,
-        fontWeight: '700',
-        color: Palette.textPrimary,
-        marginBottom: 4,
-    },
-    badgeRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-    },
-    difficultyBadge: {
-        fontSize: FontSize.xs,
-        fontWeight: '700',
-        textTransform: 'capitalize',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 4,
-    },
-    diff_novice: { backgroundColor: Palette.green + '40', color: Palette.green },
-    diff_intermediate: { backgroundColor: Palette.gold + '40', color: Palette.gold },
-    diff_experienced: { backgroundColor: Palette.accentPrimary + '40', color: Palette.accentPrimary },
-    diff_master: { backgroundColor: '#6a0dad40', color: '#b794f6' },
-    actTag: {
-        fontSize: FontSize.xs,
-        color: Palette.accentPrimary,
-        fontWeight: '800',
-    },
-    questDesc: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        lineHeight: 20,
-        marginBottom: Spacing.md,
-    },
-    stepsContainer: {
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.sm,
-        padding: Spacing.sm,
-        gap: 8,
-        marginBottom: Spacing.md,
-    },
-    stepRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    stepText: {
-        flex: 1,
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-    },
-    stepCompleted: {
-        textDecorationLine: 'line-through',
-        color: Palette.textMuted,
-    },
-    startButton: {
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: 10,
-        borderRadius: Radius.sm,
-        alignItems: 'center',
-    },
-    startBtnText: {
-        color: Palette.white,
-        fontWeight: '700',
-        fontSize: FontSize.sm,
-    },
-    devButton: {
-        backgroundColor: '#332b22',
-        borderWidth: 1,
-        borderColor: Palette.gold,
-        paddingVertical: 8,
-        borderRadius: Radius.sm,
-        alignItems: 'center',
-    },
-    devBtnText: {
-        color: Palette.gold,
-        fontWeight: '700',
-        fontSize: FontSize.xs,
-    }
-});

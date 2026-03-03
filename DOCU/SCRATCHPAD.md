@@ -5,19 +5,50 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Dev/Prod app identity split complete (Arteria vs Arteria-dev).
+**Active Task:** Theme Phase 3 migration complete. Verify in-app.
+
+## [2026-03-03] Theme Phase 3 — Final Batch Migrated
+- **Migrated:** FeedbackToast, HorizonHUD, settings.tsx, patches.tsx, TabIconWithPulse, FloatingXpPop, GlobalActionTicker. All use useTheme() + useMemo + StyleSheet.create(palette). SettingsRow receives styles prop; createSettingsStyles(palette) helper.
+- **Phase 3 complete:** All listed components migrated. ErrorBoundary (class) kept on Palette for crash fallback. constants/skills.ts still uses Palette for skill colors (would need palette passed into SKILL_META).
+
+## [2026-03-03] Docs & Style Modernization
+- **STYLE_GUIDE:** §7 Theming — migration pattern (useTheme + useMemo + StyleSheet.create), child styles prop. §9 Theme Tokens — table with palette vs static imports.
+- **THEMING.md:** §7b Migration Pattern, Phase 3 migrated/remaining lists.
+- **FUTURE_NOTES, ARCHITECTURE, SUMMARY:** Theme status and cross-refs updated.
+- **zhip-ai-styling.md:** §4.1 — Arteria semantic tokens + THEMING.md reference.
+
+## [2026-03-03] Theme Phase 3 — Component Migration (Continued)
+- **Migrated:** mining.tsx, fishing.tsx, runecrafting.tsx, UpdateBoard, DialogueOverlay, WhileYouWereAway, SmoothProgressBar, patron.tsx. All use useTheme() + useMemo + StyleSheet.create(palette).
+- **Remaining:** None (all migrated). ErrorBoundary (class) kept on Palette. THEMING.md updated.
+
+## [2026-03-03] Version Consolidation 0.3.0
+- **Consolidated:** 0.2.8–0.2.11 → 0.3.0 "The Big Update". app.json, patchHistory, CHANGELOG, UpdateBoard, SUMMARY, index.html, ROADMAP, FUTURE_NOTES, SCRATCHPAD updated. All content from 0.2.7 onwards now under 0.3.0.
+
+## [2026-03-03] Theme Phase 3 — Nav + Tab Bar + StatusBar
+- **Implemented:** paletteToNavigationTheme() in theme.ts — maps palette to React Navigation theme (colors + fonts). NavThemeWrapper + StatusBarFromTheme in _layout. AppThemeProvider wraps NavThemeWrapper; ThemeProvider receives palette-based theme. Tab layout uses useTheme().palette for tab bar colors. StatusBar style (light/dark) from theme luminance. THEMING.md §6, FUTURE_NOTES updated.
+
+## [2026-03-03] Theme Picker (Phase 2)
+- **Implemented:** Settings → Appearance → Theme picker. THEME_OPTIONS (System, Dark, Light, Sepia). Chips UI, setThemeId wired. Settings header + Appearance section use palette. Haptics on tap. (v0.3.0)
+
+## [2026-03-03] Test Suite Modernization
+- **Fixed:** playerFactory.ts missing `narrative` (PlayerState) — caused 3 suite tests to fail. Added narrative: { flags, activeQuests, completedQuests }.
+- **Added:** `npm run test:coverage` — coverage for engine package. collectCoverageFrom, coverageDirectory in packages/engine/jest.config.js. coverage/ in .gitignore.
+- **Updated:** tests/README.md — test:coverage, config layout, 80% target. Root jest verbose. tests/jest.config testPathIgnorePatterns .expo.
+- **Docs/website:** index.html (stats 25, arteria-tests card: GameEngine, test:coverage, 7 suites), ARCHITECTURE, SUMMARY, ROADMAP, STACK_ASSESSMENT — test suite sections refreshed.
+
+## [2026-03-03] Theming Architecture (Light)
+- **Implemented:** DOCU/THEMING.md — theme shape, registry, context, persistence, migration. `theme.ts`: PaletteShape, ThemeId, THEMES (dark, light, sepia). ThemeContext + useTheme() — resolves palette from themeId/system. gameSlice: settings.themeId, setThemeId. AppThemeProvider in _layout. STYLE_GUIDE §7, FUTURE_NOTES, SUMMARY updated. No Settings UI yet (Phase 2).
 
 ## [2026-03-03] Dev/Prod App Identity
 - **Implemented:** `2_Build_APK_Local.bat` → Arteria (prod), `com.anonymous.arteria`. `1_Run_Local_Android_Build.bat` → Arteria-dev, `com.anonymous.arteria.dev`. Both can coexist on same device. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run `expo prebuild --clean` only when switching modes (tracked by `android/.arteria-build-mode`). EXPO_GUIDE §5b, STYLE_GUIDE §7, SUMMARY updated.
 
 ## [2026-03-03] Quick-Switch Sidebar
-- **Implemented:** Floating pill on left edge when in skill screen. Tap opens slide-in drawer. Jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Reanimated spring, LinearGradient, skill-specific colors. QuickSwitchContext + QuickSwitchProvider. Shared constants/skills.ts (SKILL_META, IMPLEMENTED_GATHERING_SKILLS). index.tsx now imports from shared constants.
-- **Version:** 0.2.9. UpdateBoard, patchHistory, CHANGELOG, ROADMAP updated.
+- **Implemented:** Floating pill on left edge when in skill screen. Tap opens slide-in drawer. Jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Reanimated spring, LinearGradient, skill-specific colors. QuickSwitchContext + QuickSwitchProvider. Shared constants/skills.ts (SKILL_META, IMPLEMENTED_GATHERING_SKILLS). index.tsx now imports from shared constants. (v0.3.0)
 
 ## [2026-03-03] Random Events Expanded
 - **Added 3 events:** Genie's Gift (level×10 XP to random trained skill), Treasure Chest (gold scaling with level), Lucky Strike (double XP this tick). Now 5 events total. Offline accumulator includes bonus XP for WYWA modal.
 - **Groundwork:** `constants/randomEvents.ts` (RANDOM_EVENT_CHANCE_BASE, COOLDOWN, BLIBBERTOOTH_XP_MULTIPLIER, RANDOM_EVENT_TYPES). `player.randomEvents` in Redux (lastTriggeredAt, ticksSinceLastEvent, completedCount). `recordRandomEventTriggered` reducer. Migration for existing saves.
-- **Version:** 0.2.8. Updated UpdateBoard, patchHistory, CHANGELOG, index.html, app.json. AI versioning reminder added to SUMMARY, SCRATCHPAD, ROADMAP, CHANGELOG, ARCHITECTURE, FUTURE_NOTES, index.html.
+- Random Events MVP. AI versioning reminder in doc heads. (v0.3.0)
 
 ## [2026-03-03] Random Events Design Proposal
 - **Source:** RuneScape wiki (runescape-wiki__w_Random_events.html) + DOCU (MASTER_DESIGN_DOC, My_Thoughts, ROADMAP).

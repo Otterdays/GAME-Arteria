@@ -5,11 +5,12 @@
  * that cleared the dismiss timer) with a ref-based approach.
  * The activeToast is tracked in a ref so it doesn't trigger re-renders.
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
-import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
+import { Spacing, Radius, FontSize } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import * as Haptics from 'expo-haptics';
 
 const SKILL_EMOJIS: Partial<Record<SkillId, string>> = {
@@ -31,6 +32,7 @@ const SKILL_EMOJIS: Partial<Record<SkillId, string>> = {
 };
 
 export default function LevelUpToast() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const queue = useAppSelector((s) => s.game.levelUpQueue);
 
@@ -123,51 +125,3 @@ export default function LevelUpToast() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        pointerEvents: 'none',
-        paddingHorizontal: Spacing.md,
-    },
-    glow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCardHover,
-        borderRadius: Radius.full,
-        paddingHorizontal: Spacing.lg,
-        paddingVertical: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.gold,
-        shadowColor: Palette.gold,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-        elevation: 10,
-    },
-    emoji: {
-        fontSize: 32,
-        marginRight: Spacing.md,
-    },
-    textStack: {
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: FontSize.lg,
-        fontWeight: '900',
-        color: Palette.gold,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        marginBottom: 2,
-    },
-    subtitle: {
-        fontSize: FontSize.sm,
-        color: Palette.white,
-        fontWeight: '600',
-    },
-});

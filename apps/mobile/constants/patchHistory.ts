@@ -1,7 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Current release: 0.2.8 "Random Events & Blibbertooth's Blessings".
+ * Current release: 0.3.0 "The Big Update".
  */
 
 export interface PatchEntry {
@@ -14,19 +14,13 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
-    version: '0.2.9',
+    version: '0.3.0',
     date: '2026-03-03',
     added: [
-      'Quick-Switch Sidebar: Floating pill on left edge when in a skill screen. Tap to slide open a drawer and jump between Mining, Logging, Fishing, Runecrafting. Active skill highlighted in gold. Shared skills constants (constants/skills.ts).',
-    ],
-  },
-  {
-    version: '0.2.8',
-    date: '2026-03-03',
-    added: [
-      'Random Events: Blibbertooth\'s Blessing (bonus XP), Cosmic Sneeze (double items), Genie\'s Gift (XP to random skill), Treasure Chest (gold), Lucky Strike (double XP this tick). Per-tick roll (~0.5% base, 60-tick cooldown).',
-      'Random Events groundwork: player.randomEvents state, constants in randomEvents.ts. Ready for dialogue randoms, skill guardians (FUTURE_NOTES.md).',
-      'AI versioning reminder: Doc heads now include prominent note to update Update Board, website, patchHistory, CHANGELOG, app.json when implementing features.',
+      '🎨 Theme Engine: Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, StatusBar follow selected theme. paletteToNavigationTheme(), NavThemeWrapper, persisted with save.',
+      '⚡ Quick-Switch Sidebar: Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared constants/skills.ts.',
+      '🎲 Random Events: Blibbertooth\'s Blessing, Cosmic Sneeze, Genie\'s Gift, Treasure Chest, Lucky Strike. Per-tick roll (~0.5% base, 60-tick cooldown). player.randomEvents state.',
+      'AI versioning reminder in doc heads.',
     ],
   },
   {

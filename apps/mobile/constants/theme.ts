@@ -1,12 +1,67 @@
 /**
  * Arteria Theme — Dark-first color palette and design tokens.
  * Based on the Melvor Idle style guide (zhip-ai-styling.md).
+ * [TRACE: DOCU/THEMING.md — Theme architecture]
  */
 
 import { Platform } from 'react-native';
 
+// ── Theme Architecture ─────────────────────────────────────
+export type ThemeId = 'system' | 'dark' | 'light' | 'sepia';
+
+/** Theme options for Settings picker. [TRACE: DOCU/THEMING.md Phase 2] */
+export const THEME_OPTIONS: { id: ThemeId; label: string }[] = [
+    { id: 'system', label: 'System' },
+    { id: 'dark', label: 'Dark' },
+    { id: 'light', label: 'Light' },
+    { id: 'sepia', label: 'Sepia' },
+];
+
+export type PaletteShape = {
+  bgApp: string;
+  bgCard: string;
+  bgCardHover: string;
+  bgInput: string;
+  textPrimary: string;
+  textSecondary: string;
+  textDisabled: string;
+  textMuted: string;
+  accentPrimary: string;
+  accentHover: string;
+  accentDim: string;
+  accentWeb: string;
+  borderGlow: string;
+  gold: string;
+  goldDim: string;
+  green: string;
+  greenDim: string;
+  red: string;
+  redDim: string;
+  border: string;
+  divider: string;
+  purple: string;
+  white: string;
+  black: string;
+  transparent: string;
+  skillMining: string;
+  skillLogging: string;
+  skillHarvesting: string;
+  skillScavenging: string;
+  skillFishing: string;
+  skillCooking: string;
+  skillSmithing: string;
+  skillCrafting: string;
+  skillFarming: string;
+  skillHerblore: string;
+  skillAgility: string;
+  skillAttack: string;
+  skillStrength: string;
+  skillDefence: string;
+  skillHitpoints: string;
+};
+
 // ── Core Palette (from design spec) ─────────────────────────
-export const Palette = {
+const DARK_PALETTE: PaletteShape = {
   // Backgrounds
   bgApp: '#0f111a',
   bgCard: '#1b1e29',
@@ -64,7 +119,73 @@ export const Palette = {
   skillStrength: '#2ecc71',
   skillDefence: '#3498db',
   skillHitpoints: '#e74c3c',
-} as const;
+};
+
+/** Backward compat: default dark palette. Prefer useTheme().palette for new code. */
+export const Palette = DARK_PALETTE;
+
+/** Theme registry. [TRACE: DOCU/THEMING.md] */
+export const THEMES: Record<Exclude<ThemeId, 'system'>, PaletteShape> = {
+  dark: DARK_PALETTE,
+  light: {
+    ...DARK_PALETTE,
+    bgApp: '#f5f6fa',
+    bgCard: '#ffffff',
+    bgCardHover: '#eef0f4',
+    bgInput: '#e8e9ed',
+    textPrimary: '#11181c',
+    textSecondary: '#5a5e6b',
+    textDisabled: '#8b8fa3',
+    textMuted: '#6c7085',
+    border: '#e0e0e0',
+    divider: '#e8e9ed',
+  },
+  sepia: {
+    ...DARK_PALETTE,
+    bgApp: '#1a1814',
+    bgCard: '#252219',
+    bgCardHover: '#2e2a22',
+    bgInput: '#1f1c18',
+    textPrimary: '#e8e4dc',
+    textSecondary: '#9a958a',
+    textDisabled: '#6c685e',
+    textMuted: '#7a756b',
+    accentPrimary: '#c49b1a',
+    accentHover: '#d4ab2a',
+    accentDim: '#a08015',
+    accentWeb: '#b8860b',
+    borderGlow: 'rgba(184, 134, 11, 0.35)',
+    border: '#3d382e',
+    divider: '#322e26',
+  },
+};
+
+/** Build React Navigation theme from palette. [TRACE: DOCU/THEMING.md §6] */
+export function paletteToNavigationTheme(palette: PaletteShape) {
+  const hex = palette.bgApp.replace('#', '').padEnd(6, '0').slice(0, 6);
+  const r = parseInt(hex.slice(0, 2), 16) || 0;
+  const g = parseInt(hex.slice(2, 4), 16) || 0;
+  const b = parseInt(hex.slice(4, 6), 16) || 0;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  const isDark = luminance < 0.5;
+  return {
+    dark: isDark,
+    colors: {
+      primary: palette.accentPrimary,
+      background: palette.bgApp,
+      card: palette.bgCard,
+      text: palette.textPrimary,
+      border: palette.border,
+      notification: palette.accentPrimary,
+    },
+    fonts: {
+      regular: { fontFamily: 'System', fontWeight: '400' as const },
+      medium: { fontFamily: 'System', fontWeight: '500' as const },
+      bold: { fontFamily: 'System', fontWeight: '600' as const },
+      heavy: { fontFamily: 'System', fontWeight: '700' as const },
+    },
+  };
+}
 
 // ── Colors (dark-only for now, matching the idle RPG standard) ──
 export const Colors = {

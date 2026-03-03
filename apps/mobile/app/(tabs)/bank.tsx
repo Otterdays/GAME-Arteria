@@ -5,6 +5,7 @@
  * Z. Search + filters (Ore, Bar, Other).
  */
 import React, { useState, useMemo, useCallback } from 'react';
+import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 import {
     View,
     Text,
@@ -17,7 +18,8 @@ import {
     ListRenderItemInfo,
     TextInput,
 } from 'react-native';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
 import { getItemMeta, type ItemType } from '@/constants/items';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,7 +28,15 @@ import { gameActions, InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 
 // ── Item Cell ────────────────────────────────────────────────────────────────
-function ItemCell({ item, onPress }: { item: InventoryItem; onPress: (itemId: string) => void }) {
+function ItemCell({
+    item,
+    onPress,
+    styles,
+}: {
+    item: InventoryItem;
+    onPress: (itemId: string) => void;
+    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+}) {
     const meta = getItemMeta(item.id);
     return (
         <TouchableOpacity style={styles.cell} onPress={() => onPress(item.id)} activeOpacity={0.7}>
@@ -63,13 +73,13 @@ function ItemDetailModal({ itemId, onClose }: { itemId: string | null; onClose: 
                     </View>
                     <View style={styles.detailRow}>
                         <Text style={styles.detailStatLabel}>Sell Value</Text>
-                        <Text style={[styles.detailStatValue, { color: Palette.gold }]}>
+                        <Text style={[styles.detailStatValue, styles.detailStatValueGold]}>
                             💰 {meta.sellValue.toLocaleString()} each
                         </Text>
                     </View>
                     <View style={styles.detailRow}>
                         <Text style={styles.detailStatLabel}>Total Value</Text>
-                        <Text style={[styles.detailStatValue, { color: Palette.gold }]}>
+                        <Text style={[styles.detailStatValue, styles.detailStatValueGold]}>
                             💰 {(meta.sellValue * item.quantity).toLocaleString()}
                         </Text>
                     </View>
@@ -131,6 +141,7 @@ const FILTER_OPTIONS: { key: ItemType | 'all'; label: string }[] = [
 ];
 
 export default function BankScreen() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const gold = useAppSelector((s) => s.game.player.gold);
@@ -157,8 +168,262 @@ export default function BankScreen() {
         dispatch(gameActions.clearPulseTab('bank'));
     }, [dispatch]));
 
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                header: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    paddingHorizontal: Spacing.md,
+                    paddingTop: Spacing.xl,
+                    paddingBottom: Spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                screenTitle: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '800',
+                    color: palette.textPrimary,
+                },
+                screenSub: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginTop: 2,
+                },
+                screenSubWarning: {
+                    color: palette.red,
+                    fontWeight: '600',
+                },
+                headerRight: { alignItems: 'flex-end', gap: 4 },
+                goldBadge: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: palette.bgCard,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.xs,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: palette.gold,
+                    gap: 4,
+                },
+                goldEmoji: { fontSize: 14 },
+                goldText: { fontSize: FontSize.sm, fontWeight: '700', color: palette.gold },
+                worthText: { fontSize: FontSize.xs, color: palette.textMuted },
+                searchRow: {
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                searchInput: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.md,
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    fontSize: FontSize.base,
+                    color: palette.textPrimary,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                filterRow: {
+                    flexDirection: 'row',
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    gap: Spacing.sm,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                filterChip: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                filterChipActive: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary,
+                    backgroundColor: palette.accentPrimary + '22',
+                },
+                filterChipText: { fontSize: FontSize.sm, color: palette.textSecondary },
+                filterChipTextActive: {
+                    fontSize: FontSize.sm,
+                    color: palette.accentPrimary,
+                    fontWeight: '600',
+                },
+                grid: { padding: Spacing.md, gap: Spacing.sm },
+                cell: {
+                    width: CELL_SIZE,
+                    height: CELL_SIZE + 24,
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: 4,
+                    padding: Spacing.xs,
+                },
+                cellEmoji: { fontSize: 28, marginBottom: 2 },
+                cellLocked: {
+                    fontSize: FontSize.xs,
+                    position: 'absolute',
+                    top: 6,
+                    left: 6,
+                },
+                cellQty: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.gold,
+                    position: 'absolute',
+                    top: 4,
+                    right: 6,
+                },
+                cellLabel: {
+                    fontSize: 9,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    textTransform: 'capitalize',
+                    lineHeight: 11,
+                },
+                empty: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                },
+                emptyEmoji: { fontSize: 64 },
+                emptyTitle: {
+                    fontSize: FontSize.lg,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                emptyHint: {
+                    fontSize: FontSize.base,
+                    color: palette.textSecondary,
+                },
+                detailOverlay: {
+                    flex: 1,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: Spacing.lg,
+                },
+                detailCard: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.xl,
+                    padding: Spacing.lg,
+                    width: '100%',
+                    maxWidth: 360,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                detailEmoji: { fontSize: 48, textAlign: 'center', marginBottom: Spacing.sm },
+                detailName: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '800',
+                    color: palette.textPrimary,
+                    textAlign: 'center',
+                    marginBottom: 4,
+                    textTransform: 'capitalize',
+                },
+                detailDesc: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    marginBottom: Spacing.md,
+                    lineHeight: 18,
+                },
+                detailSeparator: {
+                    height: 1,
+                    backgroundColor: palette.border,
+                    marginVertical: Spacing.md,
+                },
+                detailRow: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: Spacing.sm,
+                },
+                detailStatLabel: { fontSize: FontSize.sm, color: palette.textSecondary },
+                detailStatValue: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                detailStatValueGold: { color: palette.gold },
+                detailRecipeHint: {
+                    fontSize: FontSize.sm,
+                    color: palette.textMuted,
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginBottom: Spacing.md,
+                },
+                detailActionRow: {
+                    flexDirection: 'row',
+                    gap: Spacing.sm,
+                    marginTop: Spacing.xs,
+                },
+                detailSellButton: {
+                    flex: 1,
+                    backgroundColor: palette.bgCard,
+                    paddingVertical: 10,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.gold,
+                },
+                detailSellButtonDisabled: {
+                    borderColor: palette.border,
+                    opacity: 0.5,
+                },
+                detailSellText: {
+                    color: palette.gold,
+                    fontWeight: '700',
+                    fontSize: FontSize.sm,
+                },
+                detailLockButton: {
+                    marginTop: Spacing.md,
+                    backgroundColor: palette.bgApp,
+                    paddingVertical: 10,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                detailLockButtonActive: {
+                    borderColor: palette.red,
+                    backgroundColor: palette.red + '11',
+                },
+                detailLockText: {
+                    color: palette.textSecondary,
+                    fontWeight: '600',
+                    fontSize: FontSize.sm,
+                },
+                detailLockTextActive: { color: palette.red },
+                detailClose: {
+                    marginTop: Spacing.md,
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: 12,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                },
+                detailCloseText: {
+                    color: palette.white,
+                    fontWeight: '700',
+                    fontSize: FontSize.base,
+                },
+            }),
+        [palette]
+    );
+
     const renderItem = ({ item }: ListRenderItemInfo<InventoryItem>) => (
-        <ItemCell item={item} onPress={setSelectedId} />
+        <ItemCell item={item} onPress={setSelectedId} styles={styles} />
     );
 
     const totalWorth = inventory.reduce((acc, item) => {
@@ -202,7 +467,7 @@ export default function BankScreen() {
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search items..."
-                    placeholderTextColor={Palette.textMuted}
+                    placeholderTextColor={palette.textMuted}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                 />
@@ -253,234 +518,4 @@ export default function BankScreen() {
     );
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
 const CELL_SIZE = 80;
-
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Palette.bgApp },
-
-    // Header
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        paddingHorizontal: Spacing.md,
-        paddingTop: Spacing.xl,
-        paddingBottom: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    screenTitle: {
-        fontSize: FontSize.xl,
-        fontWeight: '800',
-        color: Palette.textPrimary,
-    },
-    screenSub: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        marginTop: 2,
-    },
-    screenSubWarning: {
-        color: Palette.red,
-        fontWeight: '600',
-    },
-    headerRight: { alignItems: 'flex-end', gap: 4 },
-    goldBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: Spacing.xs,
-        borderRadius: Radius.full,
-        borderWidth: 1,
-        borderColor: Palette.gold,
-        gap: 4,
-    },
-    goldEmoji: { fontSize: 14 },
-    goldText: { fontSize: FontSize.sm, fontWeight: '700', color: Palette.gold },
-    worthText: { fontSize: FontSize.xs, color: Palette.textMuted },
-
-    // Z. Search
-    searchRow: {
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    searchInput: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.md,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.sm,
-        fontSize: FontSize.base,
-        color: Palette.textPrimary,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-
-    // Filter row
-    filterRow: {
-        flexDirection: 'row',
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.sm,
-        gap: Spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    filterChip: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 4,
-        borderRadius: Radius.full,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    filterChipActive: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 4,
-        borderRadius: Radius.full,
-        borderWidth: 1,
-        borderColor: Palette.accentPrimary,
-        backgroundColor: Palette.accentPrimary + '22',
-    },
-    filterChipText: { fontSize: FontSize.sm, color: Palette.textSecondary },
-    filterChipTextActive: { fontSize: FontSize.sm, color: Palette.accentPrimary, fontWeight: '600' },
-
-    // Grid
-    grid: { padding: Spacing.md, gap: Spacing.sm },
-    cell: {
-        width: CELL_SIZE,
-        height: CELL_SIZE + 24,
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 4,
-        padding: Spacing.xs,
-    },
-    cellEmoji: { fontSize: 28, marginBottom: 2 },
-    cellLocked: {
-        fontSize: FontSize.xs,
-        position: 'absolute',
-        top: 6,
-        left: 6,
-    },
-    cellQty: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.gold,
-        position: 'absolute',
-        top: 4,
-        right: 6,
-    },
-    cellLabel: {
-        fontSize: 9,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        textTransform: 'capitalize',
-        lineHeight: 11,
-    },
-
-    // Empty state
-    empty: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.sm },
-    emptyEmoji: { fontSize: 64 },
-    emptyTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Palette.textPrimary },
-    emptyHint: { fontSize: FontSize.base, color: Palette.textSecondary },
-
-    // Item detail modal
-    detailOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: Spacing.lg,
-    },
-    detailCard: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.xl,
-        padding: Spacing.lg,
-        width: '100%',
-        maxWidth: 360,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    detailEmoji: { fontSize: 48, textAlign: 'center', marginBottom: Spacing.sm },
-    detailName: {
-        fontSize: FontSize.xl,
-        fontWeight: '800',
-        color: Palette.textPrimary,
-        textAlign: 'center',
-        marginBottom: 4,
-        textTransform: 'capitalize',
-    },
-    detailDesc: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        marginBottom: Spacing.md,
-        lineHeight: 18,
-    },
-    detailSeparator: {
-        height: 1,
-        backgroundColor: Palette.border,
-        marginVertical: Spacing.md,
-    },
-    detailRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: Spacing.sm,
-    },
-    detailStatLabel: { fontSize: FontSize.sm, color: Palette.textSecondary },
-    detailStatValue: { fontSize: FontSize.sm, fontWeight: '700', color: Palette.textPrimary },
-    detailRecipeHint: {
-        fontSize: FontSize.sm,
-        color: Palette.textMuted,
-        textAlign: 'center',
-        fontStyle: 'italic',
-        marginBottom: Spacing.md,
-    },
-    detailActionRow: {
-        flexDirection: 'row',
-        gap: Spacing.sm,
-        marginTop: Spacing.xs,
-    },
-    detailSellButton: {
-        flex: 1,
-        backgroundColor: Palette.bgCard,
-        paddingVertical: 10,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Palette.gold,
-    },
-    detailSellButtonDisabled: {
-        borderColor: Palette.border,
-        opacity: 0.5,
-    },
-    detailSellText: { color: Palette.gold, fontWeight: '700', fontSize: FontSize.sm },
-    detailLockButton: {
-        marginTop: Spacing.md,
-        backgroundColor: Palette.bgApp,
-        paddingVertical: 10,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    detailLockButtonActive: {
-        borderColor: Palette.red,
-        backgroundColor: Palette.red + '11',
-    },
-    detailLockText: { color: Palette.textSecondary, fontWeight: '600', fontSize: FontSize.sm },
-    detailLockTextActive: { color: Palette.red },
-    detailClose: {
-        marginTop: Spacing.md,
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: 12,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-    },
-    detailCloseText: { color: Palette.white, fontWeight: '700', fontSize: FontSize.base },
-});

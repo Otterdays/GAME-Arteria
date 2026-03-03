@@ -5,7 +5,7 @@
  * Automatically shown after offline progression is calculated.
  * Dismissed by the player and then cleared from Redux state.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     Modal,
     View,
@@ -16,7 +16,8 @@ import {
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
-import { Palette, Spacing, Radius, FontSize, FontCinzel } from '@/constants/theme';
+import { Spacing, Radius, FontSize, FontCinzel } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { logger } from '@/utils/logger';
 import { formatNumber } from '@/utils/formatNumber';
 
@@ -49,8 +50,139 @@ function formatElapsed(ms: number): string {
 }
 
 export default function WhileYouWereAway() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const report = useAppSelector((s) => s.game.offlineReport);
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                overlay: {
+                    flex: 1,
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    justifyContent: 'flex-end',
+                },
+                card: {
+                    backgroundColor: palette.bgCard,
+                    borderTopLeftRadius: 24,
+                    borderTopRightRadius: 24,
+                    padding: Spacing.lg,
+                    paddingBottom: 40,
+                    borderTopWidth: 1,
+                    borderColor: palette.border,
+                    maxHeight: '82%',
+                },
+                icon: {
+                    fontSize: 40,
+                    textAlign: 'center',
+                    marginBottom: Spacing.sm,
+                },
+                title: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '800',
+                    color: palette.textPrimary,
+                    textAlign: 'center',
+                    marginBottom: 4,
+                },
+                time: {
+                    fontSize: FontSize.base,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    marginBottom: Spacing.sm,
+                },
+                capBanner: {
+                    backgroundColor: palette.goldDim + '33',
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.goldDim,
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.xs,
+                    marginBottom: Spacing.md,
+                    alignItems: 'center',
+                },
+                capText: {
+                    fontSize: FontSize.sm,
+                    color: palette.gold,
+                    fontWeight: '600',
+                },
+                scroll: { maxHeight: 400 },
+                scrollContent: { gap: Spacing.md },
+                section: {
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.md,
+                    padding: Spacing.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    gap: Spacing.sm,
+                },
+                sectionTitle: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.accentPrimary,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.8,
+                    marginBottom: 4,
+                },
+                row: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+                rowLabel: {
+                    fontSize: FontSize.base,
+                    color: palette.textPrimary,
+                },
+                rowValue: {
+                    fontSize: FontSize.base,
+                    color: palette.green,
+                    fontWeight: '700',
+                },
+                itemGrid: {
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: Spacing.sm,
+                },
+                itemChip: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.sm,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.xs,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    alignItems: 'center',
+                },
+                itemName: {
+                    fontSize: FontSize.xs,
+                    color: palette.textPrimary,
+                    textTransform: 'capitalize',
+                    marginBottom: 2,
+                },
+                itemQty: {
+                    fontSize: FontSize.sm,
+                    color: palette.gold,
+                    fontWeight: '700',
+                },
+                noActivity: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    paddingVertical: Spacing.lg,
+                },
+                button: {
+                    marginTop: Spacing.lg,
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: 14,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                },
+                buttonText: {
+                    color: palette.white,
+                    fontSize: FontSize.base,
+                    fontWeight: '700',
+                },
+            }),
+        [palette]
+    );
 
     if (!report) return null;
 
@@ -126,128 +258,3 @@ export default function WhileYouWereAway() {
     );
 }
 
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.75)',
-        justifyContent: 'flex-end',
-    },
-    card: {
-        backgroundColor: Palette.bgCard,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        padding: Spacing.lg,
-        paddingBottom: 40,
-        borderTopWidth: 1,
-        borderColor: Palette.border,
-        maxHeight: '82%',
-    },
-    icon: {
-        fontSize: 40,
-        textAlign: 'center',
-        marginBottom: Spacing.sm,
-    },
-    title: {
-        fontSize: FontSize.xl,
-        fontWeight: '800',
-        color: Palette.textPrimary,
-        textAlign: 'center',
-        marginBottom: 4,
-    },
-    time: {
-        fontSize: FontSize.base,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        marginBottom: Spacing.sm,
-    },
-    capBanner: {
-        backgroundColor: Palette.goldDim + '33',
-        borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.goldDim,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.xs,
-        marginBottom: Spacing.md,
-        alignItems: 'center',
-    },
-    capText: {
-        fontSize: FontSize.sm,
-        color: Palette.gold,
-        fontWeight: '600',
-    },
-    scroll: { maxHeight: 400 },
-    scrollContent: { gap: Spacing.md },
-    section: {
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.md,
-        padding: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        gap: Spacing.sm,
-    },
-    sectionTitle: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.accentPrimary,
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        marginBottom: 4,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    rowLabel: {
-        fontSize: FontSize.base,
-        color: Palette.textPrimary,
-    },
-    rowValue: {
-        fontSize: FontSize.base,
-        color: Palette.green,
-        fontWeight: '700',
-    },
-    itemGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: Spacing.sm,
-    },
-    itemChip: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.sm,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: Spacing.xs,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        alignItems: 'center',
-    },
-    itemName: {
-        fontSize: FontSize.xs,
-        color: Palette.textPrimary,
-        textTransform: 'capitalize',
-        marginBottom: 2,
-    },
-    itemQty: {
-        fontSize: FontSize.sm,
-        color: Palette.gold,
-        fontWeight: '700',
-    },
-    noActivity: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        paddingVertical: Spacing.lg,
-    },
-    button: {
-        marginTop: Spacing.lg,
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: 14,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: Palette.white,
-        fontSize: FontSize.base,
-        fontWeight: '700',
-    },
-});

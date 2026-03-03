@@ -5,6 +5,8 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+**Version restructure (2026-03-03):** 0.2.8–0.2.11 consolidated into **v0.3.0** "The Big Update". Theme Engine, Quick-Switch Sidebar, Random Events, and 0.2.7 content (Fishing, Runecrafting, etc.) now under 0.3.0.
+
 **Version restructure (2026-02-28):** Project versioning was consolidated so the current release is **v0.2.5**. Previous 0.3.x and 0.4.x entries were merged into 0.2.x to better reflect early-stage development. **Persistence & Pipeline** and **Deployment & Fixes** live in the **1.x.x** section (1.0.0 and 1.1.0). Content is preserved; only version numbers and grouping changed.
 
 ---
@@ -15,17 +17,12 @@
 
 ---
 
-## [0.2.9] - 2026-03-03
+## [0.3.0] - 2026-03-03
 ### Added
-- **Quick-Switch Sidebar:** Floating pill trigger on the left edge when in a skill screen. Tap to slide open a drawer and jump between Mining, Logging, Fishing, Runecrafting without returning to the Skills tab. Active skill highlighted in gold. Glassmorphic panel with skill-specific colors, smooth Reanimated slide. Shared `constants/skills.ts` for SKILL_META and IMPLEMENTED_SKILLS.
-
----
-
-## [0.2.8] - 2026-03-03
-### Added
-- **Random Events:** Per-tick roll during skilling (~0.5% base chance, 60-tick cooldown). **Blibbertooth's Blessing:** Bonus XP (level × 5) to active skill. **Cosmic Sneeze:** Doubles next item haul. **Genie's Gift:** Bonus XP (level × 10) to a random trained skill. **Treasure Chest:** Gold reward scaling with level. **Lucky Strike:** Double XP for this tick. Groundwork for dialogue randoms, skill guardians (FUTURE_NOTES.md).
-- **Random Events State:** `player.randomEvents` (lastTriggeredAt, ticksSinceLastEvent, completedCount) for frequency tuning and future expansion.
-- **AI Versioning Reminder:** Doc heads (SUMMARY, SCRATCHPAD, ROADMAP, CHANGELOG, ARCHITECTURE, FUTURE_NOTES) now include prominent reminder to update Update Board, website, patchHistory, and app.json when implementing features.
+- **Theme Engine:** Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, and StatusBar follow selected theme. `paletteToNavigationTheme()`, NavThemeWrapper, StatusBarFromTheme. THEME_OPTIONS, THEMES registry (dark, light, sepia). Persisted with save.
+- **Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared `constants/skills.ts`.
+- **Random Events:** Per-tick roll (~0.5% base, 60-tick cooldown). Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. `player.randomEvents` state. Groundwork for dialogue randoms, skill guardians.
+- **AI Versioning Reminder:** Doc heads include reminder to update Update Board, website, patchHistory, CHANGELOG, app.json when implementing features.
 
 ---
 

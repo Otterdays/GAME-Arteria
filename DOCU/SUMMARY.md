@@ -27,23 +27,24 @@
 | **EXPO_GUIDE.md** | Expo/EAS workflow, CNG, when to build vs OTA, monorepo config. |
 | **MY_ADHD.md** | Quick Q&A for deployment and testing. |
 | **zhipu-ai.md** | Baseline feature sheet for Melvor-like core engine, skills, combat, economy. |
-| **STYLE_GUIDE.md** | Project conventions: trace tags, line/function limits, comment prefixes, touch targets. |
+| **STYLE_GUIDE.md** | Project conventions: trace tags, limits, naming, touch targets, theming (useTheme + migration pattern). |
+| **THEMING.md** | Theme architecture: PaletteShape, THEMES registry, ThemeContext, migration path. |
 | **zhip-ai-styling.md** | UI/UX style guide (Melvor-like): layout, colors, components, screens. |
 | **tools/info_scraper/** | Web scraper with GUI — fetch URLs, save content. See `tools/info_scraper/README.md`. |
 | **debugs/** | Issue tracking (e.g. `audit-2026-02-26.md`). |
 | **README.md** (root) | User-facing project intro; links to DOCS. |
-| **tests/README.md** | Test suite structure and commands. |
+| **tests/README.md** | Test suite structure, commands (test, test:coverage, test:engine, test:suite), 80% coverage target. |
 | **apps/mobile/README.md** | Expo app quick start (boilerplate). |
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
 
-**Version scheme:** 0.2.x (current **0.2.9**).
+**Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
+
+**Version scheme:** 0.x.x. Current **0.3.0** (consolidated from 0.2.8–0.2.11).
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**v0.2.9 (2026-03-03) — Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared skills constants.
-
-**v0.2.8 (2026-03-03) — Random Events:** Blibbertooth's Blessing (bonus XP), Cosmic Sneeze (double items). Per-tick roll ~0.5%, 60-tick cooldown. Groundwork for Genie lamp, dialogue randoms, skill guardians. AI versioning reminder added to doc heads.
+**v0.3.0 (2026-03-03) — The Big Update:** Theme Engine (picker, tab bar, headers, StatusBar). Quick-Switch Sidebar. Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). All consolidated from 0.2.8–0.2.11.
 
 **v0.2.7 (2026-03-03) — big update:** Fishing and Runecrafting skills; action consumption in the game loop; Bank filters for fish/runes; new Mining essence veins. Settings: **Confirm Task Switch**, **Battery Saver**, **Horizon HUD** (toggle to hide the 3 goal cards under XP bar), **Notifications** (Level Up, Task Complete, **Idle Cap Reached** with local scheduling), **Idle Soundscapes** (stub hook). **Easter egg** "Don't Push This" (1,000 presses → title "The Stubborn"). All persisted.
 

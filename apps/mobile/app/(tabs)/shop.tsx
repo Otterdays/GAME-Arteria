@@ -3,6 +3,7 @@
  * [TRACE: ROADMAP 2.3, PEOPLE_TO_ADD.md]
  */
 import React, { useState, useMemo } from 'react';
+import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 import {
     View,
     Text,
@@ -12,7 +13,8 @@ import {
     ListRenderItemInfo,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
@@ -33,11 +35,13 @@ const BUY_QUANTITIES = [1, 5, 10];
 
 // ─── Buy row ─────────────────────────────────────────────────────────────────
 function BuyRow({
+    styles,
     itemId,
     buyPrice,
     playerGold,
     onBuy,
 }: {
+    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
     itemId: string;
     buyPrice: number;
     playerGold: number;
@@ -85,10 +89,12 @@ function SellRow({
     item,
     onSell1,
     onSellAll,
+    styles,
 }: {
     item: InventoryItem;
     onSell1: () => void;
     onSellAll: () => void;
+    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
 }) {
     const meta = getItemMeta(item.id);
     const locked = !!item.isLocked;
@@ -125,6 +131,7 @@ function SellRow({
 }
 
 export default function ShopScreen() {
+    const { palette } = useTheme();
     const insets = useSafeAreaInsets();
     const dispatch = useAppDispatch();
     const gold = useAppSelector((s) => s.game.player.gold);
@@ -154,6 +161,216 @@ export default function ShopScreen() {
         const shopSellValue = Math.floor(meta.sellValue * 0.5); // 50% merchant ratio
         dispatch(gameActions.sellItem({ id, quantity: item.quantity, pricePer: shopSellValue }));
     };
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                header: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                title: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                subtitleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 2,
+                    gap: 8,
+                },
+                subtitle: { fontSize: FontSize.sm, color: palette.textSecondary },
+                chatButton: {
+                    backgroundColor: palette.bgInput,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                chatButtonText: {
+                    fontSize: 12,
+                    color: palette.textPrimary,
+                    fontWeight: '600',
+                },
+                goldBadge: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: palette.bgCard,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.xs,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                goldEmoji: { fontSize: FontSize.base, marginRight: 4 },
+                goldText: {
+                    fontSize: FontSize.base,
+                    fontWeight: '600',
+                    color: palette.gold,
+                },
+                toggleRow: {
+                    flexDirection: 'row',
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    gap: Spacing.sm,
+                },
+                toggleBtn: {
+                    flex: 1,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.md,
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    alignItems: 'center',
+                },
+                toggleBtnActive: {
+                    backgroundColor: palette.accentPrimary,
+                    borderColor: palette.accentPrimary,
+                },
+                toggleText: {
+                    fontSize: FontSize.base,
+                    fontWeight: '600',
+                    color: palette.textSecondary,
+                },
+                toggleTextActive: { color: palette.white },
+                filterRow: {
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    gap: 6,
+                },
+                filterChip: {
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: Radius.full,
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                filterChipActive: {
+                    borderColor: palette.accentPrimary,
+                    backgroundColor: 'rgba(74,144,226,0.15)',
+                },
+                filterChipText: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                },
+                filterChipTextActive: {
+                    color: palette.accentPrimary,
+                    fontWeight: '600',
+                },
+                listContent: {
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.xl,
+                },
+                row: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: palette.bgCard,
+                    padding: Spacing.sm,
+                    marginBottom: Spacing.sm,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                rowLocked: { opacity: 0.75 },
+                rowEmoji: { fontSize: 28, marginRight: Spacing.sm },
+                rowBody: { flex: 1 },
+                rowLabel: {
+                    fontSize: FontSize.base,
+                    fontWeight: '600',
+                    color: palette.textPrimary,
+                },
+                rowPrice: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginTop: 2,
+                },
+                qtyRow: {
+                    flexDirection: 'row',
+                    gap: 4,
+                    marginRight: Spacing.sm,
+                },
+                qtyChip: {
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                    borderRadius: Radius.sm,
+                    backgroundColor: palette.bgInput,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                qtyChipActive: {
+                    borderColor: palette.accentPrimary,
+                    backgroundColor: 'rgba(74,144,226,0.2)',
+                },
+                qtyChipText: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                },
+                qtyChipTextActive: {
+                    color: palette.accentPrimary,
+                    fontWeight: '600',
+                },
+                buyButton: {
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.md,
+                    backgroundColor: palette.green,
+                    borderWidth: 1,
+                    borderColor: palette.greenDim,
+                    alignItems: 'center',
+                    minWidth: 72,
+                },
+                buyButtonDisabled: {
+                    backgroundColor: palette.bgInput,
+                    borderColor: palette.border,
+                    opacity: 0.7,
+                },
+                buyButtonText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.white,
+                },
+                buyButtonSub: {
+                    fontSize: 11,
+                    color: 'rgba(255,255,255,0.9)',
+                    marginTop: 1,
+                },
+                sellButtons: { flexDirection: 'row', gap: 6 },
+                sellBtn: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.sm,
+                    backgroundColor: palette.gold,
+                    borderWidth: 1,
+                    borderColor: palette.goldDim,
+                },
+                sellBtnText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '600',
+                    color: palette.bgApp,
+                },
+                sellBtnDisabled: { opacity: 0.5 },
+                empty: {
+                    paddingVertical: Spacing.xl,
+                    alignItems: 'center',
+                },
+                emptyText: {
+                    fontSize: FontSize.base,
+                    color: palette.textSecondary,
+                },
+            }),
+        [palette]
+    );
 
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -223,6 +440,7 @@ export default function ShopScreen() {
                     keyExtractor={(entry) => entry.id}
                     renderItem={({ item: entry }: ListRenderItemInfo<{ id: string; buyPrice: number }>) => (
                         <BuyRow
+                            styles={styles}
                             itemId={entry.id}
                             buyPrice={entry.buyPrice}
                             playerGold={gold}
@@ -247,6 +465,7 @@ export default function ShopScreen() {
                             item={item}
                             onSell1={() => handleSell1(item.id)}
                             onSellAll={() => handleSellAll(item.id)}
+                            styles={styles}
                         />
                     )}
                     contentContainerStyle={styles.listContent}
@@ -263,141 +482,3 @@ export default function ShopScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Palette.bgApp },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-    },
-    title: { fontSize: FontSize.xl, fontWeight: '700', color: Palette.textPrimary },
-    subtitleRow: { flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 8 },
-    subtitle: { fontSize: FontSize.sm, color: Palette.textSecondary },
-    chatButton: {
-        backgroundColor: Palette.bgInput,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 4,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    chatButtonText: {
-        fontSize: 12,
-        color: Palette.textPrimary,
-        fontWeight: '600',
-    },
-    goldBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: Spacing.xs,
-        borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    goldEmoji: { fontSize: FontSize.base, marginRight: 4 },
-    goldText: { fontSize: FontSize.base, fontWeight: '600', color: Palette.gold },
-
-    toggleRow: {
-        flexDirection: 'row',
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.sm,
-        gap: Spacing.sm,
-    },
-    toggleBtn: {
-        flex: 1,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.md,
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        alignItems: 'center',
-    },
-    toggleBtnActive: { backgroundColor: Palette.accentPrimary, borderColor: Palette.accentPrimary },
-    toggleText: { fontSize: FontSize.base, fontWeight: '600', color: Palette.textSecondary },
-    toggleTextActive: { color: Palette.white },
-
-    filterRow: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        paddingHorizontal: Spacing.md,
-        paddingBottom: Spacing.sm,
-        gap: 6,
-    },
-    filterChip: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: Radius.full,
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    filterChipActive: { borderColor: Palette.accentPrimary, backgroundColor: 'rgba(74,144,226,0.15)' },
-    filterChipText: { fontSize: FontSize.sm, color: Palette.textSecondary },
-    filterChipTextActive: { color: Palette.accentPrimary, fontWeight: '600' },
-
-    listContent: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.xl },
-
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCard,
-        padding: Spacing.sm,
-        marginBottom: Spacing.sm,
-        borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    rowLocked: { opacity: 0.75 },
-    rowEmoji: { fontSize: 28, marginRight: Spacing.sm },
-    rowBody: { flex: 1 },
-    rowLabel: { fontSize: FontSize.base, fontWeight: '600', color: Palette.textPrimary },
-    rowPrice: { fontSize: FontSize.sm, color: Palette.textSecondary, marginTop: 2 },
-
-    qtyRow: { flexDirection: 'row', gap: 4, marginRight: Spacing.sm },
-    qtyChip: {
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: Radius.sm,
-        backgroundColor: Palette.bgInput,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    qtyChipActive: { borderColor: Palette.accentPrimary, backgroundColor: 'rgba(74,144,226,0.2)' },
-    qtyChipText: { fontSize: FontSize.sm, color: Palette.textSecondary },
-    qtyChipTextActive: { color: Palette.accentPrimary, fontWeight: '600' },
-
-    buyButton: {
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.md,
-        backgroundColor: Palette.green,
-        borderWidth: 1,
-        borderColor: Palette.greenDim,
-        alignItems: 'center',
-        minWidth: 72,
-    },
-    buyButtonDisabled: { backgroundColor: Palette.bgInput, borderColor: Palette.border, opacity: 0.7 },
-    buyButtonText: { fontSize: FontSize.sm, fontWeight: '700', color: Palette.white },
-    buyButtonSub: { fontSize: 11, color: 'rgba(255,255,255,0.9)', marginTop: 1 },
-
-    sellButtons: { flexDirection: 'row', gap: 6 },
-    sellBtn: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.sm,
-        backgroundColor: Palette.gold,
-        borderWidth: 1,
-        borderColor: Palette.goldDim,
-    },
-    sellBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Palette.bgApp },
-    sellBtnDisabled: { opacity: 0.5 },
-
-    empty: { paddingVertical: Spacing.xl, alignItems: 'center' },
-    emptyText: { fontSize: FontSize.base, color: Palette.textSecondary },
-});

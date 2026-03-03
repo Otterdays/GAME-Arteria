@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { useRequestStartTask } from '@/hooks/useRequestStartTask';
@@ -21,8 +22,6 @@ import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
-
-const SKILL_COLOR = '#9b59b6';
 
 const ESSENCE_LABEL: Record<string, string> = {
     rune_essence: '💠 Rune Essence',
@@ -57,6 +56,7 @@ function groupByEssence(altars: RuneAltar[]): Tier[] {
 const TIERS = groupByEssence(RUNE_ALTARS);
 
 export default function RunecraftingScreen() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();
     const { showFeedbackToast } = useFeedbackToast();
@@ -96,6 +96,225 @@ export default function RunecraftingScreen() {
     }, [rcSkill.xp, glowAnim]);
 
     const glowOpacity = glowAnim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [0, 0.18, 0] });
+
+    const rcColor = palette.purple;
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                headerRow: {
+                    flexDirection: 'row',
+                    paddingHorizontal: Spacing.md,
+                    paddingTop: Spacing.sm,
+                    paddingBottom: Spacing.xs,
+                    backgroundColor: palette.bgApp,
+                },
+                backButton: { paddingHorizontal: Spacing.sm, paddingVertical: 6 },
+                backButtonText: {
+                    color: palette.accentPrimary,
+                    fontSize: FontSize.md,
+                    fontWeight: '600',
+                },
+                infoSection: {
+                    padding: Spacing.lg,
+                    alignItems: 'center',
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                    backgroundColor: palette.bgCard,
+                },
+                levelBadge: {
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.xs,
+                    borderRadius: Radius.full,
+                    marginBottom: Spacing.sm,
+                    borderWidth: 1,
+                },
+                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                screenTitle: {
+                    fontSize: FontSize.xl,
+                    fontWeight: 'bold',
+                    color: palette.textPrimary,
+                    marginBottom: 4,
+                },
+                screenSub: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginBottom: Spacing.md,
+                },
+                essenceRow: {
+                    flexDirection: 'row',
+                    gap: Spacing.sm,
+                    marginBottom: Spacing.md,
+                },
+                essencePill: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.full,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    gap: 4,
+                },
+                essencePillEmoji: { fontSize: 14 },
+                essencePillQty: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                xpRow: { width: '100%', gap: 4 },
+                xpBarBg: {
+                    height: 6,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.full,
+                    overflow: 'hidden',
+                    width: '100%',
+                },
+                xpText: {
+                    fontSize: FontSize.xs,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                },
+                listContent: { padding: Spacing.md, gap: Spacing.sm },
+                tierHeader: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: rcColor,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1,
+                    marginTop: Spacing.sm,
+                    marginBottom: Spacing.sm,
+                    paddingLeft: 2,
+                },
+                nodeCard: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.lg,
+                    padding: Spacing.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    marginBottom: Spacing.md,
+                },
+                nodeCardLocked: {
+                    backgroundColor: palette.bgApp,
+                    borderColor: 'transparent',
+                    opacity: 0.7,
+                },
+                nodeCardActive: {},
+                nodeCardEmpty: { borderColor: palette.redDim },
+                nodeHeader: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: Spacing.md,
+                },
+                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeTitleContainer: { flex: 1 },
+                nodeName: {
+                    fontSize: FontSize.lg,
+                    fontWeight: 'bold',
+                    color: palette.textPrimary,
+                    marginBottom: 2,
+                },
+                textLocked: { color: palette.textDisabled },
+                nodeReq: { fontSize: FontSize.xs, color: palette.textSecondary },
+                reqBadges: {
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: 6,
+                    marginTop: 6,
+                },
+                reqBadge: {
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.sm,
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                reqBadgeLocked: {
+                    borderColor: palette.textDisabled,
+                    opacity: 0.8,
+                },
+                reqBadgeEmpty: {
+                    borderColor: palette.redDim,
+                    backgroundColor: palette.redDim + '22',
+                },
+                reqBadgeText: {
+                    fontSize: FontSize.xs,
+                    color: palette.textPrimary,
+                    fontWeight: '600',
+                },
+                reqBadgeTextLocked: { color: palette.textDisabled },
+                outputPill: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: rcColor + '22',
+                    borderRadius: Radius.full,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: rcColor + '55',
+                    gap: 2,
+                },
+                outputEmoji: { fontSize: 16 },
+                outputLabel: {
+                    fontSize: FontSize.sm,
+                    color: rcColor,
+                    fontWeight: '700',
+                },
+                nodeStats: {
+                    flexDirection: 'row',
+                    gap: Spacing.sm,
+                    marginBottom: Spacing.md,
+                    flexWrap: 'wrap',
+                },
+                statPill: {
+                    flex: 1,
+                    minWidth: 55,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.md,
+                    padding: Spacing.sm,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                statLabel: {
+                    fontSize: 9,
+                    color: palette.textSecondary,
+                    textTransform: 'uppercase',
+                    marginBottom: 2,
+                },
+                statValue: {
+                    fontSize: FontSize.sm,
+                    color: palette.white,
+                    fontWeight: '600',
+                },
+                trainButton: {
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                },
+                trainButtonActive: { backgroundColor: palette.redDim },
+                trainButtonEmpty: {
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.redDim,
+                },
+                trainButtonLocked: {
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                trainButtonText: {
+                    color: palette.white,
+                    fontWeight: 'bold',
+                    fontSize: FontSize.base,
+                },
+            }),
+        [palette]
+    );
 
     // XP header progress
     const clvXP = xpForLevel(rcSkill.level);
@@ -289,13 +508,13 @@ export default function RunecraftingScreen() {
                                         </View>
                                         <View style={styles.statPill}>
                                             <Text style={styles.statLabel}>XP/hr</Text>
-                                            <Text style={[styles.statValue, { color: Palette.gold }]}>
+                                            <Text style={[styles.statValue, { color: palette.gold }]}>
                                                 {formatXpHr(altar.xpPerEssence * altar.essencePerBatch, altar.baseTickMs, 1)}
                                             </Text>
                                         </View>
                                         <View style={styles.statPill}>
                                             <Text style={styles.statLabel}>To Level</Text>
-                                            <Text style={[styles.statValue, { color: Palette.green }]}>
+                                            <Text style={[styles.statValue, { color: palette.green }]}>
                                                 {rcSkill.level >= 99
                                                     ? 'MAX'
                                                     : `~${Math.ceil((nlvXP - rcSkill.xp) / (altar.xpPerEssence * altar.essencePerBatch))}`}
@@ -303,7 +522,7 @@ export default function RunecraftingScreen() {
                                         </View>
                                         <View style={styles.statPill}>
                                             <Text style={styles.statLabel}>Have</Text>
-                                            <Text style={[styles.statValue, { color: outOfEssence ? Palette.red : Palette.white }]}>
+                                            <Text style={[styles.statValue, { color: outOfEssence ? palette.red : palette.white }]}>
                                                 {formatNumber(stock)} ess
                                             </Text>
                                         </View>
@@ -328,12 +547,12 @@ export default function RunecraftingScreen() {
                                         <SmoothProgressBar
                                             partialTickMs={activeTask.partialTickMs}
                                             intervalMs={activeTask.intervalMs}
-                                            fillColor={SKILL_COLOR}
+                                            fillColor={rcColor}
                                         />
                                     )}
                                     {isLocked && (
                                         <View style={[styles.trainButton, styles.trainButtonLocked]}>
-                                            <IconSymbol name="lock.fill" size={16} color={Palette.textDisabled} />
+                                            <IconSymbol name="lock.fill" size={16} color={palette.textDisabled} />
                                         </View>
                                     )}
                                 </BouncyButton>
@@ -346,250 +565,3 @@ export default function RunecraftingScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Palette.bgApp,
-    },
-    headerRow: {
-        flexDirection: 'row',
-        paddingHorizontal: Spacing.md,
-        paddingTop: Spacing.sm,
-        paddingBottom: Spacing.xs,
-        backgroundColor: Palette.bgApp,
-    },
-    backButton: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 6,
-    },
-    backButtonText: {
-        color: Palette.accentPrimary,
-        fontSize: FontSize.md,
-        fontWeight: '600',
-    },
-    infoSection: {
-        padding: Spacing.lg,
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-        backgroundColor: Palette.bgCard,
-    },
-    levelBadge: {
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.xs,
-        borderRadius: Radius.full,
-        marginBottom: Spacing.sm,
-        borderWidth: 1,
-    },
-    levelBadgeText: {
-        fontWeight: 'bold',
-        fontSize: FontSize.sm,
-    },
-    screenTitle: {
-        fontSize: FontSize.xl,
-        fontWeight: 'bold',
-        color: Palette.textPrimary,
-        marginBottom: 4,
-    },
-    screenSub: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        marginBottom: Spacing.md,
-    },
-    essenceRow: {
-        flexDirection: 'row',
-        gap: Spacing.sm,
-        marginBottom: Spacing.md,
-    },
-    essencePill: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.full,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 4,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        gap: 4,
-    },
-    essencePillEmoji: {
-        fontSize: 14,
-    },
-    essencePillQty: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.textPrimary,
-    },
-    xpRow: {
-        width: '100%',
-        gap: 4,
-    },
-    xpBarBg: {
-        height: 6,
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.full,
-        overflow: 'hidden',
-        width: '100%',
-    },
-    xpText: {
-        fontSize: FontSize.xs,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-    },
-    listContent: {
-        padding: Spacing.md,
-        gap: Spacing.sm,
-    },
-    tierHeader: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: '#9b59b6',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        marginTop: Spacing.sm,
-        marginBottom: Spacing.sm,
-        paddingLeft: 2,
-    },
-    nodeCard: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.lg,
-        padding: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        marginBottom: Spacing.md,
-    },
-    nodeCardLocked: {
-        backgroundColor: Palette.bgApp,
-        borderColor: 'transparent',
-        opacity: 0.7,
-    },
-    nodeCardActive: {},
-    nodeCardEmpty: {
-        borderColor: Palette.redDim,
-    },
-    nodeHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: Spacing.md,
-    },
-    nodeEmoji: {
-        fontSize: 32,
-        marginRight: Spacing.md,
-    },
-    nodeTitleContainer: {
-        flex: 1,
-    },
-    nodeName: {
-        fontSize: FontSize.lg,
-        fontWeight: 'bold',
-        color: Palette.textPrimary,
-        marginBottom: 2,
-    },
-    textLocked: {
-        color: Palette.textDisabled,
-    },
-    nodeReq: {
-        fontSize: FontSize.xs,
-        color: Palette.textSecondary,
-    },
-    reqBadges: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 6,
-        marginTop: 6,
-    },
-    reqBadge: {
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.sm,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    reqBadgeLocked: {
-        borderColor: Palette.textDisabled,
-        opacity: 0.8,
-    },
-    reqBadgeEmpty: {
-        borderColor: Palette.redDim,
-        backgroundColor: Palette.redDim + '22',
-    },
-    reqBadgeText: {
-        fontSize: FontSize.xs,
-        color: Palette.textPrimary,
-        fontWeight: '600',
-    },
-    reqBadgeTextLocked: {
-        color: Palette.textDisabled,
-    },
-    outputPill: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#9b59b6' + '22',
-        borderRadius: Radius.full,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 4,
-        borderWidth: 1,
-        borderColor: '#9b59b6' + '55',
-        gap: 2,
-    },
-    outputEmoji: {
-        fontSize: 16,
-    },
-    outputLabel: {
-        fontSize: FontSize.sm,
-        color: '#9b59b6',
-        fontWeight: '700',
-    },
-    nodeStats: {
-        flexDirection: 'row',
-        gap: Spacing.sm,
-        marginBottom: Spacing.md,
-        flexWrap: 'wrap',
-    },
-    statPill: {
-        flex: 1,
-        minWidth: 55,
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.md,
-        padding: Spacing.sm,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    statLabel: {
-        fontSize: 9,
-        color: Palette.textSecondary,
-        textTransform: 'uppercase',
-        marginBottom: 2,
-    },
-    statValue: {
-        fontSize: FontSize.sm,
-        color: Palette.white,
-        fontWeight: '600',
-    },
-    trainButton: {
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-    },
-    trainButtonActive: {
-        backgroundColor: Palette.redDim,
-    },
-    trainButtonEmpty: {
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.redDim,
-    },
-    trainButtonLocked: {
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    trainButtonText: {
-        color: Palette.white,
-        fontWeight: 'bold',
-        fontSize: FontSize.base,
-    },
-});

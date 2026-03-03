@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { BouncyButton } from './BouncyButton';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -16,10 +17,86 @@ import { DialogueOption } from '../../../packages/engine/src/data/story';
 import { meetsNarrativeRequirement } from '../../../packages/engine/src/utils/narrative';
 
 export function DialogueOverlay() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const activeDialogue = useAppSelector((state) => state.game.activeDialogue);
     const player = useAppSelector((state) => state.game.player);
     const insets = useSafeAreaInsets();
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                overlay: { flex: 1, justifyContent: 'flex-end' },
+                backdrop: {
+                    ...StyleSheet.absoluteFillObject,
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                },
+                dialogueContainer: {
+                    backgroundColor: palette.bgApp,
+                    borderTopLeftRadius: Radius.xl,
+                    borderTopRightRadius: Radius.xl,
+                    padding: Spacing.lg,
+                    borderTopWidth: 1,
+                    borderLeftWidth: 1,
+                    borderRightWidth: 1,
+                    borderColor: palette.border,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -10 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 20,
+                    elevation: 20,
+                },
+                speakerBox: {
+                    alignSelf: 'flex-start',
+                    backgroundColor: palette.accentPrimary,
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: 6,
+                    borderRadius: Radius.sm,
+                    marginBottom: Spacing.md,
+                    transform: [{ translateY: -30 }],
+                },
+                speakerName: {
+                    color: palette.white,
+                    fontWeight: '800',
+                    fontSize: FontSize.md,
+                    letterSpacing: 0.5,
+                },
+                textBox: {
+                    marginBottom: Spacing.xl,
+                    marginTop: -10,
+                },
+                dialogueText: {
+                    color: palette.textPrimary,
+                    fontSize: FontSize.lg,
+                    lineHeight: 28,
+                },
+                optionsContainer: { gap: Spacing.sm },
+                optionButton: {
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    paddingVertical: Spacing.md,
+                    paddingHorizontal: Spacing.lg,
+                    borderRadius: Radius.md,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                },
+                optionDisabled: {
+                    backgroundColor: palette.bgApp,
+                    borderColor: 'transparent',
+                    opacity: 0.6,
+                },
+                optionText: {
+                    color: palette.textSecondary,
+                    fontSize: FontSize.md,
+                    fontWeight: '600',
+                    flex: 1,
+                },
+                optionTextDisabled: { color: palette.textDisabled },
+            }),
+        [palette]
+    );
 
     if (!activeDialogue) return null;
 
@@ -82,7 +159,7 @@ export function DialogueOverlay() {
                                     <Text style={[styles.optionText, !meetsReq && styles.optionTextDisabled]}>
                                         {opt.text}
                                     </Text>
-                                    {!meetsReq && <IconSymbol name="lock.fill" size={16} color={Palette.textDisabled} />}
+                                    {!meetsReq && <IconSymbol name="lock.fill" size={16} color={palette.textDisabled} />}
                                 </BouncyButton>
                             );
                         })}
@@ -93,80 +170,3 @@ export function DialogueOverlay() {
     );
 }
 
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        justifyContent: 'flex-end',
-    },
-    backdrop: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    },
-    dialogueContainer: {
-        backgroundColor: Palette.bgApp,
-        borderTopLeftRadius: Radius.xl,
-        borderTopRightRadius: Radius.xl,
-        padding: Spacing.lg,
-        borderTopWidth: 1,
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
-        borderColor: Palette.border,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -10 },
-        shadowOpacity: 0.5,
-        shadowRadius: 20,
-        elevation: 20,
-    },
-    speakerBox: {
-        alignSelf: 'flex-start',
-        backgroundColor: Palette.accentPrimary,
-        paddingHorizontal: Spacing.md,
-        paddingVertical: 6,
-        borderRadius: Radius.sm,
-        marginBottom: Spacing.md,
-        transform: [{ translateY: -30 }], // Hang off the top edge
-    },
-    speakerName: {
-        color: Palette.white,
-        fontWeight: '800',
-        fontSize: FontSize.md,
-        letterSpacing: 0.5,
-    },
-    textBox: {
-        marginBottom: Spacing.xl,
-        marginTop: -10, // Adjust for the hanging speaker box
-    },
-    dialogueText: {
-        color: Palette.textPrimary,
-        fontSize: FontSize.lg,
-        lineHeight: 28,
-    },
-    optionsContainer: {
-        gap: Spacing.sm,
-    },
-    optionButton: {
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        paddingVertical: Spacing.md,
-        paddingHorizontal: Spacing.lg,
-        borderRadius: Radius.md,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    optionDisabled: {
-        backgroundColor: Palette.bgApp,
-        borderColor: 'transparent',
-        opacity: 0.6,
-    },
-    optionText: {
-        color: Palette.textSecondary,
-        fontSize: FontSize.md,
-        fontWeight: '600',
-        flex: 1,
-    },
-    optionTextDisabled: {
-        color: Palette.textDisabled,
-    }
-});

@@ -6,7 +6,7 @@
  *   C. Locked-card style for unimplemented skills ("Phase 2 ›" tag, no Alert)
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
@@ -64,10 +65,12 @@ function SkillBox({
   skillId,
   isActive,
   onNavigate,
+  styles,
 }: {
   skillId: SkillId;
   isActive: boolean;
   onNavigate: (id: SkillId) => void;
+  styles: ReturnType<typeof StyleSheet.create>;
 }) {
   const skill = useAppSelector((s) => s.game.player.skills[skillId]);
   const meta = SKILL_META[skillId];
@@ -109,6 +112,7 @@ function SkillBox({
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 export default function SkillsScreen() {
+  const { palette } = useTheme();
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
@@ -144,6 +148,172 @@ export default function SkillsScreen() {
   const xpIntoLevel = activeSkill ? Math.max(0, Math.floor(activeSkill.xp - currentLevelXP)) : 0;
   const xpNeeded = activeSkill ? Math.max(1, nextLevelXP - currentLevelXP) : 0;
   const progress = activeSkill ? progressPercent(activeSkill.xp, activeSkill.level) : 0;
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: { flex: 1, backgroundColor: palette.bgApp },
+        header: {
+          padding: Spacing.lg,
+          backgroundColor: palette.bgCard,
+          borderBottomWidth: 1,
+          borderBottomColor: palette.border,
+        },
+        headerTop: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: Spacing.md,
+        },
+        headerTitle: {
+          fontFamily: FontCinzelBold,
+          fontSize: FontSize.xl,
+          color: palette.textPrimary,
+        },
+        totalLevelRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.sm,
+          marginTop: 2,
+        },
+        totalLevel: {
+          fontSize: FontSize.sm,
+          color: palette.gold,
+          fontWeight: '600',
+        },
+        patronBadge: {
+          paddingHorizontal: 6,
+          paddingVertical: 2,
+          borderRadius: Radius.sm,
+          backgroundColor: 'rgba(255,202,40,0.2)',
+          borderWidth: 1,
+          borderColor: palette.gold,
+        },
+        patronBadgeText: {
+          fontSize: 10,
+          fontWeight: '700',
+          color: palette.gold,
+          letterSpacing: 0.5,
+        },
+        activeSkillBadge: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: palette.bgApp,
+          paddingHorizontal: Spacing.md,
+          paddingVertical: Spacing.xs,
+          borderRadius: Radius.full,
+          borderWidth: 1,
+          borderColor: palette.border,
+          gap: 6,
+        },
+        activeSkillEmoji: { fontSize: 14 },
+        activeSkillText: {
+          color: palette.white,
+          fontSize: 12,
+          fontWeight: 'bold',
+        },
+        idleBadge: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: palette.bgApp,
+          paddingHorizontal: Spacing.md,
+          paddingVertical: Spacing.xs,
+          borderRadius: Radius.full,
+          borderWidth: 1,
+          borderColor: palette.border,
+          gap: 6,
+        },
+        idleDot: {
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: palette.textDisabled,
+        },
+        idleText: {
+          color: palette.textSecondary,
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        headerXpSection: { gap: 4 },
+        headerXpBarBg: {
+          height: 6,
+          backgroundColor: palette.bgApp,
+          borderRadius: Radius.full,
+          overflow: 'hidden',
+        },
+        headerXpBarFill: {
+          height: '100%',
+          borderRadius: Radius.full,
+        },
+        headerXpText: {
+          fontSize: 10,
+          color: palette.textSecondary,
+          textAlign: 'center',
+          fontWeight: '600',
+          letterSpacing: 0.5,
+        },
+        scrollView: { flex: 1 },
+        scrollContent: { paddingBottom: Spacing.xl },
+        skillsGrid: {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          paddingHorizontal: Spacing.xs,
+          paddingTop: Spacing.sm,
+        },
+        skillBoxContainer: {
+          width: '33.33%',
+          padding: 6,
+        },
+        skillBox: {
+          width: '100%',
+          aspectRatio: 2.1,
+          backgroundColor: palette.bgCard,
+          ...CardStyle,
+          borderColor: palette.border,
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: Spacing.sm,
+        },
+        skillBoxActive: {
+          borderColor: palette.accentWeb,
+          backgroundColor: palette.bgCardHover,
+          shadowColor: palette.accentWeb,
+          shadowOpacity: 0.25,
+        },
+        skillBoxLocked: { opacity: 0.5 },
+        skillBoxLeft: {
+          flex: 1,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+        },
+        skillBoxRight: {
+          flex: 1.5,
+          alignItems: 'flex-end',
+          justifyContent: 'center',
+          gap: 2,
+        },
+        skillBoxEmoji: { fontSize: 24 },
+        lockedEmoji: { opacity: 0.4 },
+        skillBoxLevelTop: {
+          fontSize: FontSize.lg,
+          fontWeight: '800',
+          color: palette.gold,
+          textShadowColor: 'rgba(0,0,0,0.8)',
+          textShadowOffset: { width: 1, height: 1 },
+          textShadowRadius: 1,
+        },
+        skillBoxLevelBottom: {
+          fontSize: FontSize.xs,
+          fontWeight: '700',
+          color: '#B08D57',
+          marginTop: -4,
+          textShadowColor: 'rgba(0,0,0,0.8)',
+          textShadowOffset: { width: 1, height: 1 },
+          textShadowRadius: 1,
+        },
+      }),
+    [palette]
+  );
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -187,7 +357,7 @@ export default function SkillsScreen() {
               <View
                 style={[
                   styles.headerXpBarFill,
-                  { width: `${Math.max(2, progress)}%`, backgroundColor: Palette.border },
+                  { width: `${Math.max(2, progress)}%`, backgroundColor: palette.border },
                 ]}
               />
             )}
@@ -216,6 +386,7 @@ export default function SkillsScreen() {
                 skillId={skillId}
                 isActive={activeSkillId === skillId}
                 onNavigate={handleNavigate}
+                styles={styles}
               />
             </View>
           ))}
@@ -224,187 +395,3 @@ export default function SkillsScreen() {
     </View>
   );
 }
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Palette.bgApp,
-  },
-  header: {
-    padding: Spacing.lg,
-    backgroundColor: Palette.bgCard,
-    borderBottomWidth: 1,
-    borderBottomColor: Palette.border,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.md,
-  },
-  headerTitle: {
-    fontFamily: FontCinzelBold,
-    fontSize: FontSize.xl,
-    color: Palette.textPrimary,
-  },
-  totalLevelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    marginTop: 2,
-  },
-  totalLevel: {
-    fontSize: FontSize.sm,
-    color: Palette.gold,
-    fontWeight: '600',
-  },
-  patronBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: Radius.sm,
-    backgroundColor: 'rgba(255,202,40,0.2)',
-    borderWidth: 1,
-    borderColor: Palette.gold,
-  },
-  patronBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Palette.gold,
-    letterSpacing: 0.5,
-  },
-  activeSkillBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Palette.bgApp,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Palette.border,
-    gap: 6,
-  },
-  activeSkillEmoji: {
-    fontSize: 14,
-  },
-  activeSkillText: {
-    color: Palette.white,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  idleBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Palette.bgApp,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Palette.border,
-    gap: 6,
-  },
-  idleDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Palette.textDisabled,
-  },
-  idleText: {
-    color: Palette.textSecondary,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  headerXpSection: {
-    gap: 4,
-  },
-  headerXpBarBg: {
-    height: 6,
-    backgroundColor: Palette.bgApp,
-    borderRadius: Radius.full,
-    overflow: 'hidden',
-  },
-  headerXpBarFill: {
-    height: '100%',
-    borderRadius: Radius.full,
-  },
-  headerXpText: {
-    fontSize: 10,
-    color: Palette.textSecondary,
-    textAlign: 'center',
-    fontWeight: '600',
-    letterSpacing: 0.5,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: Spacing.xl,
-  },
-
-  // Grid system
-  skillsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: Spacing.xs,
-    paddingTop: Spacing.sm,
-  },
-  skillBoxContainer: {
-    width: '33.33%',
-    padding: 6,
-  },
-
-  // Skill Box
-  skillBox: {
-    width: '100%',
-    aspectRatio: 2.1,
-    backgroundColor: Palette.bgCard,
-    ...CardStyle,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.sm,
-  },
-  skillBoxActive: {
-    borderColor: Palette.accentWeb,
-    backgroundColor: Palette.bgCardHover,
-    shadowColor: Palette.accentWeb,
-    shadowOpacity: 0.25,
-  },
-  skillBoxLocked: {
-    opacity: 0.5,
-  },
-  skillBoxLeft: {
-    flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  skillBoxRight: {
-    flex: 1.5,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    gap: 2,
-  },
-  skillBoxEmoji: {
-    fontSize: 24,
-  },
-  lockedEmoji: {
-    opacity: 0.4,
-  },
-  skillBoxLevelTop: {
-    fontSize: FontSize.lg,
-    fontWeight: '800',
-    color: Palette.gold,
-    textShadowColor: 'rgba(0,0,0,0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
-  },
-  skillBoxLevelBottom: {
-    fontSize: FontSize.xs,
-    fontWeight: '700',
-    color: '#B08D57',
-    marginTop: -4,
-    textShadowColor: 'rgba(0,0,0,0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
-  },
-});

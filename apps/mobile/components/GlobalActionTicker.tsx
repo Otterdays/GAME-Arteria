@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useAppSelector } from '@/store/hooks';
 import { useInterpolatedProgress } from '@/hooks/useInterpolatedProgress';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSegments } from 'expo-router';
 
@@ -18,6 +19,7 @@ const SKILL_EMOJIS: Record<string, string> = {
 };
 
 export const GlobalActionTicker = () => {
+    const { palette } = useTheme();
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
     const insets = useSafeAreaInsets();
     const segments = useSegments();
@@ -36,6 +38,47 @@ export const GlobalActionTicker = () => {
         }
         prevProgress.current = progress;
     }, [progress]);
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    zIndex: 1000,
+                    backgroundColor: 'rgba(13, 15, 21, 0.98)',
+                    borderTopWidth: 1,
+                    borderTopColor: 'rgba(255,255,255,0.08)',
+                },
+                content: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: 6,
+                    gap: Spacing.xs,
+                },
+                emoji: { fontSize: 16 },
+                text: {
+                    color: palette.textSecondary,
+                    fontSize: 12,
+                    fontWeight: '600',
+                },
+                actionText: {
+                    color: palette.white,
+                },
+                progressBg: {
+                    height: 2,
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                    width: '100%',
+                },
+                progressFill: {
+                    height: '100%',
+                    backgroundColor: palette.accentPrimary,
+                },
+            }),
+        [palette]
+    );
 
     if (!activeTask) return null;
 
@@ -70,41 +113,3 @@ export const GlobalActionTicker = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        backgroundColor: 'rgba(13, 15, 21, 0.98)',
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.08)',
-    },
-    content: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: Spacing.md,
-        paddingVertical: 6,
-        gap: Spacing.xs,
-    },
-    emoji: {
-        fontSize: 16,
-    },
-    text: {
-        color: Palette.textSecondary,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    actionText: {
-        color: Palette.white,
-    },
-    progressBg: {
-        height: 2,
-        backgroundColor: 'rgba(255,255,255,0.03)',
-        width: '100%',
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: Palette.accentPrimary,
-    },
-});

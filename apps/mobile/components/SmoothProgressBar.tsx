@@ -6,7 +6,8 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { useInterpolatedProgress } from '@/hooks/useInterpolatedProgress';
-import { Palette, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SmoothProgressBarProps {
   partialTickMs: number;
@@ -18,14 +19,16 @@ interface SmoothProgressBarProps {
 export function SmoothProgressBar({
   partialTickMs,
   intervalMs,
-  fillColor = Palette.accentPrimary,
+  fillColor,
   style,
 }: SmoothProgressBarProps) {
+  const { palette } = useTheme();
   const progress = useInterpolatedProgress(partialTickMs, intervalMs);
+  const color = fillColor ?? palette.accentPrimary;
 
   return (
-    <View style={[styles.bg, style]}>
-      <View style={[styles.fill, { width: `${Math.min(100, progress)}%`, backgroundColor: fillColor }]} />
+    <View style={[styles.bg, { backgroundColor: palette.bgApp }, style]}>
+      <View style={[styles.fill, { width: `${Math.min(100, progress)}%`, backgroundColor: color }]} />
     </View>
   );
 }
@@ -33,7 +36,6 @@ export function SmoothProgressBar({
 const styles = StyleSheet.create({
   bg: {
     height: 4,
-    backgroundColor: Palette.bgApp,
     borderRadius: 2,
     overflow: 'hidden',
     marginTop: Spacing.sm,

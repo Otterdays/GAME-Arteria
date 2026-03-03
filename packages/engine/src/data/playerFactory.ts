@@ -61,5 +61,10 @@ export function createNewPlayer(name: string = 'Adventurer'): PlayerState {
         },
         activeTask: null,
         lastSaveTimestamp: Date.now(),
+        narrative: {
+            flags: [],
+            activeQuests: {},
+            completedQuests: [],
+        },
     };
 }

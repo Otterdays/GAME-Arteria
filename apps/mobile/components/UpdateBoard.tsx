@@ -5,7 +5,7 @@
  * [TRACE: DOCU/SCRATCHPAD.md — Versioning & Update Board]
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     Modal,
     View,
@@ -17,10 +17,12 @@ import {
 import Constants from 'expo-constants';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
-import { Palette, Spacing, Radius, FontSize, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { Spacing, Radius, FontSize, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { logger } from '@/utils/logger';
 
 export default function UpdateBoard() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const lastSeenVersion = useAppSelector((s) => s.game.player.lastSeenVersion);
     const isLoaded = useAppSelector((s) => s.game.isLoaded);
@@ -35,6 +37,96 @@ export default function UpdateBoard() {
             setVisible(true);
         }
     }, [isLoaded, lastSeenVersion, currentVersion]);
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                overlay: {
+                    flex: 1,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: Spacing.lg,
+                },
+                card: {
+                    width: '100%',
+                    maxWidth: 400,
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.lg,
+                    padding: Spacing.lg,
+                    ...CardStyle,
+                    borderColor: palette.border,
+                    shadowOffset: { width: 0, height: 10 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 20,
+                    elevation: 10,
+                    maxHeight: '80%',
+                },
+                boardLabel: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.accentWeb,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1,
+                    textAlign: 'center',
+                    marginBottom: 4,
+                },
+                title: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.xl,
+                    color: palette.accentWeb,
+                    textAlign: 'center',
+                },
+                subtitle: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    marginBottom: Spacing.md,
+                },
+                scroll: {
+                    flexGrow: 0,
+                    maxHeight: 400,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.md,
+                    padding: Spacing.md,
+                    marginBottom: Spacing.md,
+                    borderWidth: 1,
+                    borderColor: 'rgba(139, 92, 246, 0.2)',
+                },
+                scrollContent: { gap: Spacing.md },
+                changeBlock: { gap: 4 },
+                changeHeader: {
+                    fontSize: FontSize.base,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                    marginBottom: 2,
+                },
+                changeText: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    lineHeight: 20,
+                },
+                footerNote: {
+                    fontSize: FontSize.xs,
+                    color: palette.textMuted,
+                    textAlign: 'center',
+                    marginTop: Spacing.md,
+                    fontStyle: 'italic',
+                },
+                button: {
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: 14,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                },
+                buttonText: {
+                    color: palette.white,
+                    fontSize: FontSize.base,
+                    fontWeight: '700',
+                },
+            }),
+        [palette]
+    );
 
     if (!visible) return null;
 
@@ -56,10 +148,15 @@ export default function UpdateBoard() {
                 <View style={styles.card}>
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
-                    <Text style={styles.subtitle}>Quick-Switch Sidebar & Random Events</Text>
+                    <Text style={styles.subtitle}>Theme Engine, Quick-Switch & Random Events</Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
                         {/* Future AI: Update changelog for the *current* version here when bumping app.json */}
+                        <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>🎨 Theme Engine</Text>
+                            <Text style={styles.changeText}>• Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, and StatusBar follow your theme. Persisted with save.</Text>
+                        </View>
+
                         <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>⚡ Quick-Switch Sidebar</Text>
                             <Text style={styles.changeText}>• Floating pill on the left edge when in a skill screen. Tap to slide open a beautiful drawer.</Text>
@@ -112,91 +209,3 @@ export default function UpdateBoard() {
     );
 }
 
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: Spacing.lg,
-    },
-    card: {
-        width: '100%',
-        maxWidth: 400,
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.lg,
-        padding: Spacing.lg,
-        ...CardStyle,
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.5,
-        shadowRadius: 20,
-        elevation: 10,
-        maxHeight: '80%',
-    },
-    boardLabel: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.accentWeb,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        textAlign: 'center',
-        marginBottom: 4,
-    },
-    title: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.xl,
-        color: Palette.accentWeb,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        marginBottom: Spacing.md,
-    },
-    scroll: {
-        flexGrow: 0,
-        maxHeight: 400,
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.md,
-        padding: Spacing.md,
-        marginBottom: Spacing.md,
-        borderWidth: 1,
-        borderColor: 'rgba(139, 92, 246, 0.2)',
-    },
-    scrollContent: {
-        gap: Spacing.md,
-    },
-    changeBlock: {
-        gap: 4,
-    },
-    changeHeader: {
-        fontSize: FontSize.base,
-        fontWeight: '700',
-        color: Palette.textPrimary,
-        marginBottom: 2,
-    },
-    changeText: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        lineHeight: 20,
-    },
-    footerNote: {
-        fontSize: FontSize.xs,
-        color: Palette.textMuted,
-        textAlign: 'center',
-        marginTop: Spacing.md,
-        fontStyle: 'italic',
-    },
-    button: {
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: 14,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: Palette.white,
-        fontSize: FontSize.base,
-        fontWeight: '700',
-    },
-});

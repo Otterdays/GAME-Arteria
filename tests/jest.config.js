@@ -8,5 +8,5 @@ module.exports = {
     moduleNameMapper: {
         '^@arteria/engine$': '<rootDir>/../packages/engine/src/index.ts',
     },
-    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+    testPathIgnorePatterns: ['/node_modules/', '/dist/', '/.expo/'],
 };

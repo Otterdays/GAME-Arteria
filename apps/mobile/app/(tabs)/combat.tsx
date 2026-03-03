@@ -1,8 +1,46 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { Palette, Spacing, FontSize } from '@/constants/theme';
+import { Spacing, FontSize } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function CombatScreen() {
+    const { palette } = useTheme();
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                header: {
+                    paddingHorizontal: Spacing.md,
+                    paddingTop: Spacing.xl,
+                    paddingBottom: Spacing.md,
+                },
+                title: {
+                    fontSize: FontSize.xl,
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                content: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: Spacing.xl,
+                },
+                emoji: { fontSize: 64, marginBottom: Spacing.md },
+                comingSoon: {
+                    fontSize: FontSize.lg,
+                    fontWeight: '700',
+                    color: palette.accentPrimary,
+                    marginBottom: Spacing.sm,
+                },
+                description: {
+                    fontSize: FontSize.base,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    lineHeight: 22,
+                },
+            }),
+        [palette]
+    );
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -20,35 +58,3 @@ export default function CombatScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Palette.bgApp },
-    header: {
-        paddingHorizontal: Spacing.md,
-        paddingTop: Spacing.xl,
-        paddingBottom: Spacing.md,
-    },
-    title: {
-        fontSize: FontSize.xl,
-        fontWeight: '700',
-        color: Palette.textPrimary,
-    },
-    content: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: Spacing.xl,
-    },
-    emoji: { fontSize: 64, marginBottom: Spacing.md },
-    comingSoon: {
-        fontSize: FontSize.lg,
-        fontWeight: '700',
-        color: Palette.accentPrimary,
-        marginBottom: Spacing.sm,
-    },
-    description: {
-        fontSize: FontSize.base,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-        lineHeight: 22,
-    },
-});

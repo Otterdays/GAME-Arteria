@@ -12,6 +12,18 @@ Do not delete — append new entries at the bottom.
 
 ---
 
+## 🎨 Theming Architecture (2026-03-03)
+
+**Status:** Phase 2 complete. Phase 3 in progress. See **DOCU/THEMING.md** for full architecture.
+
+- **ThemeContext** + `useTheme()` — provides `palette`, `themeId`, `setThemeId`.
+- **THEMES** registry — dark, light, sepia. `Palette` = dark (backward compat).
+- **Redux** — `player.settings.themeId` persisted with save.
+- **Phase 2 done:** Settings → Appearance → Theme picker (System / Dark / Light / Sepia). THEME_OPTIONS, chips UI, setThemeId wired.
+- **Phase 3 (partial):** Nav ThemeProvider, tab bar, headers, StatusBar use palette. Migrated: tab screens, skill screens (mining, fishing, runecrafting), TrainToast, LevelUpToast, UpdateBoard, DialogueOverlay, WhileYouWereAway, SmoothProgressBar, patron. Remaining: logging, QuickSwitchSidebar, settings, patches, FeedbackToast, HorizonHUD, TabIconWithPulse, FloatingXpPop, GlobalActionTicker. ErrorBoundary (class) kept on Palette.
+
+---
+
 ## 🎲 Random Events — Design Proposal (2026-03-03)
 
 > **Status:** Design phase. Inspired by RuneScape wiki (`tools/info_scraper/output/runescape-wiki__w_Random_events.html`).
@@ -34,7 +46,7 @@ Do not delete — append new entries at the bottom.
 
 ### Arteria Implementation Ideas
 
-**1. Skill-Linked "Blessings" (Implemented v0.2.8)**
+**1. Skill-Linked "Blessings" (Implemented v0.3.0)**
 - Per-tick roll in `useGameLoop`: 0.5% base chance, 60-tick cooldown.
 - **Blibbertooth's Blessing:** Bonus XP (level × 5) to active skill. ✅
 - **Cosmic Sneeze:** Duplicate next item haul. ✅

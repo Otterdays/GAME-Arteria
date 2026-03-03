@@ -6,7 +6,7 @@
  * smooth Reanimated slide. Trigger: floating pill on left edge.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
     View,
     Text,
@@ -24,13 +24,8 @@ import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSegments, router } from 'expo-router';
 import { useAppSelector } from '@/store/hooks';
-import {
-    Palette,
-    Spacing,
-    FontSize,
-    Radius,
-    FontCinzelBold,
-} from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
     SKILL_META,
     IMPLEMENTED_GATHERING_SKILLS,
@@ -45,10 +40,14 @@ function SkillRow({
     skillId,
     isActive,
     onPress,
+    palette,
+    styles,
 }: {
     skillId: SkillId;
     isActive: boolean;
     onPress: () => void;
+    palette: { bgCardHover: string; gold: string };
+    styles: Record<string, object>;
 }) {
     const meta = SKILL_META[skillId];
 
@@ -63,9 +62,9 @@ function SkillRow({
                     backgroundColor: isActive
                         ? `${meta.color}18`
                         : pressed
-                          ? Palette.bgCardHover
+                          ? palette.bgCardHover
                           : 'transparent',
-                    borderColor: isActive ? Palette.gold : 'transparent',
+                    borderColor: isActive ? palette.gold : 'transparent',
                     borderWidth: isActive ? 1 : 0,
                 },
             ]}
@@ -86,6 +85,7 @@ function SkillRow({
 }
 
 export function QuickSwitchSidebar() {
+    const { palette } = useTheme();
     const insets = useSafeAreaInsets();
     const segments = useSegments();
     const { isOpen, close, toggle } = useQuickSwitch();
@@ -115,6 +115,107 @@ export function QuickSwitchSidebar() {
         transform: [{ translateX: translateX.value }],
     }));
 
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                trigger: {
+                    position: 'absolute',
+                    left: Spacing.sm,
+                    zIndex: 1100,
+                    ...Platform.select({
+                        ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 4 },
+                        android: { elevation: 6 },
+                    }),
+                },
+                triggerGradient: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.md,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    gap: Spacing.xs,
+                },
+                triggerIcon: {
+                    fontSize: 18,
+                    color: palette.textPrimary,
+                    fontWeight: '700',
+                },
+                triggerEmoji: { fontSize: 14 },
+                backdrop: {
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    zIndex: 1050,
+                },
+                sidebar: {
+                    position: 'absolute',
+                    left: 0,
+                    width: SIDEBAR_WIDTH,
+                    zIndex: 1060,
+                    borderRightWidth: 1,
+                    borderRightColor: 'rgba(139, 92, 246, 0.25)',
+                    overflow: 'hidden',
+                    ...Platform.select({
+                        ios: {
+                            shadowColor: '#000',
+                            shadowOffset: { width: 4, height: 0 },
+                            shadowOpacity: 0.4,
+                            shadowRadius: 12,
+                        },
+                        android: { elevation: 16 },
+                    }),
+                },
+                sidebarContent: {
+                    flex: 1,
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.lg,
+                },
+                title: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.lg,
+                    color: palette.accentWeb,
+                    marginBottom: 2,
+                },
+                subtitle: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    marginBottom: Spacing.lg,
+                },
+                skillList: { gap: Spacing.xs },
+                skillRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: Spacing.md,
+                    paddingHorizontal: Spacing.md,
+                    borderRadius: Radius.md,
+                    gap: Spacing.md,
+                },
+                skillEmoji: { fontSize: 24 },
+                skillLabel: {
+                    fontSize: FontSize.base,
+                    color: palette.textPrimary,
+                    fontWeight: '600',
+                    flex: 1,
+                },
+                skillLabelActive: { color: palette.gold },
+                footer: {
+                    marginTop: 'auto',
+                    paddingTop: Spacing.lg,
+                    alignItems: 'center',
+                },
+                footerLine: {
+                    width: 40,
+                    height: 1,
+                    backgroundColor: palette.divider,
+                    marginBottom: Spacing.sm,
+                },
+                footerText: {
+                    fontSize: FontSize.xs,
+                    color: palette.textMuted,
+                },
+            }),
+        [palette]
+    );
 
     return (
         <>
@@ -132,8 +233,8 @@ export function QuickSwitchSidebar() {
                 >
                     <LinearGradient
                         colors={[
-                            Palette.bgCard,
-                            Palette.bgCardHover,
+                            palette.bgCard,
+                            palette.bgCardHover,
                         ]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
@@ -187,6 +288,8 @@ export function QuickSwitchSidebar() {
                                 skillId={skillId}
                                 isActive={activeTask?.skillId === skillId}
                                 onPress={() => handleSkillPress(skillId)}
+                                palette={palette}
+                                styles={styles}
                             />
                         ))}
                     </View>
@@ -201,109 +304,3 @@ export function QuickSwitchSidebar() {
         </>
     );
 }
-
-const styles = StyleSheet.create({
-    trigger: {
-        position: 'absolute',
-        left: Spacing.sm,
-        zIndex: 1100,
-        ...Platform.select({
-            ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 4 },
-            android: { elevation: 6 },
-        }),
-    },
-    triggerGradient: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: Spacing.sm,
-        paddingHorizontal: Spacing.md,
-        borderRadius: Radius.full,
-        borderWidth: 1,
-        borderColor: 'rgba(139, 92, 246, 0.3)',
-        gap: Spacing.xs,
-    },
-    triggerIcon: {
-        fontSize: 18,
-        color: Palette.textPrimary,
-        fontWeight: '700',
-    },
-    triggerEmoji: {
-        fontSize: 14,
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        zIndex: 1050,
-    },
-    sidebar: {
-        position: 'absolute',
-        left: 0,
-        width: SIDEBAR_WIDTH,
-        zIndex: 1060,
-        borderRightWidth: 1,
-        borderRightColor: 'rgba(139, 92, 246, 0.25)',
-        overflow: 'hidden',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 4, height: 0 },
-                shadowOpacity: 0.4,
-                shadowRadius: 12,
-            },
-            android: { elevation: 16 },
-        }),
-    },
-    sidebarContent: {
-        flex: 1,
-        paddingHorizontal: Spacing.md,
-        paddingBottom: Spacing.lg,
-    },
-    title: {
-        fontFamily: FontCinzelBold,
-        fontSize: FontSize.lg,
-        color: Palette.accentWeb,
-        marginBottom: 2,
-    },
-    subtitle: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-        marginBottom: Spacing.lg,
-    },
-    skillList: {
-        gap: Spacing.xs,
-    },
-    skillRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: Spacing.md,
-        paddingHorizontal: Spacing.md,
-        borderRadius: Radius.md,
-        gap: Spacing.md,
-    },
-    skillEmoji: {
-        fontSize: 24,
-    },
-    skillLabel: {
-        fontSize: FontSize.base,
-        color: Palette.textPrimary,
-        fontWeight: '600',
-        flex: 1,
-    },
-    skillLabelActive: {
-        color: Palette.gold,
-    },
-    footer: {
-        marginTop: 'auto',
-        paddingTop: Spacing.lg,
-        alignItems: 'center',
-    },
-    footerLine: {
-        width: 40,
-        height: 1,
-        backgroundColor: Palette.divider,
-        marginBottom: Spacing.sm,
-    },
-    footerText: {
-        fontSize: FontSize.xs,
-        color: Palette.textMuted,
-    },
-});

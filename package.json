@@ -16,6 +16,7 @@
     "build": "npm run build --workspace=@arteria/engine",
     "postinstall": "npm run build",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:suite": "jest --selectProjects suite"
   },
   "dependencies": {

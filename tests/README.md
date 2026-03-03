@@ -18,10 +18,16 @@ Whole-folder test suite for Arteria. Run from repo root: **`npm test`**.
 ## Commands
 
 - **`npm test`** — Runs both projects: `packages/engine` + `tests/` (Jest multi-project).
+- **`npm run test:coverage`** — Same as `npm test` with coverage report (engine package).
 - **`npm run test:engine`** — Runs only `packages/engine` tests.
 - **`npm run test:suite`** — Runs only `tests/` (unit + integration + e2e).
 
 ## Config
 
 - **jest.config.js** — Root config; `projects: ['packages/engine', 'tests']`.
+- **packages/engine/jest.config.js** — Engine config (ts-jest, coverage for engine).
 - **tests/jest.config.js** — Suite config (ts-jest, `@arteria/engine` → engine source).
+
+## Target
+
+80% coverage on business logic (engine). User rules: Unit (many) > Integration > E2E (few). Vitest for web-only; Jest for React Native monorepos (current).

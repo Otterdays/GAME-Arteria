@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { useRequestStartTask } from '@/hooks/useRequestStartTask';
@@ -26,6 +27,8 @@ function xpForLevel(level: number): number {
 }
 
 export default function LoggingScreen() {
+    const { palette } = useTheme();
+    const { showFeedbackToast } = useFeedbackToast();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
@@ -57,6 +60,141 @@ export default function LoggingScreen() {
     }, [loggingSkill.xp, shakeAnim]);
 
     const shakeX = shakeAnim.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, 4, -4, 4, 0] });
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: { flex: 1, backgroundColor: palette.bgApp },
+                infoSection: {
+                    padding: Spacing.lg,
+                    alignItems: 'center',
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                    backgroundColor: palette.bgCard,
+                },
+                headerRow: {
+                    flexDirection: 'row',
+                    paddingHorizontal: Spacing.md,
+                    paddingTop: Spacing.sm,
+                    paddingBottom: Spacing.xs,
+                    backgroundColor: palette.bgApp,
+                },
+                backButton: { paddingHorizontal: Spacing.sm, paddingVertical: 6 },
+                backButtonText: {
+                    color: palette.accentPrimary,
+                    fontSize: FontSize.md,
+                    fontWeight: '600',
+                },
+                levelBadge: {
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.xs,
+                    borderRadius: Radius.full,
+                    marginBottom: Spacing.sm,
+                    borderWidth: 1,
+                },
+                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                miningTitle: {
+                    fontSize: FontSize.xl,
+                    fontWeight: 'bold',
+                    color: palette.textPrimary,
+                    marginBottom: 4,
+                },
+                miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
+                listContent: { padding: Spacing.md, gap: Spacing.md },
+                nodeCard: {
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.lg,
+                    padding: Spacing.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                nodeCardLocked: {
+                    backgroundColor: palette.bgApp,
+                    borderColor: 'transparent',
+                },
+                nodeCardActive: {},
+                nodeHeader: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: Spacing.md,
+                },
+                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeTitleContainer: { flex: 1 },
+                nodeName: {
+                    fontSize: FontSize.lg,
+                    fontWeight: 'bold',
+                    color: palette.textPrimary,
+                    marginBottom: 2,
+                },
+                textLocked: { color: palette.textDisabled },
+                nodeReq: { fontSize: FontSize.xs, color: palette.textSecondary },
+                nodeStats: {
+                    flexDirection: 'row',
+                    gap: Spacing.sm,
+                    marginBottom: Spacing.md,
+                },
+                statPill: {
+                    flex: 1,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.md,
+                    padding: Spacing.sm,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                statLabel: {
+                    fontSize: 10,
+                    color: palette.textSecondary,
+                    textTransform: 'uppercase',
+                    marginBottom: 2,
+                },
+                statValue: {
+                    fontSize: FontSize.sm,
+                    color: palette.white,
+                    fontWeight: '600',
+                },
+                trainButton: {
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.md,
+                    alignItems: 'center',
+                },
+                trainButtonActive: { backgroundColor: palette.redDim },
+                trainButtonLocked: {
+                    backgroundColor: palette.bgCard,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                trainButtonText: {
+                    color: palette.white,
+                    fontWeight: 'bold',
+                    fontSize: FontSize.base,
+                },
+                xpRow: { width: '100%', marginTop: Spacing.md, gap: 4 },
+                xpBarBg: {
+                    height: 6,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: Radius.full,
+                    overflow: 'hidden',
+                    width: '100%',
+                },
+                xpBarFill: { height: '100%', borderRadius: Radius.full },
+                xpText: {
+                    fontSize: FontSize.xs,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                },
+                nodeProgressBg: {
+                    height: 4,
+                    backgroundColor: palette.bgApp,
+                    borderRadius: 2,
+                    marginTop: Spacing.sm,
+                    overflow: 'hidden',
+                },
+                nodeProgressFill: { height: '100%' },
+            }),
+        [palette]
+    );
 
     // XP progress for header
     const clvXP = xpForLevel(loggingSkill.level);
@@ -112,8 +250,8 @@ export default function LoggingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: Palette.skillLogging + '33', borderColor: Palette.skillLogging }]}>
-                    <Text style={[styles.levelBadgeText, { color: Palette.skillLogging }]}>Lv. {loggingSkill.level}</Text>
+                <View style={[styles.levelBadge, { backgroundColor: palette.skillLogging + '33', borderColor: palette.skillLogging }]}>
+                    <Text style={[styles.levelBadgeText, { color: palette.skillLogging }]}>Lv. {loggingSkill.level}</Text>
                 </View>
                 <Text style={styles.miningTitle}>Logging</Text>
                 <Text style={styles.miningSub}>Chop down trees to collect wood.</Text>
@@ -122,7 +260,7 @@ export default function LoggingScreen() {
                     <View style={styles.xpBarBg}>
                         <ProgressBarWithPulse
                             progress={pct}
-                            fillColor={Palette.skillLogging}
+                            fillColor={palette.skillLogging}
                             widthPercent={pct}
                         />
                     </View>
@@ -154,7 +292,7 @@ export default function LoggingScreen() {
                             style={[
                                 styles.nodeCard,
                                 isLocked && styles.nodeCardLocked,
-                                isActive && [styles.nodeCardActive, { borderColor: Palette.skillLogging, backgroundColor: Palette.skillLogging + '11' }],
+                                isActive && [styles.nodeCardActive, { borderColor: palette.skillLogging, backgroundColor: palette.skillLogging + '11' }],
                             ]}
                             scaleTo={0.98}
                             onPress={() => handleNodePress(node)}
@@ -162,7 +300,7 @@ export default function LoggingScreen() {
                             accessibilityState={{ disabled: isLocked, selected: isActive }}
                             accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Chop for ${node.xpPerTick} XP`}`}
                         >
-                            {isActive && <ActivePulseGlow color={Palette.skillLogging} />}
+                            {isActive && <ActivePulseGlow color={palette.skillLogging} />}
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>
                                 <View style={styles.nodeTitleContainer}>
@@ -182,7 +320,7 @@ export default function LoggingScreen() {
                                 </View>
                                 <View style={styles.statPill}>
                                     <Text style={styles.statLabel}>XP/hr</Text>
-                                    <Text style={[styles.statValue, { color: Palette.gold }]}>
+                                    <Text style={[styles.statValue, { color: palette.gold }]}>
                                         {formatXpHr(node.xpPerTick, node.baseTickMs, node.successRate)}
                                     </Text>
                                 </View>
@@ -213,12 +351,12 @@ export default function LoggingScreen() {
                                 <SmoothProgressBar
                                     partialTickMs={activeTask.partialTickMs}
                                     intervalMs={activeTask.intervalMs}
-                                    fillColor={Palette.skillLogging}
+                                    fillColor={palette.skillLogging}
                                 />
                             )}
                             {isLocked && (
                                 <View style={[styles.trainButton, styles.trainButtonLocked]}>
-                                    <IconSymbol name="lock.fill" size={16} color={Palette.textDisabled} />
+                                    <IconSymbol name="lock.fill" size={16} color={palette.textDisabled} />
                                 </View>
                             )}
                         </BouncyButton>
@@ -229,171 +367,3 @@ export default function LoggingScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Palette.bgApp,
-    },
-    infoSection: {
-        padding: Spacing.lg,
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.border,
-        backgroundColor: Palette.bgCard,
-    },
-    headerRow: {
-        flexDirection: 'row',
-        paddingHorizontal: Spacing.md,
-        paddingTop: Spacing.sm,
-        paddingBottom: Spacing.xs,
-        backgroundColor: Palette.bgApp,
-    },
-    backButton: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 6,
-    },
-    backButtonText: {
-        color: Palette.accentPrimary,
-        fontSize: FontSize.md,
-        fontWeight: '600',
-    },
-    levelBadge: {
-        paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.xs,
-        borderRadius: Radius.full,
-        marginBottom: Spacing.sm,
-        borderWidth: 1,
-    },
-    levelBadgeText: {
-        fontWeight: 'bold',
-        fontSize: FontSize.sm,
-    },
-    miningTitle: {
-        fontSize: FontSize.xl,
-        fontWeight: 'bold',
-        color: Palette.textPrimary,
-        marginBottom: 4,
-    },
-    miningSub: {
-        fontSize: FontSize.sm,
-        color: Palette.textSecondary,
-    },
-    listContent: {
-        padding: Spacing.md,
-        gap: Spacing.md,
-    },
-    nodeCard: {
-        backgroundColor: Palette.bgCard,
-        borderRadius: Radius.lg,
-        padding: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    nodeCardLocked: {
-        backgroundColor: Palette.bgApp,
-        borderColor: 'transparent',
-    },
-    nodeCardActive: {
-        // Will be merged dynamically with inline styles in render block for logging-specific colors
-    },
-    nodeHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: Spacing.md,
-    },
-    nodeEmoji: {
-        fontSize: 32,
-        marginRight: Spacing.md,
-    },
-    nodeTitleContainer: {
-        flex: 1,
-    },
-    nodeName: {
-        fontSize: FontSize.lg,
-        fontWeight: 'bold',
-        color: Palette.textPrimary,
-        marginBottom: 2,
-    },
-    textLocked: {
-        color: Palette.textDisabled,
-    },
-    nodeReq: {
-        fontSize: FontSize.xs,
-        color: Palette.textSecondary,
-    },
-    nodeStats: {
-        flexDirection: 'row',
-        gap: Spacing.sm,
-        marginBottom: Spacing.md,
-    },
-    statPill: {
-        flex: 1,
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.md,
-        padding: Spacing.sm,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    statLabel: {
-        fontSize: 10,
-        color: Palette.textSecondary,
-        textTransform: 'uppercase',
-        marginBottom: 2,
-    },
-    statValue: {
-        fontSize: FontSize.sm,
-        color: Palette.white,
-        fontWeight: '600',
-    },
-    trainButton: {
-        backgroundColor: Palette.accentPrimary,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-    },
-    trainButtonActive: {
-        backgroundColor: Palette.redDim,
-    },
-    trainButtonLocked: {
-        backgroundColor: Palette.bgCard,
-        borderWidth: 1,
-        borderColor: Palette.border,
-    },
-    trainButtonText: {
-        color: Palette.white,
-        fontWeight: 'bold',
-        fontSize: FontSize.base,
-    },
-    xpRow: {
-        width: '100%',
-        marginTop: Spacing.md,
-        gap: 4,
-    },
-    xpBarBg: {
-        height: 6,
-        backgroundColor: Palette.bgApp,
-        borderRadius: Radius.full,
-        overflow: 'hidden',
-        width: '100%',
-    },
-    xpBarFill: {
-        height: '100%',
-        borderRadius: Radius.full,
-    },
-    xpText: {
-        fontSize: FontSize.xs,
-        color: Palette.textSecondary,
-        textAlign: 'center',
-    },
-    nodeProgressBg: {
-        height: 4,
-        backgroundColor: Palette.bgApp,
-        borderRadius: 2,
-        marginTop: Spacing.sm,
-        overflow: 'hidden',
-    },
-    nodeProgressFill: {
-        height: '100%',
-    },
-});

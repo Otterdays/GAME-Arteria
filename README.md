@@ -1,101 +1,102 @@
 <div align="center">
 
 # 🌌 Arteria
-### A Cosmic Idle RPG — Built for the Modern Mobile Era
 
-**Train skills. Gather resources. Fight monsters. Even while you sleep.**
+### *The AFK RPG — Train skills. Gather resources. Progress while you sleep.*
 
-[**Live Landing Page ↗**](https://otterdays.github.io/GAME-Arteria) • [**Documentation Index ↗**](DOCU/SUMMARY.md) • [**Roadmap ↗**](DOCU/ROADMAP.md)
+[![Version](https://img.shields.io/badge/Version-0.3.0-8b5cf6?style=for-the-badge&logo=github)](https://github.com/Otterdays/GAME-Arteria/releases)
+[![Expo](https://img.shields.io/badge/Expo-SDK_55-000020?style=for-the-badge&logo=expo)](https://expo.dev)
+[![Tests](https://img.shields.io/badge/Tests-25_Passing-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
+[![License](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](LICENSE)
 
----
-
-[![v0.2.5](https://img.shields.io/badge/Version-0.2.5-8b5cf6?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/releases)
-[![Build Status](https://img.shields.io/badge/Build-Success-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
-[![Tests](https://img.shields.io/badge/Tests-30+_Passing-f59e0b?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](https://opensource.org/licenses/MIT)
+**[🌐 Live Site](https://otterdays.github.io/GAME-Arteria)** · **[📚 Docs](DOCU/SUMMARY.md)** · **[🗺️ Roadmap](DOCU/ROADMAP.md)** · **[📦 Releases](https://github.com/Otterdays/GAME-Arteria/releases)**
 
 </div>
 
 ---
 
-> [!CAUTION]
-> **DEVELOPER MANDATE:** Do NOT remove or delete existing texts, updates, docs, or project history in this repository. Arteria is a living chronicle. Only append, compact, or update status.
+> [!NOTE]
+> **Living chronicle:** Do not remove or delete existing content. Only append, compact, or update. Arteria is a living project.
 
 ---
 
 ## ✨ What is Arteria?
 
-Arteria is a hard-math, incremental idle RPG inspired by the deep progression systems of **Melvor Idle** and the timeless charm of **RuneScape**. Designed from the ground up for **React Native (Expo)**, it features a modular engine architecture that separates game logic from the UI.
+A **math-heavy, incremental idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for **React Native (Expo)** with a headless TypeScript engine — zero UI coupling, 100% testable game logic.
 
-### 🎯 Key Pillars
-| 🌱 **Persistence** | ⛏️ **Progression** | ⚔️ **Combat** |
-| :--- | :--- | :--- |
-| **Offline Progression** with a 24h cap. The engine calculates your gains while you sleep, study, or work. | **25 Skills** across 4 logical pillars: Gathering, Combat, Crafting, and Support. | **Auto-Combat** vs 12 eldritch factions. Passive grinding or active bossing. |
-
----
-
-## 🚀 The Latest: v0.2.5 "Build & Release"
-
-Current release focuses on distribution and polish:
-*   **Smaller APKs:** ABI split (arm64 / armv7) and lean production mode (dev-client excluded). Prefer `app-arm64-v8a-release.apk` for modern devices.
-*   **Premium UI:** AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake. Horizon (3-tier goal HUD), Logging UI, Shop 50% sell, Curse system.
-*   **Local build:** `2_Build_APK_Local.bat` with ARTERIA_LEAN_PROD=1; output folder shows split APKs (~31 MB / ~25 MB).
+| 🌱 **Offline** | ⛏️ **Skills** | ⚔️ **Combat** |
+|:---:|:---:|:---:|
+| 24h progression cap · Gains while you sleep | 25 skills · Mining, Logging, Fishing, Runecrafting live | 12 factions · Auto or active bossing *(coming)* |
 
 ---
 
-## 🛠️ The Cosmic Stack
+## 🚀 v0.3.0 — The Big Update
 
-Arteria uses a production-grade monorepo structure with modern developer ergonomics.
-
-| Component | Technology | Rationale |
-| :--- | :--- | :--- |
-| **Logic** | `Pure TypeScript Engine` | Headless-ready, 100% testable game math. |
-| **Runtime** | `Expo SDK 55` | The gold standard for modern RN apps. |
-| **State** | `Redux Toolkit` | Single source of truth with RTK Query and Slice patterns. |
-| **Storage** | `MMKV v4` | High-speed C++ synchronous storage for consistent saving. |
-| **Nav** | `Expo Router v6` | File-based navigation for clean, native-feel routing. |
-
----
-
-## 📂 Project Navigation
-
-The repository is built on a **Modular Monorepo** architecture.
-
-*   📂 [**`DOCU/`**](DOCU/SUMMARY.md) — The brain. All specifications, roadmaps, and architecture logs.
-*   📂 [**`apps/mobile/`**](apps/mobile/) — The React Native interface, themes, and screen layouts.
-*   📂 [**`packages/engine/`**](packages/engine/) — The math. XP tables, tick systems, and core game loops.
-*   📂 [**`docs/`**](docs/) — The landing site. Deployed to [GitHub Pages](https://otterdays.github.io/GAME-Arteria).
+| Feature | Description |
+|:---|:---|
+| 🎨 **Theme Engine** | System / Dark / Light / Sepia. Tab bar, headers, StatusBar follow your pick. |
+| ⚡ **Quick-Switch** | Floating pill → slide-in drawer. Jump Mining ↔ Logging ↔ Fishing ↔ Runecrafting. |
+| 🎲 **Random Events** | Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike. Per-tick roll. |
+| 🎣 **Fishing & ✨ Runecrafting** | 10 spots, 14 altars. Smart loop consumes inputs, auto-stops when out. |
+| 📜 **18 Story Quests** | Act I & II. Narrative gating, difficulty tiers. |
+| ⚙️ **Settings** | Confirm Task Switch, Battery Saver, Horizon HUD, Notifications, Idle Soundscapes. |
 
 ---
 
-## 🏗️ Getting Started
+## 🛠️ Stack
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) (v20+)
-- [Android Studio](https://developer.android.com/studio) (for local native builds)
+| Layer | Tech |
+|:---|:---|
+| **Engine** | Pure TypeScript · Headless · Jest-tested |
+| **Runtime** | Expo SDK 55 · React Native 0.83 · New Architecture |
+| **State** | Redux Toolkit · Typed hooks |
+| **Storage** | MMKV v4 · Synchronous C++ |
+| **Nav** | Expo Router v6 · File-based |
 
-### 2. Installation
+---
+
+## 📂 Repo
+
+| Path | Purpose |
+|:---|:---|
+| [`DOCU/`](DOCU/SUMMARY.md) | Specs, roadmaps, architecture |
+| [`apps/mobile/`](apps/mobile/) | React Native app · Screens, themes, UI |
+| [`packages/engine/`](packages/engine/) | Game math · XP tables, tick system, actions |
+| [`index.html`](index.html) | Landing site · Deployed to [GitHub Pages](https://otterdays.github.io/GAME-Arteria) |
+
+---
+
+## 🏗️ Quick Start
+
 ```bash
 npm install
 ```
 
-### 3. Local Development (Android)
-To run with our custom local pipeline (bypassing EAS limits):
+**Dev (Fast Refresh):**
 ```bash
-./1_Run_Local_Android_Build.bat
+# 1. Build dev client (one-time)
+1_Run_Local_Android_Build.bat
+
+# 2. Start Metro
+0_Start_Dev_Server.bat
 ```
 
-### 4. Running Tests
+**Release APK:**
+```bash
+2_Build_APK_Local.bat
+# → apps/mobile/android/app/build/outputs/apk/release/
+```
+
+**Tests:**
 ```bash
 npm test
+npm run test:coverage
 ```
 
 ---
 
 <div align="center">
 
-**[View full Roadmap in DOCU/ROADMAP.md](DOCU/ROADMAP.md)**
-
-Built with 💜 by [Otterdays](https://github.com/Otterdays)
+**[📖 Full Roadmap](DOCU/ROADMAP.md)** · Built with 💜 by [Otterdays](https://github.com/Otterdays)
 
 </div>

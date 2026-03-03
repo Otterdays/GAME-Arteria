@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Animated, Text, StyleSheet } from 'react-native';
-import { Palette, FontSize, Spacing } from '@/constants/theme';
+import { FontSize, Spacing } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface FloatingXpPopProps {
     amount: number;
@@ -9,6 +10,7 @@ interface FloatingXpPopProps {
 }
 
 export const FloatingXpPop: React.FC<FloatingXpPopProps> = ({ amount, emoji, triggerKey }) => {
+    const { palette } = useTheme();
     const anim = useRef(new Animated.Value(0)).current;
     const [visible, setVisible] = useState(false);
 
@@ -28,6 +30,28 @@ export const FloatingXpPop: React.FC<FloatingXpPopProps> = ({ amount, emoji, tri
             ]).start(() => setVisible(false));
         }
     }, [triggerKey]);
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: -Spacing.xl,
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                },
+                text: {
+                    color: palette.gold,
+                    fontSize: FontSize.sm,
+                    fontWeight: 'bold',
+                    textShadowColor: 'rgba(0,0,0,0.5)',
+                    textShadowOffset: { width: 1, height: 1 },
+                    textShadowRadius: 2,
+                },
+            }),
+        [palette]
+    );
 
     if (!visible) return null;
 
@@ -58,20 +82,3 @@ export const FloatingXpPop: React.FC<FloatingXpPopProps> = ({ amount, emoji, tri
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        alignSelf: 'center',
-        bottom: -Spacing.xl, // Position it below the XP amount
-        zIndex: 10,
-        pointerEvents: 'none',
-    },
-    text: {
-        color: Palette.gold,
-        fontSize: FontSize.sm,
-        fontWeight: 'bold',
-        textShadowColor: 'rgba(0,0,0,0.5)',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
-    },
-});

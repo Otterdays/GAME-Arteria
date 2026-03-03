@@ -19,7 +19,7 @@ Arteria is built on a highly modern, bleeding-edge monorepo setup utilizing npm 
 
 ### The Engine (`@arteria/engine`)
 - **Nature:** Pure, headless TypeScript math and logic package.
-- **Testing:** 100% Jest (`^29.7.0`).
+- **Testing:** Jest 29.7 + ts-jest 29.2. Multi-project (engine + tests/). 25 tests, 7 suites. `npm run test:coverage` for engine. See tests/README.md.
 - **Purpose:** Handles the TickSystem, XP calculations, Narrative logic, and Offline Catchup Delta processing completely isolated from React.
 
 ### State & Storage

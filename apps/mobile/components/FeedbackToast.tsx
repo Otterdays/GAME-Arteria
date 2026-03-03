@@ -4,29 +4,33 @@
  * [TRACE: DOCU/zhip-ai-styling.md §7.3]
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type FeedbackToastEvent, type FeedbackToastType } from '@/store/gameSlice';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
+import { Spacing, Radius, FontSize } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import * as Haptics from 'expo-haptics';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
-const TOAST_STYLES: Record<
-    FeedbackToastType,
-    { borderColor: string; titleColor: string; icon: IconName }
-> = {
-    locked: { borderColor: Palette.red, titleColor: Palette.red, icon: 'lock' },
-    warning: { borderColor: Palette.gold, titleColor: Palette.gold, icon: 'alert' },
-    error: { borderColor: Palette.red, titleColor: Palette.red, icon: 'alert-circle' },
-    info: { borderColor: Palette.accentPrimary, titleColor: Palette.accentPrimary, icon: 'information' },
-};
-
 const DURATION_MS = 3500;
 
+function getToastStyles(palette: { red: string; gold: string; accentPrimary: string }): Record<
+    FeedbackToastType,
+    { borderColor: string; titleColor: string; icon: IconName }
+> {
+    return {
+        locked: { borderColor: palette.red, titleColor: palette.red, icon: 'lock' },
+        warning: { borderColor: palette.gold, titleColor: palette.gold, icon: 'alert' },
+        error: { borderColor: palette.red, titleColor: palette.red, icon: 'alert-circle' },
+        info: { borderColor: palette.accentPrimary, titleColor: palette.accentPrimary, icon: 'information' },
+    };
+}
+
 export default function FeedbackToast() {
+    const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const queue = useAppSelector((s) => s.game.feedbackToastQueue);
     const isAnimating = useRef(false);
@@ -91,9 +95,54 @@ export default function FeedbackToast() {
         return () => clearTimeout(timer);
     }, [queue.length, queue[0]?.id, dispatch, translateY, opacity]);
 
+    const toastStyles = useMemo(() => getToastStyles(palette), [palette]);
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    position: 'absolute',
+                    top: 60,
+                    left: 0,
+                    right: 0,
+                    alignItems: 'center',
+                    zIndex: 9998,
+                    paddingHorizontal: Spacing.md,
+                },
+                toast: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: palette.bgCardHover,
+                    borderRadius: Radius.lg,
+                    paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.md,
+                    borderWidth: 2,
+                    shadowColor: palette.border,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 6,
+                    elevation: 8,
+                },
+                icon: { marginRight: Spacing.md },
+                textStack: {
+                    flex: 1,
+                    justifyContent: 'center',
+                },
+                title: {
+                    fontSize: FontSize.md,
+                    fontWeight: '800',
+                    marginBottom: 2,
+                },
+                message: {
+                    fontSize: FontSize.sm,
+                    color: palette.textPrimary,
+                },
+            }),
+        [palette]
+    );
+
     if (!visible) return null;
 
-    const style = TOAST_STYLES[visible.type];
+    const style = toastStyles[visible.type];
 
     return (
         <Animated.View
@@ -119,44 +168,3 @@ export default function FeedbackToast() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        top: 60,
-        left: 0,
-        right: 0,
-        alignItems: 'center',
-        zIndex: 9998,
-        paddingHorizontal: Spacing.md,
-    },
-    toast: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Palette.bgCardHover,
-        borderRadius: Radius.lg,
-        paddingHorizontal: Spacing.lg,
-        paddingVertical: Spacing.md,
-        borderWidth: 2,
-        shadowColor: Palette.border,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 6,
-        elevation: 8,
-    },
-    icon: {
-        marginRight: Spacing.md,
-    },
-    textStack: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: FontSize.md,
-        fontWeight: '800',
-        marginBottom: 2,
-    },
-    message: {
-        fontSize: FontSize.sm,
-        color: Palette.textPrimary,
-    },
-});

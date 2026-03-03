@@ -75,7 +75,31 @@ For craftable/skill nodes with multiple requirements (level, essence, narrative)
 
 ---
 
-## 7. Build Scripts & App Identity
+## 7. Theming
+
+- **Primary:** Use `useTheme().palette` for theme-aware colors. See DOCU/THEMING.md.
+- **Legacy:** `Palette` import still works (defaults to dark). Migrate gradually to `useTheme()`.
+- **Tokens:** `bgApp`, `textPrimary`, `accentPrimary`, etc. — semantic names, not hex.
+- **ThemeId:** `'system' | 'dark' | 'light' | 'sepia'`. Persisted in `player.settings.themeId`.
+
+**Migration pattern (Phase 3):**
+```ts
+const { palette } = useTheme();
+const styles = useMemo(
+  () => StyleSheet.create({
+    container: { flex: 1, backgroundColor: palette.bgApp },
+    // ... all color tokens from palette
+  }),
+  [palette]
+);
+```
+- Child components that need themed styles receive `styles` as a prop.
+- Layout tokens (`Spacing`, `Radius`, `FontSize`) stay as static imports — only color tokens move to `palette`.
+- Override `CardStyle` colors: `...CardStyle, borderColor: palette.border`.
+
+---
+
+## 8. Build Scripts & App Identity
 
 | Script | App Name | When to Use |
 |--------|----------|-------------|
@@ -86,13 +110,16 @@ Both can coexist on the same device. `app.config.js` reads `ARTERIA_LEAN_PROD`; 
 
 ---
 
-## 8. Theme Tokens
+## 9. Theme Tokens
 
 Import from `@/constants/theme`:
 
-- `Palette` — colors (bgCard, accentPrimary, accentWeb, gold, etc.)
-- `Spacing`, `Radius`, `FontSize` — layout tokens
-- `CardStyle` — shared card border/glow
-- `FontCinzel`, `FontCinzelBold` — header fonts
+| Token | Source | Use |
+|-------|--------|-----|
+| `palette.*` | `useTheme().palette` | Theme-aware colors (bgApp, bgCard, textPrimary, accentPrimary, gold, etc.) |
+| `Spacing`, `Radius`, `FontSize` | Static import | Layout tokens (unchanged by theme) |
+| `CardStyle` | Static import | Shared card border/shadow — override `borderColor` from `palette` when themed |
+| `FontCinzel`, `FontCinzelBold` | Static import | Header fonts |
+| `Palette` | Static import | Legacy; defaults to dark. Prefer `useTheme().palette` for new code. |
 
-Avoid hardcoded hex in components.
+Avoid hardcoded hex in components. Use semantic tokens.

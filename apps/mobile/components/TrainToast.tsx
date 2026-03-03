@@ -1,13 +1,15 @@
 /**
  * TrainToast — Shows "Mining: Iron Vein" when starting a skill action.
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useAppSelector } from '@/store/hooks';
-import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
+import { Spacing, Radius, FontSize } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import { getActionDisplayName } from '@/utils/actionDisplayName';
 
 export default function TrainToast() {
+  const { palette } = useTheme();
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
   const prevTaskRef = useRef<{ skillId?: string; actionId: string } | null>(null);
   const [toast, setToast] = useState<{ skill: string; action: string } | null>(null);
@@ -45,6 +47,34 @@ export default function TrainToast() {
     }
   }, [activeTask?.skillId, activeTask?.actionId, opacity, translateY]);
 
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          position: 'absolute',
+          top: 100,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          zIndex: 9998,
+        },
+        toast: {
+          backgroundColor: palette.bgCardHover,
+          paddingHorizontal: Spacing.lg,
+          paddingVertical: Spacing.sm,
+          borderRadius: Radius.full,
+          borderWidth: 1,
+          borderColor: palette.accentPrimary,
+        },
+        text: {
+          fontSize: FontSize.sm,
+          fontWeight: '600',
+          color: palette.textPrimary,
+        },
+      }),
+    [palette]
+  );
+
   if (!toast) return null;
 
   return (
@@ -61,27 +91,3 @@ export default function TrainToast() {
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 100,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 9998,
-  },
-  toast: {
-    backgroundColor: Palette.bgCardHover,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Palette.accentPrimary,
-  },
-  text: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Palette.textPrimary,
-  },
-});

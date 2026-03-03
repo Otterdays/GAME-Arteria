@@ -1257,7 +1257,7 @@
           <div class="stat-label">Offline Cap</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">30+</div>
+          <div class="stat-value">25</div>
           <div class="stat-label">Tests Passing</div>
         </div>
       </div>
@@ -1268,9 +1268,9 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest — v0.2.7</div>
-        <h2>The BIG Fish and Runes update! (and other cool stuff)</h2>
-        <p class="section-desc">Fishing and Runecrafting are in. So are 18 RuneScape-style story quests with narrative gating and difficulty tiers. The loop consumes resources automatically. <strong>Feedback Toasts:</strong> In-game stylized prompts for locked nodes, no essence, level requirements (replaces system alerts). New settings: Confirm Task Switch, Battery Saver, Horizon HUD (toggle to hide the 3 goal cards under the XP bar), Notifications (including Idle Cap Reached), and Idle Soundscapes. Easter egg: "Don't Push This" unlocks the title "The Stubborn" at 1,000 presses.</p>
+        <div class="section-label">Latest — v0.3.0</div>
+        <h2>The Big Update</h2>
+        <p class="section-desc"><strong>Theme Engine:</strong> Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, StatusBar follow your theme. <strong>Quick-Switch Sidebar:</strong> Floating pill on left edge in skill screens; slide-in drawer to jump between Mining, Logging, Fishing, Runecrafting. <strong>Random Events:</strong> Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. Plus Fishing, Runecrafting, 18 story quests, Feedback Toasts, Confirm Task Switch, Battery Saver, Horizon HUD, Notifications, Idle Soundscapes. Easter egg: "Don't Push This" → "The Stubborn".</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#3498db; --card-bg:rgba(52,152,219,0.1);">
@@ -1535,13 +1535,13 @@
             </div>
           </div>
           <p class="system-desc">
-            Multi-project Jest configuration at the monorepo root. Unit tests for XPTable (verifying the RuneScape
-            exponential XP curve) and TickSystem (partial tick carryover, RNG success rates, offline batching).
-            Placeholders for integration and E2E test layers.
+            Multi-project Jest at monorepo root. Unit tests for XPTable (RuneScape XP curve), TickSystem (partial tick
+            carryover, RNG, offline batching), and GameEngine (createNewPlayer, processOffline).             <code>npm run test:coverage</code> for engine coverage. Integration and E2E placeholders. Target: 80% on business logic.
           </p>
           <div class="system-tags">
             <span class="tag">Jest 29</span>
             <span class="tag">ts-jest</span>
+            <span class="tag">7 suites</span>
             <span class="tag">25 passing</span>
           </div>
         </div>
@@ -2149,16 +2149,8 @@
             Ledger screen. Glassmorphism overhaul for the website.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.2.9</span>
-          <div class="roadmap-text"><strong>Quick-Switch Sidebar</strong> — Floating pill on left edge in skill screens. Slide-in drawer to jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared skills constants.</div>
-        </div>
-        <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.2.8</span>
-          <div class="roadmap-text"><strong>Random Events</strong> — Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift (XP to random skill), Treasure Chest (gold), Lucky Strike (double XP). Per-tick roll (~0.5% base, 60-tick cooldown).</div>
-        </div>
-        <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.2.7</span>
-          <div class="roadmap-text"><strong>The BIG Fish and Runes update! (and other cool stuff)</strong> — Fishing (10 spots), Runecrafting (14 altars). Game loop consumes inputs and auto-stops. Bank filters for fish/runes. <strong>Feedback Toasts:</strong> In-game stylized prompts for locked, no essence, level req (replaces system alerts). <strong>Settings:</strong> Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Notifications (Level Up, Task Complete, Idle Cap Reached with local scheduling), Idle Soundscapes. <strong>Easter egg:</strong> "Don't Push This" → title "The Stubborn" at 1,000 presses.</div>
+          <span class="roadmap-badge badge-done">v0.3.0</span>
+          <div class="roadmap-text"><strong>The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Feedback Toasts, Settings (Confirm Task Switch, Battery Saver, Horizon HUD, Notifications, Idle Soundscapes). Easter egg "Don't Push This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">Quest expansion</span>
@@ -2212,15 +2204,7 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.2.9: Quick-Switch Sidebar</strong> — Floating pill on left edge in skill screens. Slide-in drawer to jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight.</div>
-        </div>
-        <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.2.8: Random Events</strong> — Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. Per-tick roll, 60-tick cooldown.</div>
-        </div>
-        <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.2.7: The BIG Fish and Runes update! (and other cool stuff)</strong> — Fishing, Runecrafting, action consumption loop. Bank filters. Feedback Toasts (in-game prompts for locked/no essence). Settings: Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Notifications (Idle Cap Reached), Idle Soundscapes. Easter egg "Don't Push This".</div>
+          <div class="roadmap-text"><strong>v0.3.0: The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Feedback Toasts, Settings, Idle Soundscapes. Easter egg "Don't Push This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
