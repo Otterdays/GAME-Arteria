@@ -7,15 +7,15 @@ REM We use Gradle directly from apps\mobile\android so the APK is built WITHOUT
 REM a connected device. "npx expo run:android --variant release" requires a
 REM device/emulator to install; gradlew.bat assembleRelease does not.
 echo ===================================================
-echo Arteria - Local APK Build (No EAS Credits)
+echo Arteria - Local APK Build ^(No EAS Credits^)
 echo ===================================================
 echo.
 echo Builds a release APK on your machine for sharing.
-echo App name: Arteria (prod). Dev testing uses Arteria-dev separately.
-echo Requires: Android Studio + Android SDK (same as 1_Run_Local_Android_Build.bat)
+echo App name: Arteria ^(prod^). Dev testing uses Arteria-dev separately.
+echo Requires: Android Studio + Android SDK ^(same as 1_Run_Local_Android_Build.bat^)
 echo.
 echo Output folder: apps\mobile\android\app\build\outputs\apk\release\
-echo Preferred file: app-arm64-v8a-release.apk (smaller than universal APK)
+echo Output file: app-release.apk ^(arm64-v8a only, smaller than universal^)
 echo Lean mode: excludes Expo dev-client native modules for smaller prod APKs
 echo.
 pause
@@ -31,7 +31,7 @@ if exist "%MODE_FILE%" (
     set "CURRENT_MODE="
 )
 if not "%CURRENT_MODE%"=="prod" (
-    echo Regenerating native project for PROD (Arteria)...
+    echo Regenerating native project for PROD ^(Arteria^)...
     cd /d "%~dp0\apps\mobile"
     npx expo prebuild --clean --platform android
     if errorlevel 1 (
@@ -44,6 +44,17 @@ if not "%CURRENT_MODE%"=="prod" (
     echo Prebuild complete. Proceeding to Gradle build...
 ) else (
     echo Native project already in PROD mode. Skipping prebuild.
+)
+
+REM Ensure local.properties exists ^(prebuild --clean removes it^)
+set "LOCAL_PROPS=%~dp0apps\mobile\android\local.properties"
+if not exist "%LOCAL_PROPS%" (
+    if defined ANDROID_HOME (
+        echo sdk.dir=%ANDROID_HOME%> "%LOCAL_PROPS%"
+    ) else (
+        echo sdk.dir=C:/Users/home/AppData/Local/Android/Sdk> "%LOCAL_PROPS%"
+    )
+    echo Created local.properties for SDK path.
 )
 
 cd /d "%~dp0\apps\mobile\android"
@@ -60,8 +71,8 @@ if errorlevel 1 (
 )
 
 REM Gradle only (no device). Root index.js redirects Metro when it resolves from Arteria.
-echo Building release APK via Gradle (no device required)...
-echo Using ARTERIA_LEAN_PROD=1 (lean production autolinking)
+echo Building release APK via Gradle ^(no device required^)...
+echo Using ARTERIA_LEAN_PROD=1 ^(lean production autolinking^)
 echo This might take a few minutes...
 call gradlew.bat assembleRelease
 
@@ -76,6 +87,8 @@ if %ERRORLEVEL% neq 0 (
 
 cd /d "%~dp0"
 
+REM With reactNativeArchitectures=arm64-v8a, Gradle outputs app-release.apk ^(single ABI^).
+REM If building multiple ABIs, split APKs like app-arm64-v8a-release.apk are produced.
 set "APK_DIR=%~dp0apps\mobile\android\app\build\outputs\apk\release"
 set "APK_PATH="
 if exist "%APK_DIR%\app-arm64-v8a-release.apk" set "APK_PATH=%APK_DIR%\app-arm64-v8a-release.apk"
@@ -90,7 +103,7 @@ echo.
 echo APK output folder:
 echo   %APK_DIR%
 echo.
-echo Preferred APK to share:
+echo APK to share:
 echo   %APK_PATH%
 echo.
 echo Copy this file to share. Recipients may need to enable

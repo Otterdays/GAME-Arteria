@@ -2,6 +2,9 @@
  * useInterpolatedProgress — Smooth progress between Redux updates.
  * Redux updates partialTickMs every 100ms; this interpolates at ~60fps
  * so the progress bar moves smoothly instead of in discrete jumps.
+ *
+ * Only the RAF loop updates progress; the sync effect just updates lastRef.
+ * This avoids competing setState calls that caused jumpiness.
  */
 
 import { useState, useEffect, useRef } from 'react';
@@ -13,6 +16,7 @@ export function useInterpolatedProgress(
   const [progress, setProgress] = useState(0);
   const lastRef = useRef({ partialTickMs: 0, timestamp: 0 });
 
+  // Sync lastRef when Redux updates; do NOT setProgress here to avoid fighting with RAF
   useEffect(() => {
     const now = Date.now();
     lastRef.current = { partialTickMs, timestamp: now };
@@ -20,9 +24,9 @@ export function useInterpolatedProgress(
       setProgress(0);
       return;
     }
-    setProgress(Math.min(100, (partialTickMs / intervalMs) * 100));
   }, [partialTickMs, intervalMs]);
 
+  // Single source of truth: RAF loop interpolates at ~60fps
   useEffect(() => {
     if (intervalMs <= 0) return;
 

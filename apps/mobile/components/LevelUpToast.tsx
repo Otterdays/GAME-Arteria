@@ -75,31 +75,74 @@ export default function LevelUpToast() {
             }),
         ]).start();
 
-        // After 3s, animate out and pop the queue
+        // After 2s, animate out and pop the queue
         const timer = setTimeout(() => {
-            Animated.parallel([
-                Animated.timing(pullY, {
-                    toValue: -120,
-                    duration: 350,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(opacity, {
-                    toValue: 0,
-                    duration: 250,
-                    useNativeDriver: true,
-                }),
-            ]).start(() => {
+            let handled = false;
+            const done = () => {
+                if (handled) return;
+                handled = true;
                 dispatch(gameActions.popLevelUp());
                 setDisplayToast(null);
                 currentToast.current = null;
                 isAnimating.current = false;
-            });
-        }, 3000);
+            };
+            Animated.parallel([
+                Animated.timing(pullY, {
+                    toValue: -120,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(done);
+            // Fallback: ensure we clear even if animation callback doesn't fire
+            setTimeout(done, 400);
+        }, 2000);
 
         return () => clearTimeout(timer);
         // Only re-run when the queue length changes or the first item changes
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [queue.length, queue[0]?.id]);
+
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    alignItems: 'center',
+                    zIndex: 9999,
+                },
+                glow: {
+                    backgroundColor: palette.bgCard,
+                    paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.md,
+                    borderRadius: Radius.lg,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.md,
+                },
+                emoji: { fontSize: 28 },
+                textStack: { flex: 1 },
+                title: {
+                    fontSize: FontSize.lg,
+                    fontWeight: 'bold',
+                    color: palette.textPrimary,
+                },
+                subtitle: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                },
+            }),
+        [palette]
+    );
 
     if (!displayToast) return null;
 
@@ -107,6 +150,7 @@ export default function LevelUpToast() {
 
     return (
         <Animated.View
+            pointerEvents="none"
             style={[
                 styles.container,
                 { transform: [{ translateY: pullY }], opacity },

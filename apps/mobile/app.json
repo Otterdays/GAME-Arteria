@@ -31,8 +31,8 @@
         "expo-font",
         {
           "fonts": [
-            "../node_modules/@expo-google-fonts/cinzel/400Regular/Cinzel_400Regular.ttf",
-            "../node_modules/@expo-google-fonts/cinzel/700Bold/Cinzel_700Bold.ttf"
+            "../../node_modules/@expo-google-fonts/cinzel/400Regular/Cinzel_400Regular.ttf",
+            "../../node_modules/@expo-google-fonts/cinzel/700Bold/Cinzel_700Bold.ttf"
           ]
         }
       ],

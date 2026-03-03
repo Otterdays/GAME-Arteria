@@ -4,20 +4,20 @@ color 0b
 REM [TRACE: DOCU/EXPO_GUIDE.md — Dev/Prod Coexistence]
 REM Dev build: "Arteria-dev", com.anonymous.arteria.dev. Prod uses "Arteria" (2_Build_APK_Local.bat).
 echo ===================================================
-echo 📱 Arteria-dev - Local Native Android Build (Dev Client)
+echo Arteria-dev - Local Native Android Build ^(Dev Client^)
 echo ===================================================
 echo.
 echo Builds the DEVELOPMENT client as "Arteria-dev" so it can coexist
-echo with the prod APK (Arteria) on the same device.
+echo with the prod APK ^(Arteria^) on the same device.
 echo.
 echo THIS SCRIPT REQUIRES ANDROID STUDIO AND THE ANDROID SDK.
-echo It bypasses Expo's cloud servers (EAS) and builds the custom
-echo native development client (with MMKV C++ bindings) directly 
+echo It bypasses Expo's cloud servers ^(EAS^) and builds the custom
+echo native development client ^(with MMKV C++ bindings^) directly 
 echo on your machine.
 echo.
 echo 1. Ensure Android Studio is installed.
 echo 2. Ensure an Android Emulator is running OR your physical phone 
-echo    is plugged in via USB (with USB Debugging enabled).
+echo    is plugged in via USB ^(with USB Debugging enabled^).
 echo.
 pause
 
@@ -32,7 +32,7 @@ if exist "%MODE_FILE%" (
     set "CURRENT_MODE="
 )
 if not "%CURRENT_MODE%"=="dev" (
-    echo Regenerating native project for DEV (Arteria-dev)...
+    echo Regenerating native project for DEV ^(Arteria-dev^)...
     cd /d "%~dp0\apps\mobile"
     npx expo prebuild --clean --platform android
     if errorlevel 1 (
@@ -45,6 +45,17 @@ if not "%CURRENT_MODE%"=="dev" (
     echo Prebuild complete. Proceeding to native build...
 ) else (
     echo Native project already in DEV mode. Skipping prebuild.
+)
+
+REM Ensure local.properties exists ^(prebuild --clean removes it^)
+set "LOCAL_PROPS=%~dp0apps\mobile\android\local.properties"
+if not exist "%LOCAL_PROPS%" (
+    if defined ANDROID_HOME (
+        echo sdk.dir=%ANDROID_HOME%> "%LOCAL_PROPS%"
+    ) else (
+        echo sdk.dir=C:/Users/home/AppData/Local/Android/Sdk> "%LOCAL_PROPS%"
+    )
+    echo Created local.properties for SDK path.
 )
 
 cd /d "%~dp0\apps\mobile"

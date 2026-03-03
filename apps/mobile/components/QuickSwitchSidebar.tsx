@@ -228,7 +228,7 @@ export function QuickSwitchSidebar() {
                         }
                         toggle();
                     }}
-                    style={[styles.trigger, { top: insets.top + Spacing.lg }]}
+                    style={[styles.trigger, { top: insets.top + 56 }]}
                     hitSlop={12}
                 >
                     <LinearGradient
