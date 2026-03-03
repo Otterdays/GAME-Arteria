@@ -72,6 +72,17 @@ export default function FeedbackToast() {
             }),
         ]).start();
 
+        const ANIM_OUT_MS = 350;
+        let handled = false;
+        const done = () => {
+            if (handled) return;
+            handled = true;
+            dispatch(gameActions.popFeedbackToast());
+            setVisible(null);
+            displayToast.current = null;
+            isAnimating.current = false;
+        };
+
         const timer = setTimeout(() => {
             Animated.parallel([
                 Animated.timing(translateY, {
@@ -84,12 +95,11 @@ export default function FeedbackToast() {
                     duration: 200,
                     useNativeDriver: true,
                 }),
-            ]).start(() => {
-                dispatch(gameActions.popFeedbackToast());
-                setVisible(null);
-                displayToast.current = null;
-                isAnimating.current = false;
+            ]).start(({ finished }) => {
+                if (finished) done();
             });
+            // Fallback: ensure pop even if animation callback never fires
+            setTimeout(done, ANIM_OUT_MS);
         }, DURATION_MS);
 
         return () => clearTimeout(timer);

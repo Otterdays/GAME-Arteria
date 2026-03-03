@@ -5,7 +5,16 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Theme Phase 3 migration complete. Verify in-app.
+**Active Task:** None. Smithing/Forging split implemented; docs verified.
+
+## [2026-03-03] Smithing / Forging Split — Docs Verified
+- **index.html:** Changelog §v0.3.0, Roadmap §v0.3.0, Latest section, systems-grid card, Forging skill pill. All updated with Smithing & Forging.
+- **Smithing:** Kept as smelting only (ore → bars). constants/smithing.ts, app/skills/smithing.tsx. Unchanged.
+- **Forging:** New skill. Bars → equipment (daggers, half helmets, full helmets). constants/forging.ts (15 recipes across Bronze, Iron, Steel, Mithril, Adamant). app/skills/forging.tsx with metal-tier grouping. ItemType 'equipment' + 15 equipment items in items.ts. useGameLoop ACTION_DEFS. gameSlice, skills.ts, engine types: 'forging' skill. QuickSwitchSidebar, HorizonHUD, Bank Equipment filter. palette.skillForging (#c0392b).
+
+## [2026-03-03] Smithing & Activity Log
+- **Smithing:** Smelting skill. constants/smithing.ts (7 recipes: Bronze→Runite). Bar items in items.ts. useGameLoop ACTION_DEFS. app/skills/smithing.tsx. IMPLEMENTED_CRAFTING_SKILLS, QuickSwitchSidebar.
+- **Activity Log:** game.activityLog (max 50). pushActivityLog from random events, level-up (applyXP), skill_start (startTask). ActivityLogModal.tsx. 📜 button in Skills header. patchHistory, CHANGELOG updated.
 
 ## [2026-03-03] Theme Phase 3 — Final Batch Migrated
 - **Migrated:** FeedbackToast, HorizonHUD, settings.tsx, patches.tsx, TabIconWithPulse, FloatingXpPop, GlobalActionTicker. All use useTheme() + useMemo + StyleSheet.create(palette). SettingsRow receives styles prop; createSettingsStyles(palette) helper.

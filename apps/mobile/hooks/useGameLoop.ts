@@ -49,6 +49,8 @@ import { MINING_NODES } from '@/constants/mining';
 import { LOGGING_NODES } from '@/constants/logging';
 import { FISHING_SPOTS } from '@/constants/fishing';
 import { RUNE_ALTARS } from '@/constants/runecrafting';
+import { SMELTING_RECIPES } from '@/constants/smithing';
+import { FORGING_RECIPES } from '@/constants/forging';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -79,6 +81,28 @@ RUNE_ALTARS.forEach((altar) => {
         items: [{ id: altar.outputRuneId, quantity: altar.runesPerBatch }],
         consumedItems: [{ id: altar.essenceType, quantity: altar.essencePerBatch }],
         successRate: 1,
+        masteryXp: 1,
+    };
+});
+
+// Smithing smelting: consume ore(s), produce bars
+SMELTING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Forging: consume bars, produce equipment
+FORGING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
         masteryXp: 1,
     };
 });
@@ -189,6 +213,7 @@ export function useGameLoop() {
                                 message: `+${bonusXp} bonus XP to ${skillId}.`,
                             })
                         );
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: "Blibbertooth's Blessing!", data: { skillId, bonusXp } }));
                         logger.info('Engine', 'RandomEvent: blibbertooth_blessing', { skillId, bonusXp });
                     } else if (eventType === 'cosmic_sneeze') {
                         pendingCosmicSneezeRef.current = true;
@@ -212,6 +237,7 @@ export function useGameLoop() {
                                 message: `+${bonusXp} XP to ${targetSkill}.`,
                             })
                         );
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: "A Genie Appeared!", data: { targetSkill, bonusXp } }));
                         logger.info('Engine', 'RandomEvent: genie_gift', { targetSkill, bonusXp });
                     } else if (eventType === 'treasure_chest') {
                         const lvl = activeSkillLevelRef.current;
@@ -225,6 +251,7 @@ export function useGameLoop() {
                                 message: `+${gold} gold found!`,
                             })
                         );
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Treasure Chest!', data: { gold } }));
                         logger.info('Engine', 'RandomEvent: treasure_chest', { gold });
                     } else if (eventType === 'lucky_strike') {
                         const bonusXp = totalXP * (LUCKY_STRIKE_XP_MULTIPLIER - 1);
@@ -237,6 +264,7 @@ export function useGameLoop() {
                                 message: `Double XP this tick! +${bonusXp} bonus.`,
                             })
                         );
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Lucky Strike!', data: { skillId, bonusXp } }));
                         logger.info('Engine', 'RandomEvent: lucky_strike', { skillId, bonusXp });
                     }
                 }
@@ -257,6 +285,7 @@ export function useGameLoop() {
                             message: 'Your next haul was doubled!',
                         })
                     );
+                    dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Cosmic Sneeze!' }));
                 }
                 dispatch(gameActions.addItems(items));
 

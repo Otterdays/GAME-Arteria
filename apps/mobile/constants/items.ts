@@ -3,7 +3,7 @@
  * Add new entries when new drop sources are added.
  */
 
-export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'rune' | 'other';
+export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'rune' | 'equipment' | 'other';
 
 export interface ItemMeta {
   emoji: string;
@@ -22,6 +22,15 @@ export const ITEM_META: Record<string, ItemMeta> = {
   mithril_ore: { emoji: '🔵', label: 'Mithril Ore', sellValue: 80, description: 'A rare ore with magical properties.', type: 'ore' },
   adamantite_ore: { emoji: '🟢', label: 'Adamantite Ore', sellValue: 150, description: 'Extremely hard. Forms the best non-cosmic armour.', type: 'ore' },
   runite_ore: { emoji: '🛸', label: 'Runite Ore', sellValue: 400, description: 'Endgame material. Guarded by Runite Golems.', type: 'ore' },
+
+  // ── Bars (Smithing) ──
+  bronze_bar: { emoji: '🟤', label: 'Bronze Bar', sellValue: 15, description: 'Copper and tin smelted together. The foundation of smithing.', type: 'bar' },
+  iron_bar: { emoji: '⚙️', label: 'Iron Bar', sellValue: 35, description: 'Refined iron ore. Sturdy and versatile.', type: 'bar' },
+  steel_bar: { emoji: '🔩', label: 'Steel Bar', sellValue: 75, description: 'Iron strengthened with coal. Essential for mid-tier gear.', type: 'bar' },
+  gold_bar: { emoji: '🟡', label: 'Gold Bar', sellValue: 120, description: 'Pure gold. Used in jewellery and high-end crafting.', type: 'bar' },
+  mithril_bar: { emoji: '🔵', label: 'Mithril Bar', sellValue: 200, description: 'A rare metal with a faint blue shimmer.', type: 'bar' },
+  adamant_bar: { emoji: '🟢', label: 'Adamant Bar', sellValue: 400, description: 'Extremely hard. The pinnacle of non-cosmic metalwork.', type: 'bar' },
+  runite_bar: { emoji: '🛸', label: 'Runite Bar', sellValue: 1000, description: 'Endgame metal. Humming with latent energy.', type: 'bar' },
 
   cursed_copper_ore: { emoji: '🪨', label: 'Cursed Copper Ore', sellValue: 1, description: 'A cursed common ore found near the surface. It pulsates with a dark energy.', type: 'ore' },
   cursed_tin_ore: { emoji: '🪨', label: 'Cursed Tin Ore', sellValue: 1, description: 'A cursed ore. It feels unnervingly cold to the touch.', type: 'ore' },
@@ -74,6 +83,23 @@ export const ITEM_META: Record<string, ItemMeta> = {
   blood_rune: { emoji: '🩸', label: 'Blood Rune', sellValue: 90, description: 'Made from the essence of sacrifice. Deeply unsettling to hold.', type: 'rune' },
   soul_rune: { emoji: '👻', label: 'Soul Rune', sellValue: 150, description: 'A rune that whispers in a language you almost understand.', type: 'rune' },
   void_rune: { emoji: '🕳️', label: 'Void Rune', sellValue: 400, description: 'The absence of everything, compressed into magical potential.', type: 'rune' },
+
+  // ── Equipment (Forging: bars → weapons & armour) ──
+  bronze_dagger: { emoji: '🗡️', label: 'Bronze Dagger', sellValue: 25, description: 'A simple bronze blade. Good for beginners.', type: 'equipment' },
+  bronze_half_helmet: { emoji: '⛑️', label: 'Bronze Half Helmet', sellValue: 30, description: 'Light bronze head protection.', type: 'equipment' },
+  bronze_full_helmet: { emoji: '🪖', label: 'Bronze Full Helmet', sellValue: 55, description: 'Full bronze helm. Sturdy for its tier.', type: 'equipment' },
+  iron_dagger: { emoji: '🗡️', label: 'Iron Dagger', sellValue: 60, description: 'A reliable iron blade.', type: 'equipment' },
+  iron_half_helmet: { emoji: '⛑️', label: 'Iron Half Helmet', sellValue: 70, description: 'Iron skullcap. Better protection.', type: 'equipment' },
+  iron_full_helmet: { emoji: '🪖', label: 'Iron Full Helmet', sellValue: 130, description: 'Full iron helm. Solid mid-tier armour.', type: 'equipment' },
+  steel_dagger: { emoji: '🗡️', label: 'Steel Dagger', sellValue: 120, description: 'A sharp steel blade.', type: 'equipment' },
+  steel_half_helmet: { emoji: '⛑️', label: 'Steel Half Helmet', sellValue: 140, description: 'Steel skullcap. Strong and light.', type: 'equipment' },
+  steel_full_helmet: { emoji: '🪖', label: 'Steel Full Helmet', sellValue: 260, description: 'Full steel helm. Excellent protection.', type: 'equipment' },
+  mithril_dagger: { emoji: '🗡️', label: 'Mithril Dagger', sellValue: 350, description: 'A blade with a faint blue shimmer.', type: 'equipment' },
+  mithril_half_helmet: { emoji: '⛑️', label: 'Mithril Half Helmet', sellValue: 400, description: 'Mithril skullcap. Light yet strong.', type: 'equipment' },
+  mithril_full_helmet: { emoji: '🪖', label: 'Mithril Full Helmet', sellValue: 750, description: 'Full mithril helm. Rare and prized.', type: 'equipment' },
+  adamant_dagger: { emoji: '🗡️', label: 'Adamant Dagger', sellValue: 700, description: 'An extremely hard blade.', type: 'equipment' },
+  adamant_half_helmet: { emoji: '⛑️', label: 'Adamant Half Helmet', sellValue: 800, description: 'Adamant skullcap. Top-tier protection.', type: 'equipment' },
+  adamant_full_helmet: { emoji: '🪖', label: 'Adamant Full Helmet', sellValue: 1500, description: 'Full adamant helm. The pinnacle of metalwork.', type: 'equipment' },
 };
 
 const UNKNOWN: ItemMeta = { emoji: '❓', label: 'Unknown Item', sellValue: 1, description: 'An unregistered item.', type: 'other' };

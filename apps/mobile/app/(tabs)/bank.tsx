@@ -137,6 +137,7 @@ const FILTER_OPTIONS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'log', label: 'Logs' },
     { key: 'fish', label: 'Fish' },
     { key: 'rune', label: 'Runes' },
+    { key: 'equipment', label: 'Equipment' },
     { key: 'other', label: 'Other' },
 ];
 

@@ -191,7 +191,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Offline Queue Processing:** Ensure `processOffline` handles completing multiple queued items over elapsed time.
 
 ### 3.2 — Core Crafting Skills (Data & UI) 🟡
-- [ ] 🟡 **Smithing:** Weapons, armor, tools. *Active Mechanic (🔴):* "Heat Management" minigame multiplier (tap to keep heat in green zone).
+- [x] 🟡 **Smithing (Smelting):** Ore → bars. 7 recipes (Bronze→Runite). Runite narrative-gated. (v0.3.0)
+- [x] 🟡 **Forging:** Bars → equipment. 15 recipes (daggers, half/full helmets). Metal-tier grouping. (v0.3.0)
+- [ ] 🟡 **Smithing (Heat Management):** *Future:* "Heat Management" minigame multiplier (tap to keep heat in green zone).
 - [ ] 🟡 **Alchemy:** Potions/bombs. *Active Mechanic (🔴):* "Catching Volatility" minigame for bonus absolute potency.
 - [ ] 🟡 **Cooking:** Food buffs, bait, companion meals. *Active Mechanic (🟡):* Taste testing for extended buff duration.
 - [ ] 🟢 **Tailoring:** Robes, bags, fishing nets.

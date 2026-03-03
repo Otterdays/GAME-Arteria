@@ -44,7 +44,7 @@
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**v0.3.0 (2026-03-03) — The Big Update:** Theme Engine (picker, tab bar, headers, StatusBar). Quick-Switch Sidebar. Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). All consolidated from 0.2.8–0.2.11.
+**v0.3.0 (2026-03-03) — The Big Update:** Theme Engine (picker, tab bar, headers, StatusBar). Quick-Switch Sidebar. Smithing (smelting) + Forging (bars → equipment). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). All consolidated from 0.2.8–0.2.11.
 
 **v0.2.7 (2026-03-03) — big update:** Fishing and Runecrafting skills; action consumption in the game loop; Bank filters for fish/runes; new Mining essence veins. Settings: **Confirm Task Switch**, **Battery Saver**, **Horizon HUD** (toggle to hide the 3 goal cards under XP bar), **Notifications** (Level Up, Task Complete, **Idle Cap Reached** with local scheduling), **Idle Soundscapes** (stub hook). **Easter egg** "Don't Push This" (1,000 presses → title "The Stubborn"). All persisted.
 

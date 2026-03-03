@@ -12,6 +12,7 @@ export type SkillId =
     | 'scavenging'
     | 'cooking'
     | 'smithing'
+    | 'forging'
     | 'crafting'
     | 'farming'
     | 'herblore'

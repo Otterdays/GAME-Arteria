@@ -29,6 +29,7 @@ export type SkillId =
     | 'scavenging'
     | 'cooking'
     | 'smithing'
+    | 'forging'
     | 'crafting'
     | 'farming'
     | 'herblore'
@@ -129,7 +130,7 @@ export interface PlayerState {
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
-    'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing',
+    'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing', 'forging',
     'crafting', 'farming', 'herblore', 'agility',
     'attack', 'strength', 'defence', 'hitpoints',
 ];
@@ -291,6 +292,17 @@ export interface LootVacuumEvent {
     quantity: number;
 }
 
+/** Activity log entry — random events, level-ups, skill happenings. [TRACE: User request] */
+export type ActivityLogType = 'random_event' | 'level_up' | 'skill_start';
+
+export interface ActivityLogEntry {
+    id: string;
+    timestamp: number;
+    type: ActivityLogType;
+    message: string;
+    data?: Record<string, unknown>;
+}
+
 /** In-game feedback toast (replaces Alert for locked, no essence, etc.) */
 export type FeedbackToastType = 'locked' | 'warning' | 'error' | 'info';
 
@@ -314,7 +326,11 @@ interface GameState {
     activeDialogue: { treeId: string; nodeId: string } | null;
     /** In-game feedback toasts (locked, no essence, etc.) */
     feedbackToastQueue: FeedbackToastEvent[];
+    /** Activity log — random events, level-ups, skill starts. Max 50 entries. */
+    activityLog: ActivityLogEntry[];
 }
+
+const ACTIVITY_LOG_MAX = 50;
 
 const initialState: GameState = {
     player: createFreshPlayer(),
@@ -325,6 +341,7 @@ const initialState: GameState = {
     lootVacuumQueue: [],
     activeDialogue: null,
     feedbackToastQueue: [],
+    activityLog: [],
 };
 
 export const gameSlice = createSlice({
@@ -355,6 +372,19 @@ export const gameSlice = createSlice({
                 skillId: action.payload.skillId,
                 actionId: action.payload.actionId,
             });
+            if (action.payload.skillId) {
+                state.activityLog = state.activityLog ?? [];
+                state.activityLog.unshift({
+                    id: Math.random().toString(36).substring(7),
+                    timestamp: Date.now(),
+                    type: 'skill_start',
+                    message: `Started ${action.payload.actionId} (${action.payload.skillId})`,
+                    data: { skillId: action.payload.skillId, actionId: action.payload.actionId },
+                });
+                if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                    state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+                }
+            }
         },
 
         /** Clear the active task */
@@ -373,7 +403,7 @@ export const gameSlice = createSlice({
                 skill.xp += effectiveXp;
                 skill.level = levelForXP(skill.xp);
 
-                // If we leveled up, queue a toast and pulse Skills tab
+                // If we leveled up, queue a toast, pulse Skills tab, and log
                 if (skill.level > oldLevel) {
                     state.levelUpQueue.push({
                         id: Math.random().toString(36).substring(7),
@@ -382,6 +412,17 @@ export const gameSlice = createSlice({
                     });
                     state.pulseTab = 'skills';
                     logger.info('Analytics', 'level_up', { skillId, level: skill.level });
+                    state.activityLog = state.activityLog ?? [];
+                    state.activityLog.unshift({
+                        id: Math.random().toString(36).substring(7),
+                        timestamp: Date.now(),
+                        type: 'level_up',
+                        message: `Level ${skill.level} ${skillId}`,
+                        data: { skillId, level: skill.level },
+                    });
+                    if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                        state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+                    }
                 }
             }
         },
@@ -469,6 +510,20 @@ export const gameSlice = createSlice({
         /** Dismiss the oldest feedback toast */
         popFeedbackToast(state) {
             state.feedbackToastQueue.shift();
+        },
+
+        /** Push to activity log (random events, level-ups, skill starts). Max 50 entries. */
+        pushActivityLog(state, action: PayloadAction<Omit<ActivityLogEntry, 'id' | 'timestamp'>>) {
+            const entry: ActivityLogEntry = {
+                ...action.payload,
+                id: Math.random().toString(36).substring(7),
+                timestamp: Date.now(),
+            };
+            state.activityLog = state.activityLog ?? [];
+            state.activityLog.unshift(entry);
+            if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+            }
         },
 
         /** X. Clear tab pulse when user visits that tab */

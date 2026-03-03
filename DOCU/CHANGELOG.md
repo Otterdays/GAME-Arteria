@@ -20,7 +20,10 @@
 ## [0.3.0] - 2026-03-03
 ### Added
 - **Theme Engine:** Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, and StatusBar follow selected theme. `paletteToNavigationTheme()`, NavThemeWrapper, StatusBarFromTheme. THEME_OPTIONS, THEMES registry (dark, light, sepia). Persisted with save.
-- **Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared `constants/skills.ts`.
+- **Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. Active skill gold highlight. Shared `constants/skills.ts`.
+- **Smithing:** Smelting skill. Ore → bars (Bronze, Iron, Steel, Gold, Mithril, Adamant, Runite). Consumes ore per tick; produces bars. Runite gated by narrative. `constants/smithing.ts`, `app/skills/smithing.tsx`.
+- **Forging:** New skill. Bars → equipment (daggers, half helmets, full helmets). 15 recipes grouped by metal tier. `constants/forging.ts`, `app/skills/forging.tsx`. Bank Equipment filter.
+- **Activity Log:** Skills screen 📜 button opens modal. Logs random events, level-ups, skill starts. Max 50 entries, session-based. `game.activityLog`, `ActivityLogModal.tsx`.
 - **Random Events:** Per-tick roll (~0.5% base, 60-tick cooldown). Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. `player.randomEvents` state. Groundwork for dialogue randoms, skill guardians.
 - **AI Versioning Reminder:** Doc heads include reminder to update Update Board, website, patchHistory, CHANGELOG, app.json when implementing features.
 

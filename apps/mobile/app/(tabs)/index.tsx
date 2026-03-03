@@ -6,12 +6,14 @@
  *   C. Locked-card style for unimplemented skills ("Phase 2 ›" tag, no Alert)
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,13 +28,15 @@ import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
 import { BouncyButton } from '@/components/BouncyButton';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { ActivityLogModal } from '@/components/ActivityLogModal';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 // ─── Skill metadata (from shared constants) ───────────────────────────────────
 
 // A. All skills array
 const ALL_SKILLS: SkillId[] = [
   'attack', 'hitpoints', 'mining',
-  'strength', 'agility', 'smithing',
+  'strength', 'agility', 'smithing', 'forging',
   'defence', 'herblore', 'fishing',
   'scavenging', 'cooking', 'logging',
   'harvesting', 'crafting', 'farming',
@@ -115,6 +119,7 @@ export default function SkillsScreen() {
   const { palette } = useTheme();
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
+  const [logModalVisible, setLogModalVisible] = useState(false);
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
   const skills = useAppSelector((s) => s.game.player.skills);
   const activeSkillId = activeTask?.skillId ?? null;
@@ -154,7 +159,8 @@ export default function SkillsScreen() {
       StyleSheet.create({
         container: { flex: 1, backgroundColor: palette.bgApp },
         header: {
-          padding: Spacing.lg,
+          padding: Spacing.md,
+          paddingBottom: Spacing.sm,
           backgroundColor: palette.bgCard,
           borderBottomWidth: 1,
           borderBottomColor: palette.border,
@@ -163,21 +169,21 @@ export default function SkillsScreen() {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: Spacing.md,
+          marginBottom: Spacing.sm,
         },
         headerTitle: {
           fontFamily: FontCinzelBold,
-          fontSize: FontSize.xl,
+          fontSize: FontSize.lg,
           color: palette.textPrimary,
         },
         totalLevelRow: {
           flexDirection: 'row',
           alignItems: 'center',
           gap: Spacing.sm,
-          marginTop: 2,
+          marginTop: 1,
         },
         totalLevel: {
-          fontSize: FontSize.sm,
+          fontSize: FontSize.xs,
           color: palette.gold,
           fontWeight: '600',
         },
@@ -199,44 +205,44 @@ export default function SkillsScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: palette.bgApp,
-          paddingHorizontal: Spacing.md,
-          paddingVertical: Spacing.xs,
+          paddingHorizontal: Spacing.sm,
+          paddingVertical: 4,
           borderRadius: Radius.full,
           borderWidth: 1,
           borderColor: palette.border,
-          gap: 6,
+          gap: 4,
         },
-        activeSkillEmoji: { fontSize: 14 },
+        activeSkillEmoji: { fontSize: 12 },
         activeSkillText: {
           color: palette.white,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 'bold',
         },
         idleBadge: {
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: palette.bgApp,
-          paddingHorizontal: Spacing.md,
-          paddingVertical: Spacing.xs,
+          paddingHorizontal: Spacing.sm,
+          paddingVertical: 4,
           borderRadius: Radius.full,
           borderWidth: 1,
           borderColor: palette.border,
-          gap: 6,
+          gap: 4,
         },
         idleDot: {
-          width: 6,
-          height: 6,
-          borderRadius: 3,
+          width: 5,
+          height: 5,
+          borderRadius: 2.5,
           backgroundColor: palette.textDisabled,
         },
         idleText: {
           color: palette.textSecondary,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
         },
-        headerXpSection: { gap: 4 },
+        headerXpSection: { gap: 2 },
         headerXpBarBg: {
-          height: 6,
+          height: 5,
           backgroundColor: palette.bgApp,
           borderRadius: Radius.full,
           overflow: 'hidden',
@@ -246,7 +252,7 @@ export default function SkillsScreen() {
           borderRadius: Radius.full,
         },
         headerXpText: {
-          fontSize: 10,
+          fontSize: 9,
           color: palette.textSecondary,
           textAlign: 'center',
           fontWeight: '600',
@@ -311,6 +317,25 @@ export default function SkillsScreen() {
           textShadowOffset: { width: 1, height: 1 },
           textShadowRadius: 1,
         },
+        horizonToggle: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 4,
+          paddingVertical: 4,
+          paddingHorizontal: Spacing.sm,
+          marginTop: Spacing.xs,
+          alignSelf: 'center',
+          backgroundColor: palette.bgApp,
+          borderRadius: Radius.full,
+          borderWidth: 1,
+          borderColor: palette.border,
+        },
+        horizonToggleText: {
+          fontSize: FontSize.xs,
+          color: palette.textSecondary,
+          fontWeight: '600',
+        },
       }),
     [palette]
   );
@@ -320,16 +345,26 @@ export default function SkillsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.headerTitle}>Skills</Text>
-            <View style={styles.totalLevelRow}>
-              <Text style={styles.totalLevel}>Total Lv. {totalLevel} / {maxTotalLevel}</Text>
-              {isPatron && (
-                <View style={styles.patronBadge}>
-                  <Text style={styles.patronBadgeText}>PATRON</Text>
-                </View>
-              )}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+            <View>
+              <Text style={styles.headerTitle}>Skills</Text>
+              <View style={styles.totalLevelRow}>
+                <Text style={styles.totalLevel}>Total Lv. {totalLevel} / {maxTotalLevel}</Text>
+                {isPatron && (
+                  <View style={styles.patronBadge}>
+                    <Text style={styles.patronBadgeText}>PATRON</Text>
+                  </View>
+                )}
+              </View>
             </View>
+            <Pressable
+              onPress={() => setLogModalVisible(true)}
+              style={{ padding: Spacing.xs }}
+              accessibilityLabel="Open activity log"
+              accessibilityRole="button"
+            >
+              <Text style={{ fontSize: 18 }}>📜</Text>
+            </Pressable>
           </View>
           {activeTask ? (
             <View style={styles.activeSkillBadge}>
@@ -371,7 +406,24 @@ export default function SkillsScreen() {
           </Text>
         </View>
         {horizonHudEnabled && <HorizonHUD />}
+        <TouchableOpacity
+          style={styles.horizonToggle}
+          onPress={() => dispatch(gameActions.setHorizonHudEnabled(!horizonHudEnabled))}
+          accessibilityLabel={horizonHudEnabled ? 'Hide goal cards' : 'Show goal cards'}
+          accessibilityRole="button"
+        >
+          <IconSymbol
+            name={horizonHudEnabled ? 'chevron.down' : 'chevron.up'}
+            size={14}
+            color={palette.textSecondary}
+          />
+          <Text style={styles.horizonToggleText}>
+            {horizonHudEnabled ? 'Hide goals' : 'Show goals'}
+          </Text>
+        </TouchableOpacity>
       </View>
+
+      <ActivityLogModal visible={logModalVisible} onClose={() => setLogModalVisible(false)} />
 
       {/* A. Skill grid */}
       <ScrollView

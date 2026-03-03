@@ -50,6 +50,7 @@ export type PaletteShape = {
   skillFishing: string;
   skillCooking: string;
   skillSmithing: string;
+  skillForging: string;
   skillCrafting: string;
   skillFarming: string;
   skillHerblore: string;
@@ -111,6 +112,7 @@ const DARK_PALETTE: PaletteShape = {
   skillFishing: '#4a90e2',
   skillCooking: '#e67e22',
   skillSmithing: '#95a5a6',
+  skillForging: '#c0392b',
   skillCrafting: '#9b59b6',
   skillFarming: '#27ae60',
   skillHerblore: '#2ecc71',

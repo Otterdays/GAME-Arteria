@@ -30,6 +30,8 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code-tags',
   'chevron.right': 'chevron-right',
+  'chevron.down': 'chevron-down',
+  'chevron.up': 'chevron-up',
   'lock.fill': 'lock',
   'bag.fill': 'bag-personal',
 } as Record<string, ComponentProps<typeof MaterialCommunityIcons>['name']>;

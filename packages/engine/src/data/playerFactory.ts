@@ -12,6 +12,7 @@ const ALL_SKILLS: SkillId[] = [
     'fishing',
     'cooking',
     'smithing',
+    'forging',
     'crafting',
     'farming',
     'herblore',

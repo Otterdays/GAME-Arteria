@@ -18,6 +18,9 @@ const SKILL_EMOJIS: Record<string, string> = {
     mining: '⛏️',
     logging: '🪓',
     fishing: '🎣',
+    runecrafting: '✨',
+    smithing: '🔨',
+    forging: '⚒️',
     harvesting: '🪴',
     scavenging: '🏕️',
     attack: '⚔️',
@@ -77,24 +80,24 @@ export const HorizonHUD = () => {
         () =>
             StyleSheet.create({
                 container: {
-                    paddingVertical: Spacing.md,
+                    paddingVertical: Spacing.sm,
                     backgroundColor: palette.bgCard,
                 },
                 scrollContent: {
-                    paddingHorizontal: Spacing.md,
-                    gap: Spacing.sm,
-                    paddingBottom: 4,
+                    paddingHorizontal: Spacing.sm,
+                    gap: Spacing.xs,
+                    paddingBottom: 2,
                 },
                 cardContainer: {
-                    width: 180,
-                    minHeight: 120,
-                    borderRadius: Radius.lg,
+                    width: 140,
+                    minHeight: 88,
+                    borderRadius: Radius.md,
                     overflow: 'hidden',
-                    elevation: 8,
+                    elevation: 4,
                     shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 6,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
                 },
                 cardGradient: {
                     flex: 1,
@@ -103,67 +106,67 @@ export const HorizonHUD = () => {
                 glassInner: {
                     flex: 1,
                     backgroundColor: 'rgba(27, 30, 41, 0.85)',
-                    borderRadius: Radius.lg - 1,
-                    padding: Spacing.md,
+                    borderRadius: Radius.md - 1,
+                    padding: Spacing.sm,
                 },
                 cardHeader: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: Spacing.sm,
+                    marginBottom: Spacing.xs,
                 },
                 goalLabel: {
-                    fontSize: 10,
+                    fontSize: 9,
                     fontWeight: '900',
                     color: palette.textSecondary,
                     textTransform: 'uppercase',
-                    letterSpacing: 1,
+                    letterSpacing: 0.5,
                 },
                 emojiCircle: {
-                    width: 24,
-                    height: 24,
-                    borderRadius: 12,
+                    width: 18,
+                    height: 18,
+                    borderRadius: 9,
                     backgroundColor: 'rgba(255,255,255,0.05)',
                     alignItems: 'center',
                     justifyContent: 'center',
                 },
-                goalEmoji: { fontSize: 12 },
+                goalEmoji: { fontSize: 10 },
                 goalName: {
-                    fontSize: FontSize.base,
+                    fontSize: FontSize.sm,
                     fontWeight: 'bold',
                     color: palette.white,
-                    marginBottom: 12,
+                    marginBottom: 6,
                 },
                 progressWrapper: {
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 8,
-                    marginBottom: 6,
+                    gap: 6,
+                    marginBottom: 4,
                 },
                 progressBg: {
                     flex: 1,
-                    height: 6,
+                    height: 4,
                     backgroundColor: 'rgba(0,0,0,0.3)',
-                    borderRadius: 3,
+                    borderRadius: 2,
                     overflow: 'hidden',
                 },
                 progressFill: {
                     height: '100%',
                     backgroundColor: palette.white,
-                    borderRadius: 3,
+                    borderRadius: 2,
                     shadowColor: '#fff',
                     shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 4,
+                    shadowOpacity: 0.4,
+                    shadowRadius: 2,
                 },
                 progressText: {
-                    fontSize: 10,
+                    fontSize: 9,
                     color: palette.white,
                     fontWeight: '900',
-                    width: 26,
+                    width: 22,
                 },
                 subtext: {
-                    fontSize: 10,
+                    fontSize: 9,
                     color: palette.textSecondary,
                     fontStyle: 'italic',
                     opacity: 0.8,
@@ -203,7 +206,7 @@ export const HorizonHUD = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
-                snapToInterval={180 + Spacing.sm}
+                snapToInterval={140 + Spacing.xs}
                 decelerationRate="fast"
             >
                 <GoalCard goal={immediateGoal} colors={[palette.accentPrimary, palette.accentDim] as const} />

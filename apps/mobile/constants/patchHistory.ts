@@ -18,7 +18,10 @@ export const PATCH_HISTORY: PatchEntry[] = [
     date: '2026-03-03',
     added: [
       '🎨 Theme Engine: Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, StatusBar follow selected theme. paletteToNavigationTheme(), NavThemeWrapper, persisted with save.',
-      '⚡ Quick-Switch Sidebar: Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared constants/skills.ts.',
+      '⚡ Quick-Switch Sidebar: Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. Active skill gold highlight. Shared constants/skills.ts.',
+      '🔨 Smithing: Smelting skill. Ore → bars (Bronze, Iron, Steel, Gold, Mithril, Adamant, Runite). Consumes ore per tick; produces bars. Runite gated by narrative.',
+      '⚒️ Forging: New skill. Bars → equipment (daggers, half helmets, full helmets). 15 recipes grouped by metal tier (Bronze, Iron, Steel, Mithril, Adamant). Bank Equipment filter.',
+      '📜 Activity Log: Skills screen 📜 button opens modal. Logs random events, level-ups, skill starts. Max 50 entries, session-based.',
       '🎲 Random Events: Blibbertooth\'s Blessing, Cosmic Sneeze, Genie\'s Gift, Treasure Chest, Lucky Strike. Per-tick roll (~0.5% base, 60-tick cooldown). player.randomEvents state.',
       'AI versioning reminder in doc heads.',
     ],

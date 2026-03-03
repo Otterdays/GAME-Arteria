@@ -29,6 +29,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import {
     SKILL_META,
     IMPLEMENTED_GATHERING_SKILLS,
+    IMPLEMENTED_CRAFTING_SKILLS,
     type SkillId,
 } from '@/constants/skills';
 import { useQuickSwitch } from '@/contexts/QuickSwitchContext';
@@ -282,7 +283,7 @@ export function QuickSwitchSidebar() {
                     <Text style={styles.title}>Quick Switch</Text>
                     <Text style={styles.subtitle}>Jump between skills</Text>
                     <View style={styles.skillList}>
-                        {IMPLEMENTED_GATHERING_SKILLS.map((skillId) => (
+                        {[...IMPLEMENTED_GATHERING_SKILLS, ...IMPLEMENTED_CRAFTING_SKILLS].map((skillId) => (
                             <SkillRow
                                 key={skillId}
                                 skillId={skillId}

@@ -14,6 +14,7 @@ export type SkillId =
     | 'scavenging'
     | 'cooking'
     | 'smithing'
+    | 'forging'
     | 'crafting'
     | 'farming'
     | 'herblore'
@@ -38,6 +39,7 @@ export const SKILL_META: Record<SkillId, SkillMeta> = {
     runecrafting: { label: 'Runecrafting', color: '#9b59b6', emoji: '✨' },
     cooking: { label: 'Cooking', color: Palette.skillCooking, emoji: '🍳' },
     smithing: { label: 'Smithing', color: Palette.skillSmithing, emoji: '🔨' },
+    forging: { label: 'Forging', color: Palette.skillForging, emoji: '⚒️' },
     crafting: { label: 'Crafting', color: Palette.skillCrafting, emoji: '✂️' },
     farming: { label: 'Farming', color: Palette.skillFarming, emoji: '🌾' },
     herblore: { label: 'Herblore', color: Palette.skillHerblore, emoji: '🧪' },
@@ -52,7 +54,16 @@ export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
     'mining',
     'logging',
     'fishing',
-    'runecrafting',
 ];
 
-export const IMPLEMENTED_SKILLS = new Set<SkillId>(IMPLEMENTED_GATHERING_SKILLS);
+export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
+    'runecrafting',
+    'smithing',
+    'forging',
+];
+
+/** All skills with implemented screens (sidebar + main grid). */
+export const IMPLEMENTED_SKILLS = new Set<SkillId>([
+    ...IMPLEMENTED_GATHERING_SKILLS,
+    ...IMPLEMENTED_CRAFTING_SKILLS,
+]);

@@ -160,7 +160,13 @@ export default function UpdateBoard() {
                         <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>⚡ Quick-Switch Sidebar</Text>
                             <Text style={styles.changeText}>• Floating pill on the left edge when in a skill screen. Tap to slide open a beautiful drawer.</Text>
-                            <Text style={styles.changeText}>• Jump between Mining, Logging, Fishing, Runecrafting without going back to the Skills tab. Active skill highlighted in gold.</Text>
+                            <Text style={styles.changeText}>• Jump between Mining, Logging, Fishing, Runecrafting, Smithing, Forging without going back to the Skills tab. Active skill highlighted in gold.</Text>
+                        </View>
+
+                        <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>🔨 Smithing & ⚒️ Forging</Text>
+                            <Text style={styles.changeText}>• Smithing: Smelt ore into bars at the furnace (Bronze → Runite).</Text>
+                            <Text style={styles.changeText}>• Forging: Forge bars into weapons and armour at the anvil. Daggers, half helmets, full helmets. Grouped by metal tier (Bronze, Iron, Steel, Mithril, Adamant). Bank Equipment filter.</Text>
                         </View>
 
                         <View style={styles.changeBlock}>
