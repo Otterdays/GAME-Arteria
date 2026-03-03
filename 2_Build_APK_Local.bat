@@ -1,16 +1,17 @@
 @echo off
 title Arteria Local APK Build (Shareable)
 color 0e
-REM [TRACE: DOCU/SCRATCHPAD.md]
+REM [TRACE: DOCU/EXPO_GUIDE.md — Dev/Prod Coexistence]
+REM Prod build: "Arteria", com.anonymous.arteria. Dev uses "Arteria-dev" (1_Run_Local_Android_Build.bat).
 REM We use Gradle directly from apps\mobile\android so the APK is built WITHOUT
 REM a connected device. "npx expo run:android --variant release" requires a
 REM device/emulator to install; gradlew.bat assembleRelease does not.
-REM In PowerShell you must use .\gradlew.bat (current dir not on PATH).
 echo ===================================================
 echo Arteria - Local APK Build (No EAS Credits)
 echo ===================================================
 echo.
 echo Builds a release APK on your machine for sharing.
+echo App name: Arteria (prod). Dev testing uses Arteria-dev separately.
 echo Requires: Android Studio + Android SDK (same as 1_Run_Local_Android_Build.bat)
 echo.
 echo Output folder: apps\mobile\android\app\build\outputs\apk\release\
@@ -19,15 +20,38 @@ echo Lean mode: excludes Expo dev-client native modules for smaller prod APKs
 echo.
 pause
 
+set "NODE_ENV=production"
+set "ARTERIA_LEAN_PROD=1"
+
+REM Prebuild with prod config if android was last built for dev (or missing).
+set "MODE_FILE=%~dp0apps\mobile\android\.arteria-build-mode"
+if exist "%MODE_FILE%" (
+    set /p CURRENT_MODE=<"%MODE_FILE%" 2>nul
+) else (
+    set "CURRENT_MODE="
+)
+if not "%CURRENT_MODE%"=="prod" (
+    echo Regenerating native project for PROD (Arteria)...
+    cd /d "%~dp0\apps\mobile"
+    npx expo prebuild --clean --platform android
+    if errorlevel 1 (
+        echo ERROR: Prebuild failed.
+        cd /d "%~dp0"
+        pause
+        exit /b 1
+    )
+    echo prod>"%MODE_FILE%"
+    echo Prebuild complete. Proceeding to Gradle build...
+) else (
+    echo Native project already in PROD mode. Skipping prebuild.
+)
+
 cd /d "%~dp0\apps\mobile\android"
 if errorlevel 1 (
     echo ERROR: Could not cd to apps\mobile\android
     pause
     exit /b 1
 )
-
-set "NODE_ENV=production"
-set "ARTERIA_LEAN_PROD=1"
 
 REM Stop stale Gradle daemons so we start fresh (avoids "6 incompatible" buildup).
 call gradlew.bat --stop

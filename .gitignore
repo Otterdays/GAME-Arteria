@@ -17,3 +17,6 @@ veda
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Local build mode cache (dev vs prod app name/package). See EXPO_GUIDE §Dev/Prod.
+**/.arteria-build-mode

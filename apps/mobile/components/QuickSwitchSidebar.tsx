@@ -1,0 +1,309 @@
+/**
+ * QuickSwitchSidebar — Slide-in drawer to jump between gathering skills.
+ * [TRACE: ROADMAP U. Quick-Switch Sidebar]
+ *
+ * Beautiful glassmorphic panel with skill-specific colors, gold accent for active,
+ * smooth Reanimated slide. Trigger: floating pill on left edge.
+ */
+
+import React, { useEffect } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    Platform,
+} from 'react-native';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+} from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSegments, router } from 'expo-router';
+import { useAppSelector } from '@/store/hooks';
+import {
+    Palette,
+    Spacing,
+    FontSize,
+    Radius,
+    FontCinzelBold,
+} from '@/constants/theme';
+import {
+    SKILL_META,
+    IMPLEMENTED_GATHERING_SKILLS,
+    type SkillId,
+} from '@/constants/skills';
+import { useQuickSwitch } from '@/contexts/QuickSwitchContext';
+
+const SIDEBAR_WIDTH = 260;
+const SPRING_CONFIG = { damping: 22, stiffness: 200 };
+
+function SkillRow({
+    skillId,
+    isActive,
+    onPress,
+}: {
+    skillId: SkillId;
+    isActive: boolean;
+    onPress: () => void;
+}) {
+    const meta = SKILL_META[skillId];
+
+    return (
+        <Pressable
+            onPress={onPress}
+            style={({ pressed }) => [
+                styles.skillRow,
+                {
+                    borderLeftColor: meta.color,
+                    borderLeftWidth: 4,
+                    backgroundColor: isActive
+                        ? `${meta.color}18`
+                        : pressed
+                          ? Palette.bgCardHover
+                          : 'transparent',
+                    borderColor: isActive ? Palette.gold : 'transparent',
+                    borderWidth: isActive ? 1 : 0,
+                },
+            ]}
+            android_ripple={{ color: `${meta.color}30` }}
+        >
+            <Text style={styles.skillEmoji}>{meta.emoji}</Text>
+            <Text
+                style={[
+                    styles.skillLabel,
+                    isActive && styles.skillLabelActive,
+                ]}
+                numberOfLines={1}
+            >
+                {meta.label}
+            </Text>
+        </Pressable>
+    );
+}
+
+export function QuickSwitchSidebar() {
+    const insets = useSafeAreaInsets();
+    const segments = useSegments();
+    const { isOpen, close, toggle } = useQuickSwitch();
+    const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const translateX = useSharedValue(-SIDEBAR_WIDTH);
+
+    const isInSkillScreen = segments[0] === 'skills';
+    const showTrigger = isInSkillScreen;
+
+    useEffect(() => {
+        translateX.value = withSpring(isOpen ? 0 : -SIDEBAR_WIDTH, SPRING_CONFIG);
+    }, [isOpen, translateX]);
+
+    const closeSidebar = () => {
+        close();
+    };
+
+    const handleSkillPress = (skillId: SkillId) => {
+        if (Platform.OS !== 'web') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+        closeSidebar();
+        router.push(`/skills/${skillId}` as any);
+    };
+
+    const sidebarStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: translateX.value }],
+    }));
+
+
+    return (
+        <>
+            {/* Trigger — floating pill on left edge */}
+            {showTrigger && (
+                <Pressable
+                    onPress={() => {
+                        if (Platform.OS !== 'web') {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        toggle();
+                    }}
+                    style={[styles.trigger, { top: insets.top + Spacing.lg }]}
+                    hitSlop={12}
+                >
+                    <LinearGradient
+                        colors={[
+                            Palette.bgCard,
+                            Palette.bgCardHover,
+                        ]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.triggerGradient}
+                    >
+                        <Text style={styles.triggerIcon}>≡</Text>
+                        {activeTask?.skillId && (
+                            <Text style={styles.triggerEmoji}>
+                                {SKILL_META[activeTask.skillId as SkillId]?.emoji ?? '⚙️'}
+                            </Text>
+                        )}
+                    </LinearGradient>
+                </Pressable>
+            )}
+
+            {/* Backdrop */}
+            {isOpen && (
+                <Pressable
+                    style={[StyleSheet.absoluteFill, styles.backdrop]}
+                    onPress={closeSidebar}
+                />
+            )}
+
+            {/* Sidebar panel */}
+            <Animated.View
+                style={[
+                    styles.sidebar,
+                    {
+                        top: insets.top,
+                        bottom: insets.bottom,
+                        paddingTop: insets.top + Spacing.md,
+                    },
+                    sidebarStyle,
+                ]}
+            >
+                <LinearGradient
+                    colors={[
+                        'rgba(17, 19, 26, 0.98)',
+                        'rgba(22, 25, 33, 0.98)',
+                        'rgba(13, 15, 21, 0.99)',
+                    ]}
+                    style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.sidebarContent}>
+                    <Text style={styles.title}>Quick Switch</Text>
+                    <Text style={styles.subtitle}>Jump between skills</Text>
+                    <View style={styles.skillList}>
+                        {IMPLEMENTED_GATHERING_SKILLS.map((skillId) => (
+                            <SkillRow
+                                key={skillId}
+                                skillId={skillId}
+                                isActive={activeTask?.skillId === skillId}
+                                onPress={() => handleSkillPress(skillId)}
+                            />
+                        ))}
+                    </View>
+                    <View style={styles.footer}>
+                        <View style={styles.footerLine} />
+                        <Text style={styles.footerText}>
+                            Tap outside to close
+                        </Text>
+                    </View>
+                </View>
+            </Animated.View>
+        </>
+    );
+}
+
+const styles = StyleSheet.create({
+    trigger: {
+        position: 'absolute',
+        left: Spacing.sm,
+        zIndex: 1100,
+        ...Platform.select({
+            ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 4 },
+            android: { elevation: 6 },
+        }),
+    },
+    triggerGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: Spacing.sm,
+        paddingHorizontal: Spacing.md,
+        borderRadius: Radius.full,
+        borderWidth: 1,
+        borderColor: 'rgba(139, 92, 246, 0.3)',
+        gap: Spacing.xs,
+    },
+    triggerIcon: {
+        fontSize: 18,
+        color: Palette.textPrimary,
+        fontWeight: '700',
+    },
+    triggerEmoji: {
+        fontSize: 14,
+    },
+    backdrop: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        zIndex: 1050,
+    },
+    sidebar: {
+        position: 'absolute',
+        left: 0,
+        width: SIDEBAR_WIDTH,
+        zIndex: 1060,
+        borderRightWidth: 1,
+        borderRightColor: 'rgba(139, 92, 246, 0.25)',
+        overflow: 'hidden',
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 4, height: 0 },
+                shadowOpacity: 0.4,
+                shadowRadius: 12,
+            },
+            android: { elevation: 16 },
+        }),
+    },
+    sidebarContent: {
+        flex: 1,
+        paddingHorizontal: Spacing.md,
+        paddingBottom: Spacing.lg,
+    },
+    title: {
+        fontFamily: FontCinzelBold,
+        fontSize: FontSize.lg,
+        color: Palette.accentWeb,
+        marginBottom: 2,
+    },
+    subtitle: {
+        fontSize: FontSize.sm,
+        color: Palette.textSecondary,
+        marginBottom: Spacing.lg,
+    },
+    skillList: {
+        gap: Spacing.xs,
+    },
+    skillRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.md,
+        borderRadius: Radius.md,
+        gap: Spacing.md,
+    },
+    skillEmoji: {
+        fontSize: 24,
+    },
+    skillLabel: {
+        fontSize: FontSize.base,
+        color: Palette.textPrimary,
+        fontWeight: '600',
+        flex: 1,
+    },
+    skillLabelActive: {
+        color: Palette.gold,
+    },
+    footer: {
+        marginTop: 'auto',
+        paddingTop: Spacing.lg,
+        alignItems: 'center',
+    },
+    footerLine: {
+        width: 40,
+        height: 1,
+        backgroundColor: Palette.divider,
+        marginBottom: Spacing.sm,
+    },
+    footerText: {
+        fontSize: FontSize.xs,
+        color: Palette.textMuted,
+    },
+});

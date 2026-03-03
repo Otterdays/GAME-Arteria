@@ -2,7 +2,27 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Feedback toast system implemented; theme engine documented.
+
+> **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
+
+**Active Task:** Dev/Prod app identity split complete (Arteria vs Arteria-dev).
+
+## [2026-03-03] Dev/Prod App Identity
+- **Implemented:** `2_Build_APK_Local.bat` → Arteria (prod), `com.anonymous.arteria`. `1_Run_Local_Android_Build.bat` → Arteria-dev, `com.anonymous.arteria.dev`. Both can coexist on same device. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run `expo prebuild --clean` only when switching modes (tracked by `android/.arteria-build-mode`). EXPO_GUIDE §5b, STYLE_GUIDE §7, SUMMARY updated.
+
+## [2026-03-03] Quick-Switch Sidebar
+- **Implemented:** Floating pill on left edge when in skill screen. Tap opens slide-in drawer. Jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Reanimated spring, LinearGradient, skill-specific colors. QuickSwitchContext + QuickSwitchProvider. Shared constants/skills.ts (SKILL_META, IMPLEMENTED_GATHERING_SKILLS). index.tsx now imports from shared constants.
+- **Version:** 0.2.9. UpdateBoard, patchHistory, CHANGELOG, ROADMAP updated.
+
+## [2026-03-03] Random Events Expanded
+- **Added 3 events:** Genie's Gift (level×10 XP to random trained skill), Treasure Chest (gold scaling with level), Lucky Strike (double XP this tick). Now 5 events total. Offline accumulator includes bonus XP for WYWA modal.
+- **Groundwork:** `constants/randomEvents.ts` (RANDOM_EVENT_CHANCE_BASE, COOLDOWN, BLIBBERTOOTH_XP_MULTIPLIER, RANDOM_EVENT_TYPES). `player.randomEvents` in Redux (lastTriggeredAt, ticksSinceLastEvent, completedCount). `recordRandomEventTriggered` reducer. Migration for existing saves.
+- **Version:** 0.2.8. Updated UpdateBoard, patchHistory, CHANGELOG, index.html, app.json. AI versioning reminder added to SUMMARY, SCRATCHPAD, ROADMAP, CHANGELOG, ARCHITECTURE, FUTURE_NOTES, index.html.
+
+## [2026-03-03] Random Events Design Proposal
+- **Source:** RuneScape wiki (runescape-wiki__w_Random_events.html) + DOCU (MASTER_DESIGN_DOC, My_Thoughts, ROADMAP).
+- **FUTURE_NOTES.md:** New "Random Events — Design Proposal" section. RS inspiration (Gift Givers, Skill Guardians, Puzzles, Hazards). Arteria ideas: Blibbertooth Blessing, Cosmic Sneeze, Genie lamp (MVP); dialogue randoms (Mysterious Stranger, Nick's Cousin); skill guardians post-combat; hazard events. Phased rollout + technical hooks (per-tick roll, player.randomEvents state, offline cap).
+- **ROADMAP.md:** New "Random Events" subsection under QoL with MVP, dialogue randoms, skill guardians, hazard events.
 
 ## [2026-03-03] Feedback Toast System & Theme Engine Docs
 - **Feedback Toast:** Replaced system `Alert.alert()` with in-game stylized toasts for locked, no essence, level req. New `FeedbackToast.tsx`, `useFeedbackToast` hook, Redux `feedbackToastQueue` + `pushFeedbackToast`/`popFeedbackToast`. Variants: locked (red), warning (gold), error (red), info (blue). Mining, Logging, Fishing, Runecrafting screens now use `showFeedbackToast()`. Confirm Task Switch in `useRequestStartTask` still uses Alert (requires user choice).

@@ -19,32 +19,14 @@ import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBo
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
+import { SKILL_META, IMPLEMENTED_SKILLS } from '@/constants/skills';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
 import { BouncyButton } from '@/components/BouncyButton';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 
-// ─── Skill metadata ───────────────────────────────────────────────────────────
-
-const SKILL_META: Record<SkillId, { label: string; color: string; emoji: string }> = {
-  mining: { label: 'Mining', color: Palette.skillMining, emoji: '⛏️' },
-  logging: { label: 'Logging', color: Palette.skillLogging, emoji: '🪓' },
-  harvesting: { label: 'Harvesting', color: Palette.skillHarvesting, emoji: '🪴' },
-  scavenging: { label: 'Scavenging', color: Palette.skillScavenging, emoji: '🏕️' },
-  fishing: { label: 'Fishing', color: Palette.skillFishing, emoji: '🎣' },
-  runecrafting: { label: 'Runecrafting', color: '#9b59b6', emoji: '✨' },
-  cooking: { label: 'Cooking', color: Palette.skillCooking, emoji: '🍳' },
-  smithing: { label: 'Smithing', color: Palette.skillSmithing, emoji: '🔨' },
-  crafting: { label: 'Crafting', color: Palette.skillCrafting, emoji: '✂️' },
-  farming: { label: 'Farming', color: Palette.skillFarming, emoji: '🌾' },
-  herblore: { label: 'Herblore', color: Palette.skillHerblore, emoji: '🧪' },
-  agility: { label: 'Agility', color: Palette.skillAgility, emoji: '🏃' },
-  attack: { label: 'Attack', color: Palette.skillAttack, emoji: '⚔️' },
-  strength: { label: 'Strength', color: Palette.skillStrength, emoji: '💪' },
-  defence: { label: 'Defence', color: Palette.skillDefence, emoji: '🛡️' },
-  hitpoints: { label: 'Hitpoints', color: Palette.skillHitpoints, emoji: '❤️' },
-};
+// ─── Skill metadata (from shared constants) ───────────────────────────────────
 
 // A. All skills array
 const ALL_SKILLS: SkillId[] = [
@@ -55,9 +37,6 @@ const ALL_SKILLS: SkillId[] = [
   'harvesting', 'crafting', 'farming',
   'runecrafting',
 ];
-
-// C. Skills that are implemented and navigable
-const IMPLEMENTED_SKILLS = new Set<SkillId>(['mining', 'logging', 'fishing', 'runecrafting']);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

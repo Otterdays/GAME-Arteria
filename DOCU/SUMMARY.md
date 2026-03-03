@@ -3,6 +3,8 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+> **🤖 AI: When implementing new features, ALWAYS update:** (1) **Update Board** (`apps/mobile/components/UpdateBoard.tsx`) — in-app changelog modal; (2) **Website** (`index.html` §Changelog); (3) **patchHistory.ts** — Patch Notes screen; (4) **CHANGELOG.md**; (5) **app.json** version. See SCRATCHPAD §Versioning.
+
 **Project:** Arteria — The AFK RPG
 
 ---
@@ -35,7 +37,13 @@
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
 
-**Version scheme:** 0.2.x (current **0.2.7**). Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+**Version scheme:** 0.2.x (current **0.2.9**).
+
+**Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+
+**v0.2.9 (2026-03-03) — Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump between Mining, Logging, Fishing, Runecrafting. Active skill gold highlight. Shared skills constants.
+
+**v0.2.8 (2026-03-03) — Random Events:** Blibbertooth's Blessing (bonus XP), Cosmic Sneeze (double items). Per-tick roll ~0.5%, 60-tick cooldown. Groundwork for Genie lamp, dialogue randoms, skill guardians. AI versioning reminder added to doc heads.
 
 **v0.2.7 (2026-03-03) — big update:** Fishing and Runecrafting skills; action consumption in the game loop; Bank filters for fish/runes; new Mining essence veins. Settings: **Confirm Task Switch**, **Battery Saver**, **Horizon HUD** (toggle to hide the 3 goal cards under XP bar), **Notifications** (Level Up, Task Complete, **Idle Cap Reached** with local scheduling), **Idle Soundscapes** (stub hook). **Easter egg** "Don't Push This" (1,000 presses → title "The Stubborn"). All persisted.
 

@@ -75,7 +75,18 @@ For craftable/skill nodes with multiple requirements (level, essence, narrative)
 
 ---
 
-## 7. Theme Tokens
+## 7. Build Scripts & App Identity
+
+| Script | App Name | When to Use |
+|--------|----------|-------------|
+| `2_Build_APK_Local.bat` | **Arteria** | Shareable prod APK |
+| `1_Run_Local_Android_Build.bat` | **Arteria-dev** | Dev client for Fast Refresh |
+
+Both can coexist on the same device. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts set/unset it. See EXPO_GUIDE §5b.
+
+---
+
+## 8. Theme Tokens
 
 Import from `@/constants/theme`:
 

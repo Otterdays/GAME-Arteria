@@ -49,6 +49,16 @@ import { MINING_NODES } from '@/constants/mining';
 import { LOGGING_NODES } from '@/constants/logging';
 import { FISHING_SPOTS } from '@/constants/fishing';
 import { RUNE_ALTARS } from '@/constants/runecrafting';
+import {
+    RANDOM_EVENT_CHANCE_BASE,
+    RANDOM_EVENT_COOLDOWN_TICKS,
+    BLIBBERTOOTH_XP_MULTIPLIER,
+    GENIE_XP_MULTIPLIER,
+    TREASURE_GOLD_BASE,
+    TREASURE_GOLD_PER_LEVEL,
+    LUCKY_STRIKE_XP_MULTIPLIER,
+    RANDOM_EVENT_TYPES,
+} from '@/constants/randomEvents';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
@@ -81,14 +91,26 @@ export function useGameLoop() {
     const lastSaveTimestamp = useAppSelector((s) => s.game.player.lastSaveTimestamp);
     const isLoaded = useAppSelector((s) => s.game.isLoaded);
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
+    const activeSkillLevel = useAppSelector((s) => {
+        const st = s.game.player.activeTask;
+        if (!st?.skillId) return 1;
+        return s.game.player.skills[st.skillId]?.level ?? 1;
+    });
+    const skills = useAppSelector((s) => s.game.player.skills);
 
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
     const hasProcessedOfflineRef = useRef(false);
+    const ticksSinceLastEventRef = useRef(0);
+    const pendingCosmicSneezeRef = useRef(false);
     // Ref to current inventory so processDelta can read it without a stale closure
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const inventoryRef = useRef(inventory);
     inventoryRef.current = inventory;
+    const activeSkillLevelRef = useRef(activeSkillLevel);
+    activeSkillLevelRef.current = activeSkillLevel;
+    const skillsRef = useRef(skills);
+    skillsRef.current = skills;
 
     // Process a delta of time.
     // If accumulator is passed, results are added into it instead of dispatching immediately.
@@ -143,18 +165,108 @@ export function useGameLoop() {
                 const skillId = activeTask.skillId as SkillId;
                 const totalXP = action.xpPerTick * successfulTicks;
 
+                ticksSinceLastEventRef.current += successfulTicks;
+
+                // Random events: roll once per batch (max 1 event per processDelta)
+                const canRoll =
+                    ticksSinceLastEventRef.current >= RANDOM_EVENT_COOLDOWN_TICKS;
+                const bonusXpBySkill: Partial<Record<SkillId, number>> = {};
+                if (canRoll && Math.random() < RANDOM_EVENT_CHANCE_BASE * successfulTicks) {
+                    const eventType =
+                        RANDOM_EVENT_TYPES[Math.floor(Math.random() * RANDOM_EVENT_TYPES.length)];
+                    ticksSinceLastEventRef.current = 0;
+                    dispatch(gameActions.recordRandomEventTriggered());
+
+                    if (eventType === 'blibbertooth_blessing') {
+                        const lvl = activeSkillLevelRef.current;
+                        const bonusXp = lvl * BLIBBERTOOTH_XP_MULTIPLIER;
+                        bonusXpBySkill[skillId] = (bonusXpBySkill[skillId] ?? 0) + (isPatron ? Math.floor(bonusXp * XP_BONUS_PATRON) : bonusXp);
+                        dispatch(gameActions.applyXP({ skillId, xp: bonusXp }));
+                        dispatch(
+                            gameActions.pushFeedbackToast({
+                                type: 'info',
+                                title: "Blibbertooth's Blessing!",
+                                message: `+${bonusXp} bonus XP to ${skillId}.`,
+                            })
+                        );
+                        logger.info('Engine', 'RandomEvent: blibbertooth_blessing', { skillId, bonusXp });
+                    } else if (eventType === 'cosmic_sneeze') {
+                        pendingCosmicSneezeRef.current = true;
+                        logger.info('Engine', 'RandomEvent: cosmic_sneeze', { skillId });
+                    } else if (eventType === 'genie_gift') {
+                        const sk = skillsRef.current;
+                        const eligible = (Object.keys(sk) as SkillId[]).filter(
+                            (k) => sk[k]?.level && sk[k].level >= 1
+                        );
+                        const targetSkill = eligible.length > 0
+                            ? eligible[Math.floor(Math.random() * eligible.length)]
+                            : skillId;
+                        const lvl = sk[targetSkill]?.level ?? 1;
+                        const bonusXp = lvl * GENIE_XP_MULTIPLIER;
+                        bonusXpBySkill[targetSkill] = (bonusXpBySkill[targetSkill] ?? 0) + (isPatron ? Math.floor(bonusXp * XP_BONUS_PATRON) : bonusXp);
+                        dispatch(gameActions.applyXP({ skillId: targetSkill, xp: bonusXp }));
+                        dispatch(
+                            gameActions.pushFeedbackToast({
+                                type: 'info',
+                                title: "A Genie Appeared!",
+                                message: `+${bonusXp} XP to ${targetSkill}.`,
+                            })
+                        );
+                        logger.info('Engine', 'RandomEvent: genie_gift', { targetSkill, bonusXp });
+                    } else if (eventType === 'treasure_chest') {
+                        const lvl = activeSkillLevelRef.current;
+                        const base = TREASURE_GOLD_BASE + lvl * TREASURE_GOLD_PER_LEVEL;
+                        const gold = base + Math.floor(Math.random() * base);
+                        dispatch(gameActions.addGold(gold));
+                        dispatch(
+                            gameActions.pushFeedbackToast({
+                                type: 'info',
+                                title: 'Treasure Chest!',
+                                message: `+${gold} gold found!`,
+                            })
+                        );
+                        logger.info('Engine', 'RandomEvent: treasure_chest', { gold });
+                    } else if (eventType === 'lucky_strike') {
+                        const bonusXp = totalXP * (LUCKY_STRIKE_XP_MULTIPLIER - 1);
+                        bonusXpBySkill[skillId] = (bonusXpBySkill[skillId] ?? 0) + (isPatron ? Math.floor(bonusXp * XP_BONUS_PATRON) : bonusXp);
+                        dispatch(gameActions.applyXP({ skillId, xp: bonusXp }));
+                        dispatch(
+                            gameActions.pushFeedbackToast({
+                                type: 'info',
+                                title: 'Lucky Strike!',
+                                message: `Double XP this tick! +${bonusXp} bonus.`,
+                            })
+                        );
+                        logger.info('Engine', 'RandomEvent: lucky_strike', { skillId, bonusXp });
+                    }
+                }
+
                 dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
 
-                const items = action.items.map((item) => ({
+                let items = action.items.map((item) => ({
                     id: item.id,
                     quantity: item.quantity * successfulTicks,
                 }));
+                if (pendingCosmicSneezeRef.current && items.length > 0) {
+                    items = items.map((i) => ({ ...i, quantity: i.quantity * 2 }));
+                    pendingCosmicSneezeRef.current = false;
+                    dispatch(
+                        gameActions.pushFeedbackToast({
+                            type: 'info',
+                            title: 'Cosmic Sneeze!',
+                            message: 'Your next haul was doubled!',
+                        })
+                    );
+                }
                 dispatch(gameActions.addItems(items));
 
                 // If accumulating for an offline report, add effective XP (reducer applies Patron multiplier)
                 if (accumulator) {
                     const effectiveXp = isPatron ? Math.floor(totalXP * XP_BONUS_PATRON) : totalXP;
                     accumulator.xpGained[skillId] = (accumulator.xpGained[skillId] ?? 0) + effectiveXp;
+                    for (const [sid, xp] of Object.entries(bonusXpBySkill)) {
+                        accumulator.xpGained[sid as SkillId] = (accumulator.xpGained[sid as SkillId] ?? 0) + xp;
+                    }
                     for (const item of items) {
                         const existing = accumulator.itemsGained.find((i) => i.id === item.id);
                         if (existing) existing.quantity += item.quantity;
@@ -163,7 +275,7 @@ export function useGameLoop() {
                 }
             }
         },
-        [activeTask, dispatch, isPatron, inventoryRef]
+        [activeTask, dispatch, isPatron]
     );
 
     // Main game loop interval

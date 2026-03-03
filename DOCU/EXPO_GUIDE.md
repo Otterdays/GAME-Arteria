@@ -86,9 +86,9 @@ When EAS is unavailable (concurrency limit or credits exhausted), use the **loca
 
 **Run:** `2_Build_APK_Local.bat`
 
-This runs `gradlew assembleRelease` from `apps\mobile\android` (no device required). Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`, fixing "Unable to resolve module ./index.js".
+This runs `expo prebuild --clean` (when needed) with `ARTERIA_LEAN_PROD=1`, then `gradlew assembleRelease` from `apps\mobile\android` (no device required). Output app name: **Arteria**. Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`, fixing "Unable to resolve module ./index.js".
 
-`2_Build_APK_Local.bat` sets `ARTERIA_LEAN_PROD=1` so Expo autolinking excludes dev-client native modules in release builds (smaller APKs while keeping dev dependencies for development workflows).
+`2_Build_APK_Local.bat` sets `ARTERIA_LEAN_PROD=1` so: (1) app name/package are prod (`Arteria`, `com.anonymous.arteria`); (2) Expo autolinking excludes dev-client native modules in release builds (smaller APKs).
 
 APK output folder:
 ```
@@ -110,6 +110,19 @@ To prevent Metro and Babel from crashing (such as the `EXPO_ROUTER_APP_ROOT` env
 
 ---
 
+## 🔀 5b. Dev vs Prod App Identity (Coexistence)
+
+To avoid switching configs when alternating between shareable APKs and local dev testing, we use two app identities:
+
+| Build Script | App Name | Package | Use Case |
+|--------------|----------|---------|----------|
+| `2_Build_APK_Local.bat` | **Arteria** | `com.anonymous.arteria` | Shareable prod APK |
+| `1_Run_Local_Android_Build.bat` | **Arteria-dev** | `com.anonymous.arteria.dev` | Dev client for Fast Refresh |
+
+Both can be installed on the same device. The batch scripts set `ARTERIA_LEAN_PROD=1` (prod) or unset it (dev). `app.config.js` reads this and overrides `expo.name` and `expo.android.package`. Each script runs `expo prebuild --clean` only when the native project was last built for the other mode (tracked by `android/.arteria-build-mode`), so switching triggers one prebuild; repeated runs of the same script skip prebuild.
+
+---
+
 ## 🚀 6. Daily Workflow Summary
 
 **Step 1:** Download the latest Development Client APK to your phone (if you haven't already, or if you recently installed a native NPM package).
@@ -121,7 +134,7 @@ To prevent Metro and Babel from crashing (such as the `EXPO_ROUTER_APP_ROOT` env
 0_Start_Dev_Server.bat
 ```
 
-**Step 4:** Open the Arteria Development app on your phone, and connect to your PC's IP address (or scan the QR code printed by `npx expo start`).
+**Step 4:** Open the **Arteria-dev** app on your phone, and connect to your PC's IP address (or scan the QR code printed by `npx expo start`).
 
 **Step 5:** Code! Hit save in VSCode and watch it instantly update on your phone.
 

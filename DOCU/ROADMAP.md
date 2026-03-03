@@ -2,6 +2,9 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
+> **🤖 AI: When implementing features from this roadmap, update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json` version.
+
 **Synthesized from:** `MASTER_DESIGN_DOC.md` (Aetheria: The Idle Chronicles)
 **Last Updated:** 2026-02-26
 **Philosophy:** KISS · YAGNI · Ship the core loop first, but plan for the entire cosmos.
@@ -126,7 +129,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **R. Contextual Ambience** — Subtle loop icons/animations (birds for logging, waves for fishing) in the screen background.
 - [x] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
 - [ ] 🟢 **T. Critical Hit VFX** — Larger, golden pop-up for "Critical Gains" (double loot/xp random procs).
-- [ ] 🟢 **U. Quick-Switch Sidebar** — A drawer or small icon set to jump between gathering skills without going back to the Skill list.
+- [x] 🟢 **U. Quick-Switch Sidebar** — Floating pill on left edge; slide-in drawer to jump Mining/Logging/Fishing/Runecrafting. (v0.2.9)
 - [x] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
 - [x] 🟡 **W. Universal Action Ticker** — A persistent, slim progress bar at the top/bottom of the screen showing the *current action loop* (e.g., a 4-second bar for Mining Iron) with the skill emoji. Keeps the "heartbeat" of the game visible even in the Bank/Settings.
 
@@ -136,6 +139,12 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Z. Advanced Bank Search** — Add a real-time search bar and "Type" filters (Ore, Bar, Item) to the Bank UI.
 - [ ] 🟢 **ZA. Action Haptic Sequence** — A unique rhythmic vibration pattern when starting/stopping different types of skills.
 - [ ] 🟢 **ZB. Skill-Specific Ambience** — Subtle background soundscapes (birds, echoes, waves) that activate based on the open skill screen.
+
+### 🎲 Random Events (Design in FUTURE_NOTES.md)
+- [x] 🟡 **Random Events MVP** — Blibbertooth Blessing (bonus XP), Cosmic Sneeze (duplicate item). Per-tick roll ~0.5%; uses FeedbackToast. (v0.2.8)
+- [ ] 🟡 **Dialogue Randoms** — Mysterious Stranger (Odd One Out), Nick's Cousin (gift offer). Reuse DialogueOverlay + narrative trees.
+- [ ] 🔴 **Skill Guardians** — Rock Spirit (mining), Wood Wraith (logging), Void Nibble (fishing). Fight or ignore. Requires Phase 4 combat.
+- [ ] 🟢 **Hazard Events** — Cursed Vein, Tangled Roots, Big Catch. Temporary tick modifiers.
 
 ---
 

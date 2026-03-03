@@ -3,19 +3,29 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+> **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
+
 **Version restructure (2026-02-28):** Project versioning was consolidated so the current release is **v0.2.5**. Previous 0.3.x and 0.4.x entries were merged into 0.2.x to better reflect early-stage development. **Persistence & Pipeline** and **Deployment & Fixes** live in the **1.x.x** section (1.0.0 and 1.1.0). Content is preserved; only version numbers and grouping changed.
 
 ---
 
 ## [Unreleased]
 ### Added
-- **Feedback Toast System:** In-game stylized prompts replace system `Alert.alert()` for locked nodes, no essence, level requirements. `FeedbackToast` component with variants (locked, warning, error, info), `useFeedbackToast` hook, Redux queue. Mining, Logging, Fishing, Runecrafting use it. Auto-dismiss 3.5s, haptics, themed borders.
-- **Theme Engine (documented):** Full implementation plan in FUTURE_NOTES.md — ThemeContext, light/dark palettes, Settings toggle, ~30-file migration scope. Not yet implemented.
-- **STYLE_GUIDE.md:** Project conventions (trace tags, line limits, comment prefixes, touch targets, requirements indicators).
+- (Reserved for future features.)
 
-### Fixed
-- **Settings touch bug:** Whole row is now pressable for toggle rows; Switch is display-only to avoid dead zones.
-- **Quest expansion:** 17 new RuneScape-style quests (Act 1 & Act 2). Quest model extended with `questType` and `difficulty`. Available quests gated by `meetsNarrativeRequirement` (skills, flags, completed quests, items). Difficulty badges on quest cards. Engine exports `meetsNarrativeRequirement` and story types.
+---
+
+## [0.2.9] - 2026-03-03
+### Added
+- **Quick-Switch Sidebar:** Floating pill trigger on the left edge when in a skill screen. Tap to slide open a drawer and jump between Mining, Logging, Fishing, Runecrafting without returning to the Skills tab. Active skill highlighted in gold. Glassmorphic panel with skill-specific colors, smooth Reanimated slide. Shared `constants/skills.ts` for SKILL_META and IMPLEMENTED_SKILLS.
+
+---
+
+## [0.2.8] - 2026-03-03
+### Added
+- **Random Events:** Per-tick roll during skilling (~0.5% base chance, 60-tick cooldown). **Blibbertooth's Blessing:** Bonus XP (level × 5) to active skill. **Cosmic Sneeze:** Doubles next item haul. **Genie's Gift:** Bonus XP (level × 10) to a random trained skill. **Treasure Chest:** Gold reward scaling with level. **Lucky Strike:** Double XP for this tick. Groundwork for dialogue randoms, skill guardians (FUTURE_NOTES.md).
+- **Random Events State:** `player.randomEvents` (lastTriggeredAt, ticksSinceLastEvent, completedCount) for frequency tuning and future expansion.
+- **AI Versioning Reminder:** Doc heads (SUMMARY, SCRATCHPAD, ROADMAP, CHANGELOG, ARCHITECTURE, FUTURE_NOTES) now include prominent reminder to update Update Board, website, patchHistory, and app.json when implementing features.
 
 ---
 

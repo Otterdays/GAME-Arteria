@@ -1,7 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Version restructure: project uses 0.2.x; current release is 0.2.7 "The BIG Fish and Runes update! (and other cool stuff)".
+ * Current release: 0.2.8 "Random Events & Blibbertooth's Blessings".
  */
 
 export interface PatchEntry {
@@ -13,6 +13,22 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.2.9',
+    date: '2026-03-03',
+    added: [
+      'Quick-Switch Sidebar: Floating pill on left edge when in a skill screen. Tap to slide open a drawer and jump between Mining, Logging, Fishing, Runecrafting. Active skill highlighted in gold. Shared skills constants (constants/skills.ts).',
+    ],
+  },
+  {
+    version: '0.2.8',
+    date: '2026-03-03',
+    added: [
+      'Random Events: Blibbertooth\'s Blessing (bonus XP), Cosmic Sneeze (double items), Genie\'s Gift (XP to random skill), Treasure Chest (gold), Lucky Strike (double XP this tick). Per-tick roll (~0.5% base, 60-tick cooldown).',
+      'Random Events groundwork: player.randomEvents state, constants in randomEvents.ts. Ready for dialogue randoms, skill guardians (FUTURE_NOTES.md).',
+      'AI versioning reminder: Doc heads now include prominent note to update Update Board, website, patchHistory, CHANGELOG, app.json when implementing features.',
+    ],
+  },
   {
     version: '0.2.7',
     date: '2026-03-03',

@@ -115,6 +115,12 @@ export interface PlayerState {
     dontPushCount?: number;
     /** Unlocked display titles (e.g. "The Stubborn") */
     unlockedTitles?: string[];
+    /** Random events: cooldown and completion tracking for frequency tuning. */
+    randomEvents?: {
+        lastTriggeredAt: number;
+        ticksSinceLastEvent: number;
+        completedCount: number;
+    };
 }
 
 // ─── Helpers ───
@@ -191,6 +197,11 @@ function createFreshPlayer(): PlayerState {
         },
         dontPushCount: 0,
         unlockedTitles: [],
+        randomEvents: {
+            lastTriggeredAt: 0,
+            ticksSinceLastEvent: 0,
+            completedCount: 0,
+        },
     };
 }
 
@@ -244,7 +255,12 @@ function migratePlayer(saved: PlayerState): PlayerState {
 
     const dontPushCount = saved.dontPushCount ?? 0;
     const unlockedTitles = saved.unlockedTitles ?? [];
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles };
+    const randomEvents = saved.randomEvents ?? {
+        lastTriggeredAt: 0,
+        ticksSinceLastEvent: 0,
+        completedCount: 0,
+    };
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents };
 }
 
 // ─── Slice ───
@@ -530,6 +546,17 @@ export const gameSlice = createSlice({
         setPatron(state, action: PayloadAction<boolean>) {
             if (!state.player.settings) state.player.settings = {};
             state.player.settings.isPatron = action.payload;
+        },
+
+        /** Random events: record trigger for cooldown and frequency tuning. */
+        recordRandomEventTriggered(state) {
+            if (!state.player.randomEvents) {
+                state.player.randomEvents = { lastTriggeredAt: 0, ticksSinceLastEvent: 0, completedCount: 0 };
+            }
+            const re = state.player.randomEvents;
+            re.lastTriggeredAt = Date.now();
+            re.ticksSinceLastEvent = 0;
+            re.completedCount += 1;
         },
 
         /** S. Remove completed loot vacuum animation */

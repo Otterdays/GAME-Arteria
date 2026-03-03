@@ -24,6 +24,8 @@ import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
 import { BatterySaver } from '@/components/BatterySaver';
+import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
+import { QuickSwitchSidebar } from '@/components/QuickSwitchSidebar';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -51,6 +53,7 @@ function AppShell() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <QuickSwitchProvider>
       <BatterySaver>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -64,9 +67,11 @@ function AppShell() {
         <FeedbackToast />
         <LootVacuum />
         <GlobalActionTicker />
+        <QuickSwitchSidebar />
         <DialogueOverlay />
         <StatusBar style="light" translucent backgroundColor="transparent" />
       </BatterySaver>
+      </QuickSwitchProvider>
     </ThemeProvider>
   );
 }

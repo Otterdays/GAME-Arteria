@@ -56,10 +56,25 @@ export default function UpdateBoard() {
                 <View style={styles.card}>
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
-                    <Text style={styles.subtitle}>The BIG Fish and Runes update! (and other cool stuff)</Text>
+                    <Text style={styles.subtitle}>Quick-Switch Sidebar & Random Events</Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
                         {/* Future AI: Update changelog for the *current* version here when bumping app.json */}
+                        <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>⚡ Quick-Switch Sidebar</Text>
+                            <Text style={styles.changeText}>• Floating pill on the left edge when in a skill screen. Tap to slide open a beautiful drawer.</Text>
+                            <Text style={styles.changeText}>• Jump between Mining, Logging, Fishing, Runecrafting without going back to the Skills tab. Active skill highlighted in gold.</Text>
+                        </View>
+
+                        <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>🎲 Random Events</Text>
+                            <Text style={styles.changeText}>• Blibbertooth's Blessing: Bonus XP (level × 5) to active skill.</Text>
+                            <Text style={styles.changeText}>• Cosmic Sneeze: Double your next item haul.</Text>
+                            <Text style={styles.changeText}>• Genie's Gift: Bonus XP (level × 10) to a random trained skill.</Text>
+                            <Text style={styles.changeText}>• Treasure Chest: Gold reward (scales with level).</Text>
+                            <Text style={styles.changeText}>• Lucky Strike: Double XP for this tick.</Text>
+                        </View>
+
                         <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>🎣 Fishing & ✨ Runecrafting</Text>
                             <Text style={styles.changeText}>• Fishing: 10 spots from Shrimp to Cosmic Jellyfish.</Text>

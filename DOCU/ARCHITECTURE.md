@@ -3,6 +3,8 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
+> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`.
+
 > **⚠️ SDK 55 Note:** Expo SDK 54 is the last version supporting the Legacy Architecture.
 > SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
 
