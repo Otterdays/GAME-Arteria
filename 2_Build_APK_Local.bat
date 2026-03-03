@@ -15,8 +15,8 @@ echo App name: Arteria ^(prod^). Dev testing uses Arteria-dev separately.
 echo Requires: Android Studio + Android SDK ^(same as 1_Run_Local_Android_Build.bat^)
 echo.
 echo Output folder: apps\mobile\android\app\build\outputs\apk\release\
-echo Output file: app-release.apk ^(arm64-v8a only, smaller than universal^)
-echo Lean mode: excludes Expo dev-client native modules for smaller prod APKs
+echo Output: app-arm64-v8a-release.apk ^(~30 MB^) + app-armeabi-v7a-release.apk ^(~25 MB^)
+echo Lean mode + ABI splits + R8 minify/shrink. Share the arm64 APK for most devices.
 echo.
 pause
 
@@ -87,12 +87,13 @@ if %ERRORLEVEL% neq 0 (
 
 cd /d "%~dp0"
 
-REM With reactNativeArchitectures=arm64-v8a, Gradle outputs app-release.apk ^(single ABI^).
-REM If building multiple ABIs, split APKs like app-arm64-v8a-release.apk are produced.
+REM ABI splits: gradle.properties arm-only + splits in build.gradle → two APKs.
 set "APK_DIR=%~dp0apps\mobile\android\app\build\outputs\apk\release"
+set "APK_ARM64=%APK_DIR%\app-arm64-v8a-release.apk"
+set "APK_ARM32=%APK_DIR%\app-armeabi-v7a-release.apk"
 set "APK_PATH="
-if exist "%APK_DIR%\app-arm64-v8a-release.apk" set "APK_PATH=%APK_DIR%\app-arm64-v8a-release.apk"
-if "%APK_PATH%"=="" if exist "%APK_DIR%\app-armeabi-v7a-release.apk" set "APK_PATH=%APK_DIR%\app-armeabi-v7a-release.apk"
+if exist "%APK_ARM64%" set "APK_PATH=%APK_ARM64%"
+if "%APK_PATH%"=="" if exist "%APK_ARM32%" set "APK_PATH=%APK_ARM32%"
 if "%APK_PATH%"=="" if exist "%APK_DIR%\app-release.apk" set "APK_PATH=%APK_DIR%\app-release.apk"
 
 echo.
@@ -103,10 +104,13 @@ echo.
 echo APK output folder:
 echo   %APK_DIR%
 echo.
-echo APK to share:
-echo   %APK_PATH%
+echo APKs to share ^(use arm64 for most phones^):
+if exist "%APK_ARM64%" echo   app-arm64-v8a-release.apk
+if exist "%APK_ARM32%" echo   app-armeabi-v7a-release.apk
 echo.
-echo Copy this file to share. Recipients may need to enable
+echo Primary: %APK_PATH%
+echo.
+echo Copy the desired APK to share. Recipients may need to enable
 echo "Install from unknown sources" to sideload.
 echo.
 pause

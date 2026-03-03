@@ -28,10 +28,13 @@ const SELL_FILTERS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'ore', label: 'Ores' },
     { key: 'bar', label: 'Bars' },
     { key: 'log', label: 'Logs' },
+    { key: 'fish', label: 'Fish' },
+    { key: 'rune', label: 'Runes' },
+    { key: 'equipment', label: 'Equipment' },
     { key: 'other', label: 'Other' },
 ];
 
-const BUY_QUANTITIES = [1, 5, 10];
+const BUY_QUANTITIES = [1, 5, 10, 25, 50];
 
 // ─── Buy row ─────────────────────────────────────────────────────────────────
 function BuyRow({
@@ -48,7 +51,9 @@ function BuyRow({
     onBuy: (qty: number, cost: number) => void;
 }) {
     const meta = getItemMeta(itemId);
+    const maxAfford = buyPrice > 0 ? Math.min(999, Math.floor(playerGold / buyPrice)) : 0;
     const [qty, setQty] = useState(1);
+    const isMax = qty === maxAfford && maxAfford > 0;
     const cost = qty * buyPrice;
     const canAfford = playerGold >= cost;
 
@@ -70,6 +75,15 @@ function BuyRow({
                         <Text style={[styles.qtyChipText, qty === n && styles.qtyChipTextActive]}>{n}</Text>
                     </TouchableOpacity>
                 ))}
+                {maxAfford > 0 && (
+                    <TouchableOpacity
+                        style={[styles.qtyChip, isMax && styles.qtyChipActive]}
+                        onPress={() => setQty(maxAfford)}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={[styles.qtyChipText, isMax && styles.qtyChipTextActive]}>Max</Text>
+                    </TouchableOpacity>
+                )}
             </View>
             <TouchableOpacity
                 style={[styles.buyButton, !canAfford && styles.buyButtonDisabled]}

@@ -9,6 +9,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { getQuestStepsToComplete } from '../../../packages/engine/src/utils/narrative';
+import { ALL_QUESTS } from '../../../packages/engine/src/data/quests';
 import { gameActions, SkillId, OfflineReport } from '@/store/gameSlice';
 import { logger } from '@/utils/logger';
 import { OFFLINE_CAP_F2P_MS, OFFLINE_CAP_PATRON_MS, XP_BONUS_PATRON } from '@/constants/game';
@@ -121,6 +123,7 @@ export function useGameLoop() {
         return s.game.player.skills[st.skillId]?.level ?? 1;
     });
     const skills = useAppSelector((s) => s.game.player.skills);
+    const player = useAppSelector((s) => s.game.player);
 
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
@@ -306,6 +309,14 @@ export function useGameLoop() {
         },
         [activeTask, dispatch, isPatron]
     );
+
+    // Auto-complete quest steps when inventory/skills meet completionRequirements (engine)
+    useEffect(() => {
+        const steps = getQuestStepsToComplete(player, ALL_QUESTS);
+        steps.forEach(({ questId, stepId }) => {
+            dispatch(gameActions.completeQuestStep({ questId, stepId }));
+        });
+    }, [player, dispatch]);
 
     // Main game loop interval
     useEffect(() => {

@@ -6,8 +6,57 @@ import * as Haptics from 'expo-haptics';
 import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { gameActions } from '@/store/gameSlice';
+import { gameActions, type SkillId } from '@/store/gameSlice';
 import { deleteSave } from '@/store/persistence';
+import { MASTERY_UPGRADES } from '@/constants/mastery';
+import { SKILL_META } from '@/constants/skills';
+
+function MasterySection() {
+    const dispatch = useAppDispatch();
+    const masteryPoints = useAppSelector((s) => s.game.player.masteryPoints ?? {});
+    const masterySpent = useAppSelector((s) => s.game.player.masterySpent ?? {});
+    const { palette } = useTheme();
+    const styles = useMemo(() => createSettingsStyles(palette), [palette]);
+    return (
+        <>
+            {(Object.entries(MASTERY_UPGRADES) as [SkillId, NonNullable<typeof MASTERY_UPGRADES[SkillId]>][]).map(([skillId, upgrades]) => {
+                const points = masteryPoints[skillId] ?? 0;
+                const spent = masterySpent[skillId] ?? {};
+                const meta = SKILL_META[skillId];
+                return (
+                    <React.Fragment key={skillId}>
+                        <View style={[styles.row, { borderBottomWidth: 1, borderBottomColor: palette.divider }]}>
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>{meta?.emoji} {meta?.label}</Text>
+                                <Text style={styles.rowDesc}>{points} point{points !== 1 ? 's' : ''} to spend</Text>
+                            </View>
+                        </View>
+                        {upgrades.map((u) => {
+                            const level = spent[u.id] ?? 0;
+                            const canSpend = points >= u.cost && level < u.maxLevel;
+                            return (
+                                <View key={u.id} style={[styles.row, { paddingLeft: Spacing.lg, backgroundColor: palette.bgApp }]}>
+                                    <View style={styles.rowInfo}>
+                                        <Text style={[styles.rowLabel, { fontSize: FontSize.sm }]}>{u.label}</Text>
+                                        <Text style={styles.rowDesc}>Level {level}/{u.maxLevel} · {u.cost} pt{u.cost !== 1 ? 's' : ''}</Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={[styles.masterySpendBtn, !canSpend && styles.masterySpendBtnDisabled]}
+                                        onPress={() => canSpend && (Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), dispatch(gameActions.spendMastery({ skillId, upgradeId: u.id, cost: u.cost, maxLevel: u.maxLevel })))}
+                                        disabled={!canSpend}
+                                        activeOpacity={0.8}
+                                    >
+                                        <Text style={[styles.masterySpendText, !canSpend && styles.masterySpendTextDisabled]}>Spend</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        })}
+                    </React.Fragment>
+                );
+            })}
+        </>
+    );
+}
 
 function SettingsRow({
     label,
@@ -193,6 +242,27 @@ function createSettingsStyles(palette: PaletteShape) {
             color: palette.textSecondary,
             fontWeight: '600',
         },
+        masterySpendBtn: {
+            paddingVertical: 6,
+            paddingHorizontal: Spacing.md,
+            borderRadius: Radius.sm,
+            backgroundColor: palette.accentPrimary,
+            justifyContent: 'center',
+        },
+        masterySpendBtnDisabled: {
+            backgroundColor: palette.bgApp,
+            borderWidth: 1,
+            borderColor: palette.border,
+            opacity: 0.7,
+        },
+        masterySpendText: {
+            fontSize: FontSize.sm,
+            fontWeight: '700',
+            color: palette.white,
+        },
+        masterySpendTextDisabled: {
+            color: palette.textMuted,
+        },
     });
 }
 
@@ -364,8 +434,18 @@ export default function SettingsScreen() {
                     label="Idle Soundscapes"
                     value={idleSoundscapesEnabled}
                     onValueChange={(v) => dispatch(gameActions.setIdleSoundscapesEnabled(v))}
-                    description="Ambient loops per skill (e.g. forge, waves)"
+                    description="Ambient loops per skill — coming soon"
                 />
+                </View>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Mastery</Text>
+                <Text style={[styles.rowDesc, { marginLeft: Spacing.md, marginBottom: Spacing.sm }]}>
+                    Earn 1 point per level-up per skill. Spend on permanent buffs.
+                </Text>
+                <View style={styles.sectionCard}>
+                    <MasterySection />
                 </View>
             </View>
 

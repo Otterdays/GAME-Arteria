@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { Spacing, FontSize } from '@/constants/theme';
+import { Spacing, FontSize, Radius, CardStyle } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function CombatScreen() {
@@ -38,6 +38,28 @@ export default function CombatScreen() {
                     textAlign: 'center',
                     lineHeight: 22,
                 },
+                teaserCard: {
+                    marginTop: Spacing.xl,
+                    backgroundColor: palette.bgCard,
+                    borderRadius: Radius.lg,
+                    padding: Spacing.lg,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    maxWidth: 320,
+                    ...CardStyle,
+                },
+                teaserTitle: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.accentWeb,
+                    marginBottom: 4,
+                },
+                teaserText: {
+                    fontSize: FontSize.sm,
+                    color: palette.textSecondary,
+                    textAlign: 'center',
+                    lineHeight: 20,
+                },
             }),
         [palette]
     );
@@ -53,6 +75,12 @@ export default function CombatScreen() {
                     Auto-battler combat with melee, ranged, and magic styles.
                     Defeat enemies, collect loot, and conquer dungeons.
                 </Text>
+                <View style={styles.teaserCard}>
+                    <Text style={styles.teaserTitle}>Phase 4 — Combat Alpha</Text>
+                    <Text style={styles.teaserText}>
+                        Loadouts, weapon stats, and first enemies are in the roadmap. Stay tuned.
+                    </Text>
+                </View>
             </View>
         </SafeAreaView>
     );

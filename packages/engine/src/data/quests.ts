@@ -30,7 +30,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         rewards: { gold: 50, xp: { mining: 25 }, setFlags: ['nick_trusted'] },
         steps: [
             { id: 'talk_to_nick', description: 'Speak to Nick at his shop.' },
-            { id: 'gather_copper', description: 'Mine 10 Copper Ore and deliver them to Nick.' },
+            { id: 'gather_copper', description: 'Mine 10 Copper Ore and deliver them to Nick.', completionRequirements: { itemsRequired: [{ id: 'copper_ore', quantity: 10 }] } },
         ],
     },
     'q_first_catch': {
@@ -43,7 +43,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: {},
         rewards: { gold: 30, xp: { fishing: 40 } },
         steps: [
-            { id: 'catch_shrimp', description: 'Catch 5 Raw Shrimp from any fishing spot.' },
+            { id: 'catch_shrimp', description: 'Catch 5 Raw Shrimp from any fishing spot.', completionRequirements: { itemsRequired: [{ id: 'raw_shrimp', quantity: 5 }] } },
         ],
     },
     'q_wood_for_guard': {
@@ -56,7 +56,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: {},
         rewards: { gold: 40, xp: { logging: 35 } },
         steps: [
-            { id: 'chop_logs', description: 'Chop 10 Normal Logs and deliver them to the guard.' },
+            { id: 'chop_logs', description: 'Chop 10 Normal Logs and deliver them to the guard.', completionRequirements: { itemsRequired: [{ id: 'normal_logs', quantity: 10 }] } },
         ],
     },
     'q_rune_awakening': {
@@ -69,8 +69,8 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: {},
         rewards: { gold: 80, xp: { runecrafting: 60, mining: 20 }, setFlags: ['first_runes_crafted'] },
         steps: [
-            { id: 'mine_essence', description: 'Mine Rune Essence (any amount).' },
-            { id: 'craft_air_runes', description: 'Craft 20 Air Runes at the Air Altar.' },
+            { id: 'mine_essence', description: 'Mine Rune Essence (any amount).', completionRequirements: { itemsRequired: [{ id: 'rune_essence', quantity: 1 }] } },
+            { id: 'craft_air_runes', description: 'Craft 20 Air Runes at the Air Altar.', completionRequirements: { itemsRequired: [{ id: 'air_rune', quantity: 20 }] } },
         ],
     },
     'q_fish_for_guard': {
@@ -83,7 +83,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: {},
         rewards: { gold: 45, xp: { fishing: 50 } },
         steps: [
-            { id: 'catch_sardines', description: 'Catch 10 Raw Sardines.' },
+            { id: 'catch_sardines', description: 'Catch 10 Raw Sardines.', completionRequirements: { itemsRequired: [{ id: 'raw_sardine', quantity: 10 }] } },
         ],
     },
     'q_logs_for_tavern': {
@@ -96,7 +96,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { skills: { logging: 5 } },
         rewards: { gold: 120, xp: { logging: 80 } },
         steps: [
-            { id: 'chop_oak', description: 'Chop 20 Oak Logs and deliver to the tavern.' },
+            { id: 'chop_oak', description: 'Chop 20 Oak Logs and deliver to the tavern.', completionRequirements: { itemsRequired: [{ id: 'oak_logs', quantity: 20 }] } },
         ],
     },
     'q_ore_delivery': {
@@ -109,8 +109,8 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { skills: { mining: 15 } },
         rewards: { gold: 200, xp: { mining: 100 } },
         steps: [
-            { id: 'mine_iron', description: 'Mine 15 Iron Ore.' },
-            { id: 'deliver_ore', description: 'Deliver the ore to the smith.' },
+            { id: 'mine_iron', description: 'Mine 15 Iron Ore.', completionRequirements: { itemsRequired: [{ id: 'iron_ore', quantity: 15 }] } },
+            { id: 'deliver_ore', description: 'Deliver the ore to the smith.', completionRequirements: { itemsRequired: [{ id: 'iron_ore', quantity: 15 }] } },
         ],
     },
     'q_cursed_sample': {
@@ -123,8 +123,8 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { flags: ['knows_about_sneeze_cult'] },
         rewards: { gold: 150, xp: { mining: 75 }, setFlags: ['cursed_sample_delivered'] },
         steps: [
-            { id: 'gather_cursed', description: 'Obtain 3 Cursed Ores (any type) from mining.' },
-            { id: 'deliver_sample', description: 'Deliver the cursed ores to the scholar.' },
+            { id: 'gather_cursed', description: 'Obtain 3 Cursed Ores (any type) from mining.', completionRequirements: { itemsRequired: [{ id: 'cursed_copper_ore', quantity: 3 }] } },
+            { id: 'deliver_sample', description: 'Deliver the cursed ores to the scholar.', completionRequirements: { itemsRequired: [{ id: 'cursed_copper_ore', quantity: 3 }] } },
         ],
     },
     'q_essence_runner': {
@@ -137,7 +137,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_awakening'] },
         rewards: { gold: 100, xp: { mining: 120 }, setFlags: ['essence_runner_done'] },
         steps: [
-            { id: 'mine_essence_batch', description: 'Mine 50 Rune Essence.' },
+            { id: 'mine_essence_batch', description: 'Mine 50 Rune Essence.', completionRequirements: { itemsRequired: [{ id: 'rune_essence', quantity: 50 }] } },
         ],
     },
     'q_nick_shopping_list': {
@@ -150,7 +150,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_merchant_trust'] },
         rewards: { gold: 250, xp: { mining: 150 } },
         steps: [
-            { id: 'gather_copper_tin_iron', description: 'Bring Nick 10 Copper Ore, 10 Tin Ore, and 10 Iron Ore.' },
+            { id: 'gather_copper_tin_iron', description: 'Bring Nick 10 Copper Ore, 10 Tin Ore, and 10 Iron Ore.', completionRequirements: { itemsRequired: [{ id: 'copper_ore', quantity: 10 }, { id: 'tin_ore', quantity: 10 }, { id: 'iron_ore', quantity: 10 }] } },
         ],
     },
     'q_first_runes': {
@@ -163,7 +163,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_rune_awakening'] },
         rewards: { gold: 120, xp: { runecrafting: 150 } },
         steps: [
-            { id: 'craft_air_batch', description: 'Craft 50 Air Runes.' },
+            { id: 'craft_air_batch', description: 'Craft 50 Air Runes.', completionRequirements: { itemsRequired: [{ id: 'air_rune', quantity: 50 }] } },
         ],
     },
     'q_blibbertooth_blessing': {
@@ -177,7 +177,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         rewards: { gold: 200, xp: { hitpoints: 100 }, setFlags: ['blibbertooth_blessing'] },
         steps: [
             { id: 'talk_to_cult_leader', description: 'Speak to the Cult leader at the tavern.' },
-            { id: 'offer_runes', description: 'Offer 10 Cosmic Runes as a tribute (craft or obtain them).' },
+            { id: 'offer_runes', description: 'Offer 10 Cosmic Runes as a tribute (craft or obtain them).', completionRequirements: { itemsRequired: [{ id: 'cosmic_rune', quantity: 10 }] } },
         ],
     },
     'q_rune_essence_run': {
@@ -190,7 +190,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_essence_runner'] },
         rewards: { gold: 300, xp: { mining: 250 } },
         steps: [
-            { id: 'mine_100_essence', description: 'Mine 100 Rune Essence and deliver to the guild.' },
+            { id: 'mine_100_essence', description: 'Mine 100 Rune Essence and deliver to the guild.', completionRequirements: { itemsRequired: [{ id: 'rune_essence', quantity: 100 }] } },
         ],
     },
     'q_herring_for_tavern': {
@@ -203,7 +203,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { skills: { fishing: 5 } },
         rewards: { gold: 90, xp: { fishing: 90 } },
         steps: [
-            { id: 'catch_herring', description: 'Catch 15 Raw Herring.' },
+            { id: 'catch_herring', description: 'Catch 15 Raw Herring.', completionRequirements: { itemsRequired: [{ id: 'raw_herring', quantity: 15 }] } },
         ],
     },
     'q_coal_for_smith': {
@@ -216,7 +216,7 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         requirements: { skills: { mining: 20 } },
         rewards: { gold: 180, xp: { mining: 110 } },
         steps: [
-            { id: 'mine_coal', description: 'Mine 20 Coal and deliver to the smith.' },
+            { id: 'mine_coal', description: 'Mine 20 Coal and deliver to the smith.', completionRequirements: { itemsRequired: [{ id: 'coal', quantity: 20 }] } },
         ],
     },
 };
@@ -246,8 +246,8 @@ export const ACT_2_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_rune_essence_run'], skills: { mining: 30 } },
         rewards: { gold: 400, xp: { mining: 200, runecrafting: 180 }, setFlags: ['pure_essence_supplier'] },
         steps: [
-            { id: 'mine_pure_essence', description: 'Mine 30 Pure Essence.' },
-            { id: 'craft_tier_runes', description: 'Craft 30 Water Runes or Earth Runes using Pure Essence.' },
+            { id: 'mine_pure_essence', description: 'Mine 30 Pure Essence.', completionRequirements: { itemsRequired: [{ id: 'pure_essence', quantity: 30 }] } },
+            { id: 'craft_tier_runes', description: 'Craft 30 Water Runes or Earth Runes using Pure Essence.', completionRequirements: { itemsRequired: [{ id: 'water_rune', quantity: 30 }] } },
         ],
     },
     'q_gold_rush': {
@@ -260,7 +260,7 @@ export const ACT_2_QUESTS: Record<string, Quest> = {
         requirements: { questsCompleted: ['q_nick_shopping_list'], skills: { mining: 40 } },
         rewards: { gold: 800, xp: { mining: 350 } },
         steps: [
-            { id: 'mine_gold', description: 'Mine 25 Gold Ore and sell to Nick.' },
+            { id: 'mine_gold', description: 'Mine 25 Gold Ore and sell to Nick.', completionRequirements: { itemsRequired: [{ id: 'gold_ore', quantity: 25 }] } },
         ],
     },
 };

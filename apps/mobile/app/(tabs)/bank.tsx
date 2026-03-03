@@ -52,7 +52,15 @@ function ItemCell({
 }
 
 // ── Item Detail Modal ────────────────────────────────────────────────────────
-function ItemDetailModal({ itemId, onClose }: { itemId: string | null; onClose: () => void }) {
+function ItemDetailModal({
+    itemId,
+    onClose,
+    styles,
+}: {
+    itemId: string | null;
+    onClose: () => void;
+    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+}) {
     const dispatch = useAppDispatch();
     const item = useAppSelector((s) => s.game.player.inventory.find((i) => i.id === itemId));
     if (!item) return null;
@@ -85,7 +93,6 @@ function ItemDetailModal({ itemId, onClose }: { itemId: string | null; onClose: 
                     </View>
 
                     <View style={styles.detailSeparator} />
-                    <Text style={styles.detailRecipeHint}>⚗️ Used in recipes: Coming in Phase 1.3+</Text>
 
                     <View style={styles.detailActionRow}>
                         <TouchableOpacity
@@ -152,6 +159,8 @@ export default function BankScreen() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState<ItemType | 'all'>('all');
+    type SortKey = 'name' | 'qty' | 'value';
+    const [sortBy, setSortBy] = useState<SortKey>('name');
 
     const filteredInventory = useMemo(() => {
         let list = inventory;
@@ -162,8 +171,16 @@ export default function BankScreen() {
             const q = searchQuery.trim().toLowerCase();
             list = list.filter((item) => getItemMeta(item.id).label.toLowerCase().includes(q));
         }
+        const meta = (id: string) => getItemMeta(id);
+        if (sortBy === 'name') {
+            list = [...list].sort((a, b) => meta(a.id).label.localeCompare(meta(b.id).label));
+        } else if (sortBy === 'qty') {
+            list = [...list].sort((a, b) => b.quantity - a.quantity);
+        } else {
+            list = [...list].sort((a, b) => (meta(b.id).sellValue * b.quantity) - (meta(a.id).sellValue * a.quantity));
+        }
         return list;
-    }, [inventory, filter, searchQuery]);
+    }, [inventory, filter, searchQuery, sortBy]);
 
     useFocusEffect(useCallback(() => {
         dispatch(gameActions.clearPulseTab('bank'));
@@ -257,6 +274,39 @@ export default function BankScreen() {
                     color: palette.accentPrimary,
                     fontWeight: '600',
                 },
+                sortRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.xs,
+                    gap: Spacing.sm,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
+                sortLabel: { fontSize: FontSize.xs, color: palette.textMuted, marginRight: 4 },
+                sortChip: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 4,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                },
+                sortChipActive: {
+                    borderColor: palette.accentPrimary,
+                    backgroundColor: palette.accentPrimary + '22',
+                },
+                sortChipText: { fontSize: FontSize.xs, color: palette.textSecondary },
+                sortChipTextActive: { fontSize: FontSize.xs, color: palette.accentPrimary, fontWeight: '600' },
+                emptyClearBtn: {
+                    marginTop: Spacing.md,
+                    paddingVertical: 10,
+                    paddingHorizontal: Spacing.lg,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary,
+                    backgroundColor: palette.accentPrimary + '22',
+                },
+                emptyClearBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: palette.accentPrimary },
                 grid: { padding: Spacing.md, gap: Spacing.sm },
                 cell: {
                     width: CELL_SIZE,
@@ -358,13 +408,6 @@ export default function BankScreen() {
                     color: palette.textPrimary,
                 },
                 detailStatValueGold: { color: palette.gold },
-                detailRecipeHint: {
-                    fontSize: FontSize.sm,
-                    color: palette.textMuted,
-                    textAlign: 'center',
-                    fontStyle: 'italic',
-                    marginBottom: Spacing.md,
-                },
                 detailActionRow: {
                     flexDirection: 'row',
                     gap: Spacing.sm,
@@ -491,6 +534,24 @@ export default function BankScreen() {
                 })}
             </View>
 
+            <View style={styles.sortRow}>
+                <Text style={styles.sortLabel}>Sort:</Text>
+                {(['name', 'qty', 'value'] as const).map((key) => {
+                    const isActive = sortBy === key;
+                    const label = key === 'name' ? 'Name' : key === 'qty' ? 'Qty' : 'Value';
+                    return (
+                        <TouchableOpacity
+                            key={key}
+                            style={[styles.sortChip, isActive && styles.sortChipActive]}
+                            onPress={() => setSortBy(key)}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={[styles.sortChipText, isActive && styles.sortChipTextActive]}>{label}</Text>
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+
             {/* Grid */}
             {filteredInventory.length === 0 ? (
                 <View style={styles.empty}>
@@ -499,8 +560,19 @@ export default function BankScreen() {
                         {inventory.length === 0 ? 'Bank is empty' : 'No matching items'}
                     </Text>
                     <Text style={styles.emptyHint}>
-                        {inventory.length === 0 ? 'Train Mining to gather ores!' : 'Try a different filter or search.'}
+                        {inventory.length === 0
+                            ? 'Train skills to gather resources!'
+                            : 'Try a different filter or search.'}
                     </Text>
+                    {(filter !== 'all' || searchQuery.trim() !== '') && inventory.length > 0 && (
+                        <TouchableOpacity
+                            style={styles.emptyClearBtn}
+                            onPress={() => { setFilter('all'); setSearchQuery(''); }}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={styles.emptyClearBtnText}>Clear filter & search</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
             ) : (
                 <FlatList
@@ -514,7 +586,7 @@ export default function BankScreen() {
             )}
 
             {/* Item Detail Modal */}
-            <ItemDetailModal itemId={selectedId} onClose={() => setSelectedId(null)} />
+            <ItemDetailModal itemId={selectedId} onClose={() => setSelectedId(null)} styles={styles} />
         </SafeAreaView>
     );
 }

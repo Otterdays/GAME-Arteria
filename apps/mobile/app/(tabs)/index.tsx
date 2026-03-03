@@ -14,6 +14,7 @@ import {
   ScrollView,
   Pressable,
   TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -115,11 +116,15 @@ function SkillBox({
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
+const NARROW_WIDTH = 360;
+
 export default function SkillsScreen() {
   const { palette } = useTheme();
+  const { width } = useWindowDimensions();
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const [logModalVisible, setLogModalVisible] = useState(false);
+  const isNarrow = width < NARROW_WIDTH;
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
   const skills = useAppSelector((s) => s.game.player.skills);
   const activeSkillId = activeTask?.skillId ?? null;
@@ -267,7 +272,7 @@ export default function SkillsScreen() {
           paddingTop: Spacing.sm,
         },
         skillBoxContainer: {
-          width: '33.33%',
+          width: isNarrow ? '50%' : '33.33%',
           padding: 6,
         },
         skillBox: {
@@ -337,7 +342,7 @@ export default function SkillsScreen() {
           fontWeight: '600',
         },
       }),
-    [palette]
+    [palette, isNarrow]
   );
 
   return (

@@ -13,6 +13,7 @@ import {
     XP_BONUS_PATRON,
 } from '@/constants/game';
 import type { ThemeId } from '@/constants/theme';
+import { getMasteryXpMultiplier } from '@/constants/mastery';
 import { logger } from '@/utils/logger';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -125,6 +126,10 @@ export interface PlayerState {
         ticksSinceLastEvent: number;
         completedCount: number;
     };
+    /** Mastery: unspent points per skill (earned 1 per level-up). */
+    masteryPoints?: Partial<Record<SkillId, number>>;
+    /** Mastery: purchased upgrade levels per skill (e.g. mining: { xp_bonus: 2 }). */
+    masterySpent?: Partial<Record<SkillId, Record<string, number>>>;
 }
 
 // ─── Helpers ───
@@ -186,6 +191,8 @@ function createFreshPlayer(): PlayerState {
             activeQuests: {},
             completedQuests: [],
         },
+        masteryPoints: {},
+        masterySpent: {},
         settings: {
             bankPulseEnabled: true,
             horizonHudEnabled: true,
@@ -266,7 +273,9 @@ function migratePlayer(saved: PlayerState): PlayerState {
         ticksSinceLastEvent: 0,
         completedCount: 0,
     };
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents };
+    const masteryPoints = saved.masteryPoints ?? {};
+    const masterySpent = saved.masterySpent ?? {};
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent };
 }
 
 // ─── Slice ───
@@ -395,16 +404,20 @@ export const gameSlice = createSlice({
         /** Apply XP gains from a tick result (auto-computes level). Patron gets +20%. */
         applyXP(state, action: PayloadAction<{ skillId: SkillId; xp: number }>) {
             const { skillId, xp } = action.payload;
+            const masteryMult = getMasteryXpMultiplier(state.player, skillId);
             const xpMultiplier = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
-            const effectiveXp = Math.floor(xp * xpMultiplier);
+            const effectiveXp = Math.floor(xp * masteryMult * xpMultiplier);
             const skill = state.player.skills[skillId];
             if (skill) {
                 const oldLevel = skill.level;
                 skill.xp += effectiveXp;
                 skill.level = levelForXP(skill.xp);
 
-                // If we leveled up, queue a toast, pulse Skills tab, and log
+                // If we leveled up, queue a toast, pulse Skills tab, grant mastery points, and log
                 if (skill.level > oldLevel) {
+                    const levelsGained = skill.level - oldLevel;
+                    state.player.masteryPoints = state.player.masteryPoints ?? {};
+                    state.player.masteryPoints[skillId] = (state.player.masteryPoints[skillId] ?? 0) + levelsGained;
                     state.levelUpQueue.push({
                         id: Math.random().toString(36).substring(7),
                         skillId,
@@ -424,6 +437,21 @@ export const gameSlice = createSlice({
                         state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
                     }
                 }
+            }
+        },
+
+        /** Spend mastery points on an upgrade. */
+        spendMastery(state, action: PayloadAction<{ skillId: SkillId; upgradeId: string; cost: number; maxLevel: number }>) {
+            const { skillId, upgradeId, cost, maxLevel } = action.payload;
+            state.player.masteryPoints = state.player.masteryPoints ?? {};
+            state.player.masterySpent = state.player.masterySpent ?? {};
+            const points = state.player.masteryPoints[skillId] ?? 0;
+            const spent = state.player.masterySpent[skillId] ?? {};
+            const currentLevel = spent[upgradeId] ?? 0;
+            if (points >= cost && currentLevel < maxLevel) {
+                state.player.masteryPoints[skillId] = points - cost;
+                if (!state.player.masterySpent[skillId]) state.player.masterySpent[skillId] = {};
+                state.player.masterySpent[skillId]![upgradeId] = currentLevel + 1;
             }
         },
 

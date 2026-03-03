@@ -5,7 +5,25 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. Smithing/Forging split implemented; docs verified.
+**Active Task:** Quest completion with rewards implemented. Docs updated (CHANGELOG, patchHistory, SUMMARY).
+
+## [2026-03-03] Quest completion (gameplay)
+- **Quests screen:** "Complete" button only when all steps done (completedSteps.length === quest.steps.length). handleCompleteQuest: apply rewards (gold, XP per skill, setFlags, items) then dispatch completeQuest(questId). Dialogue already advances steps via onSelect.completeQuestStep in DialogueOverlay.
+- **Docs:** CHANGELOG 0.3.0 (quest completion + UX batch), patchHistory 0.3.0, SUMMARY status and next steps, SCRATCHPAD active task.
+
+## [2026-03-03] IMPROVEMENTS.md batch implemented
+- **Bank:** Sort row (Name / Qty / Value). Empty state "Clear filter & search" when filter or search active. Item detail modal: recipe line removed; styles passed as prop to ItemDetailModal.
+- **Shop:** Buy quantities 1, 5, 10, 25, 50 + Max (cap by gold). Sell filters already had Fish, Runes, Equipment.
+- **Quests:** [DEV] Guard Intro button only when __DEV__.
+- **HorizonHUD:** Grind card name "Lv. X → Y".
+- **Skills index:** 2 columns when width < 360 (useWindowDimensions).
+- **Combat:** Phase 4 teaser card (loadouts, weapon stats, first enemies).
+- **Settings:** Idle Soundscapes description "coming soon". DOCU/IMPROVEMENTS.md updated with implemented list.
+
+## [2026-03-03] APK size fix (2_Build_APK_Local.bat ~100 MB → ~25–30 MB per APK)
+- **Cause:** gradle.properties had all 4 ABIs (armeabi-v7a, arm64-v8a, x86, x86_64) with no splits → one universal APK; minify/shrink were off.
+- **Fix:** reactNativeArchitectures=armeabi-v7a,arm64-v8a only. app/build.gradle: splits { abi { enable true; include armeabi-v7a, arm64-v8a; universalApk false } }. gradle.properties: android.enableMinifyInReleaseBuilds=true, android.enableShrinkResourcesInReleaseBuilds=true.
+- **Result:** Two APKs (app-arm64-v8a-release.apk ~30 MB, app-armeabi-v7a-release.apk ~25 MB). Batch file lists both; share arm64 for most devices. For x86_64 emulator use -PreactNativeArchitectures=x86_64 if needed.
 
 ## [2026-03-03] Smithing / Forging Split — Docs Verified
 - **index.html:** Changelog §v0.3.0, Roadmap §v0.3.0, Latest section, systems-grid card, Forging skill pill. All updated with Smithing & Forging.

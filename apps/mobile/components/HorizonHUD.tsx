@@ -70,7 +70,7 @@ export const HorizonHUD = () => {
     const targetLevel = Math.min(99, nextDecade > skillState.level ? nextDecade : skillState.level + 10);
     const grindGoal = {
         label: 'The Grind',
-        name: `Reach Lv. ${targetLevel}`,
+        name: `Lv. ${skillState.level} → ${targetLevel}`,
         emoji: '🏆',
         progress: (skillState.level / targetLevel) * 100,
         subtext: 'Chapter Milestone',

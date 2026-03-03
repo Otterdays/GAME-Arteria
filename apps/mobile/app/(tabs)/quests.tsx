@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { gameActions } from '@/store/gameSlice';
+import { gameActions, type SkillId } from '@/store/gameSlice';
 import { BouncyButton } from '@/components/BouncyButton';
 
 // NOTE: Hardcoded import until alias is linked properly across monorepo
@@ -42,8 +42,21 @@ export default function QuestsScreen() {
         dispatch(gameActions.startQuest(questId));
     };
 
-    const handleCompleteQuestMock = (questId: string) => {
-        // For testing narrative flow only
+    const handleCompleteQuest = (questId: string) => {
+        const quest = ALL_QUESTS[questId];
+        if (!quest) return;
+        const completedSteps = narrative.activeQuests[questId] || [];
+        if (completedSteps.length < quest.steps.length) return;
+
+        const r = quest.rewards;
+        if (r.gold && r.gold > 0) dispatch(gameActions.addGold(r.gold));
+        if (r.xp) {
+            (Object.entries(r.xp) as [string, number][]).forEach(([skillId, xp]) => {
+                if (xp > 0) dispatch(gameActions.applyXP({ skillId: skillId as SkillId, xp }));
+            });
+        }
+        if (r.setFlags?.length) r.setFlags.forEach((flag) => dispatch(gameActions.setNarrativeFlag(flag)));
+        if (r.items?.length) dispatch(gameActions.addItems(r.items));
         dispatch(gameActions.completeQuest(questId));
     };
 
@@ -198,12 +211,14 @@ export default function QuestsScreen() {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Lore & Quests</Text>
                 <Text style={styles.headerSubtitle}>The Cosmic Comedy Unfolds...</Text>
-                <BouncyButton
-                    style={[styles.devButton, { marginTop: Spacing.sm, alignSelf: 'flex-start' }]}
-                    onPress={handleTestDialogue}
-                >
-                    <Text style={styles.devBtnText}>[DEV] Play "Guard Intro" Dialogue</Text>
-                </BouncyButton>
+                {__DEV__ && (
+                    <BouncyButton
+                        style={[styles.devButton, { marginTop: Spacing.sm, alignSelf: 'flex-start' }]}
+                        onPress={handleTestDialogue}
+                    >
+                        <Text style={styles.devBtnText}>[DEV] Play "Guard Intro" Dialogue</Text>
+                    </BouncyButton>
+                )}
             </View>
 
             <ScrollView
@@ -235,12 +250,14 @@ export default function QuestsScreen() {
                                         })}
                                     </View>
 
-                                    <BouncyButton
-                                        style={styles.devButton}
-                                        onPress={() => handleCompleteQuestMock(q.id)}
-                                    >
-                                        <Text style={styles.devBtnText}>[DEV] Complete Quest</Text>
-                                    </BouncyButton>
+                                    {completedSteps.length >= q.steps.length && (
+                                        <BouncyButton
+                                            style={styles.startButton}
+                                            onPress={() => handleCompleteQuest(q.id)}
+                                        >
+                                            <Text style={styles.startBtnText}>Complete Quest</Text>
+                                        </BouncyButton>
+                                    )}
                                 </View>
                             )
                         })}

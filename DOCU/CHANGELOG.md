@@ -19,6 +19,7 @@
 
 ## [0.3.0] - 2026-03-03
 ### Added
+- **Quest completion (gameplay):** Complete button on Quests screen only when all steps are done. On complete, rewards are applied: gold, XP per skill, narrative flags, and items. Dialogue can advance steps via `onSelect.completeQuestStep`; completing all steps allows hand-in for rewards.
 - **Theme Engine:** Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, and StatusBar follow selected theme. `paletteToNavigationTheme()`, NavThemeWrapper, StatusBarFromTheme. THEME_OPTIONS, THEMES registry (dark, light, sepia). Persisted with save.
 - **Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. Active skill gold highlight. Shared `constants/skills.ts`.
 - **Smithing:** Smelting skill. Ore → bars (Bronze, Iron, Steel, Gold, Mithril, Adamant, Runite). Consumes ore per tick; produces bars. Runite gated by narrative. `constants/smithing.ts`, `app/skills/smithing.tsx`.
@@ -26,6 +27,12 @@
 - **Activity Log:** Skills screen 📜 button opens modal. Logs random events, level-ups, skill starts. Max 50 entries, session-based. `game.activityLog`, `ActivityLogModal.tsx`.
 - **Random Events:** Per-tick roll (~0.5% base, 60-tick cooldown). Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. `player.randomEvents` state. Groundwork for dialogue randoms, skill guardians.
 - **AI Versioning Reminder:** Doc heads include reminder to update Update Board, website, patchHistory, CHANGELOG, app.json when implementing features.
+
+### Changed (UX batch 2026-03-03)
+- **Bank:** Sort row (Name / Qty / Value). Empty state shows "Clear filter & search" when filter or search returns no items. Item detail modal recipe line removed.
+- **Shop:** Buy quantities 1, 5, 10, 25, 50 and Max (cap by gold). Sell filters include Fish, Runes, Equipment.
+- **Quests:** [DEV] Guard Intro button only in `__DEV__`. Complete button is real: only when all steps done, applies rewards then completes quest.
+- **HorizonHUD:** Grind card label "Lv. X → Y". **Skills:** 2 columns on narrow width (<360). **Combat:** Phase 4 teaser card. **Settings:** Idle Soundscapes description "coming soon".
 
 ---
 

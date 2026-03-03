@@ -24,6 +24,8 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '📜 Activity Log: Skills screen 📜 button opens modal. Logs random events, level-ups, skill starts. Max 50 entries, session-based.',
       '🎲 Random Events: Blibbertooth\'s Blessing, Cosmic Sneeze, Genie\'s Gift, Treasure Chest, Lucky Strike. Per-tick roll (~0.5% base, 60-tick cooldown). player.randomEvents state.',
       'AI versioning reminder in doc heads.',
+      '📋 UX batch: Bank sort (Name/Qty/Value), empty state Clear filter, Shop Buy 25/50/Max, Quests dev button __DEV__ only, HorizonHUD Grind label, Skills 2-col narrow, Combat Phase 4 teaser, Idle Soundscapes "coming soon".',
+      '📜 Quest completion: Complete button only when all steps done; applying rewards (gold, XP, flags, items) on complete.',
     ],
   },
   {

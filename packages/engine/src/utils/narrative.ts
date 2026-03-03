@@ -1,5 +1,29 @@
-import { PlayerState, SkillId, InventoryItem } from '../types';
+import { PlayerState, SkillId } from '../types';
 import { NarrativeRequirement } from '../data/story';
+import type { Quest } from '../data/story';
+
+/**
+ * Returns active-quest steps that are now complete based on inventory/skills/flags.
+ * Call after state changes (e.g. each tick or when opening Quests) and dispatch completeQuestStep for each.
+ */
+export function getQuestStepsToComplete(
+    player: PlayerState,
+    quests: Record<string, Quest>
+): { questId: string; stepId: string }[] {
+    const out: { questId: string; stepId: string }[] = [];
+    for (const [questId, completedStepIds] of Object.entries(player.narrative.activeQuests)) {
+        const quest = quests[questId];
+        if (!quest) continue;
+        for (const step of quest.steps) {
+            if (completedStepIds.includes(step.id)) continue;
+            if (step.completionRequirements && meetsNarrativeRequirement(player, step.completionRequirements)) {
+                out.push({ questId, stepId: step.id });
+            }
+            break;
+        }
+    }
+    return out;
+}
 
 /**
  * Evaluates whether a player meets a specific set of narrative requirements.

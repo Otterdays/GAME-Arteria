@@ -27,6 +27,7 @@
 | **EXPO_GUIDE.md** | Expo/EAS workflow, CNG, when to build vs OTA, monorepo config. |
 | **MY_ADHD.md** | Quick Q&A for deployment and testing. |
 | **zhipu-ai.md** | Baseline feature sheet for Melvor-like core engine, skills, combat, economy. |
+| **IMPROVEMENTS.md** | Systems audit + prioritized UX/GUI/feature improvements (quick wins, polish, larger features). |
 | **STYLE_GUIDE.md** | Project conventions: trace tags, limits, naming, touch targets, theming (useTheme + migration pattern). |
 | **THEMING.md** | Theme architecture: PaletteShape, THEMES registry, ThemeContext, migration path. |
 | **zhip-ai-styling.md** | UI/UX style guide (Melvor-like): layout, colors, components, screens. |
@@ -68,6 +69,7 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Current Status (Phase 2.3 — Lore & Progression):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.3.0 UX + Quest completion:** Bank sort/empty state, Shop Buy 25/50/Max, Quests: real completion (rewards applied when all steps done); Complete only when steps complete.
 - **v0.2.6 (Lore Expansion):** Branching NPC dialogue, universal quest ledger, narrative gating for skilling nodes.
 - **v0.2.5 (Build & Release):** Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
 - **v0.2.4 (Premium UI):** AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
@@ -76,8 +78,9 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **v0.2.1 (Immersion):** Global Action Ticker, Header XP dashboard, MaterialCommunityIcons, edge-to-edge.
 - **v0.2.0 (Pipeline & Gathering):** Gradle, prebuild, Melvor palette, core loop, Mining, Skill Pillars, Total Level, XP tracking.
 
-**Next Steps (Phase 3 — Combat Foundation):**
+**Next Steps (Phase 3–4):**
 - Finalize gathering pillar balancing and drop tables.
-- Begin Combat system alpha: loadouts, weapon stats, health/damage infrastructure.
+- Combat system alpha: loadouts, weapon stats, health/damage infrastructure (see ROADMAP Phase 4).
 - Mastery System: Spend skill-specific mastery points for permanent buffs.
+- Optional: Quest step auto-completion from gameplay (e.g. inventory/level checks); add completionRequirements to steps in engine data.
 
