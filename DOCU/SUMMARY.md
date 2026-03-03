@@ -25,7 +25,9 @@
 | **EXPO_GUIDE.md** | Expo/EAS workflow, CNG, when to build vs OTA, monorepo config. |
 | **MY_ADHD.md** | Quick Q&A for deployment and testing. |
 | **zhipu-ai.md** | Baseline feature sheet for Melvor-like core engine, skills, combat, economy. |
+| **STYLE_GUIDE.md** | Project conventions: trace tags, line/function limits, comment prefixes, touch targets. |
 | **zhip-ai-styling.md** | UI/UX style guide (Melvor-like): layout, colors, components, screens. |
+| **tools/info_scraper/** | Web scraper with GUI — fetch URLs, save content. See `tools/info_scraper/README.md`. |
 | **debugs/** | Issue tracking (e.g. `audit-2026-02-26.md`). |
 | **README.md** (root) | User-facing project intro; links to DOCS. |
 | **tests/README.md** | Test suite structure and commands. |
@@ -33,7 +35,11 @@
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
 
-**Version scheme:** 0.2.x (current **0.2.6**). Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+**Version scheme:** 0.2.x (current **0.2.7**). Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+
+**v0.2.7 (2026-03-03) — big update:** Fishing and Runecrafting skills; action consumption in the game loop; Bank filters for fish/runes; new Mining essence veins. Settings: **Confirm Task Switch**, **Battery Saver**, **Horizon HUD** (toggle to hide the 3 goal cards under XP bar), **Notifications** (Level Up, Task Complete, **Idle Cap Reached** with local scheduling), **Idle Soundscapes** (stub hook). **Easter egg** "Don't Push This" (1,000 presses → title "The Stubborn"). All persisted.
+
+**Quest expansion (2026-03-03):** Many RuneScape-inspired quests added (17 new quests across Act 1 and Act 2). Quest model extended with `questType` and `difficulty`; Available list gated by narrative requirements; difficulty badges on cards.
 
 **v0.2.6 (2026-03-02):** The Lore Expansion. Branching NPC dialogue, global DialogueOverlay, Universal Quests Ledger Tab. Narrative gating implemented for Skilling nodes and Dialogue choices. Glassmorphism added to website.
 

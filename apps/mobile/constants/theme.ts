@@ -19,18 +19,20 @@ export const Palette = {
   textDisabled: '#5a5e6b',
   textMuted: '#6c7085',
 
-  // Accent (blue)
+  // Accent (blue — primary for interactive)
   accentPrimary: '#4a90e2',
   accentHover: '#6aa3f5',
   accentDim: '#3a6db5',
 
+  // Website alignment (subtle purple/gold)
+  accentWeb: '#8b5cf6',
+  borderGlow: 'rgba(139, 92, 246, 0.35)',
+  gold: '#f59e0b',
+  goldDim: '#c49b1a',
+
   // Positive / XP / Success
   green: '#4caf50',
   greenDim: '#2e7d32',
-
-  // Warning / Gold / Currency
-  gold: '#ffca28',
-  goldDim: '#c49b1a',
 
   // Danger / Low HP
   red: '#f44336',
@@ -119,6 +121,19 @@ export const FontSize = {
   '3xl': 32,
 } as const;
 
+// ── Card styling (website-aligned border/glow) ────────────────
+export const CardStyle = {
+  borderWidth: 1,
+  borderColor: Palette.border,
+  borderRadius: Radius.md,
+  // Subtle purple glow (website accent)
+  shadowColor: Palette.accentWeb,
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.15,
+  shadowRadius: 8,
+  elevation: 3,
+} as const;
+
 // ── Fonts ───────────────────────────────────────────────────
 export const Fonts = Platform.select({
   ios: {
@@ -140,3 +155,7 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+// Cinzel (loaded via useFonts in root layout)
+export const FontCinzel = 'Cinzel_400Regular';
+export const FontCinzelBold = 'Cinzel_700Bold';

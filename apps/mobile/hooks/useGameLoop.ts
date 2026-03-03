@@ -36,23 +36,40 @@ function levelForXP(xp: number): number {
     return 1;
 }
 
-// ── Action definitions (mining only for now) ──
+// ── Action definitions (all skilling nodes) ──
 interface ActionDef {
     xpPerTick: number;
-    items: { id: string; quantity: number }[];
+    items: { id: string; quantity: number }[];           // items PRODUCED per tick
+    consumedItems?: { id: string; quantity: number }[];   // items CONSUMED per tick (Runecrafting)
     successRate: number;
     masteryXp: number;
 }
 
 import { MINING_NODES } from '@/constants/mining';
+import { LOGGING_NODES } from '@/constants/logging';
+import { FISHING_SPOTS } from '@/constants/fishing';
+import { RUNE_ALTARS } from '@/constants/runecrafting';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
-MINING_NODES.forEach((node) => {
+
+// Standard gathering nodes
+[...MINING_NODES, ...LOGGING_NODES, ...FISHING_SPOTS].forEach((node) => {
     ACTION_DEFS[node.id] = {
         xpPerTick: node.xpPerTick,
         items: node.items,
         successRate: node.successRate,
         masteryXp: node.masteryXp,
+    };
+});
+
+// Runecrafting altars: consume essence, produce runes
+RUNE_ALTARS.forEach((altar) => {
+    ACTION_DEFS[altar.id] = {
+        xpPerTick: altar.xpPerEssence * altar.essencePerBatch,
+        items: [{ id: altar.outputRuneId, quantity: altar.runesPerBatch }],
+        consumedItems: [{ id: altar.essenceType, quantity: altar.essencePerBatch }],
+        successRate: 1,
+        masteryXp: 1,
     };
 });
 
@@ -68,6 +85,10 @@ export function useGameLoop() {
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
     const hasProcessedOfflineRef = useRef(false);
+    // Ref to current inventory so processDelta can read it without a stale closure
+    const inventory = useAppSelector((s) => s.game.player.inventory);
+    const inventoryRef = useRef(inventory);
+    inventoryRef.current = inventory;
 
     // Process a delta of time.
     // If accumulator is passed, results are added into it instead of dispatching immediately.
@@ -88,9 +109,31 @@ export function useGameLoop() {
 
             if (fullTicks <= 0) return;
 
+            // If this action consumes items (e.g. Runecrafting), check stock before rolling
+            // and clamp ticks to how many we can actually process.
+            let cappedTicks = fullTicks;
+            if (action.consumedItems && action.consumedItems.length > 0) {
+                for (const consumed of action.consumedItems) {
+                    const ownedQty = inventoryRef.current.find((i) => i.id === consumed.id)?.quantity ?? 0;
+                    const maxAffordable = consumed.quantity > 0 ? Math.floor(ownedQty / consumed.quantity) : fullTicks;
+                    cappedTicks = Math.min(cappedTicks, maxAffordable);
+                }
+                if (cappedTicks <= 0) {
+                    // Out of essence — stop the task automatically
+                    dispatch(gameActions.stopTask());
+                    return;
+                }
+                // Consume the essence
+                dispatch(
+                    gameActions.removeItems(
+                        action.consumedItems.map((c) => ({ id: c.id, quantity: c.quantity * cappedTicks }))
+                    )
+                );
+            }
+
             // Roll for success on each tick
             let successfulTicks = 0;
-            for (let i = 0; i < fullTicks; i++) {
+            for (let i = 0; i < cappedTicks; i++) {
                 if (Math.random() <= action.successRate) {
                     successfulTicks++;
                 }
@@ -120,7 +163,7 @@ export function useGameLoop() {
                 }
             }
         },
-        [activeTask, dispatch, isPatron]
+        [activeTask, dispatch, isPatron, inventoryRef]
     );
 
     // Main game loop interval

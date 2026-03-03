@@ -7,6 +7,38 @@
 
 ---
 
+## [Unreleased]
+### Added
+- **Feedback Toast System:** In-game stylized prompts replace system `Alert.alert()` for locked nodes, no essence, level requirements. `FeedbackToast` component with variants (locked, warning, error, info), `useFeedbackToast` hook, Redux queue. Mining, Logging, Fishing, Runecrafting use it. Auto-dismiss 3.5s, haptics, themed borders.
+- **Theme Engine (documented):** Full implementation plan in FUTURE_NOTES.md — ThemeContext, light/dark palettes, Settings toggle, ~30-file migration scope. Not yet implemented.
+- **STYLE_GUIDE.md:** Project conventions (trace tags, line limits, comment prefixes, touch targets, requirements indicators).
+
+### Fixed
+- **Settings touch bug:** Whole row is now pressable for toggle rows; Switch is display-only to avoid dead zones.
+- **Quest expansion:** 17 new RuneScape-style quests (Act 1 & Act 2). Quest model extended with `questType` and `difficulty`. Available quests gated by `meetsNarrativeRequirement` (skills, flags, completed quests, items). Difficulty badges on quest cards. Engine exports `meetsNarrativeRequirement` and story types.
+
+---
+
+## [0.2.7] - 2026-03-03
+### Added
+- **Fishing Skill:** Fully implemented the Fishing skill with 10 spots ranging from Shrimp (Lv. 1) to Cosmic Jellyfish (Lv. 90). Features a "vertical bob" animation and area-grouped UI.
+- **Runecrafting Skill:** Introduced a two-stage production skill. Players must mine Rune Essence, Pure Essence, or Cosmic Shards to bind them at one of 14 localized altars.
+- **Improved Game Loop:** Extended the internal `ActionDef` system to support `consumedItems`. The game loop now automatically checks for required inputs (like essence), consumes them before awarding XP/loot, and stops the task if the player runs out of stock.
+- **Bank Expansion:** Added "Fish" and "Runes" filter tabs to the Bank for better organization.
+- **New Mining Nodes:** Added Rune Essence, Pure Essence, and Cosmic Shard veins to the Mining skill.
+- **Type Safety:** Updated engine types and mobile state definitions to support the new skills and items, ensuring full cross-monorepo synchronization.
+- **Confirm Task Switch (Settings → Gameplay):** When enabled, starting a different skill/task while one is already active shows a confirmation dialog ("Switch task?") before switching. Implemented via `useRequestStartTask` hook; all gathering skill screens use it.
+- **Battery Saver (Settings → Gameplay):** When enabled, after 5 minutes with no touch the app shows a true-black dim overlay to reduce battery use; any touch dismisses it. Persisted with save; interval check every 30s.
+- **Easter egg "Don't Push This":** Button in Settings → Easter Egg. Press 1,000 times to unlock the title "The Stubborn". Count and unlocked titles persisted with save.
+- **Notifications (wired):** Level Up Alerts, Task Complete, and **Idle Cap Reached** toggles in Settings → Notifications; all persisted. **Idle Cap Reached** schedules a local notification when the app goes to background (lastSaveTimestamp + 24h or 7d); notification fires when offline progress cap is full. Uses expo-notifications; cancelled when app returns to foreground.
+- **Idle Soundscapes:** New Settings → Audio toggle. Stub hook `useIdleSoundscape(soundscapeId)` for skill screens to plug in ambient loops (mining, logging, fishing, runecrafting); ready for expo-av or similar.
+- **Horizon HUD toggle (Settings → Gameplay):** Option to hide the 3 goal cards (Immediate / Session / Grind) under the skill XP progress on the Skills screen. Toggle off to hide.
+- **Runecrafting requirements indicator:** Badge row on each altar card shows Lv. X, essence/batch, and Story lock when applicable.
+
+### Changed
+- **Settings screen:** All new toggles wired to Redux and persisted (Confirm Task Switch, Battery Saver, notification toggles, Idle Soundscapes). New Easter Egg section.
+- **Update Board:** In-app changelog modal renamed from "Updates Modal" to **Update Board**; pops when `lastSeenVersion !== currentVersion` (app.json). Component `UpdateBoard.tsx`; update hardcoded changelog there when bumping versions.
+
 ## [0.2.6] - 2026-03-02
 ### Added
 - **Lore Expansion:** Engineered a complete `DialogueOverlay` modal reading from Redux. NPCs now have branching dialogue trees (`data/dialogues.ts`) with options that trigger narrative flags or start / progress quests.

@@ -1,0 +1,17 @@
+{
+  "name": "@arteria/info-scraper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lightweight web scraper with GUI — fetch pages and save content to the project.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "scrape": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "playwright": "^1.49.0",
+    "turndown": "^7.2.2"
+  }
+}

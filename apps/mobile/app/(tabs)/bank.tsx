@@ -125,6 +125,8 @@ const FILTER_OPTIONS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'ore', label: 'Ores' },
     { key: 'bar', label: 'Bars' },
     { key: 'log', label: 'Logs' },
+    { key: 'fish', label: 'Fish' },
+    { key: 'rune', label: 'Runes' },
     { key: 'other', label: 'Other' },
 ];
 

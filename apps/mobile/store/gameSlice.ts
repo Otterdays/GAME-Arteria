@@ -23,6 +23,7 @@ export type SkillId =
     | 'mining'
     | 'logging'
     | 'fishing'
+    | 'runecrafting'
     | 'harvesting'
     | 'scavenging'
     | 'cooking'
@@ -64,7 +65,7 @@ interface CombatStats {
     magicDefence: number;
 }
 
-interface ActiveTask {
+export interface ActiveTask {
     type: 'skilling' | 'combat';
     skillId?: SkillId;
     actionId: string;
@@ -87,7 +88,7 @@ export interface PlayerState {
         activeQuests: Record<string, string[]>;
         completedQuests: string[];
     };
-    /** Standard version tracking for updates modal (e.g. "0.3.0") */
+    /** Standard version tracking for Update Board (e.g. "0.2.7") */
     lastSeenVersion?: string;
     /** UI preferences (persisted with save) */
     settings?: {
@@ -97,13 +98,29 @@ export interface PlayerState {
         bgmEnabled?: boolean;
         /** Patron's Pack — 7d offline cap, 100 slots, +20% XP, badge */
         isPatron?: boolean;
+        /** Ask before switching to a different task when one is already active */
+        confirmTaskSwitch?: boolean;
+        /** After 5 min no touch, show true-black dim overlay to save battery */
+        batterySaverEnabled?: boolean;
+        /** Notify when player gains a level (local notification) */
+        notifyLevelUp?: boolean;
+        /** Notify when a task completes (e.g. crafting; local notification) */
+        notifyTaskComplete?: boolean;
+        /** Notify when offline progression cap is reached */
+        notifyIdleCapReached?: boolean;
+        /** Idle soundscapes (ambient loops per skill screen) */
+        idleSoundscapesEnabled?: boolean;
     };
+    /** Easter egg: "Don't Push This" press count. At 1000 unlocks title "The Stubborn". */
+    dontPushCount?: number;
+    /** Unlocked display titles (e.g. "The Stubborn") */
+    unlockedTitles?: string[];
 }
 
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
-    'mining', 'logging', 'fishing', 'harvesting', 'scavenging', 'cooking', 'smithing',
+    'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing',
     'crafting', 'farming', 'herblore', 'agility',
     'attack', 'strength', 'defence', 'hitpoints',
 ];
@@ -159,7 +176,21 @@ function createFreshPlayer(): PlayerState {
             activeQuests: {},
             completedQuests: [],
         },
-        settings: { bankPulseEnabled: true, horizonHudEnabled: true, sfxEnabled: true, bgmEnabled: true, isPatron: false },
+        settings: {
+            bankPulseEnabled: true,
+            horizonHudEnabled: true,
+            sfxEnabled: true,
+            bgmEnabled: true,
+            isPatron: false,
+            confirmTaskSwitch: false,
+            batterySaverEnabled: false,
+            notifyLevelUp: true,
+            notifyTaskComplete: true,
+            notifyIdleCapReached: true,
+            idleSoundscapesEnabled: false,
+        },
+        dontPushCount: 0,
+        unlockedTitles: [],
     };
 }
 
@@ -196,6 +227,12 @@ function migratePlayer(saved: PlayerState): PlayerState {
         sfxEnabled: saved.settings?.sfxEnabled ?? true,
         bgmEnabled: saved.settings?.bgmEnabled ?? true,
         isPatron: saved.settings?.isPatron ?? false,
+        confirmTaskSwitch: saved.settings?.confirmTaskSwitch ?? false,
+        batterySaverEnabled: saved.settings?.batterySaverEnabled ?? false,
+        notifyLevelUp: saved.settings?.notifyLevelUp ?? true,
+        notifyTaskComplete: saved.settings?.notifyTaskComplete ?? true,
+        notifyIdleCapReached: saved.settings?.notifyIdleCapReached ?? true,
+        idleSoundscapesEnabled: saved.settings?.idleSoundscapesEnabled ?? false,
     };
 
     // Ensure narrative structure exists on older saves
@@ -205,7 +242,9 @@ function migratePlayer(saved: PlayerState): PlayerState {
         completedQuests: [],
     };
 
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative };
+    const dontPushCount = saved.dontPushCount ?? 0;
+    const unlockedTitles = saved.unlockedTitles ?? [];
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles };
 }
 
 // ─── Slice ───
@@ -231,6 +270,16 @@ export interface LootVacuumEvent {
     quantity: number;
 }
 
+/** In-game feedback toast (replaces Alert for locked, no essence, etc.) */
+export type FeedbackToastType = 'locked' | 'warning' | 'error' | 'info';
+
+export interface FeedbackToastEvent {
+    id: string;
+    type: FeedbackToastType;
+    title: string;
+    message: string;
+}
+
 interface GameState {
     player: PlayerState;
     isLoaded: boolean;
@@ -242,6 +291,8 @@ interface GameState {
     lootVacuumQueue: LootVacuumEvent[];
     /** Active Dialogue Overlay State */
     activeDialogue: { treeId: string; nodeId: string } | null;
+    /** In-game feedback toasts (locked, no essence, etc.) */
+    feedbackToastQueue: FeedbackToastEvent[];
 }
 
 const initialState: GameState = {
@@ -252,6 +303,7 @@ const initialState: GameState = {
     pulseTab: null,
     lootVacuumQueue: [],
     activeDialogue: null,
+    feedbackToastQueue: [],
 };
 
 export const gameSlice = createSlice({
@@ -348,12 +400,24 @@ export const gameSlice = createSlice({
             state.player.lastSaveTimestamp = Date.now();
         },
 
+        /** Remove items from inventory (used by crafting/runecrafting to consume inputs). */
+        removeItems(state, action: PayloadAction<{ id: string; quantity: number }[]>) {
+            for (const toRemove of action.payload) {
+                const item = state.player.inventory.find((i) => i.id === toRemove.id);
+                if (item) {
+                    item.quantity -= toRemove.quantity;
+                }
+            }
+            // Cleanup zeroed-out entries
+            state.player.inventory = state.player.inventory.filter((i) => i.quantity > 0);
+        },
+
         /** Add gold */
         addGold(state, action: PayloadAction<number>) {
             state.player.gold += action.payload;
         },
 
-        /** Mark a version as seen by the user (clears updates modal) */
+        /** Mark a version as seen by the user (dismisses Update Board until next bump) */
         updateSeenVersion(state, action: PayloadAction<string>) {
             state.player.lastSeenVersion = action.payload;
         },
@@ -371,6 +435,19 @@ export const gameSlice = createSlice({
         /** Dismiss the oldest level up toast */
         popLevelUp(state) {
             state.levelUpQueue.shift();
+        },
+
+        /** Queue an in-game feedback toast (locked, no essence, etc.) */
+        pushFeedbackToast(state, action: PayloadAction<Omit<FeedbackToastEvent, 'id'>>) {
+            state.feedbackToastQueue.push({
+                ...action.payload,
+                id: Math.random().toString(36).substring(7),
+            });
+        },
+
+        /** Dismiss the oldest feedback toast */
+        popFeedbackToast(state) {
+            state.feedbackToastQueue.shift();
         },
 
         /** X. Clear tab pulse when user visits that tab */
@@ -400,6 +477,53 @@ export const gameSlice = createSlice({
         setBgmEnabled(state, action: PayloadAction<boolean>) {
             if (!state.player.settings) state.player.settings = {};
             state.player.settings.bgmEnabled = action.payload;
+        },
+
+        /** Confirm before switching to a different active task (Settings) */
+        setConfirmTaskSwitch(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.confirmTaskSwitch = action.payload;
+        },
+
+        /** Battery saver: after 5 min no touch, show dim overlay (Settings) */
+        setBatterySaverEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.batterySaverEnabled = action.payload;
+        },
+
+        /** Notify on level up (Settings) */
+        setNotifyLevelUp(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.notifyLevelUp = action.payload;
+        },
+
+        /** Notify on task complete (Settings) */
+        setNotifyTaskComplete(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.notifyTaskComplete = action.payload;
+        },
+
+        /** Notify when idle cap reached (Settings) */
+        setNotifyIdleCapReached(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.notifyIdleCapReached = action.payload;
+        },
+
+        /** Idle soundscapes toggle (Settings) — ambient loops per skill */
+        setIdleSoundscapesEnabled(state, action: PayloadAction<boolean>) {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.idleSoundscapesEnabled = action.payload;
+        },
+
+        /** Easter egg: "Don't Push This" — at 1000 presses unlock title "The Stubborn" */
+        incrementDontPushCount(state) {
+            state.player.dontPushCount = (state.player.dontPushCount ?? 0) + 1;
+            if (state.player.dontPushCount >= 1000) {
+                const titles = state.player.unlockedTitles ?? [];
+                if (!titles.includes('The Stubborn')) {
+                    state.player.unlockedTitles = [...titles, 'The Stubborn'];
+                }
+            }
         },
 
         /** Patron's Pack — mock purchase unlocks 7d offline, 100 slots, +20% XP. [TRACE: Patron's Pack] */

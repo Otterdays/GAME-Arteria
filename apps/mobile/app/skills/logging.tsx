@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
+import { useRequestStartTask } from '@/hooks/useRequestStartTask';
+import { useFeedbackToast } from '@/hooks/useFeedbackToast';
 import { LOGGING_NODES, LoggingNode } from '@/constants/logging';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import * as Haptics from 'expo-haptics';
@@ -25,6 +27,7 @@ function xpForLevel(level: number): number {
 
 export default function LoggingScreen() {
     const dispatch = useAppDispatch();
+    const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
     const loggingSkill = useAppSelector((s) => s.game.player.skills.logging);
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
@@ -64,8 +67,11 @@ export default function LoggingScreen() {
 
     const handleNodePress = (node: LoggingNode) => {
         if (loggingSkill.level < node.levelReq) {
-            Alert.alert("Locked", `Requires Logging Level ${node.levelReq}`);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            showFeedbackToast({
+                type: 'locked',
+                title: 'Locked',
+                message: `Requires Logging Level ${node.levelReq}`,
+            });
             return;
         }
 
@@ -74,17 +80,14 @@ export default function LoggingScreen() {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
             dispatch(gameActions.stopTask());
         } else {
-            // Start this node
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-            dispatch(
-                gameActions.startTask({
-                    type: 'skilling',
-                    skillId: 'logging',
-                    actionId: node.id,
-                    intervalMs: node.baseTickMs,
-                    partialTickMs: 0,
-                })
-            );
+            requestStartTask({
+                type: 'skilling',
+                skillId: 'logging',
+                actionId: node.id,
+                intervalMs: node.baseTickMs,
+                partialTickMs: 0,
+            });
         }
     };
 

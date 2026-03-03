@@ -30,14 +30,22 @@ export interface NarrativeReward {
     setFlags?: string[];
 }
 
+/** Quest category: main story, repeatable/daily, or character-focused */
+export type QuestType = 'main' | 'radiant' | 'character';
+
 /** 
  * A single Quest definition in the game.
+ * Inspired by RuneScape-style: multi-step, requirements, and rewards.
  */
 export interface Quest {
     id: string;
     title: string;
     description: string;
+    /** 'main' = one-time story; 'radiant' = repeatable/daily; 'character' = companion/unlock */
+    questType?: QuestType;
     act: 1 | 2 | 3 | 4; // The narrative Act this quest belongs to
+    /** Optional difficulty hint for UI (novice / intermediate / experienced / master) */
+    difficulty?: 'novice' | 'intermediate' | 'experienced' | 'master';
     requirements: NarrativeRequirement;
     rewards: NarrativeReward;
     /** 

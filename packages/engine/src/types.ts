@@ -7,6 +7,7 @@ export type SkillId =
     | 'mining'
     | 'logging'
     | 'fishing'
+    | 'runecrafting'
     | 'harvesting'
     | 'scavenging'
     | 'cooking'

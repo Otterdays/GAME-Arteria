@@ -3,7 +3,7 @@
  *
  * - On mount: loads saved state from MMKV into Redux.
  * - Every 30s: saves current Redux state to MMKV.
- * - On app background: saves immediately.
+ * - On app background: saves immediately and schedules "Idle cap reached" notification if enabled.
  */
 
 import { useEffect, useRef } from 'react';
@@ -11,6 +11,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { savePlayerState, loadPlayerState, hasSave } from '@/store/persistence';
+import { scheduleIdleCapReachedIfEnabled, cancelIdleCapNotification } from '@/utils/notifications';
 
 const AUTO_SAVE_INTERVAL_MS = 30_000; // 30 seconds
 
@@ -44,7 +45,7 @@ export function usePersistence() {
         return () => clearInterval(intervalId);
     }, [isLoaded, player]);
 
-    // Save on app background
+    // Save on app background + schedule idle-cap notification
     useEffect(() => {
         const subscription = AppState.addEventListener(
             'change',
@@ -53,8 +54,20 @@ export function usePersistence() {
                     appStateRef.current === 'active' &&
                     nextState.match(/inactive|background/)
                 ) {
-                    // Going to background — save immediately
-                    savePlayerState({ ...player, lastSaveTimestamp: Date.now() });
+                    const now = Date.now();
+                    const stateToSave = { ...player, lastSaveTimestamp: now };
+                    savePlayerState(stateToSave);
+                    const enabled = player.settings?.notifyIdleCapReached ?? true;
+                    scheduleIdleCapReachedIfEnabled(
+                        now,
+                        player.settings?.isPatron ?? false,
+                        enabled
+                    ).catch(() => {});
+                } else if (
+                    appStateRef.current.match(/inactive|background/) &&
+                    nextState === 'active'
+                ) {
+                    cancelIdleCapNotification().catch(() => {});
                 }
                 appStateRef.current = nextState;
             }

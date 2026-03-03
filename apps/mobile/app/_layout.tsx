@@ -1,21 +1,29 @@
+import { useEffect } from 'react';
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { Cinzel_400Regular, Cinzel_700Bold } from '@expo-google-fonts/cinzel';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+
+SplashScreen.preventAutoHideAsync();
 import { store } from '@/store';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { usePersistence } from '@/hooks/usePersistence';
-import UpdatesModal from '@/components/UpdatesModal';
+import UpdateBoard from '@/components/UpdateBoard';
 import WhileYouWereAway from '@/components/WhileYouWereAway';
 import LevelUpToast from '@/components/LevelUpToast';
 import TrainToast from '@/components/TrainToast';
+import FeedbackToast from '@/components/FeedbackToast';
 import LootVacuum from '@/components/LootVacuum';
 import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
+import { BatterySaver } from '@/components/BatterySaver';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -27,26 +35,38 @@ export const unstable_settings = {
  */
 function AppShell() {
   const colorScheme = useColorScheme();
+  const [fontsLoaded, fontError] = useFonts({
+    Cinzel_400Regular,
+    Cinzel_700Bold,
+  });
 
-  // Wire up the core game systems
   useGameLoop();
   usePersistence();
 
+  useEffect(() => {
+    if (fontsLoaded || fontError) SplashScreen.hideAsync();
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) return null;
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="patches" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <UpdatesModal />
-      <WhileYouWereAway />
-      <LevelUpToast />
-      <TrainToast />
-      <LootVacuum />
-      <GlobalActionTicker />
-      <DialogueOverlay />
-      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <BatterySaver>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="patches" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        <UpdateBoard />
+        <WhileYouWereAway />
+        <LevelUpToast />
+        <TrainToast />
+        <FeedbackToast />
+        <LootVacuum />
+        <GlobalActionTicker />
+        <DialogueOverlay />
+        <StatusBar style="light" translucent backgroundColor="transparent" />
+      </BatterySaver>
     </ThemeProvider>
   );
 }

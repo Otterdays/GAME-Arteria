@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel } from '@/constants/theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 
@@ -73,8 +73,8 @@ export default function PatronScreen() {
                     )}
                 </View>
 
-                <View style={styles.benefitsSection}>
-                    <Text style={styles.sectionTitle}>Benefits</Text>
+                <View style={[styles.benefitsSection, CardStyle, { padding: Spacing.md }]}>
+                    <Text style={[styles.sectionTitle, { fontFamily: FontCinzel }]}>Benefits</Text>
                     {BENEFITS.map((b, i) => (
                         <View key={i} style={styles.benefitRow}>
                             <Text style={styles.benefitEmoji}>{b.emoji}</Text>

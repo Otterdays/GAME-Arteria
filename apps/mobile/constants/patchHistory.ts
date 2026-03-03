@@ -1,7 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Version restructure: project uses 0.2.x; current release is 0.2.5.
+ * Version restructure: project uses 0.2.x; current release is 0.2.7 "The BIG Fish and Runes update! (and other cool stuff)".
  */
 
 export interface PatchEntry {
@@ -13,6 +13,35 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.2.7',
+    date: '2026-03-03',
+    added: [
+      '🎣 Fishing Skill: 10 fishing spots from Shrimp (Lv. 1) to Cosmic Jellyfish (Lv. 90). Area-grouped UI with bobbing animation.',
+      '✨ Runecrafting Skill: Mine essence (Rune Essence, Pure Essence, Cosmic Shard) and bind it at 14 rune altars to produce all 14 rune types (Air → Void).',
+      '⚙️ Smart Game Loop: The action system now tracks and consumes inventory items per tick. Tasks like Runecrafting auto-stop when you run out of essence.',
+      '🏦 Bank Filters: Added "Fish" and "Runes" tabs to the Bank screen filter strip.',
+      '⛏️ Mining: Added 3 new essence veins — Rune Essence (Lv. 1), Pure Essence (Lv. 30), Cosmic Shard Vein (Lv. 65, narrative-gated).',
+      '⚙️ Confirm Task Switch: New setting (Settings → Gameplay). When on, switching to a different task while one is active shows a confirmation dialog.',
+      '🔋 Battery Saver: New setting (Settings → Gameplay). After 5 min with no touch, a dim overlay appears to save battery; touch anywhere to dismiss.',
+      '🥚 Easter egg: "Don\'t Push This" button in Settings. Press 1,000 times to unlock the title "The Stubborn".',
+      '🔔 Notifications: Level Up Alerts, Task Complete, and Idle Cap Reached toggles wired and persisted. Idle Cap Reached schedules a local notification when you background the app so you get notified when 24h/7-day offline cap is full.',
+      '🔊 Idle Soundscapes: New Audio toggle; stub hook ready for ambient loops per skill (e.g. forge, waves).',
+      '📋 Horizon HUD toggle: Settings → Gameplay. Turn off to hide the 3 goal cards (Immediate / Session / Grind) under the skill XP bar on the Skills screen.',
+      '🔧 Settings touch fix: Whole row is now pressable for toggle rows; no more dead zones.',
+      '✨ Runecrafting: Requirements indicator on each altar card (Lv. X, essence/batch, Story lock).',
+    ],
+  },
+  {
+    version: '0.2.6',
+    date: '2026-03-02',
+    added: [
+      'Lore Expansion: Branching NPC dialogue system (DialogueOverlay) with Redux-driven dialogue trees.',
+      'Narrative Gating: Skill nodes can now be locked behind quest flags (e.g. Runite Vein requires knowing about the Sneeze Cult).',
+      'Quest Ledger: New Quests tab automatically sorts Active, Completed, and Available quests.',
+      'Website: Glassmorphism overhaul with dynamic backdrop-blur cards.',
+    ],
+  },
   {
     version: '0.2.5',
     date: '2026-02-28',

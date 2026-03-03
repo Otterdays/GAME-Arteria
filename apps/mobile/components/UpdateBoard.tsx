@@ -1,3 +1,10 @@
+/**
+ * Update Board — In-app modal that pops when the app version changes.
+ * Shows the changelog for the new version. Trigger: lastSeenVersion !== currentVersion
+ * (from app.json). Dismissing stores currentVersion so it won't show again until next bump.
+ * [TRACE: DOCU/SCRATCHPAD.md — Versioning & Update Board]
+ */
+
 import React, { useEffect, useState } from 'react';
 import {
     Modal,
@@ -10,26 +17,21 @@ import {
 import Constants from 'expo-constants';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
-import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
+import { Palette, Spacing, Radius, FontSize, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
 import { logger } from '@/utils/logger';
 
-export default function UpdatesModal() {
+export default function UpdateBoard() {
     const dispatch = useAppDispatch();
     const lastSeenVersion = useAppSelector((s) => s.game.player.lastSeenVersion);
     const isLoaded = useAppSelector((s) => s.game.isLoaded);
 
-    // Note: fallback to 0.1.0 if running in an environment without expo-constants
     const currentVersion = Constants.expoConfig?.version || '0.1.0';
 
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        // Only show if the save is fully loaded and versions don't match
         if (isLoaded && lastSeenVersion !== currentVersion) {
-            // If lastSeenVersion is undefined, it's a completely new player.
-            // We could optionally choose NOT to show the changelog to brand new users
-            // But for this alpha, let's show it so they know what's new.
-            logger.info('UI', `Version bump detected: ${lastSeenVersion ?? 'New User'} -> ${currentVersion}. Opening Updates Modal.`);
+            logger.info('UI', `Version bump detected: ${lastSeenVersion ?? 'New User'} -> ${currentVersion}. Opening Update Board.`);
             setVisible(true);
         }
     }, [isLoaded, lastSeenVersion, currentVersion]);
@@ -37,29 +39,39 @@ export default function UpdatesModal() {
     if (!visible) return null;
 
     const handleDismiss = () => {
-        logger.debug('UI', 'Updates modal dismissed', { version: currentVersion });
+        logger.debug('UI', 'Update Board dismissed', { version: currentVersion });
         dispatch(gameActions.updateSeenVersion(currentVersion));
         setVisible(false);
     };
 
     return (
-        <Modal visible={visible} transparent animationType="fade">
+        <Modal
+            visible={visible}
+            transparent
+            animationType="fade"
+            accessibilityLabel="Update Board"
+            accessibilityHint="Shows what's new in this version"
+        >
             <View style={styles.overlay}>
                 <View style={styles.card}>
+                    <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
-                    <Text style={styles.subtitle}>Welcome to the next phase!</Text>
+                    <Text style={styles.subtitle}>The BIG Fish and Runes update! (and other cool stuff)</Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {/* 
-              Future AI: Hardcode the changelog for the *current* version here. 
-              The modal will automatically reappear whenever you bump the version in app.json 
-            */}
+                        {/* Future AI: Update changelog for the *current* version here when bumping app.json */}
                         <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>✨ v0.2.5 — Build & Release</Text>
-                            <Text style={styles.changeText}>• Horizon System: 3-tier goal HUD (Immediate / Session / Grind).</Text>
-                            <Text style={styles.changeText}>• Unique Mechanics: Rare gems in Mining, Mythic fish, and Seasonal Logging.</Text>
-                            <Text style={styles.changeText}>• Premium Styling: Glassmorphism and color-coded goal cards.</Text>
-                            <Text style={styles.changeText}>• Local APK Fix: Build shareable APKs without a connected device.</Text>
+                            <Text style={styles.changeHeader}>🎣 Fishing & ✨ Runecrafting</Text>
+                            <Text style={styles.changeText}>• Fishing: 10 spots from Shrimp to Cosmic Jellyfish.</Text>
+                            <Text style={styles.changeText}>• Runecrafting: Mine essence, bind at 14 altars. Requirements indicator on each altar (Lv., essence, Story). Loop auto-stops when you run out.</Text>
+                            <Text style={styles.changeText}>• Bank filters for Fish and Runes.</Text>
+                        </View>
+
+                        <View style={styles.changeBlock}>
+                            <Text style={styles.changeHeader}>⚙️ Settings & Notifications</Text>
+                            <Text style={styles.changeText}>• Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Idle Soundscapes. Whole row tap to toggle.</Text>
+                            <Text style={styles.changeText}>• Idle Cap Reached: Notify when 24h/7-day offline cap is full.</Text>
+                            <Text style={styles.changeText}>• Easter egg: "Don't Push This" → title "The Stubborn" at 1,000 presses.</Text>
                         </View>
 
                         <View style={styles.changeBlock}>
@@ -94,20 +106,26 @@ const styles = StyleSheet.create({
         backgroundColor: Palette.bgCard,
         borderRadius: Radius.lg,
         padding: Spacing.lg,
-        borderWidth: 1,
-        borderColor: Palette.border,
-        shadowColor: '#000',
+        ...CardStyle,
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.5,
         shadowRadius: 20,
         elevation: 10,
         maxHeight: '80%',
     },
+    boardLabel: {
+        fontSize: FontSize.sm,
+        fontWeight: '700',
+        color: Palette.accentWeb,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        textAlign: 'center',
+        marginBottom: 4,
+    },
     title: {
+        fontFamily: FontCinzelBold,
         fontSize: FontSize.xl,
-        fontWeight: '800',
-        color: Palette.accentPrimary,
-        fontFamily: 'Cinzel',
+        color: Palette.accentWeb,
         textAlign: 'center',
     },
     subtitle: {

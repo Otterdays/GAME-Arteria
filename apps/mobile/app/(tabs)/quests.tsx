@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { BouncyButton } from '@/components/BouncyButton';
@@ -9,12 +9,14 @@ import { BouncyButton } from '@/components/BouncyButton';
 // NOTE: Hardcoded import until alias is linked properly across monorepo
 import { ALL_QUESTS } from '../../../../packages/engine/src/data/quests';
 import { Quest } from '../../../../packages/engine/src/data/story';
+import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function QuestsScreen() {
     const insets = useSafeAreaInsets();
     const dispatch = useAppDispatch();
-    const narrative = useAppSelector((s) => s.game.player.narrative);
+    const player = useAppSelector((s) => s.game.player);
+    const narrative = player.narrative;
 
     const { activeQuests, completedQuests, availableQuests } = useMemo(() => {
         const active: Quest[] = [];
@@ -26,14 +28,13 @@ export default function QuestsScreen() {
                 completed.push(q);
             } else if (narrative.activeQuests[q.id]) {
                 active.push(q);
-            } else {
-                // Quick check for availability: No hard reqs implemented yet to gate
+            } else if (meetsNarrativeRequirement(player, q.requirements)) {
                 available.push(q);
             }
         });
 
         return { activeQuests: active, completedQuests: completed, availableQuests: available };
-    }, [narrative]);
+    }, [player]);
 
     const handleStartQuest = (questId: string) => {
         dispatch(gameActions.startQuest(questId));
@@ -106,7 +107,14 @@ export default function QuestsScreen() {
                             <View key={q.id} style={styles.questCard}>
                                 <View style={styles.questHeader}>
                                     <Text style={styles.questTitle}>{q.title}</Text>
-                                    <Text style={styles.actTag}>ACT {q.act}</Text>
+                                    <View style={styles.badgeRow}>
+                                        {q.difficulty && (
+                                            <Text style={[styles.difficultyBadge, styles[`diff_${q.difficulty}` as keyof typeof styles]]}>
+                                                {q.difficulty}
+                                            </Text>
+                                        )}
+                                        <Text style={styles.actTag}>ACT {q.act}</Text>
+                                    </View>
                                 </View>
                                 <Text style={styles.questDesc}>{q.description}</Text>
 
@@ -153,8 +161,8 @@ const styles = StyleSheet.create({
         borderBottomColor: Palette.border,
     },
     headerTitle: {
+        fontFamily: FontCinzelBold,
         fontSize: FontSize.xl,
-        fontWeight: '800',
         color: Palette.textPrimary,
     },
     headerSubtitle: {
@@ -170,23 +178,20 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.xl,
     },
     sectionTitle: {
-        fontSize: FontSize.sm,
-        fontWeight: '700',
-        color: Palette.textMuted,
-        textTransform: 'uppercase',
+        fontFamily: FontCinzelBold,
+        fontSize: FontSize.md,
+        color: Palette.accentWeb,
         letterSpacing: 1.2,
         marginBottom: Spacing.sm,
     },
     questCard: {
         backgroundColor: Palette.bgCard,
-        borderRadius: Radius.md,
+        ...CardStyle,
         padding: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.border,
         marginBottom: Spacing.sm,
     },
     questActive: {
-        borderColor: Palette.accentPrimary,
+        borderColor: Palette.accentWeb,
         backgroundColor: Palette.bgCardHover,
     },
     questCompleted: {
@@ -204,6 +209,23 @@ const styles = StyleSheet.create({
         color: Palette.textPrimary,
         marginBottom: 4,
     },
+    badgeRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    difficultyBadge: {
+        fontSize: FontSize.xs,
+        fontWeight: '700',
+        textTransform: 'capitalize',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 4,
+    },
+    diff_novice: { backgroundColor: Palette.green + '40', color: Palette.green },
+    diff_intermediate: { backgroundColor: Palette.gold + '40', color: Palette.gold },
+    diff_experienced: { backgroundColor: Palette.accentPrimary + '40', color: Palette.accentPrimary },
+    diff_master: { backgroundColor: '#6a0dad40', color: '#b794f6' },
     actTag: {
         fontSize: FontSize.xs,
         color: Palette.accentPrimary,

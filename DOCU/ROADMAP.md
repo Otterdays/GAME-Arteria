@@ -148,7 +148,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **Logging (Woodcutting):** Define trees.
   - [x] *Unique Mechanic (🟡):* Weekly Yield (Seasonal rotation implemented in `GameEngine`).
 - [x] 🟢 **Fishing:** Define nodes.
-  - [x] *Unique Mechanic (🔴):* Mythic fish probabilities.
+  - [x] *Unique Mechanic (🔴):* Mythic fish probabilities. (Implemented v0.2.7)
 - [x] 🟢 **Scavenging:** Define ruins/zones.
   - [x] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
 
@@ -187,7 +187,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Cooking:** Food buffs, bait, companion meals. *Active Mechanic (🟡):* Taste testing for extended buff duration.
 - [ ] 🟢 **Tailoring:** Robes, bags, fishing nets.
 - [ ] 🟢 **Fletching:** Arrows, bows, throwable cosmos.
-- [ ] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time).
+- [x] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time). (Implemented v0.2.7)
 - [ ] 🔴 **Construction:** Housing, storage. *Blueprint System:* Requires multi-skill inputs (e.g., Nails from Smithing + Planks from Logging).
 - [ ] 🟢 **Crafting queue UI:** List of queued items with name, progress bar, ETA, cancel button.
 - [ ] 🟢 **Recipe browser:** Per-skill list of recipes with inputs/outputs and level requirement.
@@ -334,7 +334,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Quality, maintainability, and future-proofing. Do not delete; only append.
 
 ### Docs & Process
-- [ ] 🟢 **STYLE_GUIDE.md:** Trace tag format, line/function limits, comment prefixes (TODO/FIXME/NOTE).
+- [x] 🟢 **STYLE_GUIDE.md:** Trace tag format, line/function limits, comment prefixes (TODO/FIXME/NOTE). Created 2026-03-03.
 - [ ] 🟢 **Doc freshness:** When touching a doc, refresh obviously stale bullets (e.g. "SDK 54" if already on 55).
 - [ ] 🟢 **SCRATCHPAD compact:** Keep SCRATCHPAD under 500 lines; compact history, keep last 5 actions + next steps.
 

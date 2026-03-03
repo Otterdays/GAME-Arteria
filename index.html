@@ -16,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arteria — The Idle RPG</title>
   <meta name="description"
-    content="Arteria is a cosmic idle RPG built on React Native + Expo. Train skills, gather resources, fight monsters — even while you sleep." />
+    content="Arteria is a cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, run 18 story quests, gather resources, and progress offline. React Native + Expo." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
@@ -961,6 +961,125 @@
       color: var(--comp-accent, var(--accent-2));
     }
 
+    /* ==================== QUESTS ==================== */
+    .quests-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+
+    .quests-hero-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-align: center;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+
+    .quests-hero-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .quests-hero-card .q-num {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent-2), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .quests-hero-card .q-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+    }
+
+    .quest-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .quest-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quest-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--quest-accent, var(--accent));
+      opacity: 0.8;
+    }
+
+    .quest-card:hover {
+      border-color: var(--quest-accent, var(--accent));
+      transform: translateX(4px);
+    }
+
+    .quest-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .quest-card .quest-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .quest-card .quest-diff {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: var(--radius-xl);
+    }
+
+    .quest-diff.novice { background: rgba(34, 197, 94, 0.2); color: var(--green); }
+    .quest-diff.intermediate { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .quest-diff.experienced { background: rgba(139, 92, 246, 0.2); color: var(--accent-2); }
+    .quest-diff.master { background: rgba(106, 13, 173, 0.2); color: #c4b5fd; }
+
+    .quest-card .quest-act {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+    }
+
+    .quest-card .quest-desc {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
     /* ==================== TIMELINE ==================== */
     .timeline {
       position: relative;
@@ -1067,6 +1186,7 @@
       <a href="#" class="nav-logo">ARTERIA</a>
       <ul class="nav-links">
         <li><a href="#systems">Systems</a></li>
+        <li><a href="#quests">Quests</a></li>
         <li><a href="#world">World</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#companions">Companions</a></li>
@@ -1085,11 +1205,11 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">v0.2.6 — Deep Narrative Update</div>
+        <div class="hero-badge">v0.2.7 — The BIG Fish and Runes update! (and other cool stuff)</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
-          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, battle eldritch monsters, talk to NPCs,
-          and experience branching quests.
+          A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, run 18 story quests across Act I &amp; II,
+          talk to NPCs, and progress even while you're away.
         </p>
         <div class="hero-actions">
           <a href="https://github.com/Otterdays/GAME-Arteria/releases" class="btn-primary" target="_blank"
@@ -1113,6 +1233,10 @@
   <section class="section">
     <div class="wrapper">
       <div class="stat-strip fade-in">
+        <div class="stat-card">
+          <div class="stat-value">18</div>
+          <div class="stat-label">Story Quests</div>
+        </div>
         <div class="stat-card">
           <div class="stat-value">25</div>
           <div class="stat-label">Planned Skills</div>
@@ -1141,49 +1265,143 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest Update v0.2.6</div>
-        <h2>The Lore Expansion</h2>
-        <p class="section-desc">We've added branching dialogues, NPC interactions, and narrative gating to skilling
-          mechanics so you can really sink into the lore of the Cosmic Sneeze.</p>
+        <div class="section-label">Latest — v0.2.7</div>
+        <h2>The BIG Fish and Runes update! (and other cool stuff)</h2>
+        <p class="section-desc">Fishing and Runecrafting are in. So are 18 RuneScape-style story quests with narrative gating and difficulty tiers. The loop consumes resources automatically. New settings: Confirm Task Switch, Battery Saver, Horizon HUD (toggle to hide the 3 goal cards under the XP bar), Notifications (including Idle Cap Reached), and Idle Soundscapes. Easter egg: "Don't Push This" unlocks the title "The Stubborn" at 1,000 presses.</p>
       </div>
       <div class="systems-grid">
-        <div class="system-card fade-in" style="--card-accent:#8b5cf6; --card-bg:rgba(139,92,246,0.1);">
+        <div class="system-card fade-in" style="--card-accent:#3498db; --card-bg:rgba(52,152,219,0.1);">
           <div class="system-header">
-            <div class="system-icon">💬</div>
+            <div class="system-icon">🎣</div>
             <div>
-              <div class="system-title">Branching NPC Dialogue</div>
+              <div class="system-title">Fishing</div>
             </div>
           </div>
           <p class="system-desc">
-            A fully engineered Redux dialogue overlay component allows native 1-on-1 conversations with NPCs. Walk up to
-            Nick the Merchant and start talking.
+            10 spots from Shrimp to Cosmic Jellyfish. Area-grouped UI and bobbing animation.
           </p>
         </div>
-        <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.08);">
+        <div class="system-card fade-in" style="--card-accent:#9b59b6; --card-bg:rgba(155,89,182,0.12);">
           <div class="system-header">
-            <div class="system-icon">🔮</div>
+            <div class="system-icon">✨</div>
             <div>
-              <div class="system-title">Narrative Node Gating</div>
+              <div class="system-title">Runecrafting</div>
             </div>
           </div>
           <p class="system-desc">
-            Skilling areas can now logically track your quest flags and locked items! Find out about the Sneeze Cult
-            before being allowed to interact with the Runite Vein.
+            14 altars, essence consumption, two-stage production. Backbone for future magic combat.
           </p>
         </div>
-        <div class="system-card fade-in" style="--card-accent:#22c55e; --card-bg:rgba(34,197,94,0.08);">
+        <div class="system-card fade-in" style="--card-accent:#e67e22; --card-bg:rgba(230,126,34,0.1);">
+          <div class="system-header">
+            <div class="system-icon">⚙️</div>
+            <div>
+              <div class="system-title">Smart Action Loops</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Loop consumes inventory inputs; tasks auto-stop when you run out of materials.
+          </p>
+        </div>
+        <div class="system-card fade-in" style="--card-accent:#a78bfa; --card-bg:rgba(167,139,250,0.1);">
           <div class="system-header">
             <div class="system-icon">📜</div>
             <div>
-              <div class="system-title">Universal Quest Ledger</div>
+              <div class="system-title">18 Story Quests</div>
             </div>
           </div>
           <p class="system-desc">
-            A brand-new Quests Tab in the application automatically organizes your available, active, and completed
-            journeys natively, reading state variables to grant rewards.
+            Act I &amp; II quests with requirements, steps, and difficulty. Available list gated by level, flags, and completed quests.
+          </p>
+        </div>
+        <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.1);">
+          <div class="system-header">
+            <div class="system-icon">🔔</div>
+            <div>
+              <div class="system-title">Settings &amp; Notifications</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Confirm Task Switch, Battery Saver, Horizon HUD (hide the 3 goal cards under XP bar), Idle Cap Reached (local notification when offline cap is full), Idle Soundscapes. Easter egg: "Don't Push This" → title "The Stubborn".
           </p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- QUESTS & EXPEDITIONS -->
+  <section class="section" id="quests">
+    <div class="wrapper">
+      <div class="fade-in">
+        <div class="section-label">RuneScape-Inspired</div>
+        <h2>Quests &amp; Expeditions</h2>
+        <p class="section-desc">18 story quests across Act I and Act II. Narrative gating, difficulty tiers, and rewards that tie into skills and the Cosmic Comedy tone.</p>
+      </div>
+      <div class="quests-hero fade-in">
+        <div class="quests-hero-card">
+          <span class="q-num">18</span>
+          <span class="q-label">Total Quests</span>
+        </div>
+        <div class="quests-hero-card">
+          <span class="q-num">15</span>
+          <span class="q-label">Act I</span>
+        </div>
+        <div class="quests-hero-card">
+          <span class="q-num">3</span>
+          <span class="q-label">Act II</span>
+        </div>
+        <div class="quests-hero-card">
+          <span class="q-num">4</span>
+          <span class="q-label">Difficulty Tiers</span>
+        </div>
+      </div>
+      <div class="quest-showcase fade-in">
+        <div class="quest-card" style="--quest-accent:#a78bfa;">
+          <h3>The Cosmic Sneeze</h3>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">Awaken in the Crownlands and find someone who knows what's going on. The start of the Cosmic Comedy.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#f59e0b;">
+          <h3>A Merchant's Trust</h3>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">Bring Nick the merchant copper ore to earn his favour. Unlocks further trading quests.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#22c55e;">
+          <h3>First Catch</h3>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">Catch shrimp for a fisherman by the dock. Your first step into the Fishing skill.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#8b5cf6;">
+          <h3>Rune Awakening</h3>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">Mine essence and craft air runes at the Air Altar. The gateway to Runecrafting.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#ef4444;">
+          <h3>The Cursed Sample</h3>
+          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">A scholar wants cursed ores for research. Requires knowing about the Sneeze Cult.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#06b6d4;">
+          <h3>Blibbertooth's Blessing</h3>
+          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act I</span></div>
+          <p class="quest-desc">Complete the Cult's initiation. Offer cosmic runes and receive their blessing.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#a855f7;">
+          <h3>Voices in the Void</h3>
+          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act II</span></div>
+          <p class="quest-desc">Strange whispers drift from the mines. A cosmic shard may reveal their meaning.</p>
+        </div>
+        <div class="quest-card" style="--quest-accent:#fbbf24;">
+          <h3>Gold Rush</h3>
+          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act II</span></div>
+          <p class="quest-desc">Nick pays premium for gold ore. Mine a sizable haul and cash in.</p>
+        </div>
+      </div>
+      <p class="section-desc fade-in" style="margin-top: var(--space-xl); margin-bottom: 0; font-size: 0.9rem;">
+        In-app: Quests tab shows <strong>Available</strong> (gated by level, flags, completed quests), <strong>Active</strong> with step tracking, and <strong>Completed</strong> archives. More quests and radiant dailies planned.
+      </p>
     </div>
   </section>
 
@@ -1374,11 +1592,18 @@
           </div>
         </div>
         <div class="feature-item">
+          <div class="feature-icon">📜</div>
+          <div>
+            <div class="feature-title">RuneScape-Style Quests</div>
+            <div class="feature-desc">18 story quests with narrative gating, difficulty tiers (novice → master), and rewards. Available / Active / Completed ledger in-app.</div>
+          </div>
+        </div>
+        <div class="feature-item">
           <div class="feature-icon">🌌</div>
           <div>
             <div class="feature-title">Cosmic Lore</div>
             <div class="feature-desc">Unravel the mysteries of Valdoria and the Luminar/Voidmire cosmic balance.
-              Cosmic-flavored absurdist narrative.</div>
+              Branching NPC dialogue and absurdist tone.</div>
           </div>
         </div>
         <div class="feature-item">
@@ -1916,9 +2141,17 @@
             tick shake (Mining, Logging).</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">v0.2.5</span>
-          <div class="roadmap-text"><strong>Build &amp; Release</strong> — Smaller APKs: ABI split (arm64/armv7), lean
-            prod (ARTERIA_LEAN_PROD=1), R8 minify. Prefer app-arm64-v8a-release.apk.</div>
+          <span class="roadmap-badge badge-done">v0.2.6</span>
+          <div class="roadmap-text"><strong>Lore Expansion</strong> — Branching NPC dialogue, Narrative Gating, Quest
+            Ledger screen. Glassmorphism overhaul for the website.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.2.7</span>
+          <div class="roadmap-text"><strong>The BIG Fish and Runes update! (and other cool stuff)</strong> — Fishing (10 spots), Runecrafting (14 altars). Game loop consumes inputs and auto-stops. Bank filters for fish/runes. <strong>Settings:</strong> Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Notifications (Level Up, Task Complete, Idle Cap Reached with local scheduling), Idle Soundscapes. <strong>Easter egg:</strong> "Don't Push This" → title "The Stubborn" at 1,000 presses.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">Quest expansion</span>
+          <div class="roadmap-text"><strong>18 Story Quests</strong> — RuneScape-inspired Act I &amp; II quests. Quest type/difficulty, narrative gating (skills, flags, completed quests). Difficulty badges on cards.</div>
         </div>
       </div>
     </div>
@@ -1962,14 +2195,21 @@
             fish, Seasonal Rotation. Logging UI, Shop 50% sell, Curse system. Patch Notes, local APK fix.</div>
         </div>
         <div class="roadmap-item done">
-          <span class="roadmap-badge badge-done">✓ Feb 28</span>
-          <div class="roadmap-text"><strong>v0.2.5: Build &amp; Release</strong> — Smaller APKs (ABI split, lean prod).
-            AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.</div>
+          <span class="roadmap-badge badge-done">✓ Mar 02</span>
+          <div class="roadmap-text"><strong>v0.2.6: Lore Expansion</strong> — Branching NPC dialogue, NPC interactions,
+            quest ledger UI, narrative gating for skilling nodes.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Mar 03</span>
+          <div class="roadmap-text"><strong>v0.2.7: The BIG Fish and Runes update! (and other cool stuff)</strong> — Fishing, Runecrafting, action consumption loop. Bank filters. Settings: Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Notifications (Idle Cap Reached), Idle Soundscapes. Easter egg "Don't Push This".</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Mar 03</span>
+          <div class="roadmap-text"><strong>Quest expansion</strong> — 18 story quests (Act I &amp; II), narrative gating, difficulty tiers.</div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Current</span>
-          <div class="roadmap-text"><strong>Phase 2.2: The Gathering Expansion</strong> — Wrapping up the final
-            gathering screens (Harvesting, Fishing, Scavenging) and connecting their unique node arrays.</div>
+          <div class="roadmap-text"><strong>Phase 3: Crafting Engine</strong> — Queue system, Smithing, Alchemy, 8-hour offline queue. Phase 6: Radiant quests, more storyline.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>
@@ -2012,6 +2252,7 @@
         <ul class="footer-links">
           <li><a href="https://github.com/Otterdays/GAME-Arteria" target="_blank">GitHub</a></li>
           <li><a href="#systems">Systems</a></li>
+          <li><a href="#quests">Quests</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
         </ul>
       </div>

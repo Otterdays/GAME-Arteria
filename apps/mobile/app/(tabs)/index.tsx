@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
+import { Palette, Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
@@ -33,6 +33,7 @@ const SKILL_META: Record<SkillId, { label: string; color: string; emoji: string 
   harvesting: { label: 'Harvesting', color: Palette.skillHarvesting, emoji: '🪴' },
   scavenging: { label: 'Scavenging', color: Palette.skillScavenging, emoji: '🏕️' },
   fishing: { label: 'Fishing', color: Palette.skillFishing, emoji: '🎣' },
+  runecrafting: { label: 'Runecrafting', color: '#9b59b6', emoji: '✨' },
   cooking: { label: 'Cooking', color: Palette.skillCooking, emoji: '🍳' },
   smithing: { label: 'Smithing', color: Palette.skillSmithing, emoji: '🔨' },
   crafting: { label: 'Crafting', color: Palette.skillCrafting, emoji: '✂️' },
@@ -51,11 +52,12 @@ const ALL_SKILLS: SkillId[] = [
   'strength', 'agility', 'smithing',
   'defence', 'herblore', 'fishing',
   'scavenging', 'cooking', 'logging',
-  'harvesting', 'crafting', 'farming'
+  'harvesting', 'crafting', 'farming',
+  'runecrafting',
 ];
 
 // C. Skills that are implemented and navigable
-const IMPLEMENTED_SKILLS = new Set<SkillId>(['mining', 'logging']);
+const IMPLEMENTED_SKILLS = new Set<SkillId>(['mining', 'logging', 'fishing', 'runecrafting']);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -264,8 +266,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   headerTitle: {
+    fontFamily: FontCinzelBold,
     fontSize: FontSize.xl,
-    fontWeight: 'bold',
     color: Palette.textPrimary,
   },
   totalLevelRow: {
@@ -378,16 +380,16 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 2.1,
     backgroundColor: Palette.bgCard,
-    borderWidth: 1,
-    borderColor: '#4A3B2C', // Gold-ish brown border like RS
-    borderRadius: Radius.sm,
+    ...CardStyle,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.sm,
   },
   skillBoxActive: {
-    borderColor: Palette.accentPrimary,
+    borderColor: Palette.accentWeb,
     backgroundColor: Palette.bgCardHover,
+    shadowColor: Palette.accentWeb,
+    shadowOpacity: 0.25,
   },
   skillBoxLocked: {
     opacity: 0.5,

@@ -2,7 +2,70 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Active Task:** Architecting the story and quest system (Phase 6 pre-planning), identifying style and narrative structures based on STORYLINE.md and MASTER_DESIGN_DOC.md.
+**Active Task:** Feedback toast system implemented; theme engine documented.
+
+## [2026-03-03] Feedback Toast System & Theme Engine Docs
+- **Feedback Toast:** Replaced system `Alert.alert()` with in-game stylized toasts for locked, no essence, level req. New `FeedbackToast.tsx`, `useFeedbackToast` hook, Redux `feedbackToastQueue` + `pushFeedbackToast`/`popFeedbackToast`. Variants: locked (red), warning (gold), error (red), info (blue). Mining, Logging, Fishing, Runecrafting screens now use `showFeedbackToast()`. Confirm Task Switch in `useRequestStartTask` still uses Alert (requires user choice).
+- **Theme Engine (documented):** Added full implementation & refactor effort to FUTURE_NOTES.md. Covers ThemeContext, PALETTES.dark/light, useTheme(), Settings UI, MMKV persistence, ~30-file component migration scope. Estimated 11–14h total. Do not build yet.
+
+## [2026-03-03] Info Scraper Tool
+- **tools/info_scraper:** Standalone Playwright-based scraper with lightweight GUI. Express server (port 3847), single-page form: enter URL → Scrape → preview → Save to output/. Docs in tools/info_scraper/docs/.
+
+## [2026-03-03] Settings Touch Fix & Runecrafting Requirements
+- **Settings touch bug:** Whole row now pressable for toggle rows. Wrapped SettingsRow in Pressable when it has a Switch; Switch is display-only (pointerEvents="none" wrapper) so row press toggles. Fixes dead zones where only the Switch area responded.
+- **Runecrafting requirements indicator:** Added reqBadges row on each altar card: Lv. X (✓ when met), essence emoji + N/batch, 📖 Story when narrative-locked. Styles: reqBadgeLocked, reqBadgeEmpty for out-of-essence.
+- **STYLE_GUIDE.md:** Created with trace tags, line/function limits, comment prefixes, touch targets, requirements indicators, theme tokens.
+
+## [2026-03-03] R8 Optimization Tuning (proguard-android-optimize.txt)
+- **Context:** Reviewed [Enable app optimization with R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) and [Adopt optimizations incrementally](https://developer.android.com/topic/performance/app-optimization/adopt-optimizations-incrementally).
+- **Current:** `apps/mobile/android/gradle.properties` already has `android.enableMinifyInReleaseBuilds=true` and `android.enableShrinkResourcesInReleaseBuilds=true` — R8 minification and resource shrinking are ON.
+- **Fix applied:** Switched `proguard-android.txt` → `proguard-android-optimize.txt` in `apps/mobile/android/app/build.gradle`. The non-optimize file includes `-dontoptimize`, which disables method inlining, class merging, etc. The optimize file enables full R8 optimizations for smaller APKs and faster runtime.
+- **If crashes occur:** Use incremental adoption: add `-dontobfuscate` and `-dontoptimize` to proguard-rules.pro temporarily, or `android.enableR8.fullMode=false` in gradle.properties. See Android docs for package-wide keep rules.
+
+## [2026-03-03] Easter Egg, Notifications & Idle Soundscapes (in 0.2.7)
+- **Don't Push This:** New "Easter Egg" section in Settings. Button "Don't Push This"; each press increments `player.dontPushCount`. At 1000 presses unlocks title "The Stubborn" (stored in `player.unlockedTitles`). Redux: `incrementDontPushCount`, `dontPushCount`, `unlockedTitles` in player state and migration.
+- **Notifications:** Level Up Alerts, Task Complete, and **Idle Cap Reached** toggles wired to Redux (`notifyLevelUp`, `notifyTaskComplete`, `notifyIdleCapReached`). `utils/notifications.ts`: schedules local "Idle cap reached" when app goes to background (trigger = lastSaveTimestamp + capMs); cancels when app returns. `usePersistence` calls `scheduleIdleCapReachedIfEnabled` on background and `cancelIdleCapNotification` on foreground. expo-notifications already in package.json.
+- **Idle Soundscapes:** New Settings → Audio toggle "Idle Soundscapes" (persisted `idleSoundscapesEnabled`). Stub hook `useIdleSoundscape(soundscapeId)` in `hooks/useIdleSoundscape.ts` for skill screens to plug in ambient loops (e.g. forge, waves) — no audio yet, ready for expo-av.
+- **Version:** All updates kept in **0.2.7** (big update). CHANGELOG, patchHistory, SUMMARY, app.json set to 0.2.7.
+
+## [2026-03-03] Settings: Confirm Task Switch & Battery Saver
+- **Confirm Task Switch:** New setting in Settings → Gameplay. When enabled, starting a different task (e.g. switching from Mining to Logging) shows an Alert "Switch task?" before applying. Implemented via `useRequestStartTask` hook; Mining, Logging, Fishing, Runecrafting screens use it instead of dispatching `startTask` directly.
+- **Battery Saver:** New setting in Settings → Gameplay. When enabled, after 5 minutes with no touch a true-black dim overlay is shown; any touch dismisses it. Implemented in `BatterySaver.tsx` (root layout wrapper), interval check every 30s, persisted in `player.settings.batterySaverEnabled`.
+- **Redux:** `gameSlice` — added `confirmTaskSwitch` and `batterySaverEnabled` to settings type, `createFreshPlayer`, `migratePlayer`, and reducers `setConfirmTaskSwitch`, `setBatterySaverEnabled`. Exported `ActiveTask` for the hook.
+- **Docs:** CHANGELOG, patchHistory, SUMMARY kept at v0.2.7 as current release; Confirm Task Switch & Battery Saver recorded under Unreleased.
+
+## [2026-03-03] Quest Expansion (RuneScape-Inspired)
+- **Quest model:** Extended `Quest` in `story.ts` with `questType` ('main' | 'radiant' | 'character') and `difficulty` ('novice' | 'intermediate' | 'experienced' | 'master').
+- **Quest data:** Added 17 new quests in `packages/engine/src/data/quests.ts`. Act 1: A Merchant's Trust, First Catch, Wood for the Guard, Rune Awakening, Fish for the Guard, Logs for the Tavern, Ore Delivery, The Cursed Sample, Essence Runner, Nick's Shopping List, First Runes, Blibbertooth's Blessing, The Essence Run, Herring for the Tavern, Coal for the Smith. Act 2: Voices in the Void, Pure Essence, Gold Rush. All use existing skills, items, and flags.
+- **QuestsScreen:** Available list now filtered by `meetsNarrativeRequirement(player, q.requirements)`. Added difficulty badges (novice/intermediate/experienced/master) on Available quest cards.
+- **Engine exports:** `meetsNarrativeRequirement` and story types (`Quest`, `QuestType`, `NarrativeRequirement`, `NarrativeReward`) exported from `packages/engine/src/index.ts`.
+
+## [2026-03-03] Android Build Fix (Toolchain + Bundling)
+- **Status:** Resolved.
+- **Fix 1 (Toolchain):** Forced `org.gradle.java.home` to JDK 21 in `gradle.properties` to fix missing `[JAVA_COMPILER]`.
+- **Fix 2 (Bundling):** Corrected relative import paths desync in `DialogueOverlay.tsx` and constants. Depth was 4 dots (depth 4) in files only at depth 3.
+
+## [2026-03-03] Runecrafting Skill — Full Implementation
+- **constants/runecrafting.ts:** 14 RuneAltar data entries (Air → Void). Death altar requires `knows_about_sneeze_cult`, Soul/Void require `act3_unlocked`. Each altar defines `essenceType`, `essencePerBatch`, `runesPerBatch`, `outputRuneId`.
+- **constants/mining.ts:** Added 3 new veins — Rune Essence (Lv1), Pure Essence (Lv30), Cosmic Shard Vein (Lv65, narrative-gated `act3_unlocked`).
+- **constants/items.ts:** Added `'rune'` to `ItemType`. Registered 3 essence items + 14 rune items with flavour descriptions.
+- **store/gameSlice.ts:** Added `'runecrafting'` to `SkillId` and `ALL_SKILLS`. Added `removeItems` reducer for consuming essence during crafting.
+- **packages/engine/src/types.ts:** Added `'runecrafting'` to engine `SkillId` type to keep types in sync.
+- **hooks/useGameLoop.ts:** Extended `ActionDef` with `consumedItems?: ...`. `processDelta` now clamps ticks to affordable batches, dispatches `removeItems`, and auto-stops the task when essence runs out. Added `inventoryRef` to avoid stale closures. Registered `RUNE_ALTARS` in `ACTION_DEFS`.
+- **app/skills/runecrafting.tsx:** Full skill screen — essence stock display header, altar cards grouped by tier (Standard / Elemental / Cosmic), rune output preview badge, red "No Essence" state, narrative gating, purple flash on craft, smooth progress bar.
+- **app/(tabs)/index.tsx:** Added `runecrafting` to `SKILL_META` and `IMPLEMENTED_SKILLS`.
+- **app/(tabs)/bank.tsx:** Added Fish and Runes filter tabs.
+- **NOTE:** Fishing screen (`app/skills/fishing.tsx`) also fully implemented this session.
+
+**Active Task (previous):** Logging skill chopping bug fixed.
+
+## [2026-03-03] Logging Skill — Chopping Broken Bug Fix
+- **Root Cause:** `useGameLoop.ts` only registered `MINING_NODES` in `ACTION_DEFS`. When a logging action (e.g. `normal_tree`) tried to look up its node definition, `ACTION_DEFS[activeTask.actionId]` returned `undefined` and `processDelta` silently returned early — no XP, no items, nothing.
+- **Fix:** Imported `LOGGING_NODES` from `@/constants/logging` and spread them alongside `MINING_NODES` into `ACTION_DEFS` via `[...MINING_NODES, ...LOGGING_NODES].forEach(...)`.
+- **File changed:** `apps/mobile/hooks/useGameLoop.ts`
+- **Note:** Any future skill (fishing, harvesting, etc.) must also be added to this `ACTION_DEFS` registration block when its screen is activated.
+
+**Active Task (previous):** Architecting the story and quest system (Phase 6 pre-planning), identifying style and narrative structures based on STORYLINE.md and MASTER_DESIGN_DOC.md.
 
 ## [2026-03-02] Skills Screen Layout Refactor (RS Style)
 - **Grid Layout:** Converted the `index.tsx` skills screen from a pillar-based list into a dense, 3-column grid layout inspired by RuneScape's skills interface.
@@ -148,7 +211,7 @@
 ## Documentation & AI Developer Guidelines
 > **For future standard AI assistants:**
 > 1. **Dev Logging:** ALWAYS use the `logger.ts` wrapper (`import { logger } from '@/utils/logger'`). Log format is `logger.info('Module', 'Message', {data})`. Do not use naked `console.log`.
-> 2. **Versioning & Updates Modal:** When shipping a new feature phase, bump the version in `apps/mobile/app.json`. The user sees an automatic changelog modal upon relaunch! Update the hardcoded text inside `apps/mobile/components/UpdatesModal.tsx` for whatever features you just built.
+> 2. **Versioning & Update Board:** When shipping a new feature phase, bump the version in `apps/mobile/app.json`. The user sees the **Update Board** (in-app changelog modal) upon relaunch when `lastSeenVersion !== currentVersion`. Update the hardcoded changelog inside `apps/mobile/components/UpdateBoard.tsx` for whatever features you just built.
 > 3. **Patch History:** Update `apps/mobile/constants/patchHistory.ts` when shipping a new version — it powers the "Patch Notes" screen in Settings (full changelog from v0.1.0).
 > 4. **Never Delete Documentation:** As stated by the user rules and warnings, always compact and append, do not delete existing context.
 

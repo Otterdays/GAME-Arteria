@@ -75,6 +75,15 @@ Arteria/
 2. **Offline calc** → `GameEngine.processOffline(playerState)` computes delta since last save
 3. **Redux dispatch** → OfflineReport applied to Redux store via `gameSlice` actions
 4. **Foreground loop** → `setInterval` calls `GameEngine.processRealtime()` every ~100ms
+
+## Production Action Logic (v0.2.7)
+- **Consumed Inputs:** The `ActionDef` interface was extended with `consumedItems?: { id: string; quantity: number }[]`.
+- **Transactional Ticks:** In `useGameLoop.ts`, the `processDelta` function now:
+  1. Checks inventory stock for any `consumedItems`.
+  2. Clamps the number of processable ticks based on available stock.
+  3. Dispatches `removeItems` to subtract inputs from Redux before granting XP/Loot.
+  4. Automatically stops the active task if stock reaching zero, providing a deterministic "out of resources" state.
+
 5. **App backgrounds** → Save PlayerState to MMKV with current timestamp
 
 ## Monorepo Babel/Metro Notes
@@ -88,6 +97,7 @@ Arteria/
 - Formula: `gained = Math.floor(elapsed / TICK_MS) * ratePerTick`
 
 ## Universal UI Components
+- **Update Board:** In-app modal (`UpdateBoard.tsx`) that pops when `lastSeenVersion !== currentVersion` (from `app.json`). Shows changelog for the new version. Dismissing stores the version so it won't show again until the next bump. See SCRATCHPAD §Versioning.
 - **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).
 - **Manual Inset Management:** Uses `useSafeAreaInsets` instead of `SafeAreaView` to ensure edge-to-edge content flows correctly under translucent system bars.
 - **Node-local State:** Screens (like Mining) subscribe to `activeTask` directly to render micro-progress visuals synchronized with the global ticker.

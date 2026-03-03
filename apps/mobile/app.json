@@ -2,7 +2,7 @@
   "expo": {
     "name": "Arteria",
     "slug": "arteria",
-    "version": "0.2.5",
+    "version": "0.2.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "arteria",
@@ -27,6 +27,15 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "../node_modules/@expo-google-fonts/cinzel/400Regular/Cinzel_400Regular.ttf",
+            "../node_modules/@expo-google-fonts/cinzel/700Bold/Cinzel_700Bold.ttf"
+          ]
+        }
+      ],
       [
         "expo-splash-screen",
         {

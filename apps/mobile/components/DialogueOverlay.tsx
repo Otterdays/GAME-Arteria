@@ -9,11 +9,11 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 // NOTE: Hardcoded import until alias is linked properly across monorepo
 // @ts-ignore
-import { ALL_DIALOGUES } from '../../../../packages/engine/src/data/dialogues';
+import { ALL_DIALOGUES } from '../../../packages/engine/src/data/dialogues';
 // @ts-ignore
-import { DialogueOption } from '../../../../packages/engine/src/data/story';
+import { DialogueOption } from '../../../packages/engine/src/data/story';
 // @ts-ignore
-import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
+import { meetsNarrativeRequirement } from '../../../packages/engine/src/utils/narrative';
 
 export function DialogueOverlay() {
     const dispatch = useAppDispatch();

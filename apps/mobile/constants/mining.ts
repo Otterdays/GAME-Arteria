@@ -1,4 +1,5 @@
-import { NarrativeRequirement } from '../../../../packages/engine/src/data/story';
+// @ts-ignore
+import { NarrativeRequirement } from '../../../packages/engine/src/data/story';
 
 export interface MiningNode {
     id: string;
@@ -104,5 +105,40 @@ export const MINING_NODES: MiningNode[] = [
         requirement: {
             flags: ['knows_about_sneeze_cult']
         }
-    }
+    },
+    // ── Runecrafting Essences ──
+    {
+        id: 'rune_essence',
+        name: 'Rune Essence Vein',
+        levelReq: 1,
+        xpPerTick: 5,
+        baseTickMs: 2500,
+        successRate: 1,
+        masteryXp: 1,
+        items: [{ id: 'rune_essence', quantity: 1 }],
+        emoji: '💠',
+    },
+    {
+        id: 'pure_essence',
+        name: 'Pure Essence Vein',
+        levelReq: 30,
+        xpPerTick: 15,
+        baseTickMs: 3000,
+        successRate: 0.95,
+        masteryXp: 2,
+        items: [{ id: 'pure_essence', quantity: 1 }],
+        emoji: '🔮',
+    },
+    {
+        id: 'cosmic_shard_vein',
+        name: 'Cosmic Shard Vein',
+        levelReq: 65,
+        xpPerTick: 40,
+        baseTickMs: 6000,
+        successRate: 0.8,
+        masteryXp: 5,
+        items: [{ id: 'cosmic_shard', quantity: 1 }],
+        emoji: '🌌',
+        requirement: { flags: ['act3_unlocked'] },
+    },
 ];

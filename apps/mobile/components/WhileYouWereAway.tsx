@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
-import { Palette, Spacing, Radius, FontSize } from '@/constants/theme';
+import { Palette, Spacing, Radius, FontSize, FontCinzel } from '@/constants/theme';
 import { logger } from '@/utils/logger';
 import { formatNumber } from '@/utils/formatNumber';
 
@@ -69,7 +69,7 @@ export default function WhileYouWereAway() {
                 <View style={styles.card}>
                     {/* Header */}
                     <Text style={styles.icon}>⏳</Text>
-                    <Text style={styles.title}>While You Were Away</Text>
+                    <Text style={[styles.title, { fontFamily: FontCinzel }]}>While You Were Away</Text>
                     <Text style={styles.time}>{formatElapsed(report.elapsedMs)} of progress</Text>
                     {report.wasCapped && (
                         <View style={styles.capBanner}>
@@ -96,7 +96,7 @@ export default function WhileYouWereAway() {
                         {/* Items Gained */}
                         {hasLoot && (
                             <View style={styles.section}>
-                                <Text style={styles.sectionTitle}>Items Gathered</Text>
+                                <Text style={[styles.sectionTitle, { fontFamily: FontCinzel }]}>Items Gathered</Text>
                                 <View style={styles.itemGrid}>
                                     {report.itemsGained.map((item) => (
                                         <View key={item.id} style={styles.itemChip}>

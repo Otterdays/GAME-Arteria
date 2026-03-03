@@ -2,10 +2,88 @@
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-**Last Updated:** 2026-02-26 | **Source:** Arize MCP + Web Research
+**Last Updated:** 2026-03-03 | **Source:** Arize MCP + Web Research
 
 This document captures research-based insights to guide future development decisions for Arteria.
 Do not delete — append new entries at the bottom.
+
+---
+
+## 🎨 Theme Engine — Implementation & Refactor Effort (2026-03-03)
+
+> **Status:** Planned. Documented before implementation to scope migration effort.
+
+### Goal
+Provide a unified theme system supporting dark/light/system, with future extensibility (forest, arcane). Replace direct `Palette` imports with a context-driven `palette` so components can react to theme changes.
+
+### Architecture
+
+| Layer | Responsibility |
+|-------|-----------------|
+| `ThemeContext` | Holds `theme`, `resolvedTheme`, `palette`; persists via MMKV |
+| `constants/theme.ts` | Defines `PALETTES.dark`, `PALETTES.light`; layout tokens (Spacing, Radius, FontSize) unchanged |
+| `useTheme()` | Returns `{ theme, resolvedTheme, palette, setTheme }` |
+| Settings | Theme selector: Dark / Light / System |
+
+### Effort Breakdown
+
+| Task | Effort | Files | Notes |
+|------|--------|-------|-------|
+| `contexts/ThemeContext.tsx` | 2h | 1 new | Provider, useColorScheme, MMKV persistence |
+| `constants/theme.ts` refactor | 1h | 1 | `Palette` → `PALETTES.dark`; add `PALETTES.light` |
+| `useTheme()` hook | 0.5h | 1 new | Thin wrapper |
+| Settings UI | 1h | Settings screen | 3-way toggle |
+| MMKV migration | 0.5h | persistence.ts | Add `theme_preference` key |
+| **Component migration** | **6–8h** | **~30 files** | Replace `Palette.X` with `useTheme().palette.X` |
+
+### Component Migration (Refactor Scope)
+
+| File | Imports | Notes |
+|------|---------|-------|
+| `apps/mobile/app/(tabs)/_layout.tsx` | Palette | Tab bar |
+| `apps/mobile/app/(tabs)/index.tsx` | Palette | Skills grid |
+| `apps/mobile/app/(tabs)/bank.tsx` | Palette | Bank |
+| `apps/mobile/app/(tabs)/combat.tsx` | Palette | Combat |
+| `apps/mobile/app/(tabs)/shop.tsx` | Palette | Shop |
+| `apps/mobile/app/(tabs)/settings.tsx` | Palette | Settings |
+| `apps/mobile/app/(tabs)/quests.tsx` | Palette | Quests |
+| `apps/mobile/app/(tabs)/explore.tsx` | Palette | Explore |
+| `apps/mobile/app/skills/mining.tsx` | Palette | Mining |
+| `apps/mobile/app/skills/logging.tsx` | Palette | Logging |
+| `apps/mobile/app/skills/fishing.tsx` | Palette | Fishing |
+| `apps/mobile/app/skills/runecrafting.tsx` | Palette | Runecrafting |
+| `apps/mobile/app/patron.tsx` | Palette | Patron |
+| `apps/mobile/app/patches.tsx` | Palette | Patches |
+| `apps/mobile/components/*.tsx` | Palette | ~15 components |
+
+**Strategy:** Migrate in batches. Layout tokens (Spacing, Radius, FontSize) stay as static imports — only color tokens move to `useTheme().palette`. Components that use `Palette` must become consumers of `ThemeContext` (or receive `palette` via props).
+
+### Light Palette Definition (Reference)
+
+```ts
+// constants/theme.ts — PALETTES.light (inverted from dark)
+export const PALETTES = {
+  dark: { /* current Palette */ },
+  light: {
+    bgApp: '#f5f6fa',
+    bgCard: '#ffffff',
+    bgCardHover: '#f0f1f5',
+    textPrimary: '#11181C',
+    textSecondary: '#687076',
+    accentPrimary: '#4a90e2',
+    red: '#c62828',
+    gold: '#c49b1a',
+    // ... full mapping
+  },
+};
+```
+
+### Dependencies
+- No new packages. Uses `useColorScheme`, `createContext`, MMKV (already in use).
+- `@react-navigation/native` ThemeProvider can remain for nav theming; our ThemeContext wraps app for semantic colors.
+
+### Rollback
+If migration is abandoned: revert ThemeContext, keep `Palette` as single source. No data loss — theme preference is additive.
 
 ---
 

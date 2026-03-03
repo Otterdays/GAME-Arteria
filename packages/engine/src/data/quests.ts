@@ -5,32 +5,268 @@ export const ACT_1_QUESTS: Record<string, Quest> = {
         id: 'q_awakening',
         title: 'The Cosmic Sneeze',
         description: 'You\'ve awoken in the Crownlands with a splitting headache and a distinct feeling that the universe was sneezed into existence. Find someone who knows what is going on.',
+        questType: 'main',
+        difficulty: 'novice',
         act: 1,
-        requirements: {
-            // Accessible immediately
-        },
+        requirements: {},
         rewards: {
             gold: 100,
             xp: { hitpoints: 50 },
-            setFlags: ['met_blibbertooth_cultist']
+            setFlags: ['met_blibbertooth_cultist'],
         },
         steps: [
-            {
-                id: 'talk_to_guard',
-                description: 'Talk to the confused City Guard at the gates of the Crownlands.',
-            },
-            {
-                id: 'find_cultist',
-                description: 'Locate a member of the Cult of Blibbertooth (they usually hang out near the tavern causing minor inconveniences).',
-                completionRequirements: {
-                    skills: { agility: 5 } // Maybe you have to chase them
-                }
-            }
-        ]
-    }
+            { id: 'talk_to_guard', description: 'Talk to the confused City Guard at the gates of the Crownlands.' },
+            { id: 'find_cultist', description: 'Locate a member of the Cult of Blibbertooth near the tavern.' },
+        ],
+    },
+    'q_merchant_trust': {
+        id: 'q_merchant_trust',
+        title: "A Merchant's Trust",
+        description: 'Nick the merchant needs proof you can supply ore. Bring him copper to earn his favour and a few coins.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: {},
+        rewards: { gold: 50, xp: { mining: 25 }, setFlags: ['nick_trusted'] },
+        steps: [
+            { id: 'talk_to_nick', description: 'Speak to Nick at his shop.' },
+            { id: 'gather_copper', description: 'Mine 10 Copper Ore and deliver them to Nick.' },
+        ],
+    },
+    'q_first_catch': {
+        id: 'q_first_catch',
+        title: 'First Catch',
+        description: 'A fisherman by the dock says the waters are full of shrimp. Catch a handful to get started.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: {},
+        rewards: { gold: 30, xp: { fishing: 40 } },
+        steps: [
+            { id: 'catch_shrimp', description: 'Catch 5 Raw Shrimp from any fishing spot.' },
+        ],
+    },
+    'q_wood_for_guard': {
+        id: 'q_wood_for_guard',
+        title: 'Wood for the Guard',
+        description: 'The gate guard needs firewood for the barracks. Chop some logs and he\'ll pay you.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: {},
+        rewards: { gold: 40, xp: { logging: 35 } },
+        steps: [
+            { id: 'chop_logs', description: 'Chop 10 Normal Logs and deliver them to the guard.' },
+        ],
+    },
+    'q_rune_awakening': {
+        id: 'q_rune_awakening',
+        title: 'Rune Awakening',
+        description: 'A runecrafter in town needs essence bound into air runes. Mine essence, then craft runes at the Air Altar.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: {},
+        rewards: { gold: 80, xp: { runecrafting: 60, mining: 20 }, setFlags: ['first_runes_crafted'] },
+        steps: [
+            { id: 'mine_essence', description: 'Mine Rune Essence (any amount).' },
+            { id: 'craft_air_runes', description: 'Craft 20 Air Runes at the Air Altar.' },
+        ],
+    },
+    'q_fish_for_guard': {
+        id: 'q_fish_for_guard',
+        title: 'Fish for the Guard',
+        description: 'The barracks cook wants fresh sardines. Catch some for the evening stew.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: {},
+        rewards: { gold: 45, xp: { fishing: 50 } },
+        steps: [
+            { id: 'catch_sardines', description: 'Catch 10 Raw Sardines.' },
+        ],
+    },
+    'q_logs_for_tavern': {
+        id: 'q_logs_for_tavern',
+        title: 'Logs for the Tavern',
+        description: 'The tavern keeper needs oak logs for repairs. Chop oak trees and bring a bundle.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: { skills: { logging: 5 } },
+        rewards: { gold: 120, xp: { logging: 80 } },
+        steps: [
+            { id: 'chop_oak', description: 'Chop 20 Oak Logs and deliver to the tavern.' },
+        ],
+    },
+    'q_ore_delivery': {
+        id: 'q_ore_delivery',
+        title: 'Ore Delivery',
+        description: 'The local smith is short on iron. Mine iron ore and deliver a batch.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { skills: { mining: 15 } },
+        rewards: { gold: 200, xp: { mining: 100 } },
+        steps: [
+            { id: 'mine_iron', description: 'Mine 15 Iron Ore.' },
+            { id: 'deliver_ore', description: 'Deliver the ore to the smith.' },
+        ],
+    },
+    'q_cursed_sample': {
+        id: 'q_cursed_sample',
+        title: 'The Cursed Sample',
+        description: 'A scholar wants to study cursed ores that appeared after the Sneeze. Gather a few for research.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { flags: ['knows_about_sneeze_cult'] },
+        rewards: { gold: 150, xp: { mining: 75 }, setFlags: ['cursed_sample_delivered'] },
+        steps: [
+            { id: 'gather_cursed', description: 'Obtain 3 Cursed Ores (any type) from mining.' },
+            { id: 'deliver_sample', description: 'Deliver the cursed ores to the scholar.' },
+        ],
+    },
+    'q_essence_runner': {
+        id: 'q_essence_runner',
+        title: 'Essence Runner',
+        description: 'The runecrafting guild needs a steady supply of essence. Mine a large batch for them.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: { questsCompleted: ['q_awakening'] },
+        rewards: { gold: 100, xp: { mining: 120 }, setFlags: ['essence_runner_done'] },
+        steps: [
+            { id: 'mine_essence_batch', description: 'Mine 50 Rune Essence.' },
+        ],
+    },
+    'q_nick_shopping_list': {
+        id: 'q_nick_shopping_list',
+        title: "Nick's Shopping List",
+        description: 'Nick needs copper, tin, and iron for his stock. Gather a set of each and he\'ll pay well.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { questsCompleted: ['q_merchant_trust'] },
+        rewards: { gold: 250, xp: { mining: 150 } },
+        steps: [
+            { id: 'gather_copper_tin_iron', description: 'Bring Nick 10 Copper Ore, 10 Tin Ore, and 10 Iron Ore.' },
+        ],
+    },
+    'q_first_runes': {
+        id: 'q_first_runes',
+        title: 'First Runes',
+        description: 'Expand your runecrafting: craft a larger batch of air runes to prove your dedication.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: { questsCompleted: ['q_rune_awakening'] },
+        rewards: { gold: 120, xp: { runecrafting: 150 } },
+        steps: [
+            { id: 'craft_air_batch', description: 'Craft 50 Air Runes.' },
+        ],
+    },
+    'q_blibbertooth_blessing': {
+        id: 'q_blibbertooth_blessing',
+        title: "Blibbertooth's Blessing",
+        description: 'The Cult of Blibbertooth considers you worthy. Complete their initiation to receive their blessing.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { questsCompleted: ['q_awakening'], flags: ['met_blibbertooth_cultist'] },
+        rewards: { gold: 200, xp: { hitpoints: 100 }, setFlags: ['blibbertooth_blessing'] },
+        steps: [
+            { id: 'talk_to_cult_leader', description: 'Speak to the Cult leader at the tavern.' },
+            { id: 'offer_runes', description: 'Offer 10 Cosmic Runes as a tribute (craft or obtain them).' },
+        ],
+    },
+    'q_rune_essence_run': {
+        id: 'q_rune_essence_run',
+        title: 'The Essence Run',
+        description: 'The guild needs a major essence delivery. Prove your worth with a large run.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { questsCompleted: ['q_essence_runner'] },
+        rewards: { gold: 300, xp: { mining: 250 } },
+        steps: [
+            { id: 'mine_100_essence', description: 'Mine 100 Rune Essence and deliver to the guild.' },
+        ],
+    },
+    'q_herring_for_tavern': {
+        id: 'q_herring_for_tavern',
+        title: 'Herring for the Tavern',
+        description: 'The tavern is running low on herring. Catch a good supply for the kitchen.',
+        questType: 'main',
+        difficulty: 'novice',
+        act: 1,
+        requirements: { skills: { fishing: 5 } },
+        rewards: { gold: 90, xp: { fishing: 90 } },
+        steps: [
+            { id: 'catch_herring', description: 'Catch 15 Raw Herring.' },
+        ],
+    },
+    'q_coal_for_smith': {
+        id: 'q_coal_for_smith',
+        title: 'Coal for the Smith',
+        description: 'The smith needs coal to fuel the forge. Mine a batch and earn his gratitude.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 1,
+        requirements: { skills: { mining: 20 } },
+        rewards: { gold: 180, xp: { mining: 110 } },
+        steps: [
+            { id: 'mine_coal', description: 'Mine 20 Coal and deliver to the smith.' },
+        ],
+    },
+};
+
+export const ACT_2_QUESTS: Record<string, Quest> = {
+    'q_voices_in_void': {
+        id: 'q_voices_in_void',
+        title: 'Voices in the Void',
+        description: 'Strange whispers drift from the mines. A cultist says only cosmic shards can reveal their meaning.',
+        questType: 'main',
+        difficulty: 'experienced',
+        act: 2,
+        requirements: { questsCompleted: ['q_blibbertooth_blessing'] },
+        rewards: { gold: 500, xp: { mining: 300, runecrafting: 200 }, setFlags: ['voices_heard'] },
+        steps: [
+            { id: 'obtain_cosmic_shard', description: 'Mine a Cosmic Shard from the Cosmic Shard Vein (requires Act 3 or special access).' },
+            { id: 'talk_to_cultist_void', description: 'Bring the shard to the cultist who spoke of the voices.' },
+        ],
+    },
+    'q_pure_essence': {
+        id: 'q_pure_essence',
+        title: 'Pure Essence',
+        description: 'The guild wants to upgrade to pure essence. Mine pure essence and craft higher-tier runes.',
+        questType: 'main',
+        difficulty: 'intermediate',
+        act: 2,
+        requirements: { questsCompleted: ['q_rune_essence_run'], skills: { mining: 30 } },
+        rewards: { gold: 400, xp: { mining: 200, runecrafting: 180 }, setFlags: ['pure_essence_supplier'] },
+        steps: [
+            { id: 'mine_pure_essence', description: 'Mine 30 Pure Essence.' },
+            { id: 'craft_tier_runes', description: 'Craft 30 Water Runes or Earth Runes using Pure Essence.' },
+        ],
+    },
+    'q_gold_rush': {
+        id: 'q_gold_rush',
+        title: 'Gold Rush',
+        description: 'Nick is paying premium for gold ore. Bring him a sizable haul.',
+        questType: 'main',
+        difficulty: 'experienced',
+        act: 2,
+        requirements: { questsCompleted: ['q_nick_shopping_list'], skills: { mining: 40 } },
+        rewards: { gold: 800, xp: { mining: 350 } },
+        steps: [
+            { id: 'mine_gold', description: 'Mine 25 Gold Ore and sell to Nick.' },
+        ],
+    },
 };
 
 /** All game quests exported for the engine/UI to read */
 export const ALL_QUESTS: Record<string, Quest> = {
     ...ACT_1_QUESTS,
+    ...ACT_2_QUESTS,
 };

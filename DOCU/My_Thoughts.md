@@ -22,3 +22,13 @@ The jump from "basic AFK loop" to "Immersive RPG" happened here.
 - **Global Modals vs Screens**: Decided to build dialogues as an overlay rather than a dedicated route. This keeps the player "grounded" in the game world. When an NPC speaks, it should feel like an interruption, not a completely different app section.
 - **Redux Integration**: By storing `activeDialogueId` in Redux, we ensure dialogues can be triggered from ANY screen - a random event while skilling, checking an item in the bank, or explicitly going to a location.
 - **Tree-based Logic**: The engine is purely functional, storing arrays/objects of `DialogueTree`. The UI is just a dumb renderer, keeping our codebase clean and MVC-aligned.
+
+# Android Build Failure: JRE vs JDK (2026-03-03)
+- **Symptom**: Build fails because the toolchain found in `C:\Program Files\Eclipse Adoptium\jre-21.0.10.7-hotspot` lacks `[JAVA_COMPILER]`.
+- **Root Cause**: Gradle is auto-detecting a JRE instead of a JDK. Modern Expo/Gradle builds require a full JDK to compile the Expo Gradle plugin and other native components.
+- **Fix**: Force Gradle to use the JDK located at `C:\Program Files\Java\jdk-21.0.10` by setting `org.gradle.java.home` in the local `gradle.properties` or ensuring the environment variable `JAVA_HOME` is correctly set to a JDK path, not a JRE path.
+
+# Android Bundling Failure: Path Depth Desync (2026-03-03)
+- **Symptom**: `:app:createBundleReleaseJsAndAssets` fails with "Android Bundling failed".
+- **Root Cause**: Desync in relative import paths (`../../../../packages/engine/...`). In `DialogueOverlay.tsx` (depth 3), 4 dots were used, pointing outside the project root.
+- **Fix**: Adjusted relative paths in `DialogueOverlay.tsx`, `constants/mining.ts`, and `constants/runecrafting.ts` to correctly point to the engine package at `Arteria/packages/engine`.

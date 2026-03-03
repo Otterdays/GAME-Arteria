@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Palette, Spacing, FontSize, Radius } from '@/constants/theme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
+import { useRequestStartTask } from '@/hooks/useRequestStartTask';
+import { useFeedbackToast } from '@/hooks/useFeedbackToast';
 import { MINING_NODES, MiningNode } from '@/constants/mining';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import * as Haptics from 'expo-haptics';
@@ -28,6 +30,7 @@ function xpForLevel(level: number): number {
 
 export default function MiningScreen() {
     const dispatch = useAppDispatch();
+    const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
     const player = useAppSelector((s) => s.game.player);
     const miningSkill = player.skills.mining;
@@ -69,14 +72,20 @@ export default function MiningScreen() {
     const handleNodePress = (node: MiningNode) => {
         const meetsReq = meetsNarrativeRequirement(player, node.requirement);
         if (!meetsReq) {
-            Alert.alert("Locked", "You must progress further in the story to interact with this.");
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            showFeedbackToast({
+                type: 'locked',
+                title: 'Locked',
+                message: 'You must progress further in the story to interact with this.',
+            });
             return;
         }
 
         if (miningSkill.level < node.levelReq) {
-            Alert.alert("Locked", `Requires Mining Level ${node.levelReq}`);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            showFeedbackToast({
+                type: 'locked',
+                title: 'Locked',
+                message: `Requires Mining Level ${node.levelReq}`,
+            });
             return;
         }
 
@@ -85,17 +94,14 @@ export default function MiningScreen() {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
             dispatch(gameActions.stopTask());
         } else {
-            // Start this node
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-            dispatch(
-                gameActions.startTask({
-                    type: 'skilling',
-                    skillId: 'mining',
-                    actionId: node.id,
-                    intervalMs: node.baseTickMs,
-                    partialTickMs: 0,
-                })
-            );
+            requestStartTask({
+                type: 'skilling',
+                skillId: 'mining',
+                actionId: node.id,
+                intervalMs: node.baseTickMs,
+                partialTickMs: 0,
+            });
         }
     };
 
