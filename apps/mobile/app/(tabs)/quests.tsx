@@ -206,7 +206,11 @@ export default function QuestsScreen() {
                 </BouncyButton>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
 
                 {/* Active Quests */}
                 {activeQuests.length > 0 && (

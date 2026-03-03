@@ -370,7 +370,7 @@ export default function RunecraftingScreen() {
         <Animated.View style={[styles.container, { paddingTop: insets.top }]}>
             {/* Purple flash overlay on craft */}
             <Animated.View
-                style={[StyleSheet.absoluteFill, { backgroundColor: SKILL_COLOR, opacity: glowOpacity, zIndex: 10 }]}
+                style={[StyleSheet.absoluteFill, { backgroundColor: palette.skillCrafting, opacity: glowOpacity, zIndex: 10 }]}
                 pointerEvents="none"
             />
             <Stack.Screen options={{ title: 'Runecrafting', headerShown: false }} />
@@ -389,8 +389,8 @@ export default function RunecraftingScreen() {
 
             {/* Skill Header */}
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: SKILL_COLOR + '33', borderColor: SKILL_COLOR }]}>
-                    <Text style={[styles.levelBadgeText, { color: SKILL_COLOR }]}>Lv. {rcSkill.level}</Text>
+                <View style={[styles.levelBadge, { backgroundColor: palette.skillCrafting + '33', borderColor: palette.skillCrafting }]}>
+                    <Text style={[styles.levelBadgeText, { color: palette.skillCrafting }]}>Lv. {rcSkill.level}</Text>
                 </View>
                 <Text style={styles.screenTitle}>Runecrafting</Text>
                 <Text style={styles.screenSub}>Bind essence at the altars to forge powerful runes.</Text>
@@ -408,7 +408,7 @@ export default function RunecraftingScreen() {
                 {/* XP progress bar */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
-                        <ProgressBarWithPulse progress={pct} fillColor={SKILL_COLOR} widthPercent={pct} />
+                        <ProgressBarWithPulse progress={pct} fillColor={palette.skillCrafting} widthPercent={pct} />
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                         <Text style={styles.xpText}>
@@ -448,7 +448,7 @@ export default function RunecraftingScreen() {
                                         isLocked && styles.nodeCardLocked,
                                         isActive && [
                                             styles.nodeCardActive,
-                                            { borderColor: SKILL_COLOR, backgroundColor: SKILL_COLOR + '11' },
+                                            { borderColor: palette.skillCrafting, backgroundColor: palette.skillCrafting + '11' },
                                         ],
                                         outOfEssence && styles.nodeCardEmpty,
                                     ]}
@@ -458,7 +458,7 @@ export default function RunecraftingScreen() {
                                     accessibilityState={{ disabled: isLocked || outOfEssence, selected: isActive }}
                                     accessibilityLabel={`${altar.name}. ${isLocked ? `Unlocks at level ${altar.levelReq}` : `Craft for ${altar.xpPerEssence} XP per essence`}`}
                                 >
-                                    {isActive && <ActivePulseGlow color={SKILL_COLOR} />}
+                                    {isActive && <ActivePulseGlow color={palette.skillCrafting} />}
 
                                     <View style={styles.nodeHeader}>
                                         <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.4 }]}>{altar.emoji}</Text>

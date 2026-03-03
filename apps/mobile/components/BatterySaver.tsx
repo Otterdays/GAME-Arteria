@@ -4,8 +4,8 @@
  * [TRACE: ROADMAP Juice Backlog — Battery Saver Mode]
  */
 
-import React, { useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { useAppSelector } from '@/store/hooks';
 
 const IDLE_MS = 5 * 60 * 1000;
@@ -22,10 +22,10 @@ export function BatterySaver({ children }: BatterySaverProps) {
         (s) => s.game.player.settings?.batterySaverEnabled ?? false
     );
 
-    const recordTouch = () => {
+    const recordTouch = useCallback(() => {
         lastTouchRef.current = Date.now();
         if (overlayActive) setOverlayActive(false);
-    };
+    }, [overlayActive]);
 
     useEffect(() => {
         if (!batterySaverEnabled) {
@@ -41,15 +41,21 @@ export function BatterySaver({ children }: BatterySaverProps) {
         return () => clearInterval(id);
     }, [batterySaverEnabled]);
 
+    // Use View with onTouchStart/onTouchEnd to record touches without blocking scroll.
+    // TouchableWithoutFeedback was intercepting scroll gestures.
     return (
         <View style={styles.wrapper}>
-            <TouchableWithoutFeedback onPress={recordTouch} accessible={false}>
-                <View style={styles.content}>{children}</View>
-            </TouchableWithoutFeedback>
+            <View
+                style={styles.content}
+                onTouchStart={recordTouch}
+                onTouchEnd={recordTouch}
+            >
+                {children}
+            </View>
             {overlayActive && (
-                <TouchableWithoutFeedback onPress={recordTouch}>
+                <Pressable style={StyleSheet.absoluteFill} onPress={recordTouch}>
                     <View style={styles.overlay} />
-                </TouchableWithoutFeedback>
+                </Pressable>
             )}
         </View>
     );
