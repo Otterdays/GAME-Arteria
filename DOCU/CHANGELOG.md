@@ -12,6 +12,9 @@
 ---
 
 ## [Unreleased]
+### Fixed
+- **Idle cap notification:** Cancel now runs on app mount when active (cold start). Previously only ran on background→active transition, so a stale notification from a prior session could still fire after user had returned to the app multiple times.
+
 ### Added
 - **index.html Cooking card:** Added Cooking system card to Latest section (10 recipes, Bank Food filter, daily quests).
 - **Bestiary groundwork:** `constants/enemies.ts` — `EnemyDrop`, `EnemyLocation`, `EnemyCombatStats` interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only; not in random events yet). Combat tab: "Found in" shown when enemy has locations.

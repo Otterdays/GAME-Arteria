@@ -1,52 +1,53 @@
-<div align="center">
+<p align="center">
+  <img src="https://img.shields.io/badge/Arteria-0.4.1-8b5cf6?style=flat-square&labelColor=0a0b0f" alt="Version" />
+  <img src="https://img.shields.io/badge/Expo-SDK_55-000020?style=flat-square&logo=expo&logoColor=fff" alt="Expo" />
+  <img src="https://img.shields.io/badge/React_Native-0.83-61dafb?style=flat-square&logo=react&logoColor=fff" alt="React Native" />
+  <img src="https://img.shields.io/badge/Tests-25_Passing-22c55e?style=flat-square" alt="Tests" />
+  <img src="https://img.shields.io/badge/License-MIT-64748b?style=flat-square" alt="License" />
+</p>
 
-# 🌌 Arteria
+<h1 align="center">Arteria</h1>
+<p align="center">
+  <strong>The Idle RPG</strong> — Train skills. Gather resources. Progress while you sleep.
+</p>
 
-### *The AFK RPG — Train skills. Gather resources. Progress while you sleep.*
-
-[![Version](https://img.shields.io/badge/Version-0.3.0-8b5cf6?style=for-the-badge&logo=github)](https://github.com/Otterdays/GAME-Arteria/releases)
-[![Expo](https://img.shields.io/badge/Expo-SDK_55-000020?style=for-the-badge&logo=expo)](https://expo.dev)
-[![Tests](https://img.shields.io/badge/Tests-25_Passing-22c55e?style=for-the-badge)](https://github.com/Otterdays/GAME-Arteria)
-[![License](https://img.shields.io/badge/License-MIT-38bdf8?style=for-the-badge)](LICENSE)
-
-**[🌐 Live Site](https://otterdays.github.io/GAME-Arteria)** · **[📚 Docs](DOCU/SUMMARY.md)** · **[🗺️ Roadmap](DOCU/ROADMAP.md)** · **[📦 Releases](https://github.com/Otterdays/GAME-Arteria/releases)**
-
-</div>
-
----
-
-> [!NOTE]
-> **Living chronicle:** Do not remove or delete existing content. Only append, compact, or update. Arteria is a living project.
-
----
-
-## ✨ What is Arteria?
-
-A **math-heavy, incremental idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for **React Native (Expo)** with a headless TypeScript engine — zero UI coupling, 100% testable game logic.
-
-| 🌱 **Offline** | ⛏️ **Skills** | ⚔️ **Combat** |
-|:---:|:---:|:---:|
-| 24h progression cap · Gains while you sleep | 25 skills · Mining, Logging, Fishing, Runecrafting live | 12 factions · Auto or active bossing *(coming)* |
+<p align="center">
+  <a href="https://otterdays.github.io/GAME-Arteria">🌐 Live Site</a> ·
+  <a href="DOCU/SUMMARY.md">📚 Docs</a> ·
+  <a href="DOCU/ROADMAP.md">🗺️ Roadmap</a> ·
+  <a href="https://github.com/Otterdays/GAME-Arteria/releases">📦 Releases</a>
+</p>
 
 ---
 
-## 🚀 v0.3.0 — The Big Update
+## What is Arteria?
 
-| Feature | Description |
-|:---|:---|
-| 🎨 **Theme Engine** | System / Dark / Light / Sepia. Tab bar, headers, StatusBar follow your pick. |
-| ⚡ **Quick-Switch** | Floating pill → slide-in drawer. Jump Mining ↔ Logging ↔ Fishing ↔ Runecrafting. |
-| 🎲 **Random Events** | Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike. Per-tick roll. |
-| 🎣 **Fishing & ✨ Runecrafting** | 10 spots, 14 altars. Smart loop consumes inputs, auto-stops when out. |
-| 📜 **18 Story Quests** | Act I & II. Narrative gating, difficulty tiers. |
-| ⚙️ **Settings** | Confirm Task Switch, Battery Saver, Horizon HUD, Notifications, Idle Soundscapes. |
+A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for **React Native (Expo)** with a headless TypeScript engine — zero UI coupling, 100% testable game logic.
+
+| | |
+|:---:|:---|
+| **🌙 Offline** | 24h progression cap · Gains while you sleep |
+| **⛏️ Skills** | Mining, Logging, Fishing, Runecrafting, Cooking, Smithing, Forging · 25 planned |
+| **⚔️ Combat** | 12 factions · Auto or active · Goblin first enemy |
+| **📜 Quests** | 18 story quests · Act I & II · Daily quests |
 
 ---
 
-## 🛠️ Stack
+## Latest — v0.4.1 "The Anchor Man"
+
+| Feature | |
+|---------|---|
+| **The Anchor** | Main character + nickname. First-time name entry; Settings → Character to change. |
+| **Goblin** | First random enemy. Goblin Peek event + modal. Bestiary stub in Combat tab. |
+| **Cooking** | 10 recipes (fish → cooked food). Bank Food filter. Daily quests Cook Shrimp, Cook Trout. |
+| **Login bonus** | 7-day streak. Day 7: 500 gp + 10 Lumina. |
+
+---
+
+## Stack
 
 | Layer | Tech |
-|:---|:---|
+|-------|------|
 | **Engine** | Pure TypeScript · Headless · Jest-tested |
 | **Runtime** | Expo SDK 55 · React Native 0.83 · New Architecture |
 | **State** | Redux Toolkit · Typed hooks |
@@ -55,18 +56,18 @@ A **math-heavy, incremental idle RPG** inspired by **Melvor Idle** and **RuneSca
 
 ---
 
-## 📂 Repo
+## Repo Structure
 
 | Path | Purpose |
-|:---|:---|
-| [`DOCU/`](DOCU/SUMMARY.md) | Specs, roadmaps, architecture |
-| [`apps/mobile/`](apps/mobile/) | React Native app · Screens, themes, UI |
-| [`packages/engine/`](packages/engine/) | Game math · XP tables, tick system, actions |
-| [`index.html`](index.html) | Landing site · Deployed to [GitHub Pages](https://otterdays.github.io/GAME-Arteria) |
+|------|---------|
+| `DOCU/` | Specs, roadmaps, architecture, companions |
+| `apps/mobile/` | React Native app · Screens, themes, UI |
+| `packages/engine/` | Game math · XP tables, tick system, actions |
+| `index.html` | Landing site · [GitHub Pages](https://otterdays.github.io/GAME-Arteria) |
 
 ---
 
-## 🏗️ Quick Start
+## Quick Start
 
 ```bash
 npm install
@@ -95,8 +96,6 @@ npm run test:coverage
 
 ---
 
-<div align="center">
-
-**[📖 Full Roadmap](DOCU/ROADMAP.md)** · Built with 💜 by [Otterdays](https://github.com/Otterdays)
-
-</div>
+<p align="center">
+  <sub>Built with 💜 by <a href="https://github.com/Otterdays">Otterdays</a></sub>
+</p>

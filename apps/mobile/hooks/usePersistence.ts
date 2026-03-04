@@ -34,6 +34,15 @@ export function usePersistence() {
         dispatch(gameActions.setAwaitingNameEntry(true));
     }, []);
 
+    // Cancel idle-cap notification on mount when app is active (cold start or return).
+    // Fix: Previously we only canceled on background→active transition; cold start skips
+    // that, so a stale notification from a prior session could still fire.
+    useEffect(() => {
+        if (AppState.currentState === 'active') {
+            cancelIdleCapNotification().catch(() => {});
+        }
+    }, []);
+
     // Auto-save every 30s
     useEffect(() => {
         if (!isLoaded) return;
