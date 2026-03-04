@@ -53,6 +53,7 @@ import { FISHING_SPOTS } from '@/constants/fishing';
 import { RUNE_ALTARS } from '@/constants/runecrafting';
 import { SMELTING_RECIPES } from '@/constants/smithing';
 import { FORGING_RECIPES } from '@/constants/forging';
+import { COOKING_RECIPES } from '@/constants/cooking';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -100,6 +101,17 @@ SMELTING_RECIPES.forEach((recipe) => {
 
 // Forging: consume bars, produce equipment
 FORGING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Cooking: consume raw fish, produce cooked food
+COOKING_RECIPES.forEach((recipe) => {
     ACTION_DEFS[recipe.id] = {
         xpPerTick: recipe.xpPerTick,
         items: recipe.items,
@@ -270,6 +282,7 @@ export function useGameLoop() {
                         dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Lucky Strike!', data: { skillId, bonusXp } }));
                         logger.info('Engine', 'RandomEvent: lucky_strike', { skillId, bonusXp });
                     } else if (eventType === 'goblin_peek') {
+                        dispatch(gameActions.recordEnemySeen('enemy_goblin'));
                         dispatch(gameActions.setShowGoblinPeek(true));
                         dispatch(
                             gameActions.pushFeedbackToast({

@@ -36,6 +36,9 @@ export const MASTERY_UPGRADES: Partial<Record<SkillId, MasteryUpgradeDef[]>> = {
     forging: [
         { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
     ],
+    cooking: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+    ],
 };
 
 /** Returns XP multiplier from mastery (e.g. 1.05 for 5% bonus). */

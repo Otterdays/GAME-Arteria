@@ -21,6 +21,7 @@ const SKILL_EMOJIS: Record<string, string> = {
     runecrafting: '✨',
     smithing: '🔨',
     forging: '⚒️',
+    cooking: '🍳',
     harvesting: '🪴',
     scavenging: '🏕️',
     attack: '⚔️',
@@ -70,10 +71,10 @@ export const HorizonHUD = () => {
     const targetLevel = Math.min(99, nextDecade > skillState.level ? nextDecade : skillState.level + 10);
     const grindGoal = {
         label: 'The Grind',
-        name: `Lv. ${skillState.level} → ${targetLevel}`,
+        name: `Lv. ${skillState.level} → Lv. ${targetLevel}`,
         emoji: '🏆',
         progress: (skillState.level / targetLevel) * 100,
-        subtext: 'Chapter Milestone',
+        subtext: `${skillState.level}/${targetLevel} levels`,
     };
 
     const styles = useMemo(

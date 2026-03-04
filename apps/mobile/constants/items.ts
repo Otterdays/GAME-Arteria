@@ -3,7 +3,7 @@
  * Add new entries when new drop sources are added.
  */
 
-export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'rune' | 'equipment' | 'other';
+export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'other';
 
 export interface ItemMeta {
   emoji: string;
@@ -62,6 +62,18 @@ export const ITEM_META: Record<string, ItemMeta> = {
   raw_swordfish: { emoji: '🐬', label: 'Raw Swordfish', sellValue: 130, description: 'A fierce fish with a fearsome bill. Highly nourishing.', type: 'fish' },
   raw_shark: { emoji: '🦈', label: 'Raw Shark', sellValue: 250, description: 'Apex predator of the deep. Dangerous to catch. Even rawer.', type: 'fish' },
   raw_cosmic_jellyfish: { emoji: '🪼', label: 'Raw Cosmic Jellyfish', sellValue: 600, description: 'A translucent creature from the Void Tide. Its meat defies physics.', type: 'fish' },
+
+  // ── Food (Cooking) ──
+  cooked_shrimp: { emoji: '🍤', label: 'Cooked Shrimp', sellValue: 5, description: 'Perfectly grilled shrimp. Restores a little health.', type: 'food' },
+  cooked_sardine: { emoji: '🐟', label: 'Cooked Sardine', sellValue: 12, description: 'Flaky and delicious. A staple of Valdorian cuisine.', type: 'food' },
+  cooked_herring: { emoji: '🐟', label: 'Cooked Herring', sellValue: 22, description: 'Smoked herring. Rich and nourishing.', type: 'food' },
+  cooked_trout: { emoji: '🎣', label: 'Cooked Trout', sellValue: 45, description: 'Grilled trout with a crispy skin. A favourite.', type: 'food' },
+  cooked_salmon: { emoji: '🐠', label: 'Cooked Salmon', sellValue: 80, description: 'Perfectly cooked salmon. Premium healing.', type: 'food' },
+  cooked_tuna: { emoji: '🐡', label: 'Cooked Tuna', sellValue: 140, description: 'Seared tuna steak. Substantial nourishment.', type: 'food' },
+  cooked_lobster: { emoji: '🦞', label: 'Cooked Lobster', sellValue: 210, description: 'Buttered lobster tail. A luxury meal.', type: 'food' },
+  cooked_swordfish: { emoji: '🐬', label: 'Cooked Swordfish', sellValue: 300, description: 'Grilled swordfish. Fills you right up.', type: 'food' },
+  cooked_shark: { emoji: '🦈', label: 'Cooked Shark', sellValue: 550, description: 'Cooked shark steak. Massive healing potential.', type: 'food' },
+  cooked_cosmic_jellyfish: { emoji: '🪼', label: 'Cooked Cosmic Jellyfish', sellValue: 1200, description: 'Somehow cooked. Defies culinary logic. Restores the soul.', type: 'food' },
 
   // -- Rune Essences --
   rune_essence: { emoji: '💠', label: 'Rune Essence', sellValue: 1, description: 'Raw magical rock pulsing with dormant energy. Bind it at an altar.', type: 'ore' },

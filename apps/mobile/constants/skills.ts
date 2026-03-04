@@ -3,7 +3,9 @@
  * [TRACE: ROADMAP U. Quick-Switch Sidebar]
  */
 
-import { Palette } from '@/constants/theme';
+import { THEMES } from '@/constants/theme';
+
+const palette = THEMES.dark;
 
 export type SkillId =
     | 'mining'
@@ -31,23 +33,23 @@ export interface SkillMeta {
 }
 
 export const SKILL_META: Record<SkillId, SkillMeta> = {
-    mining: { label: 'Mining', color: Palette.skillMining, emoji: '⛏️' },
-    logging: { label: 'Logging', color: Palette.skillLogging, emoji: '🪓' },
-    harvesting: { label: 'Harvesting', color: Palette.skillHarvesting, emoji: '🪴' },
-    scavenging: { label: 'Scavenging', color: Palette.skillScavenging, emoji: '🏕️' },
-    fishing: { label: 'Fishing', color: Palette.skillFishing, emoji: '🎣' },
+    mining: { label: 'Mining', color: palette.skillMining, emoji: '⛏️' },
+    logging: { label: 'Logging', color: palette.skillLogging, emoji: '🪓' },
+    harvesting: { label: 'Harvesting', color: palette.skillHarvesting, emoji: '🪴' },
+    scavenging: { label: 'Scavenging', color: palette.skillScavenging, emoji: '🏕️' },
+    fishing: { label: 'Fishing', color: palette.skillFishing, emoji: '🎣' },
     runecrafting: { label: 'Runecrafting', color: '#9b59b6', emoji: '✨' },
-    cooking: { label: 'Cooking', color: Palette.skillCooking, emoji: '🍳' },
-    smithing: { label: 'Smithing', color: Palette.skillSmithing, emoji: '🔨' },
-    forging: { label: 'Forging', color: Palette.skillForging, emoji: '⚒️' },
-    crafting: { label: 'Crafting', color: Palette.skillCrafting, emoji: '✂️' },
-    farming: { label: 'Farming', color: Palette.skillFarming, emoji: '🌾' },
-    herblore: { label: 'Herblore', color: Palette.skillHerblore, emoji: '🧪' },
-    agility: { label: 'Agility', color: Palette.skillAgility, emoji: '🏃' },
-    attack: { label: 'Attack', color: Palette.skillAttack, emoji: '⚔️' },
-    strength: { label: 'Strength', color: Palette.skillStrength, emoji: '💪' },
-    defence: { label: 'Defence', color: Palette.skillDefence, emoji: '🛡️' },
-    hitpoints: { label: 'Hitpoints', color: Palette.skillHitpoints, emoji: '❤️' },
+    cooking: { label: 'Cooking', color: palette.skillCooking, emoji: '🍳' },
+    smithing: { label: 'Smithing', color: palette.skillSmithing, emoji: '🔨' },
+    forging: { label: 'Forging', color: palette.skillForging, emoji: '⚒️' },
+    crafting: { label: 'Crafting', color: palette.skillCrafting, emoji: '✂️' },
+    farming: { label: 'Farming', color: palette.skillFarming, emoji: '🌾' },
+    herblore: { label: 'Herblore', color: palette.skillHerblore, emoji: '🧪' },
+    agility: { label: 'Agility', color: palette.skillAgility, emoji: '🏃' },
+    attack: { label: 'Attack', color: palette.skillAttack, emoji: '⚔️' },
+    strength: { label: 'Strength', color: palette.skillStrength, emoji: '💪' },
+    defence: { label: 'Defence', color: palette.skillDefence, emoji: '🛡️' },
+    hitpoints: { label: 'Hitpoints', color: palette.skillHitpoints, emoji: '❤️' },
 };
 
 export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
@@ -60,6 +62,7 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
     'runecrafting',
     'smithing',
     'forging',
+    'cooking',
 ];
 
 /** All skills with implemented screens (sidebar + main grid). */

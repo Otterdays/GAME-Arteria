@@ -5,9 +5,42 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. Goblin Peek modal with SVG: react-native-svg + transformer, GoblinPeekModal shows goblin artwork when event fires. SBOM updated.
+**Active Task:** None. Login bonus UX improved. Phase 3–4 theming complete.
+
+## [2026-03-04] Docs viewer on website
+- **index.html:** Docs nav link opens in-page modal instead of external GitHub. Fetches markdown from raw.githubusercontent.com, renders with marked.js. Sidebar: Summary, Roadmap, Architecture, Changelog, Style Guide, Theming, Improvements, Scratchpad. "View all on GitHub" fallback. Responsive (mobile: horizontal doc pills). Escape / click-outside to close.
+
+> **🤖 Doc discipline:** Always update docs when implementing. SCRATCHPAD, CHANGELOG, SUMMARY, IMPROVEMENTS, ROADMAP — keeps AI and humans in sync.
+
+## [2026-03-04] Login bonus UX
+- **Banner:** Shows reward in text — "Day 3 — Claim 300 gp!" or "Day 7 — Claim 500 gp + 10 Lumina!" (loginBonusRewardText from loginStatus.reward).
+- **Toast on claim:** FeedbackToast (lucky type) — "Day X Login Bonus!" / "+300 gp" or "+500 gp + 10 Lumina". useFeedbackToast in index.tsx.
+
+## [2026-03-04] Theming Phase 3 & 4 complete
+- **Phase 3:** logging.tsx `Palette.green` → `palette.green`.
+- **Phase 4:** Removed `Palette` export. theme.ts: Colors, CardStyle use DARK_PALETTE. ErrorBoundary: THEMES.dark. skills.ts: THEMES.dark. STYLE_GUIDE, THEMING.md updated.
+
+## [2026-03-04] Polish + Bestiary groundwork
+- **index.html:** Added Cooking system card to Latest section (10 recipes, Bank Food filter, daily quests).
+- **Shop:** Added Food to SELL_FILTERS (cooked food sellable).
+- **HorizonHUD:** Grind card "Lv. X → Lv. Y"; subtext "X/Y levels".
+- **Bestiary groundwork:** constants/enemies.ts — EnemyDrop, EnemyLocation, EnemyCombatStats interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only; not in random events yet). Combat tab: "Found in" shown when enemy has locations.
+- **Docs:** SUMMARY, CHANGELOG (Unreleased), IMPROVEMENTS (Quick Wins marked done), ROADMAP (Phase 4.4 bestiary groundwork).
+
+## [2026-03-04] v0.4.1 "The Anchor Man"
+- **Cooking:** 10 recipes (raw fish → cooked food). constants/cooking.ts, app/skills/cooking.tsx. Bank Food filter. Daily quests Cook Shrimp, Cook Trout. Stats: Food cooked.
+- **Bestiary stub:** player.seenEnemies, recordEnemySeen. Combat tab "Enemies Spotted" section. Goblin recorded when goblin_peek fires.
+- **Version:** app.json 0.4.1, patchHistory, UpdateBoard, CHANGELOG, index.html, SUMMARY, IMPROVEMENTS, ROADMAP updated.
+
+## [2026-03-04] QuickSwitchSidebar fluidity fix
+- **Issue:** Pop-up skill sidebar clunky and laggy on open.
+- **Fixes:** (1) Backdrop always mounted — opacity interpolated from translateX instead of conditional `{isOpen && <Pressable />}` to avoid mount/unmount lag. (2) `useLayoutEffect` + `withTiming(220ms)` instead of `useEffect` + `withSpring` — animation starts before paint, predictable timing. (3) `SkillRow` memoized, `handleSkillPress`/`closeSidebar` useCallback, stable `onNavigate` prop to reduce reconciliation.
+
+## [2026-03-03] Main character & nickname
+- **The Anchor:** Canonical protagonist name (constants/character.ts). Player chooses nickname on first start via NameEntryModal (no save → setAwaitingNameEntry; modal prompts, Continue/Skip). Skip = use canonical. player.name stores nickname; getDisplayName() for UI. Settings → Character: Nickname row + modal to change. Skills header: "Welcome, [displayName]". gameSlice: awaitingNameEntry, setAwaitingNameEntry, setPlayerName; loadPlayer/newGame clear awaitingNameEntry. migratePlayer: name ?? ''.
 
 ## [2026-03-03] Goblin — first random enemy
+- **Bank fix:** Missing ScrollView import in bank.tsx caused crash on Bank tab open. Added ScrollView to imports.
 - **Goblin Peek modal:** When goblin_peek fires, GoblinPeekModal shows goblin SVG artwork (goblin_1.svg) in a themed card; auto-dismisses after 3s or tap. react-native-svg + react-native-svg-transformer; metro.config.js updated; svg.d.ts for TS. gameSlice: showGoblinPeek, setShowGoblinPeek.
 - **Goblin Peek random event:** New event in random event pool. Toast: "A Goblin!" / "It peeked from the shadows... then scurried away. Your first enemy sighting!" (lucky-style). Activity log + engine log. No combat; flavor only.
 - **Enemy data:** `constants/enemies.ts` — EnemyMeta, ENEMY_GOBLIN (id: enemy_goblin, name: Goblin, assetPath: goblin_1.svg), ENEMIES registry. Ready for Phase 4 combat/bestiary.

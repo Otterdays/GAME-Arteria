@@ -30,8 +30,8 @@ export function usePersistence() {
                 return;
             }
         }
-        // No save — start fresh
-        dispatch(gameActions.newGame());
+        // No save — show nickname entry before starting
+        dispatch(gameActions.setAwaitingNameEntry(true));
     }, []);
 
     // Auto-save every 30s

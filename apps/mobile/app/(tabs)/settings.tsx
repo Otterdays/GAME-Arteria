@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform, Modal, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
@@ -11,6 +11,7 @@ import { deleteSave } from '@/store/persistence';
 import { MASTERY_UPGRADES } from '@/constants/mastery';
 import { SKILL_META } from '@/constants/skills';
 import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
+import { getDisplayName, PROTAGONIST_CANONICAL_NAME } from '@/constants/character';
 
 function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsStyles> }) {
     const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
@@ -321,6 +322,10 @@ export default function SettingsScreen() {
     const dontPushCount = useAppSelector((s) => s.game.player.dontPushCount ?? 0);
     const unlockedTitles = useAppSelector((s) => s.game.player.unlockedTitles ?? []);
     const hasStubbornTitle = unlockedTitles.includes('The Stubborn');
+    const playerName = useAppSelector((s) => s.game.player.name);
+    const displayName = getDisplayName(playerName);
+    const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
+    const [nicknameEdit, setNicknameEdit] = useState('');
 
     // QoL I — Reset save with confirmation
     const handleResetSave = () => {
@@ -334,7 +339,7 @@ export default function SettingsScreen() {
                     style: 'destructive',
                     onPress: () => {
                         deleteSave();
-                        dispatch(gameActions.newGame());
+                        dispatch(gameActions.newGame(''));
                     },
                 },
             ]
@@ -351,6 +356,28 @@ export default function SettingsScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
+            <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Character</Text>
+                <View style={styles.sectionCard}>
+                    <Pressable
+                        style={styles.row}
+                        onPress={() => {
+                            setNicknameEdit(playerName || '');
+                            setNicknameModalOpen(true);
+                        }}
+                        android_ripple={{ color: palette.bgCardHover }}
+                    >
+                        <View style={styles.rowInfo}>
+                            <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Nickname</Text>
+                            <Text style={styles.rowDesc}>
+                                You are {PROTAGONIST_CANONICAL_NAME}. Friends call you: <Text style={{ fontWeight: '700', color: palette.gold }}>{displayName}</Text>
+                            </Text>
+                        </View>
+                        <Text style={styles.arrow}>›</Text>
+                    </Pressable>
+                </View>
+            </View>
+
             <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Appearance</Text>
                 <View style={styles.sectionCard}>
@@ -593,6 +620,76 @@ export default function SettingsScreen() {
                 </View>
             </View>
             </ScrollView>
+
+            {/* Nickname edit modal */}
+            <Modal visible={nicknameModalOpen} transparent animationType="fade">
+                <Pressable
+                    style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', padding: Spacing.lg }}
+                    onPress={() => setNicknameModalOpen(false)}
+                >
+                    <Pressable
+                        style={{
+                            backgroundColor: palette.bgCard,
+                            borderRadius: Radius.lg,
+                            padding: Spacing.lg,
+                            borderWidth: 1,
+                            borderColor: palette.border,
+                        }}
+                        onPress={(e) => e.stopPropagation()}
+                    >
+                        <Text style={[styles.rowLabel, { marginBottom: Spacing.sm }]}>Change nickname</Text>
+                        <Text style={[styles.rowDesc, { marginBottom: Spacing.md }]}>
+                            You are {PROTAGONIST_CANONICAL_NAME}. What should friends call you?
+                        </Text>
+                        <TextInput
+                            style={{
+                                backgroundColor: palette.bgInput,
+                                borderRadius: Radius.md,
+                                paddingHorizontal: Spacing.md,
+                                paddingVertical: Spacing.sm,
+                                fontSize: FontSize.base,
+                                color: palette.textPrimary,
+                                borderWidth: 1,
+                                borderColor: palette.border,
+                                marginBottom: Spacing.md,
+                            }}
+                            placeholder="Nickname"
+                            placeholderTextColor={palette.textMuted}
+                            value={nicknameEdit}
+                            onChangeText={setNicknameEdit}
+                            autoCapitalize="words"
+                            maxLength={24}
+                        />
+                        <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+                            <TouchableOpacity
+                                style={[styles.masterySpendBtn, { flex: 1 }]}
+                                onPress={() => {
+                                    dispatch(gameActions.setPlayerName(nicknameEdit.trim()));
+                                    setNicknameModalOpen(false);
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                }}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={styles.masterySpendText}>Save</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    flex: 1,
+                                    paddingVertical: 12,
+                                    borderRadius: Radius.md,
+                                    alignItems: 'center',
+                                    borderWidth: 1,
+                                    borderColor: palette.border,
+                                }}
+                                onPress={() => setNicknameModalOpen(false)}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={{ fontSize: FontSize.sm, fontWeight: '600', color: palette.textSecondary }}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Pressable>
+                </Pressable>
+            </Modal>
         </SafeAreaView>
     );
 }

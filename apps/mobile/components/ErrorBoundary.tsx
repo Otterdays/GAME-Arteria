@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Palette, Spacing, FontSize } from '@/constants/theme';
+import { THEMES, Spacing, FontSize } from '@/constants/theme';
 import { logger } from '@/utils/logger';
 
 interface Props {
@@ -50,34 +50,36 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 }
 
+const fallbackPalette = THEMES.dark;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: Spacing.xl,
-    backgroundColor: Palette.bgApp,
+    backgroundColor: fallbackPalette.bgApp,
   },
   title: {
     fontSize: FontSize.xl,
     fontWeight: '700',
-    color: Palette.textPrimary,
+    color: fallbackPalette.textPrimary,
     marginBottom: Spacing.sm,
   },
   message: {
     fontSize: FontSize.sm,
-    color: Palette.textSecondary,
+    color: fallbackPalette.textSecondary,
     textAlign: 'center',
     marginBottom: Spacing.lg,
   },
   button: {
-    backgroundColor: Palette.accentPrimary,
+    backgroundColor: fallbackPalette.accentPrimary,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     borderRadius: 8,
   },
   buttonText: {
-    color: Palette.white,
+    color: fallbackPalette.white,
     fontWeight: '600',
     fontSize: FontSize.base,
   },

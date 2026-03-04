@@ -78,7 +78,7 @@ For craftable/skill nodes with multiple requirements (level, essence, narrative)
 ## 7. Theming
 
 - **Primary:** Use `useTheme().palette` for theme-aware colors. See DOCU/THEMING.md.
-- **Legacy:** `Palette` import still works (defaults to dark). Migrate gradually to `useTheme()`.
+- **Phase 4 complete:** `Palette` export removed. Use `useTheme().palette` or `THEMES.dark` for fallback.
 - **Tokens:** `bgApp`, `textPrimary`, `accentPrimary`, etc. — semantic names, not hex.
 - **ThemeId:** `'system' | 'dark' | 'light' | 'sepia'`. Persisted in `player.settings.themeId`.
 
@@ -120,6 +120,6 @@ Import from `@/constants/theme`:
 | `Spacing`, `Radius`, `FontSize` | Static import | Layout tokens (unchanged by theme) |
 | `CardStyle` | Static import | Shared card border/shadow — override `borderColor` from `palette` when themed |
 | `FontCinzel`, `FontCinzelBold` | Static import | Header fonts |
-| `Palette` | Static import | Legacy; defaults to dark. Prefer `useTheme().palette` for new code. |
+| `THEMES.dark` | Static import | Fallback palette (e.g. ErrorBoundary outside ThemeProvider). Prefer `useTheme().palette`. |
 
 Avoid hardcoded hex in components. Use semantic tokens.

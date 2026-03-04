@@ -37,13 +37,17 @@
 | **tests/README.md** | Test suite structure, commands (test, test:coverage, test:engine, test:suite), 80% coverage target. |
 | **apps/mobile/README.md** | Expo app quick start (boilerplate). |
 
-*Doc updates: add to top; never delete. Refresh stale sections when touching a doc.*
+*Doc updates: add to top; never delete. Refresh stale sections when touching a doc. **Always be documenting** — keeps AI and humans in sync during creative work.*
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.4.0** (Daily quests, Stats, Bank tabs, Junk, Login bonus, Lumina).
+**Version scheme:** 0.x.x. Current **0.4.1** "The Anchor Man" (Cooking, Bestiary stub, Goblin, main character). Post-0.4.1 polish + bestiary groundwork (2026-03-04).
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+
+**Post-0.4.1 (2026-03-04) — Polish & Bestiary groundwork:** index.html Cooking card. Shop Sell: Food filter. HorizonHUD Grind: "Lv. X → Lv. Y", "X/Y levels". Bestiary: EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin combat/drops/locations; Slime/Wolf placeholders; Combat "Found in". **Login bonus UX:** Banner shows reward ("Day 3 — Claim 300 gp!"); FeedbackToast (lucky) on claim.
+
+**v0.4.1 (2026-03-03) — The Anchor Man:** Main character & nickname (The Anchor, NameEntryModal, Settings → Character). Goblin first random enemy + GoblinPeekModal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix (ScrollView).
 
 **v0.4.0 (2026-03-03) — Daily, Stats & Lumina:** Daily quests (3/day, reset midnight, Claim gold/Lumina). Stats tab (gathered by type, play time). Custom bank tabs (+ Tabs, assign from item detail). Sell All Junk (configurable). Login bonus (7-day streak, banner on Skills). Lumina currency (Bank/Shop/Settings; day 7 bonus). Shop Lumina stub.
 
@@ -69,7 +73,11 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
-**First random enemy (2026-03-03):** Goblin — new "Goblin Peek" random event during skilling (toast + activity log). Asset: `goblin_1.svg` (root + `apps/mobile/assets/images/`). `constants/enemies.ts` defines Goblin as first enemy for future Phase 4 combat/bestiary.
+**Main character (2026-03-03):** The protagonist is "The Anchor" (canonical name). On first start, player sets a nickname (or skips to use canonical). Settings → Character: change nickname. Skills header: "Welcome, {displayName}". `constants/character.ts`, `NameEntryModal`, `getDisplayName()`.
+
+**Main character & nickname (2026-03-03):** Protagonist is "The Anchor" (canonical name). On first start, NameEntryModal prompts for nickname (what friends call you); Skip uses canonical. Settings → Character: change nickname. Skills header: "Welcome, [displayName]". `constants/character.ts`, `getDisplayName()`.
+
+**First random enemy (2026-03-03):** Goblin — new "Goblin Peek" random event during skilling (toast + activity log). **GoblinPeekModal** shows goblin SVG artwork when event fires; react-native-svg + transformer. Asset: `goblin_1.svg` (root + `apps/mobile/assets/images/`). `constants/enemies.ts` defines Goblin as first enemy for future Phase 4 combat/bestiary. **Bank fix:** Missing ScrollView import caused crash; fixed.
 
 **Where we can go from here (quests & skills):**
 - **More quests:** Act III story quests; radiant/repeatable quests (e.g. "Bring Nick 10 copper" on cooldown). Reuse existing step auto-complete and hand-in flow.

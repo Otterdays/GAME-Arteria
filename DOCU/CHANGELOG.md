@@ -13,7 +13,27 @@
 
 ## [Unreleased]
 ### Added
+- **index.html Cooking card:** Added Cooking system card to Latest section (10 recipes, Bank Food filter, daily quests).
+- **Bestiary groundwork:** `constants/enemies.ts` — `EnemyDrop`, `EnemyLocation`, `EnemyCombatStats` interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only; not in random events yet). Combat tab: "Found in" shown when enemy has locations.
+- **Login bonus toast:** FeedbackToast (lucky type) on claim — "Day X Login Bonus!" with reward amount. Success haptic.
+
+### Changed
+- **Shop Sell:** Added Food filter to SELL_FILTERS (cooked food sellable).
+- **HorizonHUD Grind:** Label "Lv. X → Lv. Y"; subtext "X/Y levels" for clearer progress.
+- **Login bonus banner:** Shows reward in header text — "Day 3 — Claim 300 gp!" or "Day 7 — Claim 500 gp + 10 Lumina!" before claiming.
+
+---
+
+## [0.4.1] - 2026-03-03 — "The Anchor Man"
+### Added
+- **Main character & nickname:** The protagonist is "The Anchor" (canonical name from lore). On first start (no save), `NameEntryModal` prompts for a nickname — what friends/NPCs will call the player. Skip uses canonical name. `constants/character.ts`: `PROTAGONIST_CANONICAL_NAME`, `getDisplayName()`. Settings → Character: change nickname. Skills header: "Welcome, {displayName}". `gameSlice`: `awaitingNameEntry`, `setAwaitingNameEntry`, `setPlayerName`.
 - **Goblin — first random enemy:** New random event "Goblin Peek": a goblin peeks from the shadows during skilling, then scurries away (flavor only; combat not implemented). Uses `goblin_1.svg` asset. `constants/enemies.ts` defines Goblin as first enemy (id, name, assetPath); `constants/randomEvents.ts` adds `goblin_peek`; `useGameLoop` dispatches lucky toast + activity log. Asset copied to `apps/mobile/assets/images/goblin_1.svg` for future combat/bestiary UI.
+- **Goblin Peek modal:** When `goblin_peek` fires, `GoblinPeekModal` shows goblin SVG artwork in a themed card; auto-dismisses after 3s or tap. `react-native-svg` + `react-native-svg-transformer`; metro.config.js updated; `svg.d.ts` for TS. `gameSlice`: `showGoblinPeek`, `setShowGoblinPeek`.
+- **Cooking skill:** 10 recipes (raw fish → cooked food): Shrimp, Sardine, Herring, Trout, Salmon, Tuna, Lobster, Swordfish, Shark, Cosmic Jellyfish. `constants/cooking.ts`, `app/skills/cooking.tsx`. Bank Food filter. Daily quests: Cook Shrimp, Cook Trout. Stats: Food cooked.
+- **Bestiary stub:** Combat tab "Enemies Spotted" section. `player.seenEnemies` tracks encountered foes; `recordEnemySeen` when `goblin_peek` fires. Ready for Phase 4 combat expansion.
+
+### Fixed
+- **Bank crash:** Missing `ScrollView` import in `bank.tsx` caused crash when opening Bank tab. Added `ScrollView` to react-native imports.
 
 ---
 

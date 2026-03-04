@@ -26,6 +26,8 @@ export const DAILY_QUEST_TEMPLATES: DailyQuestTemplate[] = [
     { id: 'dq_essence', itemId: 'rune_essence', quantityMin: 15, quantityMax: 40, rewardGold: 45, label: 'Mine Rune Essence' },
     { id: 'dq_bronze_bar', itemId: 'bronze_bar', quantityMin: 5, quantityMax: 15, rewardGold: 90, label: 'Smelt Bronze Bars' },
     { id: 'dq_gold_ore', itemId: 'gold_ore', quantityMin: 5, quantityMax: 12, rewardGold: 120, rewardLumina: 1, label: 'Mine Gold Ore' },
+    { id: 'dq_cooked_shrimp', itemId: 'cooked_shrimp', quantityMin: 10, quantityMax: 25, rewardGold: 60, label: 'Cook Shrimp' },
+    { id: 'dq_cooked_trout', itemId: 'cooked_trout', quantityMin: 5, quantityMax: 15, rewardGold: 100, label: 'Cook Trout' },
 ];
 
 /** Returns timestamp of next midnight (local time). */

@@ -25,6 +25,7 @@ import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
 import GoblinPeekModal from '@/components/GoblinPeekModal';
+import NameEntryModal from '@/components/NameEntryModal';
 import { BatterySaver } from '@/components/BatterySaver';
 import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
 import { ThemeProvider as AppThemeProvider } from '@/contexts/ThemeContext';
@@ -95,6 +96,7 @@ function AppShell() {
         <QuickSwitchSidebar />
         <DialogueOverlay />
         <GoblinPeekModal />
+        <NameEntryModal />
         <StatusBarFromTheme />
       </BatterySaver>
       </QuickSwitchProvider>

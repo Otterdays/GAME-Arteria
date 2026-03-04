@@ -3,7 +3,7 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-> **Status:** Phase 2 complete. Phase 3 in progress — most screens/components migrated. Remaining: logging, QuickSwitchSidebar, settings, patches, FeedbackToast, HorizonHUD, etc.
+> **Status:** Phase 2–4 complete (2026-03-04). All components use useTheme(). Static `Palette` export removed.
 
 ---
 
@@ -15,7 +15,7 @@ Arteria uses a **semantic palette** — components reference tokens like `bgApp`
 - Multiple themes (dark, light, sepia, etc.) without touching component code.
 - User-selectable theme, persisted with save.
 - Optional "system" mode (follow OS light/dark).
-- Minimal migration: existing `Palette` imports keep working; new code uses `useTheme()`.
+- All consumers use `useTheme().palette` or `THEMES.dark` for fallback (Phase 4 complete).
 
 ---
 
@@ -102,10 +102,9 @@ Add to `gameSlice`:
 | **Phase 1** | New components use `useTheme().palette` instead of `Palette`. |
 | **Phase 2** | Add Settings row: "Theme" → picker (System / Dark / Light / Sepia). Wire `setThemeId`. ✅ |
 | **Phase 3** | Gradually replace `Palette` imports with `useTheme().palette` in existing components. Nav ThemeProvider + tab bar + StatusBar wired. ✅ |
-| **Phase 4** | Remove static `Palette` export; all consumers use context. |
+| **Phase 4** | Remove static `Palette` export; all consumers use context. ✅ |
 
-**Phase 3 migrated (2026-03-03):** index.tsx, bank.tsx, combat.tsx, shop.tsx, quests.tsx, TrainToast.tsx, LevelUpToast.tsx, mining.tsx, fishing.tsx, runecrafting.tsx, UpdateBoard, DialogueOverlay, WhileYouWereAway, SmoothProgressBar, patron.tsx.
-**Phase 3 remaining:** logging.tsx, QuickSwitchSidebar, TabIconWithPulse, FloatingXpPop, GlobalActionTicker, FeedbackToast, HorizonHUD, settings.tsx, patches.tsx. ErrorBoundary (class component) kept on Palette.
+**Phase 4 complete (2026-03-04):** Removed `Palette` export from theme.ts. ErrorBoundary uses THEMES.dark (outside ThemeProvider). constants/skills.ts uses THEMES.dark. Colors, CardStyle use DARK_PALETTE internally.
 
 ---
 

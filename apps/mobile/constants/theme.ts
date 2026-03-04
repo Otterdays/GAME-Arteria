@@ -123,9 +123,6 @@ const DARK_PALETTE: PaletteShape = {
   skillHitpoints: '#e74c3c',
 };
 
-/** Backward compat: default dark palette. Prefer useTheme().palette for new code. */
-export const Palette = DARK_PALETTE;
-
 /** Theme registry. [TRACE: DOCU/THEMING.md] */
 export const THEMES: Record<Exclude<ThemeId, 'system'>, PaletteShape> = {
   dark: DARK_PALETTE,
@@ -189,27 +186,27 @@ export function paletteToNavigationTheme(palette: PaletteShape) {
   };
 }
 
-// ── Colors (dark-only for now, matching the idle RPG standard) ──
+// ── Colors (Expo useThemeColor; dark uses DARK_PALETTE) ──
 export const Colors = {
   light: {
     text: '#11181C',
     background: '#f5f6fa',
-    tint: Palette.accentPrimary,
+    tint: DARK_PALETTE.accentPrimary,
     icon: '#687076',
     tabIconDefault: '#687076',
-    tabIconSelected: Palette.accentPrimary,
+    tabIconSelected: DARK_PALETTE.accentPrimary,
     card: '#ffffff',
     border: '#e0e0e0',
   },
   dark: {
-    text: Palette.textPrimary,
-    background: Palette.bgApp,
-    tint: Palette.accentPrimary,
-    icon: Palette.textSecondary,
-    tabIconDefault: Palette.textDisabled,
-    tabIconSelected: Palette.accentPrimary,
-    card: Palette.bgCard,
-    border: Palette.border,
+    text: DARK_PALETTE.textPrimary,
+    background: DARK_PALETTE.bgApp,
+    tint: DARK_PALETTE.accentPrimary,
+    icon: DARK_PALETTE.textSecondary,
+    tabIconDefault: DARK_PALETTE.textDisabled,
+    tabIconSelected: DARK_PALETTE.accentPrimary,
+    card: DARK_PALETTE.bgCard,
+    border: DARK_PALETTE.border,
   },
 };
 
@@ -247,10 +244,10 @@ export const FontSize = {
 // ── Card styling (website-aligned border/glow) ────────────────
 export const CardStyle = {
   borderWidth: 1,
-  borderColor: Palette.border,
+  borderColor: DARK_PALETTE.border,
   borderRadius: Radius.md,
   // Subtle purple glow (website accent)
-  shadowColor: Palette.accentWeb,
+  shadowColor: DARK_PALETTE.accentWeb,
   shadowOffset: { width: 0, height: 0 },
   shadowOpacity: 0.15,
   shadowRadius: 8,

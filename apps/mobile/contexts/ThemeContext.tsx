@@ -2,7 +2,7 @@
  * ThemeContext — Provides theme-aware palette and theme selection.
  * [TRACE: DOCU/THEMING.md]
  *
- * Use useTheme() for new components. Palette import remains for backward compat.
+ * Use useTheme() for theme-aware palette. Phase 4: Palette export removed.
  */
 
 import React, { createContext, useContext, useMemo } from 'react';

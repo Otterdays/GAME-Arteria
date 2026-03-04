@@ -29,6 +29,7 @@ const SELL_FILTERS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'bar', label: 'Bars' },
     { key: 'log', label: 'Logs' },
     { key: 'fish', label: 'Fish' },
+    { key: 'food', label: 'Food' },
     { key: 'rune', label: 'Runes' },
     { key: 'equipment', label: 'Equipment' },
     { key: 'other', label: 'Other' },

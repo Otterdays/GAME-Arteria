@@ -195,7 +195,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟡 **Forging:** Bars → equipment. 15 recipes (daggers, half/full helmets). Metal-tier grouping. (v0.3.0)
 - [ ] 🟡 **Smithing (Heat Management):** *Future:* "Heat Management" minigame multiplier (tap to keep heat in green zone).
 - [ ] 🟡 **Alchemy:** Potions/bombs. *Active Mechanic (🔴):* "Catching Volatility" minigame for bonus absolute potency.
-- [ ] 🟡 **Cooking:** Food buffs, bait, companion meals. *Active Mechanic (🟡):* Taste testing for extended buff duration.
+- [x] 🟡 **Cooking (basic):** Raw fish → cooked food. 10 recipes (Shrimp→Cosmic Jellyfish). Bank Food filter. Daily quests. (v0.4.1) — *Future:* Food buffs, bait, companion meals, taste testing.
 - [ ] 🟢 **Tailoring:** Robes, bags, fishing nets.
 - [ ] 🟢 **Fletching:** Arrows, bows, throwable cosmos.
 - [x] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time). (Implemented v0.2.7)
@@ -226,11 +226,12 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **Combo System:** Code manual timing logic (e.g., tracking a Stun state to apply +50% dmg modifier from next hit if specific skill used).
 
 ### 4.4 — Enemy Factions & Dungeons 🟡
-- [x] 🟢 **First enemy (Goblin):** Goblin defined in `constants/enemies.ts` (ENEMY_GOBLIN, assetPath: goblin_1.svg). "Goblin Peek" random event during skilling (flavor only; no combat yet). Asset in `apps/mobile/assets/images/goblin_1.svg`. (2026-03-03)
+- [x] 🟢 **First enemy (Goblin):** Goblin defined in `constants/enemies.ts` (ENEMY_GOBLIN, assetPath: goblin_1.svg). "Goblin Peek" random event during skilling (flavor only; no combat yet). GoblinPeekModal shows goblin SVG when event fires (react-native-svg). Asset in `apps/mobile/assets/images/goblin_1.svg`. (2026-03-03)
+- [x] 🟢 **Bestiary groundwork (2026-03-04):** `constants/enemies.ts` — EnemyDrop, EnemyLocation, EnemyCombatStats interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only). Combat tab "Found in" when enemy has locations.
 - [ ] 🟢 **Data Structures:** Define the 12 Enemy Factions (The Unraveled, Celestial Constructs, Void wildlife, Astral Pirates, Cosmic Vermin, etc.) with stat blocks and loot tables.
 - [ ] 🟡 **Dungeon Modes:** Logic for Delves (5-10 min active / 1h idle clear), Expeditions (30 min / 4h idle max).
 - [ ] 🔴 **Dungeon Modifiers Engine:** Random weekly rules applied to combat math (e.g., "Gravity's Suggestion" reverses fall damage, "Blibbertooth's Blessing" causes confetti visual effects).
-- [ ] 🟢 **Enemy bestiary stub:** Simple list or modal of encountered enemies with name, level, faction.
+- [x] 🟢 **Enemy bestiary stub:** Combat tab "Enemies Spotted" section; player.seenEnemies; recordEnemySeen when goblin_peek fires. (v0.4.1)
 - [ ] 🟢 **Combat log scroll:** Last N messages (damage, flee, loot) with optional "clear" or max lines.
 - [ ] 🟢 **Loot popup/toast:** On kill or dungeon clear, brief summary of gold + items gained.
 - [ ] 🟡 **Auto-combat settings UI:** HP threshold for potion use, flee-at-HP%, enable/disable auto-flee.
@@ -241,6 +242,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Link systems together, introduce companions, and deepen the account meta.
 
 ### 5.1 — The Protagonist (Character Creation) 🟡
+- [x] 🟢 **Nickname entry:** First-time NameEntryModal when no save; canonical name "The Anchor"; player chooses nickname (or Skip). Settings → Character to change. Skills header "Welcome, [name]". (2026-03-03)
 - [ ] 🟢 **Character Creation Flow:** Setup single-run screen. Select Ancestry (Human, Elf, Dwarf, Fey-Touched, Void-Blooded).
 - [ ] 🟡 **Affinities & Quirks:** Select Luminar/Voidmire/Balanced (modifies starting stats/xp rates). Assign a random Cosmic Quirk modifier (e.g., "Attracts sentient furniture" - mostly flavor text).
 
@@ -412,6 +414,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ## 🎯 Current Target
 **We are here → Phase 3 (Crafting Engine) + Phase 7 (retention done in v0.4.0)**
 
-v0.4.0 (2026-03-03): Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI shipped. Next: **Crafting queue** (Smithing/Alchemy 8-hour queue), more quests/skills (Act III, Cooking, Harvesting).
+v0.4.1 (2026-03-03): **The Anchor Man.** Main character & nickname (The Anchor). Goblin first enemy + Peek modal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix. Next: **Crafting queue** (Smithing/Alchemy 8-hour queue), more quests/skills (Act III, Harvesting), Phase 4 combat.
+
+v0.4.0 (2026-03-03): Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI shipped.
 
 ---

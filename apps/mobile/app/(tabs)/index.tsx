@@ -32,6 +32,8 @@ import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { ActivityLogModal } from '@/components/ActivityLogModal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLoginBonusStatus } from '@/constants/loginBonus';
+import { getDisplayName } from '@/constants/character';
+import { useFeedbackToast } from '@/hooks/useFeedbackToast';
 
 // ─── Skill metadata (from shared constants) ───────────────────────────────────
 
@@ -142,6 +144,8 @@ export default function SkillsScreen() {
     (s) => s.game.player.settings?.horizonHudEnabled ?? true
   );
   const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
+  const playerName = useAppSelector((s) => s.game.player.name);
+  const displayName = getDisplayName(playerName);
 
   const handleNavigate = useCallback(
     (skillId: SkillId) => {
@@ -347,18 +351,30 @@ export default function SkillsScreen() {
   );
 
   const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
+  const { showFeedbackToast } = useFeedbackToast();
   const loginStatus = useMemo(
     () => getLoginBonusStatus(loginBonus.lastClaimDate, loginBonus.consecutiveDays),
     [loginBonus.lastClaimDate, loginBonus.consecutiveDays]
   );
 
+  const loginBonusRewardText = useMemo(() => {
+    const { gold, lumina } = loginStatus.reward;
+    return lumina ? `${gold.toLocaleString()} gp + ${lumina} Lumina` : `${gold.toLocaleString()} gp`;
+  }, [loginStatus.reward]);
+
   const handleClaimLoginBonus = useCallback(() => {
+    const { gold, lumina } = loginStatus.reward;
     dispatch(gameActions.claimLoginBonus({
-      gold: loginStatus.reward.gold,
-      lumina: loginStatus.reward.lumina,
+      gold,
+      lumina,
       day: loginStatus.day,
     }));
-  }, [dispatch, loginStatus]);
+    showFeedbackToast({
+      type: 'lucky',
+      title: `Day ${loginStatus.day} Login Bonus!`,
+      message: lumina ? `+${gold.toLocaleString()} gp + ${lumina} Lumina` : `+${gold.toLocaleString()} gp`,
+    });
+  }, [dispatch, loginStatus, showFeedbackToast]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -377,7 +393,7 @@ export default function SkillsScreen() {
           onPress={handleClaimLoginBonus}
         >
           <Text style={{ color: '#e0d4f7', fontWeight: '700', fontSize: FontSize.sm }}>
-            🎁 Day {loginStatus.day} — Claim your login bonus!
+            🎁 Day {loginStatus.day} — Claim {loginBonusRewardText}!
           </Text>
           <BouncyButton
             style={{
@@ -398,6 +414,7 @@ export default function SkillsScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
             <View>
               <Text style={styles.headerTitle}>Skills</Text>
+              <Text style={{ fontSize: FontSize.xs, color: palette.textMuted, marginTop: 1 }}>Welcome, {displayName}</Text>
               <View style={styles.totalLevelRow}>
                 <Text style={styles.totalLevel}>Total Lv. {totalLevel} / {maxTotalLevel}</Text>
                 {isPatron && (

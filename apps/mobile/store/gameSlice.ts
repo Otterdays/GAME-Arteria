@@ -159,6 +159,8 @@ export interface PlayerState {
     loginBonus?: { lastClaimDate: string | null; consecutiveDays: number };
     /** Premium currency (Lumina). Earned from login bonus day 7, future shop. */
     lumina?: number;
+    /** Bestiary: enemy IDs the player has spotted (e.g. goblin_peek adds enemy_goblin). */
+    seenEnemies?: string[];
 }
 
 // ─── Helpers ───
@@ -198,7 +200,7 @@ function createFreshPlayer(): PlayerState {
         };
     }
     return {
-        name: 'Adventurer',
+        name: '',
         skills,
         inventory: [],
         equipment: {},
@@ -252,6 +254,7 @@ function createFreshPlayer(): PlayerState {
         junkItemIds: [],
         loginBonus: { lastClaimDate: null, consecutiveDays: 0 },
         lumina: 0,
+        seenEnemies: [],
     };
 }
 
@@ -318,7 +321,9 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const junkItemIds = saved.junkItemIds ?? [];
     const loginBonus = saved.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 };
     const lumina = saved.lumina ?? 0;
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina };
+    const name = saved.name ?? '';
+    const seenEnemies = saved.seenEnemies ?? [];
+    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina, seenEnemies };
 }
 
 // ─── Slice ───
@@ -382,6 +387,8 @@ interface GameState {
     activityLog: ActivityLogEntry[];
     /** Goblin Peek modal — show goblin artwork when goblin_peek random event fires */
     showGoblinPeek: boolean;
+    /** First-time: show nickname entry before starting (no save exists) */
+    awaitingNameEntry: boolean;
 }
 
 const ACTIVITY_LOG_MAX = 50;
@@ -397,6 +404,7 @@ const initialState: GameState = {
     feedbackToastQueue: [],
     activityLog: [],
     showGoblinPeek: false,
+    awaitingNameEntry: false,
 };
 
 export const gameSlice = createSlice({
@@ -409,16 +417,38 @@ export const gameSlice = createSlice({
             state.isLoaded = true;
             state.pulseTab = null;
             state.lootVacuumQueue = [];
+            state.showGoblinPeek = false;
+            state.awaitingNameEntry = false;
         },
 
-        /** Start a new game */
+        /** Start a new game (with optional nickname). Clears awaitingNameEntry. */
         newGame(state, action: PayloadAction<string | undefined>) {
             state.player = createFreshPlayer();
-            if (action.payload) state.player.name = action.payload;
+            const nick = (action.payload ?? '').trim();
+            state.player.name = nick;
             state.isLoaded = true;
             state.pulseTab = null;
             state.lootVacuumQueue = [];
             state.showGoblinPeek = false;
+            state.awaitingNameEntry = false;
+        },
+
+        /** Show nickname entry (first-time, no save). */
+        setAwaitingNameEntry(state, action: PayloadAction<boolean>) {
+            state.awaitingNameEntry = action.payload;
+        },
+
+        /** Change player nickname (Settings). */
+        setPlayerName(state, action: PayloadAction<string>) {
+            state.player.name = (action.payload ?? '').trim();
+        },
+
+        /** Bestiary: record that the player has spotted an enemy. */
+        recordEnemySeen(state, action: PayloadAction<string>) {
+            const ids = state.player.seenEnemies ?? [];
+            if (!ids.includes(action.payload)) {
+                state.player.seenEnemies = [...ids, action.payload];
+            }
         },
 
         /** Set the active task */

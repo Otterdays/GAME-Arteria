@@ -13,6 +13,7 @@ const STAT_LABELS: Record<string, string> = {
     ore: 'Ores mined',
     log: 'Logs chopped',
     fish: 'Fish caught',
+    food: 'Food cooked',
     rune: 'Runes crafted',
     bar: 'Bars smelted',
     equipment: 'Equipment forged',

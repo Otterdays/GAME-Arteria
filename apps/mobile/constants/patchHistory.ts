@@ -1,7 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Current release: 0.3.0 "The Big Update".
+ * Current release: 0.4.1 "The Anchor Man".
  */
 
 export interface PatchEntry {
@@ -13,6 +13,17 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.4.1',
+    date: '2026-03-03',
+    added: [
+      '👤 The Anchor Man: Main character & nickname. First-time NameEntryModal when no save; canonical name "The Anchor"; player chooses nickname (or Skip). Settings → Character to change. Skills header "Welcome, [name]".',
+      '👹 Goblin — first random enemy: Goblin Peek random event during skilling; GoblinPeekModal shows goblin SVG when event fires. constants/enemies.ts. Bestiary: Combat tab "Enemies Spotted" section; player.seenEnemies tracks encountered foes.',
+      '🍳 Cooking skill: 10 recipes (raw fish → cooked food). Shrimp to Cosmic Jellyfish. Bank Food filter. Daily quests: Cook Shrimp, Cook Trout. Stats: Food cooked.',
+      '📖 Bestiary stub: Combat tab shows enemies you\'ve spotted. Recorded when goblin_peek fires.',
+    ],
+    fixed: ['Bank crash: Missing ScrollView import caused crash when opening Bank tab.'],
+  },
   {
     version: '0.4.0',
     date: '2026-03-03',

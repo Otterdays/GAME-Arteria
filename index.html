@@ -1386,6 +1386,249 @@
         -webkit-tap-highlight-color: rgba(139, 92, 246, 0.15);
       }
     }
+
+    /* ==================== DOCS VIEWER MODAL ==================== */
+    .docs-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 11, 15, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .docs-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .docs-modal {
+      position: relative;
+      width: min(96vw, 1100px);
+      height: min(90vh, 700px);
+      max-height: 90vh;
+      margin: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: docsSlideIn 0.3s ease;
+    }
+
+    @keyframes docsSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .docs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
+    }
+
+    .docs-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .docs-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .docs-close:hover {
+      border-color: var(--accent);
+      color: var(--text-1);
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .docs-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .docs-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: var(--space-md);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .docs-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .docs-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .docs-nav-item {
+      display: block;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-2);
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: color 0.2s, background 0.2s;
+      margin-bottom: 4px;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .docs-nav-item:hover {
+      color: var(--text-1);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .docs-nav-item.active {
+      color: var(--accent-2);
+      background: rgba(139, 92, 246, 0.15);
+      border-left: 3px solid var(--accent);
+      padding-left: 9px;
+    }
+
+    .docs-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-lg);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .docs-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .docs-content::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .docs-content h1 { font-size: 1.6rem; margin: 0 0 0.75em; color: var(--text-1); }
+    .docs-content h2 { font-size: 1.3rem; margin: 1.25em 0 0.5em; color: var(--text-1); border-bottom: 1px solid var(--border); padding-bottom: 0.25em; }
+    .docs-content h3 { font-size: 1.1rem; margin: 1em 0 0.4em; color: var(--text-1); }
+    .docs-content p { margin: 0 0 1em; color: var(--text-2); }
+    .docs-content ul, .docs-content ol { margin: 0 0 1em; padding-left: 1.5em; color: var(--text-2); }
+    .docs-content li { margin-bottom: 0.35em; }
+    .docs-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
+    .docs-content pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-md); overflow-x: auto; margin: 0 0 1em; }
+    .docs-content pre code { padding: 0; background: none; border: none; }
+    .docs-content blockquote { border-left: 4px solid var(--accent); padding-left: var(--space-md); margin: 0 0 1em; color: var(--text-3); }
+    .docs-content table { width: 100%; border-collapse: collapse; margin: 0 0 1em; font-size: 0.9rem; }
+    .docs-content th, .docs-content td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; color: var(--text-2); }
+    .docs-content th { background: rgba(139, 92, 246, 0.1); color: var(--accent-2); font-weight: 600; }
+    .docs-content a { color: var(--accent-2); text-decoration: none; }
+    .docs-content a:hover { text-decoration: underline; }
+
+    .docs-loading, .docs-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      color: var(--text-3);
+      padding: var(--space-xl);
+      text-align: center;
+    }
+
+    .docs-error a {
+      color: var(--accent-2);
+      text-decoration: underline;
+    }
+
+    .docs-github-link {
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border);
+    }
+
+    .docs-github-link a {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .docs-github-link a:hover {
+      color: var(--accent-2);
+    }
+
+    @media (max-width: 768px) {
+      .docs-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+      }
+
+      .docs-body {
+        flex-direction: column;
+      }
+
+      .docs-sidebar {
+        width: 100%;
+        max-height: 140px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: var(--space-sm);
+      }
+
+      .docs-nav-item {
+        display: inline-block;
+        width: auto;
+        padding: 6px 12px;
+        margin: 0;
+      }
+
+      .docs-nav-item.active {
+        border-left: none;
+        border-bottom: 2px solid var(--accent);
+        padding-left: 12px;
+      }
+    }
   </style>
 </head>
 
@@ -1394,6 +1637,34 @@
   <div class="nebula"></div>
   <div class="stars"></div>
   <div class="particles" id="particles"></div>
+
+  <!-- DOCS VIEWER MODAL -->
+  <div class="docs-overlay" id="docs-overlay" aria-hidden="true">
+    <div class="docs-modal" role="dialog" aria-labelledby="docs-title" aria-modal="true">
+      <div class="docs-header">
+        <span class="docs-title" id="docs-title">📚 Project Docs</span>
+        <button type="button" class="docs-close" id="docs-close" aria-label="Close docs">×</button>
+      </div>
+      <div class="docs-body">
+        <nav class="docs-sidebar" aria-label="Documentation navigation">
+          <button class="docs-nav-item active" data-doc="SUMMARY.md">Summary</button>
+          <button class="docs-nav-item" data-doc="ROADMAP.md">Roadmap</button>
+          <button class="docs-nav-item" data-doc="ARCHITECTURE.md">Architecture</button>
+          <button class="docs-nav-item" data-doc="CHANGELOG.md">Changelog</button>
+          <button class="docs-nav-item" data-doc="STYLE_GUIDE.md">Style Guide</button>
+          <button class="docs-nav-item" data-doc="THEMING.md">Theming</button>
+          <button class="docs-nav-item" data-doc="IMPROVEMENTS.md">Improvements</button>
+          <button class="docs-nav-item" data-doc="SCRATCHPAD.md">Scratchpad</button>
+          <div class="docs-github-link">
+            <a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" rel="noopener">View all on GitHub ↗</a>
+          </div>
+        </nav>
+        <div class="docs-content" id="docs-content">
+          <div class="docs-loading">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- NAV -->
   <nav>
@@ -1407,8 +1678,7 @@
         <li><a href="#companions">Companions</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="#changelog">Changelog</a></li>
-        <li><a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank"
-            title="Project docs (SUMMARY, ROADMAP, ARCHITECTURE)">Docs</a></li>
+        <li><a href="#" id="docs-trigger" role="button" title="View project docs">Docs</a></li>
         <li><a href="https://github.com/Otterdays/GAME-Arteria" target="_blank">GitHub</a></li>
         <li><a href="https://github.com/Otterdays/GAME-Arteria/releases" class="nav-cta" target="_blank"
             title="Download APK">Download APK ↗</a></li>
@@ -1480,9 +1750,9 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest — v0.4.0</div>
-        <h2>Daily Quests, Stats &amp; Lumina</h2>
-        <p class="section-desc"><strong>Daily quests:</strong> Three random gather objectives per day (reset at midnight). Quests screen → Daily section; claim gold and Lumina. <strong>Stats tab:</strong> Total items gathered by type, first/last play, days since first play. <strong>Custom bank tabs:</strong> Create tabs (+ Tabs) and assign items from item detail. <strong>Sell All Junk:</strong> Mark items as junk in item detail; one-tap sell all junk in Bank. <strong>Login bonus:</strong> 7-day streak (100–600 gp; day 7: 500 gp + 10 Lumina). Claim banner on Skills; Settings shows streak. <strong>Lumina:</strong> Premium currency in Bank, Shop, Settings; day 7 login bonus grants 10. Shop has Lumina Shop stub (coming soon).</p>
+        <div class="section-label">Latest — v0.4.1</div>
+        <h2>The Anchor Man</h2>
+        <p class="section-desc"><strong>Main character &amp; nickname:</strong> The Anchor (canonical). First-time name entry; Settings → Character to change. <strong>Goblin</strong> — first random enemy; Goblin Peek event + modal. <strong>Cooking:</strong> 10 recipes (raw fish → cooked food). Bank Food filter. Daily quests Cook Shrimp, Cook Trout. Stats: Food cooked. <strong>Bestiary stub:</strong> Combat tab "Enemies Spotted" section. Bank fix (ScrollView crash).</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#3498db; --card-bg:rgba(52,152,219,0.1);">
@@ -1516,6 +1786,17 @@
           </div>
           <p class="system-desc">
             14 altars, essence consumption, two-stage production. Backbone for future magic combat.
+          </p>
+        </div>
+        <div class="system-card fade-in" style="--card-accent:#e67e22; --card-bg:rgba(230,126,34,0.1);">
+          <div class="system-header">
+            <div class="system-icon">🍳</div>
+            <div>
+              <div class="system-title">Cooking</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            10 recipes: raw fish → cooked food. Bank Food filter, daily quests (Cook Shrimp, Cook Trout), Stats tracking.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#e67e22; --card-bg:rgba(230,126,34,0.1);">
@@ -2400,6 +2681,14 @@
           <span class="roadmap-badge badge-done">v0.4.0</span>
           <div class="roadmap-text"><strong>Daily, Stats &amp; Lumina</strong> — Daily quests (3/day, reset midnight, Claim gold/Lumina). Stats tab (gathered by type, play time). Custom bank tabs, Sell All Junk (configurable), Login bonus (7-day streak), Lumina currency UI (Bank/Shop/Settings).</div>
         </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.4.1</span>
+          <div class="roadmap-text"><strong>The Anchor Man</strong> — Main character &amp; nickname (The Anchor). Goblin first enemy + Peek modal. Cooking skill (10 fish→cooked recipes). Bestiary stub (Enemies Spotted). Bank fix.</div>
+        </div>
+        <div class="roadmap-item active">
+          <span class="roadmap-badge badge-active">Unreleased</span>
+          <div class="roadmap-text">(Nothing yet.)</div>
+        </div>
       </div>
     </div>
   </section>
@@ -2458,6 +2747,10 @@
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
           <div class="roadmap-text"><strong>v0.4.0: Daily, Stats &amp; Lumina</strong> — Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI.</div>
         </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">✓ Mar 03</span>
+          <div class="roadmap-text"><strong>v0.4.1: The Anchor Man</strong> — Main character &amp; nickname. Goblin first enemy + Peek modal. Cooking skill. Bestiary stub. Bank fix.</div>
+        </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Next</span>
           <div class="roadmap-text"><strong>More quests &amp; skills</strong> — Act III quests, radiant/repeatable quests. New skills: Cooking, Harvesting, Scavenging (data/UI). Crafting queue, Alchemy. Combat later.</div>
@@ -2510,7 +2803,77 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
+    // ==================== DOCS VIEWER ====================
+    (function () {
+      const DOCS_BASE = 'https://raw.githubusercontent.com/Otterdays/GAME-Arteria/main/DOCU/';
+      const overlay = document.getElementById('docs-overlay');
+      const content = document.getElementById('docs-content');
+      const closeBtn = document.getElementById('docs-close');
+      const trigger = document.getElementById('docs-trigger');
+
+      function openDocs() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        loadDoc('SUMMARY.md');
+      }
+
+      function closeDocs() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function setActiveNav(filename) {
+        overlay.querySelectorAll('.docs-nav-item').forEach(function (el) {
+          if (el.dataset.doc) {
+            el.classList.toggle('active', el.dataset.doc === filename);
+          }
+        });
+      }
+
+      function renderMarkdown(md) {
+        if (typeof marked !== 'undefined') {
+          marked.setOptions({ gfm: true, breaks: true });
+          return marked.parse(md || '');
+        }
+        return '<pre>' + (md || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+      }
+
+      function loadDoc(filename) {
+        setActiveNav(filename);
+        content.innerHTML = '<div class="docs-loading">Loading…</div>';
+        fetch(DOCS_BASE + filename)
+          .then(function (r) {
+            if (!r.ok) throw new Error('Not found');
+            return r.text();
+          })
+          .then(function (text) {
+            content.innerHTML = renderMarkdown(text);
+          })
+          .catch(function () {
+            content.innerHTML = '<div class="docs-error">' +
+              '<p>Could not load this doc. Try viewing on GitHub.</p>' +
+              '<a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" rel="noopener">Open DOCU on GitHub ↗</a>' +
+              '</div>';
+          });
+      }
+
+      if (trigger) trigger.addEventListener('click', function (e) { e.preventDefault(); openDocs(); });
+      if (closeBtn) closeBtn.addEventListener('click', closeDocs);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeDocs();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeDocs();
+      });
+      overlay.querySelectorAll('.docs-nav-item[data-doc]').forEach(function (btn) {
+        btn.addEventListener('click', function () { loadDoc(btn.dataset.doc); });
+      });
+    })();
+
     // Scroll-based fade-in observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

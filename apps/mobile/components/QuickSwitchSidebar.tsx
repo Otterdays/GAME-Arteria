@@ -4,9 +4,12 @@
  *
  * Beautiful glassmorphic panel with skill-specific colors, gold accent for active,
  * smooth Reanimated slide. Trigger: floating pill on left edge.
+ *
+ * Fluidity: Backdrop always mounted (no conditional mount), opacity interpolated
+ * from translateX. useLayoutEffect for animation before paint. Snappier timing.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useCallback, memo } from 'react';
 import {
     View,
     Text,
@@ -17,7 +20,8 @@ import {
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withSpring,
+    withTiming,
+    interpolate,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
@@ -35,18 +39,18 @@ import {
 import { useQuickSwitch } from '@/contexts/QuickSwitchContext';
 
 const SIDEBAR_WIDTH = 260;
-const SPRING_CONFIG = { damping: 22, stiffness: 200 };
+const ANIM_DURATION = 220;
 
-function SkillRow({
+const SkillRow = memo(function SkillRow({
     skillId,
     isActive,
-    onPress,
+    onNavigate,
     palette,
     styles,
 }: {
     skillId: SkillId;
     isActive: boolean;
-    onPress: () => void;
+    onNavigate: (id: SkillId) => void;
     palette: { bgCardHover: string; gold: string };
     styles: Record<string, object>;
 }) {
@@ -54,7 +58,7 @@ function SkillRow({
 
     return (
         <Pressable
-            onPress={onPress}
+            onPress={() => onNavigate(skillId)}
             style={({ pressed }) => [
                 styles.skillRow,
                 {
@@ -83,7 +87,7 @@ function SkillRow({
             </Text>
         </Pressable>
     );
-}
+});
 
 export function QuickSwitchSidebar() {
     const { palette } = useTheme();
@@ -96,24 +100,28 @@ export function QuickSwitchSidebar() {
     const isInSkillScreen = segments[0] === 'skills';
     const showTrigger = isInSkillScreen;
 
-    useEffect(() => {
-        translateX.value = withSpring(isOpen ? 0 : -SIDEBAR_WIDTH, SPRING_CONFIG);
+    useLayoutEffect(() => {
+        translateX.value = withTiming(isOpen ? 0 : -SIDEBAR_WIDTH, {
+            duration: ANIM_DURATION,
+        });
     }, [isOpen, translateX]);
 
-    const closeSidebar = () => {
-        close();
-    };
+    const closeSidebar = useCallback(() => close(), [close]);
 
-    const handleSkillPress = (skillId: SkillId) => {
+    const handleSkillPress = useCallback((skillId: SkillId) => {
         if (Platform.OS !== 'web') {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }
         closeSidebar();
         router.push(`/skills/${skillId}` as any);
-    };
+    }, [closeSidebar]);
 
     const sidebarStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
+    }));
+
+    const backdropStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(translateX.value, [-SIDEBAR_WIDTH, 0], [0, 1]),
     }));
 
     const styles = useMemo(
@@ -251,13 +259,13 @@ export function QuickSwitchSidebar() {
                 </Pressable>
             )}
 
-            {/* Backdrop */}
-            {isOpen && (
-                <Pressable
-                    style={[StyleSheet.absoluteFill, styles.backdrop]}
-                    onPress={closeSidebar}
-                />
-            )}
+            {/* Backdrop — always mounted, opacity interpolated (avoids mount lag) */}
+            <Animated.View
+                style={[StyleSheet.absoluteFill, styles.backdrop, backdropStyle]}
+                pointerEvents={isOpen ? 'auto' : 'none'}
+            >
+                <Pressable style={StyleSheet.absoluteFill} onPress={closeSidebar} />
+            </Animated.View>
 
             {/* Sidebar panel */}
             <Animated.View
@@ -288,7 +296,7 @@ export function QuickSwitchSidebar() {
                                 key={skillId}
                                 skillId={skillId}
                                 isActive={activeTask?.skillId === skillId}
-                                onPress={() => handleSkillPress(skillId)}
+                                onNavigate={handleSkillPress}
                                 palette={palette}
                                 styles={styles}
                             />

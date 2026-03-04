@@ -326,7 +326,7 @@ export default function LoggingScreen() {
                                 </View>
                                 <View style={styles.statPill}>
                                     <Text style={styles.statLabel}>To Level</Text>
-                                    <Text style={[styles.statValue, { color: Palette.green }]}>
+                                    <Text style={[styles.statValue, { color: palette.green }]}>
                                         {loggingSkill.level >= 99
                                             ? 'MAX'
                                             : `~${Math.ceil((nlvXP - loggingSkill.xp) / node.xpPerTick)}`}

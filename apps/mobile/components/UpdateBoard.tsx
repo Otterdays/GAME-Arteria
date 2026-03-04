@@ -149,11 +149,30 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina' : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary' : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina' : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.4') ? (
+                        {currentVersion.startsWith('0.4.1') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>👤 The Anchor Man</Text>
+                                    <Text style={styles.changeText}>• Main character: "The Anchor". First-time nickname entry; Settings → Character to change. Skills header: "Welcome, [name]".</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>👹 Goblin — First Enemy</Text>
+                                    <Text style={styles.changeText}>• Goblin Peek random event during skilling. Modal shows goblin artwork. Combat tab: "Enemies Spotted" bestiary.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🍳 Cooking Skill</Text>
+                                    <Text style={styles.changeText}>• Cook raw fish into food. 10 recipes from Shrimp to Cosmic Jellyfish. Bank Food filter. Daily quests for cooking.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📖 Bestiary</Text>
+                                    <Text style={styles.changeText}>• Combat tab tracks enemies you've spotted. Keep training to discover more.</Text>
+                                </View>
+                            </>
+                        ) : currentVersion.startsWith('0.4') ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>📅 Daily Quests</Text>

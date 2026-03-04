@@ -20,7 +20,7 @@ Do not delete — append new entries at the bottom.
 - **THEMES** registry — dark, light, sepia. `Palette` = dark (backward compat).
 - **Redux** — `player.settings.themeId` persisted with save.
 - **Phase 2 done:** Settings → Appearance → Theme picker (System / Dark / Light / Sepia). THEME_OPTIONS, chips UI, setThemeId wired.
-- **Phase 3 (partial):** Nav ThemeProvider, tab bar, headers, StatusBar use palette. Migrated: tab screens, skill screens (mining, fishing, runecrafting), TrainToast, LevelUpToast, UpdateBoard, DialogueOverlay, WhileYouWereAway, SmoothProgressBar, patron. Remaining: logging, QuickSwitchSidebar, settings, patches, FeedbackToast, HorizonHUD, TabIconWithPulse, FloatingXpPop, GlobalActionTicker. ErrorBoundary (class) kept on Palette.
+- **Phase 3–4 (complete 2026-03-04):** All components use useTheme(). Phase 4: Removed `Palette` export. ErrorBoundary uses THEMES.dark. skills.ts uses THEMES.dark. theme.ts Colors/CardStyle use DARK_PALETTE.
 
 ---
 
