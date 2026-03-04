@@ -5,7 +5,12 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Quest completion with rewards implemented. Docs updated (CHANGELOG, patchHistory, SUMMARY).
+**Active Task:** None. Quest step auto-complete + mastery implemented; docs updated.
+
+## [2026-03-03] Quest step auto-complete + Mastery
+- **Quest steps (engine):** Steps in quests.ts have completionRequirements (itemsRequired, etc.). getQuestStepsToComplete(player, ALL_QUESTS) in narrative.ts; app useGameLoop effect runs it when player changes and dispatches completeQuestStep. All item/skill-gated steps have requirements.
+- **Mastery:** masteryPoints (1 per level-up), masterySpent; constants/mastery.ts (MASTERY_UPGRADES, getMasteryXpMultiplier); applyXP uses multiplier; spendMastery reducer; Settings → Mastery section (MasterySection component).
+- **Docs:** CHANGELOG, patchHistory, SUMMARY, IMPROVEMENTS updated.
 
 ## [2026-03-03] Quest completion (gameplay)
 - **Quests screen:** "Complete" button only when all steps done (completedSteps.length === quest.steps.length). handleCompleteQuest: apply rewards (gold, XP per skill, setFlags, items) then dispatch completeQuest(questId). Dialogue already advances steps via onSelect.completeQuestStep in DialogueOverlay.

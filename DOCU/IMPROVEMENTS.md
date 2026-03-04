@@ -3,7 +3,7 @@
 > **Purpose:** Snapshot of current systems and prioritized UX/GUI/feature improvements. Use for sprint planning; append new ideas, do not delete existing entries.
 > **Last reviewed:** 2026-03-03
 
-**Implemented (2026-03-03):** Shop Sell filters (Fish, Runes, Equipment). Bank: sort (Name / Qty / Value), empty state + "Clear filter & search" when filtered, item detail recipe line removed, total value already in header. Shop Buy: 25, 50, Max. Quests: dev button only in `__DEV__`; **real quest completion** — Complete button only when all steps done, applies rewards (gold, XP, flags, items) then completes quest. HorizonHUD: Grind label "Lv. X → Y". Skills grid: 2 cols when width < 360. Combat: Phase 4 teaser card. Settings: Idle Soundscapes description "coming soon".
+**Implemented (2026-03-03):** Shop Sell filters (Fish, Runes, Equipment). Bank: sort (Name / Qty / Value), empty state + "Clear filter & search", item detail recipe line removed. Shop Buy: 25, 50, Max. Quests: dev button __DEV__ only; **real quest completion** (rewards on complete); **quest step auto-complete** (engine completionRequirements on steps, getQuestStepsToComplete, app runs check and dispatches completeQuestStep). **Mastery system:** 1 point per level-up per skill, Settings → Mastery to spend on +5% XP etc.; getMasteryXpMultiplier in applyXP. HorizonHUD Grind label, Skills 2-col narrow, Combat teaser, Idle Soundscapes "coming soon".
 
 ---
 
@@ -15,8 +15,8 @@
 | **Bank** | Search, filters (All, Ores, Bars, Logs, Fish, Runes, Equipment, Other), gold badge, slot cap warning, item detail modal (Sell 1/All, lock). FlatList grid. | 50 slot cap (F2P); Patron higher. |
 | **Shop** | Buy / Sell tabs. Buy: catalog + qty 1/5/10. Sell: filter list. 50% sell value. Nick chat button. | Sell filters missing Fish, Runes, Equipment. |
 | **Combat** | Placeholder screen only ("Coming Soon" + short blurb). | Phase 4; no stats/loadout yet. |
-| **Quests** | Active / Completed / Available; difficulty badges; steps; Start quest; Complete (mock). Dev button: "Play Guard Intro Dialogue". | Completion is test-only; no real step progression. |
-| **Settings** | Appearance (theme), Gameplay (confirm task, battery saver, horizon HUD), Notifications, Audio (idle soundscapes), Easter Egg, Danger (wipe). Patron. | Idle Soundscapes = stub. |
+| **Quests** | Active / Completed / Available; difficulty badges; steps; Start quest; Complete (rewards when all steps done). Step auto-complete via engine completionRequirements + getQuestStepsToComplete. | Dev button only in __DEV__. |
+| **Settings** | Appearance, Gameplay, **Mastery** (spend points on +% XP), Audio, Notifications, Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
 | **Explore** | Tab hidden (`href: null`). | — |
 | **Global** | Theme engine, tab bar theming, StatusBar, GlobalActionTicker, WhileYouWereAway, Update Board, Patch Notes (patches.tsx). | — |
 
@@ -45,12 +45,12 @@
 
 ## 4. Features (Larger)
 
-- **Quest completion for real** — Replace mock complete with real step progression: advancing `activeQuests[questId]` when conditions are met, and moving to completed when all steps done. Depends on engine/quest definitions.
+- **Quest completion for real** — ✅ Done: Complete when all steps done (rewards applied); step auto-complete via engine completionRequirements + getQuestStepsToComplete.
 - **Recipe / usage from Bank** — For each item, show "Used in: [Skill name]" (e.g. Copper ore → Smithing) from a small recipe lookup (action defs → required items). Improves discovery.
 - **Idle Soundscapes** — Implement actual ambient loops per skill (or disable the toggle and show "Coming soon" in Settings) so the toggle isn’t misleading.
 - **Bank sort** — Optional sort by: Name, Quantity, Value (total), Type. Simple dropdown or segmented control above the grid.
 - **Offline queue / cap** — ROADMAP Phase 3: queue system and 8-hour offline queue; document here when scoped so UX (e.g. "Queued: 3h smithing") can be designed.
-- **Mastery system** — Spend mastery points for permanent buffs; needs design (where points come from, where they’re spent, UI).
+- **Mastery system** — ✅ Done: 1 pt per level-up, Settings → Mastery, spend on +5% XP (and similar); applyXP uses getMasteryXpMultiplier. Spend mastery points for permanent buffs; needs design (where points come from, where they’re spent, UI).
 
 ---
 

@@ -26,6 +26,8 @@ export const PATCH_HISTORY: PatchEntry[] = [
       'AI versioning reminder in doc heads.',
       '📋 UX batch: Bank sort (Name/Qty/Value), empty state Clear filter, Shop Buy 25/50/Max, Quests dev button __DEV__ only, HorizonHUD Grind label, Skills 2-col narrow, Combat Phase 4 teaser, Idle Soundscapes "coming soon".',
       '📜 Quest completion: Complete button only when all steps done; applying rewards (gold, XP, flags, items) on complete.',
+      '📜 Quest step auto-complete: Engine step completionRequirements + getQuestStepsToComplete; app runs check and completes steps when inventory/skills meet requirements.',
+      '⭐ Mastery: 1 point per level-up per skill. Settings → Mastery: spend on +5% XP (and other buffs). Permanent; applied in XP calc.',
     ],
   },
   {

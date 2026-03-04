@@ -19,6 +19,8 @@
 
 ## [0.3.0] - 2026-03-03
 ### Added
+- **Quest step auto-completion (engine):** Quest steps can have `completionRequirements` (items/skills/flags). Engine exports `getQuestStepsToComplete(player, quests)`; app runs it in `useGameLoop` when player state changes and dispatches `completeQuestStep` for each. All Act 1/2 quest steps that are item- or skill-gated have requirements in `packages/engine/src/data/quests.ts`.
+- **Mastery system:** Earn 1 mastery point per level-up per skill. Spend in Settings → Mastery on permanent buffs (e.g. +5% XP per level, up to 5 levels). `player.masteryPoints`, `player.masterySpent`; `constants/mastery.ts` (MASTERY_UPGRADES, getMasteryXpMultiplier); applyXP multiplies by mastery before Patron. Reducer `spendMastery`.
 - **Quest completion (gameplay):** Complete button on Quests screen only when all steps are done. On complete, rewards are applied: gold, XP per skill, narrative flags, and items. Dialogue can advance steps via `onSelect.completeQuestStep`; completing all steps allows hand-in for rewards.
 - **Theme Engine:** Settings → Appearance → Theme picker (System, Dark, Light, Sepia). Tab bar, headers, and StatusBar follow selected theme. `paletteToNavigationTheme()`, NavThemeWrapper, StatusBarFromTheme. THEME_OPTIONS, THEMES registry (dark, light, sepia). Persisted with save.
 - **Quick-Switch Sidebar:** Floating pill on left edge in skill screens. Slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. Active skill gold highlight. Shared `constants/skills.ts`.

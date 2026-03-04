@@ -67,9 +67,14 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
+**Where we can go from here (quests & skills):**
+- **More quests:** Act III story quests; radiant/repeatable quests (e.g. "Bring Nick 10 copper" on cooldown). Reuse existing step auto-complete and hand-in flow.
+- **More skills:** Data + UI for **Cooking** (fish/meat → food, healing/boosts), **Harvesting** (gather herbs/plants), **Scavenging** (random loot tables). ROADMAP already lists these; implement in same pattern as Mining/Logging/Fishing (nodes, ticks, bank).
+- **Crafting queue / Alchemy:** Phase 3 items; cross-skill dependencies. Combat deferred until core skilling/quest loop is rich.
+
 **Current Status (Phase 2.3 — Lore & Progression):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
-- **v0.3.0 UX + Quest completion:** Bank sort/empty state, Shop Buy 25/50/Max, Quests: real completion (rewards applied when all steps done); Complete only when steps complete.
+- **v0.3.0 UX + Quest + Mastery:** Bank sort/empty state, Shop Buy 25/50/Max. Quests: real completion (rewards when all steps done); **quest step auto-complete** (engine completionRequirements + getQuestStepsToComplete; app dispatches completeQuestStep). **Mastery:** 1 pt/level-up, spend in Settings → Mastery for +% XP buffs.
 - **v0.2.6 (Lore Expansion):** Branching NPC dialogue, universal quest ledger, narrative gating for skilling nodes.
 - **v0.2.5 (Build & Release):** Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
 - **v0.2.4 (Premium UI):** AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.
@@ -80,7 +85,5 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Next Steps (Phase 3–4):**
 - Finalize gathering pillar balancing and drop tables.
-- Combat system alpha: loadouts, weapon stats, health/damage infrastructure (see ROADMAP Phase 4).
-- Mastery System: Spend skill-specific mastery points for permanent buffs.
-- Optional: Quest step auto-completion from gameplay (e.g. inventory/level checks); add completionRequirements to steps in engine data.
+- Combat system alpha: loadouts, weapon stats, health/damage infrastructure (see ROADMAP Phase 4). Combat deferred to later.
 

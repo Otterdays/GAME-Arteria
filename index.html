@@ -16,7 +16,8 @@
     =============================================================================
   -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0b0f" />
   <title>Arteria — The Idle RPG</title>
   <meta name="description"
     content="Arteria is a cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, run 18 story quests, gather resources, and progress offline. React Native + Expo." />
@@ -36,6 +37,12 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
     }
 
     /* ==================== DESIGN TOKENS ==================== */
@@ -70,10 +77,12 @@
     /* ==================== GLOBALS ==================== */
     body {
       font-family: 'Inter', sans-serif;
+      font-size: 16px;
       background: var(--bg-app);
       color: var(--text-1);
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
     }
 
     /* ==================== BACKGROUND NEBULA ==================== */
@@ -174,6 +183,9 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
 
     .nav-links {
@@ -1160,18 +1172,218 @@
       transform: translateY(0);
     }
 
-    /* ==================== RESPONSIVE ==================== */
-    @media (max-width: 640px) {
+    /* ==================== RESPONSIVE — MOBILE FIRST ==================== */
+    @media (max-width: 768px) {
+      .wrapper {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+      }
+
+      .section {
+        padding: var(--space-xl) 0;
+      }
+
+      .nav-inner {
+        padding: 0 var(--space-md);
+        height: auto;
+        min-height: 56px;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+      }
+
       .nav-links {
-        display: none;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+        justify-content: flex-end;
+      }
+
+      .nav-links a {
+        padding: 10px 12px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .nav-cta {
+        padding: 10px 16px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 80px;
+        padding-bottom: var(--space-xl);
       }
 
       .hero h1 {
-        font-size: 2.6rem;
+        font-size: clamp(2rem, 10vw, 2.75rem);
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .hero-actions .btn-primary,
+      .hero-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        min-height: 48px;
+        padding: 14px 20px;
+      }
+
+      .section-desc {
+        font-size: 1rem;
+      }
+
+      .systems-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .system-card {
+        padding: var(--space-md);
+      }
+
+      .stat-strip {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+      }
+
+      .stat-card {
+        padding: var(--space-md);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-item {
+        padding: var(--space-md);
+      }
+
+      .quests-hero {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+      }
+
+      .quests-hero-card {
+        padding: var(--space-md);
+      }
+
+      .quests-hero-card .q-num {
+        font-size: 1.75rem;
+      }
+
+      .quest-showcase {
+        grid-template-columns: 1fr;
+      }
+
+      .quest-card {
+        padding: var(--space-md);
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-xs);
+      }
+
+      .skill-pill {
+        padding: var(--space-sm) var(--space-md);
+        min-height: 44px;
+      }
+
+      .skill-name {
+        font-size: 0.8125rem;
+      }
+
+      .lore-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .faction-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .companion-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .roadmap-item {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+        padding: var(--space-md);
+      }
+
+      .roadmap-badge {
+        flex-shrink: 0;
+      }
+
+      .roadmap-text {
+        font-size: 0.875rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        gap: var(--space-md);
+      }
+
+      .footer-links a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .stack-grid {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      .hero h1 {
+        font-size: 2.25rem;
       }
 
       .hero-mockup {
         display: none;
+      }
+
+      .hero-badge {
+        font-size: 0.7rem;
+        padding: 6px 12px;
+      }
+    }
+
+    /* Touch-friendly: prevent double-tap zoom on buttons/links (optional) */
+    @media (hover: none) and (pointer: coarse) {
+      .btn-primary,
+      .btn-secondary,
+      .nav-links a,
+      .skill-pill,
+      .system-card {
+        -webkit-tap-highlight-color: rgba(139, 92, 246, 0.15);
       }
     }
   </style>
@@ -1270,7 +1482,7 @@
       <div class="fade-in">
         <div class="section-label">Latest — v0.3.0</div>
         <h2>The Big Update</h2>
-        <p class="section-desc"><strong>Theme Engine:</strong> Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, StatusBar follow your theme. <strong>Quick-Switch Sidebar:</strong> Floating pill on left edge; slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. <strong>Smithing & Forging:</strong> Smelt ore → bars at the furnace; forge bars → daggers, helmets at the anvil. Metal-tier grouping (Bronze, Iron, Steel, Mithril, Adamant). <strong>Random Events:</strong> Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike. Plus Fishing, Runecrafting, Activity Log, 18 story quests, Feedback Toasts, Settings, Idle Soundscapes. Easter egg: "Don't Push This" → "The Stubborn".</p>
+        <p class="section-desc"><strong>Theme Engine:</strong> Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, StatusBar follow your theme. <strong>Quick-Switch Sidebar:</strong> Floating pill on left edge; slide-in drawer to jump Mining, Logging, Fishing, Runecrafting, Smithing, Forging. <strong>Smithing & Forging:</strong> Smelt ore → bars; forge bars → daggers, helmets. Metal-tier grouping. <strong>Quests:</strong> 18 story quests (Act I & II). Steps auto-complete when you meet requirements (e.g. have 10 copper ore); hand in for rewards. <strong>Mastery:</strong> Earn 1 point per level-up per skill; spend in Settings → Mastery for permanent +% XP buffs. <strong>Random Events:</strong> Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike. Plus Bank sort, Shop 25/50/Max, Activity Log, Feedback Toasts, Idle Soundscapes. Easter egg: "Don't Push This" → "The Stubborn".</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#3498db; --card-bg:rgba(52,152,219,0.1);">
@@ -1328,6 +1540,17 @@
             Act I &amp; II quests with requirements, steps, and difficulty. Available list gated by level, flags, and completed quests.
           </p>
         </div>
+        <div class="system-card fade-in" style="--card-accent:#16a34a; --card-bg:rgba(22,163,74,0.1);">
+          <div class="system-header">
+            <div class="system-icon">⭐</div>
+            <div>
+              <div class="system-title">Mastery</div>
+            </div>
+          </div>
+          <p class="system-desc">
+            Earn 1 point per level-up per skill. Spend in Settings → Mastery on permanent buffs (+5% XP per level, up to 5 levels per skill). Stacks with Patron.
+          </p>
+        </div>
         <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.1);">
           <div class="system-header">
             <div class="system-icon">🔔</div>
@@ -1336,7 +1559,7 @@
             </div>
           </div>
           <p class="system-desc">
-            Confirm Task Switch, Battery Saver, Horizon HUD (hide the 3 goal cards under XP bar), Idle Cap Reached (local notification when offline cap is full), Idle Soundscapes. Easter egg: "Don't Push This" → title "The Stubborn".
+            Theme, Gameplay (Confirm Task Switch, Battery Saver, Horizon HUD), Mastery, Audio, Idle Cap Reached, Idle Soundscapes. Easter egg: "Don't Push This" → title "The Stubborn".
           </p>
         </div>
       </div>
@@ -1351,7 +1574,7 @@
       <div class="fade-in">
         <div class="section-label">RuneScape-Inspired</div>
         <h2>Quests &amp; Expeditions</h2>
-        <p class="section-desc">18 story quests across Act I and Act II. Narrative gating, difficulty tiers, and rewards that tie into skills and the Cosmic Comedy tone.</p>
+        <p class="section-desc">18 story quests across Act I and Act II. Steps auto-complete when you meet requirements (e.g. have the items); hand in for gold, XP, and flags. Narrative gating, difficulty tiers, Cosmic Comedy tone.</p>
       </div>
       <div class="quests-hero fade-in">
         <div class="quests-hero-card">
@@ -2167,11 +2390,11 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.3.0</span>
-          <div class="roadmap-text"><strong>The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Smithing (smelting ore → bars), Forging (bars → equipment). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Activity Log, Feedback Toasts, Settings (Confirm Task Switch, Battery Saver, Horizon HUD, Notifications, Idle Soundscapes). Easter egg "Don't Push This".</div>
+          <div class="roadmap-text"><strong>The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Smithing, Forging. <strong>Quest step auto-complete</strong> (engine checks inventory/skills; steps complete when requirements met). <strong>Mastery</strong> (1 pt/level-up, spend for +% XP in Settings). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Activity Log, Feedback Toasts, Settings, Bank sort, Shop 25/50/Max. Easter egg "Don't Push This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">Quest expansion</span>
-          <div class="roadmap-text"><strong>18 Story Quests</strong> — RuneScape-inspired Act I &amp; II quests. Quest type/difficulty, narrative gating (skills, flags, completed quests). Difficulty badges on cards.</div>
+          <div class="roadmap-text"><strong>18 Story Quests</strong> — Act I &amp; II. Narrative gating, step auto-complete, hand-in for rewards (gold, XP, flags, items). Difficulty badges on cards.</div>
         </div>
       </div>
     </div>
@@ -2221,15 +2444,15 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.3.0: The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Smithing (smelting), Forging (bars → equipment). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Activity Log, Feedback Toasts, Settings, Idle Soundscapes. Easter egg "Don't Push This".</div>
+          <div class="roadmap-text"><strong>v0.3.0: The Big Update</strong> — Theme Engine, Quick-Switch Sidebar. Smithing, Forging. Quest step auto-complete, Mastery (spend points for +% XP). Random Events. Fishing, Runecrafting, Activity Log, Bank sort, Shop 25/50/Max, Settings, Idle Soundscapes. Easter egg "Don't Push This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>Quest expansion</strong> — 18 story quests (Act I &amp; II), narrative gating, difficulty tiers.</div>
+          <div class="roadmap-text"><strong>Quest expansion</strong> — 18 story quests (Act I &amp; II), step auto-complete, hand-in rewards.</div>
         </div>
         <div class="roadmap-item active">
-          <span class="roadmap-badge badge-active">⚡ Current</span>
-          <div class="roadmap-text"><strong>Phase 3: Crafting Engine</strong> — Queue system, Smithing, Alchemy, 8-hour offline queue. Phase 6: Radiant quests, more storyline.</div>
+          <span class="roadmap-badge badge-active">⚡ Next</span>
+          <div class="roadmap-text"><strong>More quests &amp; skills</strong> — Act III quests, radiant/repeatable quests. New skills: Cooking, Harvesting, Scavenging (data/UI). Crafting queue, Alchemy. Combat later.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>
