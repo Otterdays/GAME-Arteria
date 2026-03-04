@@ -7,6 +7,15 @@
 
 **Active Task:** None. Login bonus UX improved. Phase 3–4 theming complete.
 
+## [2026-03-04] COMPANIONS.md — independent companion doc
+- **New doc:** DOCU/COMPANIONS.md consolidates all companion design. Includes user idea: companions gain levels like player, use for skilling/crafting/collecting. Companion skill levels gate node/recipe access; they level as they work.
+- **SUMMARY:** Added COMPANIONS.md to doc index.
+
+## [2026-03-04] Companion unlock: Leadership skill
+- **Rationale:** "Level 20" was too vague—game has many skills, no single character level. Leadership (Support pillar) already gates companion count per design.
+- **index.html:** Barnaby Leadership 20, Yvette Leadership 35, Reginald Leadership 50.
+- **MASTER_DESIGN_DOC, ROADMAP:** Updated companion section and unlock teaser to use Leadership.
+
 ## [2026-03-04] Docs viewer on website
 - **index.html:** Docs nav link opens in-page modal instead of external GitHub. Fetches markdown from raw.githubusercontent.com, renders with marked.js. Sidebar: Summary, Roadmap, Architecture, Changelog, Style Guide, Theming, Improvements, Scratchpad. "View all on GitHub" fallback. Responsive (mobile: horizontal doc pills). Escape / click-outside to close.
 

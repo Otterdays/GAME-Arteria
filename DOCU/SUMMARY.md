@@ -17,6 +17,7 @@
 | **ROADMAP.md** | Phased feature roadmap (Phases 0–9+). Do not delete items; only append or mark done. |
 | **ARCHITECTURE.md** | Tech stack, monorepo layout, data flow, offline progression, Babel/Metro notes. |
 | **MASTER_DESIGN_DOC.md** | Full game design (Aetheria: world, skills, combat, economy, narrative, monetization). |
+| **COMPANIONS.md** | Wandering Souls: roster, roles (Auto-Gather, Auto-Craft, Combat), traits, Leadership gates, companion leveling (levels like player for skilling/crafting/collecting). |
 | **SCRATCHPAD.md** | Active task, history, next steps, blockers. Compact at 500 lines. |
 | **CHANGELOG.md** | Version history (Keep a Changelog format). |
 | **FUTURE_NOTES.md** | Research & forward planning (SDK 55 migration, MMKV, game loop patterns). |

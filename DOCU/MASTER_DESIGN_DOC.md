@@ -64,14 +64,16 @@ Players aren't a "chosen one"—they're an **Anchor**, someone whose soul is unu
 - **Starting Affinity:** Luminar (defensive/support), Voidmire (offensive/debuff), or Balanced (flexible, slower progression)
 - **Cosmic Quirk:** Random comedic trait (e.g., "Attracts sentient furniture," "Must speak in third person when nervous," "Hair changes color based on lies told nearby")
 
-### **Companion System (Unlocks at Level 20)**
+### **Companion System (Gated by Leadership)**
 
-Hire **Wandering Souls**—NPCs with their own skill levels who can train skills while you're offline or accompany you in combat.
+> **Full design:** See **COMPANIONS.md** for roster, roles (Auto-Gather, Auto-Craft, Combat), traits, companion leveling (levels like player for skilling/crafting/collecting), and implementation notes.
+
+Hire **Wandering Souls**—NPCs with their own skill levels who can train skills while you're offline or accompany you in combat. Unlock requirements use **Leadership** (the Support skill that gates companion count) so progression is concrete, not a vague "Level 20."
 
 **Example Companions:**
-- **Barnaby the Uncertain:** A warrior who deals 2x damage but has 50% chance to hit himself. Optimistic regardless.
-- **Scholar Yvette:** Researcher who speeds up crafting but occasionally creates explosions (small resource refunds when this happens).
-- **Sir Reginald Pomp:** Knight who automatically sells grey items but delivers long speeches about each one.
+- **Barnaby the Uncertain:** Warrior. Unlocks at Leadership 20. Deals 2x damage but has 50% chance to hit himself. Optimistic regardless.
+- **Scholar Yvette:** Researcher. Unlocks at Leadership 35. Speeds up crafting but occasionally creates explosions (small resource refunds when this happens).
+- **Sir Reginald Pomp:** Knight. Unlocks at Leadership 50. Automatically sells grey items but delivers long speeches about each one.
 
 ---
 

@@ -254,12 +254,12 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Leadership:** Simple integer check that dictates maximum active companions.
 
 ### 5.3 — Companion System (Wandering Souls) 🔴
-- [ ] 🟢 **Companion Roster Data:** Define Barnaby the Uncertain, Scholar Yvette, Sir Reginald Pomp (stats, flavor text, unlock condition).
+- [ ] 🟢 **Companion Roster Data:** Define Barnaby the Uncertain, Scholar Yvette, Sir Reginald Pomp (stats, flavor text, unlock: Leadership 20/35/50).
 - [ ] 🟡 **Companion Tasks UI:** Drag-and-drop or select menu to assign companions to Auto-Gather or Auto-Combat.
 - [ ] 🔴 **Companion Traits Logic:** Hook traits into Engine math (e.g., Barnaby's 50% hit-self chance but 2x damage modifier).
 - [ ] 🟢 **Companion detail panel:** Tap companion to see stats, trait description, current task.
 - [ ] 🟢 **Leadership cap display:** Show "Companions: 2/3" (or current max) in UI.
-- [ ] 🟢 **Unlock teaser:** "Unlock Barnaby at Level 20" style messaging.
+- [ ] 🟢 **Unlock teaser:** "Unlock Barnaby at Leadership 20" style messaging (Leadership gates companions; avoids vague "Level 20").
 
 ---
 
