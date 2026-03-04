@@ -1,17 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { useFocusEffect } from '@react-navigation/native';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type SkillId } from '@/store/gameSlice';
 import { BouncyButton } from '@/components/BouncyButton';
+import { getNextMidnight, generateDailyQuests } from '@/constants/dailyQuests';
+import { getItemMeta } from '@/constants/items';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 // NOTE: Hardcoded import until alias is linked properly across monorepo
 import { ALL_QUESTS } from '../../../../packages/engine/src/data/quests';
 import { Quest } from '../../../../packages/engine/src/data/story';
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function QuestsScreen() {
     const { palette } = useTheme();
@@ -19,6 +22,20 @@ export default function QuestsScreen() {
     const dispatch = useAppDispatch();
     const player = useAppSelector((s) => s.game.player);
     const narrative = player.narrative;
+    const dailyQuests = player.dailyQuests;
+
+    useFocusEffect(
+        useCallback(() => {
+            const now = Date.now();
+            const resetAt = dailyQuests?.resetAt ?? 0;
+            if (!dailyQuests || now >= resetAt) {
+                dispatch(gameActions.setDailyQuests({
+                    resetAt: getNextMidnight(),
+                    quests: generateDailyQuests(3),
+                }));
+            }
+        }, [dispatch, dailyQuests?.resetAt])
+    );
 
     const { activeQuests, completedQuests, availableQuests } = useMemo(() => {
         const active: Quest[] = [];
@@ -226,6 +243,49 @@ export default function QuestsScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
+
+                {/* Daily Quests */}
+                {dailyQuests && dailyQuests.quests.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Daily Quests</Text>
+                        <Text style={[styles.questDesc, { marginBottom: Spacing.sm }]}>
+                            Resets at midnight. Complete for gold and Lumina.
+                        </Text>
+                        {dailyQuests.quests.map((dq) => {
+                            const meta = getItemMeta(dq.objective.itemId);
+                            const done = dq.completed || dq.current >= dq.objective.quantity;
+                            return (
+                                <View key={dq.id} style={[styles.questCard, dq.completed && styles.questCompleted]}>
+                                    <View style={styles.questHeader}>
+                                        <Text style={styles.questTitle}>{dq.label}</Text>
+                                        <Text style={styles.actTag}>
+                                            {dq.current} / {dq.objective.quantity} {meta.emoji}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.stepRow}>
+                                        <Text style={styles.stepText}>
+                                            Reward: 💰 {dq.rewardGold} gp{dq.rewardLumina ? ` · ✨ ${dq.rewardLumina} Lumina` : ''}
+                                        </Text>
+                                    </View>
+                                    {done && !dq.completed && (
+                                        <BouncyButton
+                                            style={styles.startButton}
+                                            onPress={() => dispatch(gameActions.completeDailyQuest(dq.id))}
+                                        >
+                                            <Text style={styles.startBtnText}>Claim Reward</Text>
+                                        </BouncyButton>
+                                    )}
+                                    {dq.completed && (
+                                        <View style={styles.stepRow}>
+                                            <IconSymbol name="checkmark.seal.fill" size={18} color={palette.green} />
+                                            <Text style={[styles.stepText, styles.stepCompleted]}>Claimed</Text>
+                                        </View>
+                                    )}
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
 
                 {/* Active Quests */}
                 {activeQuests.length > 0 && (

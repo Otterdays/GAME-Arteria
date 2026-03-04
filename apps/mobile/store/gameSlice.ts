@@ -14,6 +14,7 @@ import {
 } from '@/constants/game';
 import type { ThemeId } from '@/constants/theme';
 import { getMasteryXpMultiplier } from '@/constants/mastery';
+import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -130,6 +131,34 @@ export interface PlayerState {
     masteryPoints?: Partial<Record<SkillId, number>>;
     /** Mastery: purchased upgrade levels per skill (e.g. mining: { xp_bonus: 2 }). */
     masterySpent?: Partial<Record<SkillId, Record<string, number>>>;
+    /** Detailed stats: by item type (ore, log, fish, rune, bar, equipment, other), first/last play. */
+    stats?: {
+        byType: Partial<Record<string, number>>;
+        firstPlayedAt: number;
+        lastPlayedAt: number;
+    };
+    /** Daily (radiant) quests: reset at midnight; list of 3 with progress and rewards. */
+    dailyQuests?: {
+        resetAt: number;
+        quests: Array<{
+            id: string;
+            templateId: string;
+            label: string;
+            objective: { type: 'gather'; itemId: string; quantity: number };
+            current: number;
+            rewardGold: number;
+            rewardLumina?: number;
+            completed: boolean;
+        }>;
+    };
+    /** Custom bank tabs: user-created tabs with name, emoji, and assigned item IDs. */
+    customBankTabs?: Array<{ id: string; name: string; emoji: string; itemIds: string[] }>;
+    /** Item IDs the player has marked as junk (for "Sell All Junk"). */
+    junkItemIds?: string[];
+    /** Login bonus: last claim date (YYYY-MM-DD), consecutive day count (1–7). */
+    loginBonus?: { lastClaimDate: string | null; consecutiveDays: number };
+    /** Premium currency (Lumina). Earned from login bonus day 7, future shop. */
+    lumina?: number;
 }
 
 // ─── Helpers ───
@@ -214,6 +243,15 @@ function createFreshPlayer(): PlayerState {
             ticksSinceLastEvent: 0,
             completedCount: 0,
         },
+        stats: {
+            byType: {},
+            firstPlayedAt: Date.now(),
+            lastPlayedAt: Date.now(),
+        },
+        customBankTabs: [],
+        junkItemIds: [],
+        loginBonus: { lastClaimDate: null, consecutiveDays: 0 },
+        lumina: 0,
     };
 }
 
@@ -275,7 +313,12 @@ function migratePlayer(saved: PlayerState): PlayerState {
     };
     const masteryPoints = saved.masteryPoints ?? {};
     const masterySpent = saved.masterySpent ?? {};
-    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent };
+    const stats = saved.stats ?? { byType: {}, firstPlayedAt: saved.lastSaveTimestamp ?? Date.now(), lastPlayedAt: Date.now() };
+    const customBankTabs = saved.customBankTabs ?? [];
+    const junkItemIds = saved.junkItemIds ?? [];
+    const loginBonus = saved.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 };
+    const lumina = saved.lumina ?? 0;
+    return { ...saved, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina };
 }
 
 // ─── Slice ───
@@ -455,18 +498,34 @@ export const gameSlice = createSlice({
             }
         },
 
-        /** Add items to inventory. V: Respect slot cap. S: Queue loot vacuum (max 5). X: Pulse Bank tab. */
+        /** Add items to inventory. V: Respect slot cap. S: Queue loot vacuum (max 5). X: Pulse Bank tab. Stats: increment by item type. */
         addItems(state, action: PayloadAction<InventoryItem[]>) {
             if (state.player.settings?.bankPulseEnabled !== false) {
                 state.pulseTab = 'bank';
             }
             const slotCap = state.player.settings?.isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
+            if (!state.player.stats) {
+                state.player.stats = { byType: {}, firstPlayedAt: Date.now(), lastPlayedAt: Date.now() };
+            }
+            state.player.stats.lastPlayedAt = Date.now();
+            if (!state.player.stats.firstPlayedAt) state.player.stats.firstPlayedAt = Date.now();
             for (const item of action.payload) {
                 const existing = state.player.inventory.find((i) => i.id === item.id);
                 if (existing) {
                     existing.quantity += item.quantity;
                 } else if (state.player.inventory.length < slotCap) {
                     state.player.inventory.push({ ...item });
+                }
+                const meta = getItemMeta(item.id);
+                const t = meta.type;
+                state.player.stats.byType[t] = (state.player.stats.byType[t] ?? 0) + item.quantity;
+                // Update daily quest progress for gather objectives
+                const dqList = state.player.dailyQuests?.quests;
+                if (dqList) {
+                    for (const q of dqList) {
+                        if (q.completed || q.objective.type !== 'gather' || q.objective.itemId !== item.id) continue;
+                        q.current = Math.min(q.objective.quantity, q.current + item.quantity);
+                    }
                 }
                 if (state.lootVacuumQueue.length < 5) {
                     state.lootVacuumQueue.push({
@@ -728,6 +787,102 @@ export const gameSlice = createSlice({
                 state.player.narrative.completedQuests.push(questId);
             }
             delete state.player.narrative.activeQuests[questId];
+        },
+
+        // ─── Daily Quests ───
+        /** Set or replace daily quests (e.g. after reset at midnight). */
+        setDailyQuests(state, action: PayloadAction<NonNullable<PlayerState['dailyQuests']>>) {
+            state.player.dailyQuests = action.payload;
+        },
+        /** Update daily quest progress when items are added (called from addItems for matching objective itemId). */
+        updateDailyQuestProgress(state, action: PayloadAction<{ itemId: string; quantity: number }>) {
+            const { itemId, quantity } = action.payload;
+            const dq = state.player.dailyQuests;
+            if (!dq?.quests) return;
+            for (const q of dq.quests) {
+                if (q.completed || q.objective.type !== 'gather' || q.objective.itemId !== itemId) continue;
+                q.current = Math.min(q.objective.quantity, q.current + quantity);
+            }
+        },
+        /** Mark a daily quest complete and grant rewards. */
+        completeDailyQuest(state, action: PayloadAction<string>) {
+            const questId = action.payload;
+            const dq = state.player.dailyQuests?.quests.find((q) => q.id === questId);
+            if (!dq || dq.completed) return;
+            dq.completed = true;
+            state.player.gold += dq.rewardGold;
+            if (dq.rewardLumina) {
+                state.player.lumina = (state.player.lumina ?? 0) + dq.rewardLumina;
+            }
+        },
+
+        // ─── Stats (detailed stats screen) ───
+        /** Update last played timestamp (e.g. on app focus). */
+        touchLastPlayed(state) {
+            if (state.player.stats) state.player.stats.lastPlayedAt = Date.now();
+        },
+
+        // ─── Custom Bank Tabs ───
+        addCustomBankTab(state, action: PayloadAction<{ id: string; name: string; emoji: string }>) {
+            const tabs = state.player.customBankTabs ?? [];
+            state.player.customBankTabs = [...tabs, { ...action.payload, itemIds: [] }];
+        },
+        removeCustomBankTab(state, action: PayloadAction<string>) {
+            state.player.customBankTabs = (state.player.customBankTabs ?? []).filter((t) => t.id !== action.payload);
+        },
+        assignItemToTab(state, action: PayloadAction<{ tabId: string; itemId: string; add: boolean }>) {
+            const { tabId, itemId, add } = action.payload;
+            const tab = (state.player.customBankTabs ?? []).find((t) => t.id === tabId);
+            if (!tab) return;
+            if (add) {
+                if (!tab.itemIds.includes(itemId)) tab.itemIds = [...tab.itemIds, itemId];
+            } else {
+                tab.itemIds = tab.itemIds.filter((id) => id !== itemId);
+            }
+        },
+
+        // ─── Junk (configurable "Sell All Junk") ───
+        toggleJunk(state, action: PayloadAction<string>) {
+            const ids = state.player.junkItemIds ?? [];
+            const id = action.payload;
+            if (ids.includes(id)) {
+                state.player.junkItemIds = ids.filter((x) => x !== id);
+            } else {
+                state.player.junkItemIds = [...ids, id];
+            }
+        },
+        /** Sell all items marked as junk (respects locked). */
+        sellAllJunk(state) {
+            const junkIds = new Set(state.player.junkItemIds ?? []);
+            for (const item of state.player.inventory) {
+                if (!junkIds.has(item.id) || item.isLocked) continue;
+                const meta = getItemMeta(item.id);
+                state.player.gold += item.quantity * meta.sellValue;
+                item.quantity = 0;
+            }
+            state.player.inventory = state.player.inventory.filter((i) => i.quantity > 0);
+        },
+
+        // ─── Login Bonus ───
+        claimLoginBonus(state, action: PayloadAction<{ gold: number; lumina?: number; day?: number }>) {
+            const bonus = state.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 };
+            const today = new Date().toISOString().slice(0, 10);
+            const day = action.payload.day ?? Math.min(7, bonus.consecutiveDays + 1);
+            state.player.loginBonus = { lastClaimDate: today, consecutiveDays: day };
+            state.player.gold += action.payload.gold;
+            if (action.payload.lumina) {
+                state.player.lumina = (state.player.lumina ?? 0) + action.payload.lumina;
+            }
+        },
+        /** Set login bonus streak (e.g. after detecting missed day). */
+        setLoginBonusStreak(state, action: PayloadAction<number>) {
+            if (!state.player.loginBonus) state.player.loginBonus = { lastClaimDate: null, consecutiveDays: 0 };
+            state.player.loginBonus.consecutiveDays = action.payload;
+        },
+
+        // ─── Lumina ───
+        addLumina(state, action: PayloadAction<number>) {
+            state.player.lumina = (state.player.lumina ?? 0) + action.payload;
         },
 
         // ─── Dialogue Modals ───

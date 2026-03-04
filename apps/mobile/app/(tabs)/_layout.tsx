@@ -99,6 +99,15 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="stats"
+          options={{
+            title: 'Stats',
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={26} name="chart.bar.fill" color={color} />
+            ),
+          }}
+        />
         {/* Hide legacy explore tab */}
         <Tabs.Screen name="explore" options={{ href: null }} />
       </Tabs>

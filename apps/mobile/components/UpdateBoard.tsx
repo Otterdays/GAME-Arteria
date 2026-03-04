@@ -148,10 +148,36 @@ export default function UpdateBoard() {
                 <View style={styles.card}>
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
-                    <Text style={styles.subtitle}>Theme Engine, Quick-Switch & Random Events</Text>
+                    <Text style={styles.subtitle}>
+                        {currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina' : 'Theme Engine, Quick-Switch & Random Events'}
+                    </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {/* Future AI: Update changelog for the *current* version here when bumping app.json */}
+                        {currentVersion.startsWith('0.4') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📅 Daily Quests</Text>
+                                    <Text style={styles.changeText}>• Three random gather objectives per day (reset at midnight). Quests screen → Daily section. Claim gold and Lumina when done.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📊 Detailed Stats</Text>
+                                    <Text style={styles.changeText}>• New Stats tab: total items gathered by type, first/last play, days since first play.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📁 Custom Bank Tabs</Text>
+                                    <Text style={styles.changeText}>• "+ Tabs" in Bank to create tabs (name + emoji). Assign items from item detail. Filter by your tabs.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🗑️ Sell All Junk</Text>
+                                    <Text style={styles.changeText}>• Mark items as junk in item detail (configurable). "Sell All Junk" in Bank sells all junk; locked items are skipped.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎁 Login Bonus & ✨ Lumina</Text>
+                                    <Text style={styles.changeText}>• 7-day login bonus (100–600 gp; day 7: 500 gp + 10 Lumina). Claim banner on Skills screen. Settings → Login bonus & Lumina shows streak. Lumina shown in Bank, Shop, Settings.</Text>
+                                </View>
+                            </>
+                        ) : (
+                            <>
                         <View style={styles.changeBlock}>
                             <Text style={styles.changeHeader}>🎨 Theme Engine</Text>
                             <Text style={styles.changeText}>• Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, and StatusBar follow your theme. Persisted with save.</Text>
@@ -202,6 +228,8 @@ export default function UpdateBoard() {
                             <Text style={styles.changeText}>• Combat Alpha: Early testing for weapons, stats, and simple mobs.</Text>
                             <Text style={styles.changeText}>• Mastery Overhaul: Spend mastery points for efficiency boosts.</Text>
                         </View>
+                            </>
+                        )}
 
                         <Text style={styles.footerNote}>Thanks for playing the Alpha!</Text>
                     </ScrollView>

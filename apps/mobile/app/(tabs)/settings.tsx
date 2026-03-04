@@ -10,6 +10,26 @@ import { gameActions, type SkillId } from '@/store/gameSlice';
 import { deleteSave } from '@/store/persistence';
 import { MASTERY_UPGRADES } from '@/constants/mastery';
 import { SKILL_META } from '@/constants/skills';
+import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
+
+function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsStyles> }) {
+    const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
+    const status = getLoginBonusStatus(loginBonus.lastClaimDate, loginBonus.consecutiveDays);
+    const nextDay = loginBonus.consecutiveDays >= 7 ? 1 : loginBonus.consecutiveDays + 1;
+    const nextReward = LOGIN_BONUS_DAYS[nextDay - 1];
+    return (
+        <View style={styles.row}>
+            <View style={styles.rowInfo}>
+                <Text style={styles.rowLabel}>🎁 Login bonus</Text>
+                <Text style={styles.rowDesc}>
+                    {status.canClaim
+                        ? `Day ${status.day} ready to claim!`
+                        : `Streak: Day ${loginBonus.consecutiveDays}/7 · Next: Day ${nextDay} — ${nextReward.gold} gp${nextReward.lumina ? ` + ${nextReward.lumina} Lumina` : ''}`}
+                </Text>
+            </View>
+        </View>
+    );
+}
 
 function MasterySection() {
     const dispatch = useAppDispatch();
@@ -271,6 +291,7 @@ export default function SettingsScreen() {
     const { palette, themeId, setThemeId } = useTheme();
     const styles = useMemo(() => createSettingsStyles(palette), [palette]);
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
+    const lumina = useAppSelector((s) => s.game.player.lumina ?? 0);
     const bankPulseEnabled = useAppSelector(
         (s) => s.game.player.settings?.bankPulseEnabled ?? true
     );
@@ -473,6 +494,20 @@ export default function SettingsScreen() {
                     onValueChange={(v) => dispatch(gameActions.setNotifyIdleCapReached(v))}
                     description="Notify when 24h / 7-day offline cap is full"
                 />
+                </View>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Login bonus & Lumina</Text>
+                <View style={styles.sectionCard}>
+                <LoginBonusRow styles={styles} />
+                <View style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}>
+                    <View style={styles.rowInfo}>
+                        <Text style={styles.rowLabel}>✨ Lumina</Text>
+                        <Text style={styles.rowDesc}>Premium currency. Day 7 login bonus, future shop.</Text>
+                    </View>
+                    <Text style={[styles.rowLabel, { color: palette.accentPrimary }]}>{lumina.toLocaleString()}</Text>
+                </View>
                 </View>
             </View>
 

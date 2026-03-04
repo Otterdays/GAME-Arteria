@@ -5,7 +5,15 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. Quest step auto-complete + mastery implemented; docs updated.
+**Active Task:** None. Daily quests, stats, bank tabs, junk, login bonus, Lumina implemented (v0.4.0). Docs refreshed: SUMMARY (0.4.0), CHANGELOG ([0.4.0] release), index.html (Latest + Changelog + Roadmap), IMPROVEMENTS (snapshot table).
+
+## [2026-03-03] Daily quests, Stats, Bank tabs, Junk, Login bonus, Lumina
+- **Daily quests:** Radiant daily quests reset at midnight. `constants/dailyQuests.ts` (templates, generateDailyQuests, getNextMidnight). Quests screen: Daily section with 3 quests, progress (gather X item), Claim reward (gold + optional Lumina). Progress updated in addItems when matching itemId. gameSlice: setDailyQuests, completeDailyQuest.
+- **Detailed stats:** New Stats tab. player.stats (byType, firstPlayedAt, lastPlayedAt). addItems increments stats.byType by item type. Stats screen shows play time and total gathered per type.
+- **Custom bank tabs:** player.customBankTabs (id, name, emoji, itemIds). Bank: filter row includes custom tabs; "+ Tabs" opens Manage modal (add/delete tabs). Item detail: "Add to tab" toggles per custom tab. addCustomBankTab, removeCustomBankTab, assignItemToTab.
+- **Sell All Junk:** player.junkItemIds (configurable). Item detail: "Mark as Junk" toggle. Bank header: "Sell All Junk" when any junk to sell; sellAllJunk reducer. toggleJunk reducer.
+- **Login bonus:** 7-day escalating rewards (constants/loginBonus.ts). Skills screen: banner when can claim; Claim dispatches claimLoginBonus({ gold, lumina, day }). Settings → Login bonus & Lumina: streak and next reward; Lumina balance.
+- **Lumina:** player.lumina. Displayed in Bank header, Shop header, Settings. addLumina reducer; day 7 login bonus grants 10 Lumina.
 
 ## [2026-03-03] Quest step auto-complete + Mastery
 - **Quest steps (engine):** Steps in quests.ts have completionRequirements (itemsRequired, etc.). getQuestStepsToComplete(player, ALL_QUESTS) in narrative.ts; app useGameLoop effect runs it when player changes and dispatches completeQuestStep. All item/skill-gated steps have requirements.

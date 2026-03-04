@@ -264,7 +264,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Inject context, tone, and goals without blocking the core idle experience.
 
 ### 6.1 — Quest Engine 🔴
-- [ ] 🔴 **Radiant (Infinite) Quests:** Procedural generator for standard "Gather X" or "Kill Y" daily tasks scaling with player level.
+- [x] 🔴 **Radiant (Infinite) Quests:** Daily "Gather X" quests (3/day, reset midnight, templates: ores/logs/fish/runes/bars). Claim gold + Lumina. (v0.4.0) *Full procedural scaling / "Kill Y" later.*
 - [ ] 🟡 **Character Quests:** Multi-step boolean chains for Companions (e.g., curing Barnaby's self-doubt).
 - [ ] 🟡 **Main Storyline (Act I - IV):** Milestone triggers (modal popups) at specific Total Levels leading up to the "Choice" between Luminar, Voidmire, and Absurdity.
 
@@ -283,7 +283,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ### 7.1 — Currency Architecture 🟡
 - [ ] 🟢 **Aether Shards:** Wire to epic crafting / deep dungeon drops (F2P).
 - [ ] 🟢 **Cosmic Essence:** Wire to daily quests; used for rerolls/skips (F2P/Earnable).
-- [ ] 🟡 **Lumina:** Premium "Robux" currency system setup (UI only initially, mock integration).
+- [x] 🟡 **Lumina:** Premium currency UI (Bank/Shop/Settings display; day 7 login grants 10). Shop stub "Coming soon". (v0.4.0)
 
 ### 7.2 — The Lumina Shop 🟡
 - [ ] 🟢 **UI Categories:** Cosmetics, Bank Expansion, Skill Boosts (24h max), Instant Craft Skips.
@@ -292,11 +292,11 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **The Treasure Hunt (Battle Pass):** Setup monthly grid-digging mechanic using daily shovels (complex UI/state).
 
 ### 7.3 — Retention & Polish 🔴
-- [ ] 🟡 **7-Day Login Bonus:** Escalating reward array, capped at Cosmic Essence on Day 7. Tracks consecutive days.
+- [x] 🟡 **7-Day Login Bonus:** Escalating reward array (100–600 gp; day 7: 500 gp + 10 Lumina). Tracks consecutive days. Skills banner when claimable; Settings shows streak. (v0.4.0)
 - [ ] 🔴 **Push Notifications Architecture:** Local push notifications for "Crafting Ready" or "Idle Cap Reached" using `expo-notifications`.
 - [ ] 🔴 **Performance Audit:** React Native Flamegraph checks, eliminate re-renders in FlatLists, `npx expo-doctor`.
 - [ ] 🟡 **EAS Production:** Generate Android App Bundle (.aab), target API 36 (Android 16), update Keystores. *Note: EAS credits exhausted as of 2026 — use `2_Build_APK_Local.bat` for local APK builds.*
-- [ ] 🟢 **Login bonus UI:** Calendar or day strip showing Days 1–7 and claimed state.
+- [x] 🟢 **Login bonus UI:** Banner on Skills when claimable; Settings → Login bonus & Lumina (streak, next reward). (v0.4.0)
 - [ ] 🟢 **Notification settings:** Per-type toggles (crafting done, idle cap, level up) persisted to MMKV/settings.
 - [ ] 🟢 **Sound/music placeholder:** Settings toggles for SFX and BGM; wire to no-op or minimal sounds first.
 - [ ] 🟢 **Onboarding/tutorial stub:** First-launch flow (optional): "Tap Skills → Mining → Train" (can be minimal).
@@ -409,8 +409,8 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## 🎯 Current Target
-**We are here → Phase 3 (The Crafting Engine)**
+**We are here → Phase 3 (Crafting Engine) + Phase 7 (retention done in v0.4.0)**
 
-v0.2.5 "Build & Release" deployed! The core gathering pillar is balanced and the retention HUD is active. Next action: Build the **Crafting System** (Smithing, Alchemy) and implement the 8-hour offline queue architecture.
+v0.4.0 (2026-03-03): Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI shipped. Next: **Crafting queue** (Smithing/Alchemy 8-hour queue), more quests/skills (Act III, Cooking, Harvesting).
 
 ---

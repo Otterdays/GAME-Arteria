@@ -63,12 +63,15 @@ function ItemDetailModal({
 }) {
     const dispatch = useAppDispatch();
     const item = useAppSelector((s) => s.game.player.inventory.find((i) => i.id === itemId));
+    const customBankTabs = useAppSelector((s) => s.game.player.customBankTabs ?? []);
+    const junkItemIds = useAppSelector((s) => s.game.player.junkItemIds ?? []);
     if (!item) return null;
     const meta = getItemMeta(item.id);
+    const isJunk = junkItemIds.includes(item.id);
     return (
         <Modal visible transparent animationType="fade" onRequestClose={onClose}>
             <Pressable style={styles.detailOverlay} onPress={onClose}>
-                <Pressable style={styles.detailCard} onPress={() => {/* stop propagation */ }}>
+                <Pressable style={styles.detailCard} onPress={() => {}}>
                     <Text style={styles.detailEmoji}>{meta.emoji}</Text>
                     <Text style={styles.detailName}>{meta.label}</Text>
                     <Text style={styles.detailDesc}>{meta.description}</Text>
@@ -127,12 +130,86 @@ function ItemDetailModal({
                         </Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity
+                        style={[styles.detailLockButton, isJunk && styles.detailLockButtonActive]}
+                        onPress={() => dispatch(gameActions.toggleJunk(item.id))}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={[styles.detailLockText, isJunk && styles.detailLockTextActive]}>
+                            {isJunk ? '🗑️ Marked as Junk' : 'Mark as Junk (Sell All Junk)'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {customBankTabs.length > 0 && (
+                        <>
+                            <View style={styles.detailSeparator} />
+                            <Text style={[styles.detailStatLabel, { marginBottom: 4 }]}>Add to tab</Text>
+                            <View style={styles.detailActionRow}>
+                                {customBankTabs.map((tab) => {
+                                    const inTab = tab.itemIds.includes(item.id);
+                                    return (
+                                        <TouchableOpacity
+                                            key={tab.id}
+                                            style={[styles.detailSellButton, inTab && styles.detailLockButtonActive]}
+                                            onPress={() => dispatch(gameActions.assignItemToTab({ tabId: tab.id, itemId: item.id, add: !inTab }))}
+                                            activeOpacity={0.8}
+                                        >
+                                            <Text style={styles.detailSellText}>{tab.emoji} {tab.name}</Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
+                        </>
+                    )}
+
                     <TouchableOpacity style={styles.detailClose} onPress={onClose} activeOpacity={0.8}>
                         <Text style={styles.detailCloseText}>Close</Text>
                     </TouchableOpacity>
                 </Pressable>
             </Pressable>
         </Modal>
+    );
+}
+
+// ── Manage Tab Form ───────────────────────────────────────────────────────────
+function ManageTabForm({
+    onAdd,
+    styles,
+    palette,
+}: {
+    onAdd: (name: string, emoji: string) => void;
+    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    palette: Record<string, string>;
+}) {
+    const [name, setName] = useState('');
+    const [emoji, setEmoji] = useState('📁');
+    const handleAdd = () => {
+        const n = name.trim() || 'Tab';
+        const e = emoji.trim() || '📁';
+        onAdd(n, e);
+        setName('');
+        setEmoji('📁');
+    };
+    return (
+        <>
+            <TextInput
+                style={[styles.searchInput, { marginBottom: Spacing.sm }]}
+                placeholder="Tab name"
+                placeholderTextColor={palette.textMuted}
+                value={name}
+                onChangeText={setName}
+            />
+            <TextInput
+                style={[styles.searchInput, { marginBottom: Spacing.sm }]}
+                placeholder="Emoji (e.g. 📁)"
+                placeholderTextColor={palette.textMuted}
+                value={emoji}
+                onChangeText={setEmoji}
+            />
+            <TouchableOpacity style={styles.detailSellButton} onPress={handleAdd} activeOpacity={0.8}>
+                <Text style={styles.detailSellText}>Add tab</Text>
+            </TouchableOpacity>
+        </>
     );
 }
 
@@ -153,18 +230,29 @@ export default function BankScreen() {
     const dispatch = useAppDispatch();
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const gold = useAppSelector((s) => s.game.player.gold);
+    const lumina = useAppSelector((s) => s.game.player.lumina ?? 0);
+    const customBankTabs = useAppSelector((s) => s.game.player.customBankTabs ?? []);
+    const junkItemIds = useAppSelector((s) => s.game.player.junkItemIds ?? []);
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
     const slotCap = isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
 
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filter, setFilter] = useState<ItemType | 'all'>('all');
+    const [filter, setFilter] = useState<ItemType | 'all' | string>('all');
+    const [manageTabsOpen, setManageTabsOpen] = useState(false);
     type SortKey = 'name' | 'qty' | 'value';
     const [sortBy, setSortBy] = useState<SortKey>('name');
 
+    const customTab = filter !== 'all' && !FILTER_OPTIONS.some((o) => o.key === filter)
+        ? customBankTabs.find((t) => t.id === filter)
+        : null;
+
     const filteredInventory = useMemo(() => {
         let list = inventory;
-        if (filter !== 'all') {
+        if (customTab) {
+            const ids = new Set(customTab.itemIds);
+            list = list.filter((item) => ids.has(item.id));
+        } else if (filter !== 'all') {
             list = list.filter((item) => getItemMeta(item.id).type === filter);
         }
         if (searchQuery.trim()) {
@@ -180,7 +268,12 @@ export default function BankScreen() {
             list = [...list].sort((a, b) => (meta(b.id).sellValue * b.quantity) - (meta(a.id).sellValue * a.quantity));
         }
         return list;
-    }, [inventory, filter, searchQuery, sortBy]);
+    }, [inventory, filter, customTab, searchQuery, sortBy]);
+
+    const hasJunkToSell = useMemo(() => {
+        const junkSet = new Set(junkItemIds);
+        return inventory.some((i) => junkSet.has(i.id) && !i.isLocked && i.quantity > 0);
+    }, [inventory, junkItemIds]);
 
     useFocusEffect(useCallback(() => {
         dispatch(gameActions.clearPulseTab('bank'));
@@ -245,13 +338,15 @@ export default function BankScreen() {
                     borderWidth: 1,
                     borderColor: palette.border,
                 },
+                filterScroll: {
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
                 filterRow: {
                     flexDirection: 'row',
                     paddingHorizontal: Spacing.md,
                     paddingVertical: Spacing.sm,
                     gap: Spacing.sm,
-                    borderBottomWidth: 1,
-                    borderBottomColor: palette.border,
                 },
                 filterChip: {
                     paddingHorizontal: Spacing.sm,
@@ -487,11 +582,28 @@ export default function BankScreen() {
                     </Text>
                 </View>
                 <View style={styles.headerRight}>
+                    {hasJunkToSell && (
+                        <TouchableOpacity
+                            style={[styles.goldBadge, { borderColor: palette.red, marginBottom: 4 }]}
+                            onPress={() => dispatch(gameActions.sellAllJunk())}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={[styles.goldText, { color: palette.red }]}>Sell All Junk</Text>
+                        </TouchableOpacity>
+                    )}
                     <View style={styles.goldBadge}>
                         <Text style={styles.goldEmoji}>💰</Text>
                         <AnimatedNumber
                             value={gold}
                             style={styles.goldText}
+                            formatValue={(v) => v.toLocaleString()}
+                        />
+                    </View>
+                    <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
+                        <Text style={styles.goldEmoji}>✨</Text>
+                        <AnimatedNumber
+                            value={lumina}
+                            style={[styles.goldText, { color: palette.accentPrimary }]}
                             formatValue={(v) => v.toLocaleString()}
                         />
                     </View>
@@ -516,23 +628,47 @@ export default function BankScreen() {
                     onChangeText={setSearchQuery}
                 />
             </View>
-            <View style={styles.filterRow}>
-                {FILTER_OPTIONS.map((opt) => {
-                    const isActive = filter === opt.key;
-                    return (
-                        <TouchableOpacity
-                            key={opt.key}
-                            style={[styles.filterChip, isActive && styles.filterChipActive]}
-                            onPress={() => setFilter(opt.key)}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
-                                {opt.label}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                <View style={styles.filterRow}>
+                    {FILTER_OPTIONS.map((opt) => {
+                        const isActive = filter === opt.key;
+                        return (
+                            <TouchableOpacity
+                                key={opt.key}
+                                style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                onPress={() => setFilter(opt.key)}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                                    {opt.label}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                    {customBankTabs.map((tab) => {
+                        const isActive = filter === tab.id;
+                        return (
+                            <TouchableOpacity
+                                key={tab.id}
+                                style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                onPress={() => setFilter(tab.id)}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                                    {tab.emoji} {tab.name}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                    <TouchableOpacity
+                        style={styles.filterChip}
+                        onPress={() => setManageTabsOpen(true)}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={styles.filterChipText}>+ Tabs</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
 
             <View style={styles.sortRow}>
                 <Text style={styles.sortLabel}>Sort:</Text>
@@ -587,6 +723,40 @@ export default function BankScreen() {
 
             {/* Item Detail Modal */}
             <ItemDetailModal itemId={selectedId} onClose={() => setSelectedId(null)} styles={styles} />
+
+            {/* Manage Tabs Modal */}
+            <Modal visible={manageTabsOpen} transparent animationType="fade">
+                <Pressable style={styles.detailOverlay} onPress={() => setManageTabsOpen(false)}>
+                    <Pressable style={styles.detailCard} onPress={() => {}}>
+                        <Text style={styles.detailName}>Custom bank tabs</Text>
+                        <Text style={[styles.detailDesc, { marginBottom: Spacing.md }]}>
+                            Create tabs and assign items from the item detail view.
+                        </Text>
+                        {customBankTabs.map((tab) => (
+                            <View key={tab.id} style={[styles.detailRow, { marginBottom: Spacing.sm }]}>
+                                <Text style={styles.detailStatLabel}>{tab.emoji} {tab.name}</Text>
+                                <TouchableOpacity
+                                    onPress={() => { dispatch(gameActions.removeCustomBankTab(tab.id)); if (filter === tab.id) setFilter('all'); }}
+                                    style={[styles.detailSellButton, { flex: 0, paddingHorizontal: 12 }]}
+                                >
+                                    <Text style={[styles.detailSellText, { color: palette.red }]}>Delete</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                        <View style={styles.detailSeparator} />
+                        <ManageTabForm
+                            onAdd={(name, emoji) => {
+                                dispatch(gameActions.addCustomBankTab({ id: `custom_${Date.now()}`, name, emoji }));
+                            }}
+                            styles={styles}
+                            palette={palette}
+                        />
+                        <TouchableOpacity style={styles.detailClose} onPress={() => setManageTabsOpen(false)} activeOpacity={0.8}>
+                            <Text style={styles.detailCloseText}>Done</Text>
+                        </TouchableOpacity>
+                    </Pressable>
+                </Pressable>
+            </Modal>
         </SafeAreaView>
     );
 }

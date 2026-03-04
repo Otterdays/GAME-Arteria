@@ -14,6 +14,18 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
+    version: '0.4.0',
+    date: '2026-03-03',
+    added: [
+      '📅 Daily quests: Three random gather objectives per day, reset at midnight. Quests screen Daily section with progress and Claim (gold + Lumina). Templates in constants/dailyQuests.ts.',
+      '📊 Detailed stats: New Stats tab. Tracks total gathered by type (ore, log, fish, rune, bar, equipment), first/last play, days since first play. addItems updates stats.',
+      '📁 Custom bank tabs: Create tabs (name + emoji) via "+ Tabs"; assign items from item detail. Filter row shows custom tabs.',
+      '🗑️ Sell All Junk: Mark items as junk in item detail (configurable). Sell All Junk button in Bank sells all junk; respects locked.',
+      '🎁 Login bonus: 7-day escalating rewards. Skills screen banner when claimable; Settings shows streak and next reward. Day 7 grants 10 Lumina.',
+      '✨ Lumina currency UI: Premium currency in Bank/Shop headers and Settings. Day 7 login bonus grants Lumina.',
+    ],
+  },
+  {
     version: '0.3.0',
     date: '2026-03-03',
     added: [

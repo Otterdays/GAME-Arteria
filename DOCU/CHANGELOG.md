@@ -13,7 +13,18 @@
 
 ## [Unreleased]
 ### Added
-- (Reserved for future features.)
+- (Nothing yet.)
+
+---
+
+## [0.4.0] - 2026-03-03
+### Added
+- **Daily quests:** Radiant daily quests reset at midnight. Three random "gather X" objectives per day (from templates: ores, logs, fish, runes, bars). Quests screen has Daily section with progress and Claim (gold + optional Lumina). Progress auto-updates when items are added. `constants/dailyQuests.ts`, gameSlice `setDailyQuests` / `completeDailyQuest`.
+- **Detailed stats screen:** New Stats tab. Tracks total items gathered by type (ore, log, fish, rune, bar, equipment, other), first/last play date, days since first play. `player.stats`; `addItems` increments by item type.
+- **Custom bank tabs:** Create tabs (name + emoji) via "+ Tabs" in Bank; assign items from item detail "Add to tab". Filter row shows custom tabs. `player.customBankTabs`, reducers `addCustomBankTab`, `removeCustomBankTab`, `assignItemToTab`.
+- **Sell All Junk:** Mark items as junk in item detail (configurable). "Sell All Junk" button in Bank header sells all junk (respects locked). `player.junkItemIds`, `toggleJunk`, `sellAllJunk`.
+- **Login bonus:** 7-day escalating rewards (100–600 gp, day 7: 500 gp + 10 Lumina). Skills screen banner when claimable; Settings → Login bonus & Lumina shows streak and next reward.
+- **Lumina currency UI:** Premium currency. Displayed in Bank header, Shop header, Settings. Day 7 login bonus grants 10 Lumina. Shop has "Lumina Shop — Coming soon" stub. `player.lumina`, `addLumina` reducer.
 
 ---
 

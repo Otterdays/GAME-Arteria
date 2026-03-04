@@ -31,6 +31,7 @@ import { BouncyButton } from '@/components/BouncyButton';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { ActivityLogModal } from '@/components/ActivityLogModal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getLoginBonusStatus } from '@/constants/loginBonus';
 
 // ─── Skill metadata (from shared constants) ───────────────────────────────────
 
@@ -345,8 +346,52 @@ export default function SkillsScreen() {
     [palette, isNarrow]
   );
 
+  const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
+  const loginStatus = useMemo(
+    () => getLoginBonusStatus(loginBonus.lastClaimDate, loginBonus.consecutiveDays),
+    [loginBonus.lastClaimDate, loginBonus.consecutiveDays]
+  );
+
+  const handleClaimLoginBonus = useCallback(() => {
+    dispatch(gameActions.claimLoginBonus({
+      gold: loginStatus.reward.gold,
+      lumina: loginStatus.reward.lumina,
+      day: loginStatus.day,
+    }));
+  }, [dispatch, loginStatus]);
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {loginStatus.canClaim && (
+        <Pressable
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#3d2a6e',
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.sm,
+            borderBottomWidth: 1,
+            borderBottomColor: 'rgba(139,92,246,0.3)',
+          }}
+          onPress={handleClaimLoginBonus}
+        >
+          <Text style={{ color: '#e0d4f7', fontWeight: '700', fontSize: FontSize.sm }}>
+            🎁 Day {loginStatus.day} — Claim your login bonus!
+          </Text>
+          <BouncyButton
+            style={{
+              backgroundColor: palette.gold,
+              paddingHorizontal: Spacing.md,
+              paddingVertical: 6,
+              borderRadius: Radius.sm,
+            }}
+            onPress={handleClaimLoginBonus}
+          >
+            <Text style={{ color: '#1a1a1a', fontWeight: '800', fontSize: FontSize.sm }}>Claim</Text>
+          </BouncyButton>
+        </Pressable>
+      )}
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>

@@ -149,6 +149,7 @@ export default function ShopScreen() {
     const insets = useSafeAreaInsets();
     const dispatch = useAppDispatch();
     const gold = useAppSelector((s) => s.game.player.gold);
+    const lumina = useAppSelector((s) => s.game.player.lumina ?? 0);
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const [tab, setTab] = useState<TabMode>('buy');
     const [sellFilter, setSellFilter] = useState<ItemType | 'all'>('all');
@@ -401,13 +402,23 @@ export default function ShopScreen() {
                         </BouncyButton>
                     </View>
                 </View>
-                <View style={styles.goldBadge}>
-                    <Text style={styles.goldEmoji}>💰</Text>
-                    <AnimatedNumber
-                        value={gold}
-                        style={styles.goldText}
-                        formatValue={(v) => v.toLocaleString()}
-                    />
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <View style={styles.goldBadge}>
+                        <Text style={styles.goldEmoji}>💰</Text>
+                        <AnimatedNumber
+                            value={gold}
+                            style={styles.goldText}
+                            formatValue={(v) => v.toLocaleString()}
+                        />
+                    </View>
+                    <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
+                        <Text style={styles.goldEmoji}>✨</Text>
+                        <AnimatedNumber
+                            value={lumina}
+                            style={[styles.goldText, { color: palette.accentPrimary }]}
+                            formatValue={(v) => v.toLocaleString()}
+                        />
+                    </View>
                 </View>
             </View>
 
@@ -462,6 +473,15 @@ export default function ShopScreen() {
                         />
                     )}
                     contentContainerStyle={styles.listContent}
+                    ListHeaderComponent={
+                        <View style={[styles.row, { marginBottom: Spacing.md, borderColor: palette.accentPrimary + '44', backgroundColor: palette.accentPrimary + '0c' }]}>
+                            <Text style={styles.rowEmoji}>✨</Text>
+                            <View style={styles.rowBody}>
+                                <Text style={styles.rowLabel}>Lumina Shop</Text>
+                                <Text style={styles.rowPrice}>Coming soon — rerolls, cosmetics, boosts</Text>
+                            </View>
+                        </View>
+                    }
                     ListEmptyComponent={
                         <View style={styles.empty}>
                             <Text style={styles.emptyText}>No items for sale.</Text>

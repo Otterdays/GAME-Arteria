@@ -41,9 +41,11 @@
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.3.0** (consolidated from 0.2.8–0.2.11).
+**Version scheme:** 0.x.x. Current **0.4.0** (Daily quests, Stats, Bank tabs, Junk, Login bonus, Lumina).
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+
+**v0.4.0 (2026-03-03) — Daily, Stats & Lumina:** Daily quests (3/day, reset midnight, Claim gold/Lumina). Stats tab (gathered by type, play time). Custom bank tabs (+ Tabs, assign from item detail). Sell All Junk (configurable). Login bonus (7-day streak, banner on Skills). Lumina currency (Bank/Shop/Settings; day 7 bonus). Shop Lumina stub.
 
 **v0.3.0 (2026-03-03) — The Big Update:** Theme Engine (picker, tab bar, headers, StatusBar). Quick-Switch Sidebar. Smithing (smelting) + Forging (bars → equipment). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). All consolidated from 0.2.8–0.2.11.
 
@@ -74,6 +76,7 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Current Status (Phase 2.3 — Lore & Progression):**
 - **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
+- **v0.4.0 QoL + Daily & Lumina:** Daily quests (3/day, reset midnight, Claim gold/Lumina). Detailed Stats tab (gathered by type, play time). Custom bank tabs (+ Tabs, assign from item detail). Sell All Junk (configurable junk, button in Bank). Login bonus (7-day streak, banner on Skills, Settings section). Lumina currency (Bank/Shop/Settings; day 7 bonus).
 - **v0.3.0 UX + Quest + Mastery:** Bank sort/empty state, Shop Buy 25/50/Max. Quests: real completion (rewards when all steps done); **quest step auto-complete** (engine completionRequirements + getQuestStepsToComplete; app dispatches completeQuestStep). **Mastery:** 1 pt/level-up, spend in Settings → Mastery for +% XP buffs.
 - **v0.2.6 (Lore Expansion):** Branching NPC dialogue, universal quest ledger, narrative gating for skilling nodes.
 - **v0.2.5 (Build & Release):** Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.

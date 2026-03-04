@@ -3,7 +3,7 @@
 > **Purpose:** Snapshot of current systems and prioritized UX/GUI/feature improvements. Use for sprint planning; append new ideas, do not delete existing entries.
 > **Last reviewed:** 2026-03-03
 
-**Implemented (2026-03-03):** Shop Sell filters (Fish, Runes, Equipment). Bank: sort (Name / Qty / Value), empty state + "Clear filter & search", item detail recipe line removed. Shop Buy: 25, 50, Max. Quests: dev button __DEV__ only; **real quest completion** (rewards on complete); **quest step auto-complete** (engine completionRequirements on steps, getQuestStepsToComplete, app runs check and dispatches completeQuestStep). **Mastery system:** 1 point per level-up per skill, Settings → Mastery to spend on +5% XP etc.; getMasteryXpMultiplier in applyXP. HorizonHUD Grind label, Skills 2-col narrow, Combat teaser, Idle Soundscapes "coming soon".
+**Implemented (2026-03-03):** **v0.4.0:** Daily quests (3/day, reset midnight, Quests → Daily, Claim gold/Lumina). **Stats tab** (gathered by type, first/last play). **Custom bank tabs** (+ Tabs, assign from item detail; filter row). **Sell All Junk** (mark junk in item detail, configurable; button in Bank). **Login bonus** (7-day streak, banner on Skills, Settings section). **Lumina** (Bank/Shop/Settings; day 7 bonus; Shop stub). — Prior: Shop Sell filters, Bank sort/empty state, Shop Buy 25/50/Max, quest completion + step auto-complete, Mastery, HorizonHUD, Skills 2-col, Combat teaser, Idle Soundscapes "coming soon".
 
 ---
 
@@ -12,11 +12,12 @@
 | Area | What exists | Notes |
 |------|-------------|--------|
 | **Skills** | Index (pill grid), Mining, Logging, Fishing, Runecrafting, Smithing, Forging. QuickSwitchSidebar, HorizonHUD, Activity Log, Confirm Task Switch, Feedback Toasts, Level Up / Train toasts. | Implemented skills share node-card pattern; Runite/narrative gating in place. |
-| **Bank** | Search, filters (All, Ores, Bars, Logs, Fish, Runes, Equipment, Other), gold badge, slot cap warning, item detail modal (Sell 1/All, lock). FlatList grid. | 50 slot cap (F2P); Patron higher. |
-| **Shop** | Buy / Sell tabs. Buy: catalog + qty 1/5/10. Sell: filter list. 50% sell value. Nick chat button. | Sell filters missing Fish, Runes, Equipment. |
+| **Bank** | Search, filters (All, Ores, Bars, Logs, Fish, Runes, Equipment, Other), **custom tabs** (+ Tabs, assign from item detail), **Sell All Junk** (configurable junk, button in header), gold + **Lumina** badge, slot cap warning, item detail (Sell 1/All, lock, **Mark as Junk**, Add to tab). FlatList grid. | 50 slot cap (F2P); Patron higher. |
+| **Shop** | Buy / Sell tabs. Buy: catalog + qty 1/5/10/25/50/Max; **Lumina** in header; **Lumina Shop** stub. Sell: filter list. 50% sell value. Nick chat button. | — |
+| **Stats** | New tab. Total gathered by type (ore, log, fish, rune, bar, equipment, other), first/last play, days since first play. | player.stats; addItems increments. |
 | **Combat** | Placeholder screen only ("Coming Soon" + short blurb). | Phase 4; no stats/loadout yet. |
-| **Quests** | Active / Completed / Available; difficulty badges; steps; Start quest; Complete (rewards when all steps done). Step auto-complete via engine completionRequirements + getQuestStepsToComplete. | Dev button only in __DEV__. |
-| **Settings** | Appearance, Gameplay, **Mastery** (spend points on +% XP), Audio, Notifications, Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
+| **Quests** | **Daily** (3/day, reset midnight, progress, Claim gold/Lumina). Active / Completed / Available; difficulty badges; steps; Start quest; Complete (rewards when all steps done). Step auto-complete. | Dev button only in __DEV__. |
+| **Settings** | Appearance, Gameplay, **Mastery**, Audio, Notifications, **Login bonus & Lumina** (streak, next reward), Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
 | **Explore** | Tab hidden (`href: null`). | — |
 | **Global** | Theme engine, tab bar theming, StatusBar, GlobalActionTicker, WhileYouWereAway, Update Board, Patch Notes (patches.tsx). | — |
 
