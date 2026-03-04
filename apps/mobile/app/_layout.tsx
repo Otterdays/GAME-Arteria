@@ -24,6 +24,7 @@ import LootVacuum from '@/components/LootVacuum';
 import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
+import GoblinPeekModal from '@/components/GoblinPeekModal';
 import { BatterySaver } from '@/components/BatterySaver';
 import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
 import { ThemeProvider as AppThemeProvider } from '@/contexts/ThemeContext';
@@ -93,6 +94,7 @@ function AppShell() {
         <GlobalActionTicker />
         <QuickSwitchSidebar />
         <DialogueOverlay />
+        <GoblinPeekModal />
         <StatusBarFromTheme />
       </BatterySaver>
       </QuickSwitchProvider>

@@ -5,7 +5,14 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. Daily quests, stats, bank tabs, junk, login bonus, Lumina implemented (v0.4.0). Docs refreshed: SUMMARY (0.4.0), CHANGELOG ([0.4.0] release), index.html (Latest + Changelog + Roadmap), IMPROVEMENTS (snapshot table).
+**Active Task:** None. Goblin Peek modal with SVG: react-native-svg + transformer, GoblinPeekModal shows goblin artwork when event fires. SBOM updated.
+
+## [2026-03-03] Goblin — first random enemy
+- **Goblin Peek modal:** When goblin_peek fires, GoblinPeekModal shows goblin SVG artwork (goblin_1.svg) in a themed card; auto-dismisses after 3s or tap. react-native-svg + react-native-svg-transformer; metro.config.js updated; svg.d.ts for TS. gameSlice: showGoblinPeek, setShowGoblinPeek.
+- **Goblin Peek random event:** New event in random event pool. Toast: "A Goblin!" / "It peeked from the shadows... then scurried away. Your first enemy sighting!" (lucky-style). Activity log + engine log. No combat; flavor only.
+- **Enemy data:** `constants/enemies.ts` — EnemyMeta, ENEMY_GOBLIN (id: enemy_goblin, name: Goblin, assetPath: goblin_1.svg), ENEMIES registry. Ready for Phase 4 combat/bestiary.
+- **Asset:** `goblin_1.svg` at repo root (user-added); copy in `apps/mobile/assets/images/goblin_1.svg` for app use when combat/bestiary UI is built.
+- **Docs:** CHANGELOG Unreleased, SCRATCHPAD, SUMMARY, ROADMAP (Phase 4.4 note).
 
 ## [2026-03-03] Daily quests, Stats, Bank tabs, Junk, Login bonus, Lumina
 - **Daily quests:** Radiant daily quests reset at midnight. `constants/dailyQuests.ts` (templates, generateDailyQuests, getNextMidnight). Quests screen: Daily section with 3 quests, progress (gather X item), Claim reward (gold + optional Lumina). Progress updated in addItems when matching itemId. gameSlice: setDailyQuests, completeDailyQuest.

@@ -31,7 +31,8 @@ export type RandomEventType =
     | 'cosmic_sneeze'
     | 'genie_gift'
     | 'treasure_chest'
-    | 'lucky_strike';
+    | 'lucky_strike'
+    | 'goblin_peek';
 
 export const RANDOM_EVENT_TYPES: RandomEventType[] = [
     'blibbertooth_blessing',
@@ -39,4 +40,5 @@ export const RANDOM_EVENT_TYPES: RandomEventType[] = [
     'genie_gift',
     'treasure_chest',
     'lucky_strike',
+    'goblin_peek',
 ];

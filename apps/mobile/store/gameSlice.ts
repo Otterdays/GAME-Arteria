@@ -356,7 +356,7 @@ export interface ActivityLogEntry {
 }
 
 /** In-game feedback toast (replaces Alert for locked, no essence, etc.) */
-export type FeedbackToastType = 'locked' | 'warning' | 'error' | 'info';
+export type FeedbackToastType = 'locked' | 'warning' | 'error' | 'info' | 'lucky';
 
 export interface FeedbackToastEvent {
     id: string;
@@ -380,6 +380,8 @@ interface GameState {
     feedbackToastQueue: FeedbackToastEvent[];
     /** Activity log — random events, level-ups, skill starts. Max 50 entries. */
     activityLog: ActivityLogEntry[];
+    /** Goblin Peek modal — show goblin artwork when goblin_peek random event fires */
+    showGoblinPeek: boolean;
 }
 
 const ACTIVITY_LOG_MAX = 50;
@@ -394,6 +396,7 @@ const initialState: GameState = {
     activeDialogue: null,
     feedbackToastQueue: [],
     activityLog: [],
+    showGoblinPeek: false,
 };
 
 export const gameSlice = createSlice({
@@ -415,6 +418,7 @@ export const gameSlice = createSlice({
             state.isLoaded = true;
             state.pulseTab = null;
             state.lootVacuumQueue = [];
+            state.showGoblinPeek = false;
         },
 
         /** Set the active task */
@@ -710,6 +714,11 @@ export const gameSlice = createSlice({
             re.lastTriggeredAt = Date.now();
             re.ticksSinceLastEvent = 0;
             re.completedCount += 1;
+        },
+
+        /** Show Goblin Peek modal (goblin_peek random event). */
+        setShowGoblinPeek(state, action: PayloadAction<boolean>) {
+            state.showGoblinPeek = action.payload;
         },
 
         /** S. Remove completed loot vacuum animation */

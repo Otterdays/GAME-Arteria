@@ -211,7 +211,7 @@ export function useGameLoop() {
                         dispatch(gameActions.applyXP({ skillId, xp: bonusXp }));
                         dispatch(
                             gameActions.pushFeedbackToast({
-                                type: 'info',
+                                type: 'lucky',
                                 title: "Blibbertooth's Blessing!",
                                 message: `+${bonusXp} bonus XP to ${skillId}.`,
                             })
@@ -249,7 +249,7 @@ export function useGameLoop() {
                         dispatch(gameActions.addGold(gold));
                         dispatch(
                             gameActions.pushFeedbackToast({
-                                type: 'info',
+                                type: 'lucky',
                                 title: 'Treasure Chest!',
                                 message: `+${gold} gold found!`,
                             })
@@ -262,13 +262,24 @@ export function useGameLoop() {
                         dispatch(gameActions.applyXP({ skillId, xp: bonusXp }));
                         dispatch(
                             gameActions.pushFeedbackToast({
-                                type: 'info',
+                                type: 'lucky',
                                 title: 'Lucky Strike!',
                                 message: `Double XP this tick! +${bonusXp} bonus.`,
                             })
                         );
                         dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Lucky Strike!', data: { skillId, bonusXp } }));
                         logger.info('Engine', 'RandomEvent: lucky_strike', { skillId, bonusXp });
+                    } else if (eventType === 'goblin_peek') {
+                        dispatch(gameActions.setShowGoblinPeek(true));
+                        dispatch(
+                            gameActions.pushFeedbackToast({
+                                type: 'lucky',
+                                title: 'A Goblin!',
+                                message: 'It peeked from the shadows... then scurried away. Your first enemy sighting!',
+                            })
+                        );
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'A Goblin peeked out!', data: { enemyId: 'enemy_goblin' } }));
+                        logger.info('Engine', 'RandomEvent: goblin_peek', { skillId });
                     }
                 }
 
@@ -283,7 +294,7 @@ export function useGameLoop() {
                     pendingCosmicSneezeRef.current = false;
                     dispatch(
                         gameActions.pushFeedbackToast({
-                            type: 'info',
+                            type: 'lucky',
                             title: 'Cosmic Sneeze!',
                             message: 'Your next haul was doubled!',
                         })

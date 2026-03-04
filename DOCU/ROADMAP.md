@@ -226,6 +226,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **Combo System:** Code manual timing logic (e.g., tracking a Stun state to apply +50% dmg modifier from next hit if specific skill used).
 
 ### 4.4 — Enemy Factions & Dungeons 🟡
+- [x] 🟢 **First enemy (Goblin):** Goblin defined in `constants/enemies.ts` (ENEMY_GOBLIN, assetPath: goblin_1.svg). "Goblin Peek" random event during skilling (flavor only; no combat yet). Asset in `apps/mobile/assets/images/goblin_1.svg`. (2026-03-03)
 - [ ] 🟢 **Data Structures:** Define the 12 Enemy Factions (The Unraveled, Celestial Constructs, Void wildlife, Astral Pirates, Cosmic Vermin, etc.) with stat blocks and loot tables.
 - [ ] 🟡 **Dungeon Modes:** Logic for Delves (5-10 min active / 1h idle clear), Expeditions (30 min / 4h idle max).
 - [ ] 🔴 **Dungeon Modifiers Engine:** Random weekly rules applied to combat math (e.g., "Gravity's Suggestion" reverses fall damage, "Blibbertooth's Blessing" causes confetti visual effects).

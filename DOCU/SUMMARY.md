@@ -69,6 +69,8 @@
 **Overview:**
 A math-heavy, passive progression RPG without real-time action gameplay. The core loops rely heavily on state management, background calculation of offline progress, and optimizing "Ticks" for skills and combat. Inspired by Melvor Idle.
 
+**First random enemy (2026-03-03):** Goblin — new "Goblin Peek" random event during skilling (toast + activity log). Asset: `goblin_1.svg` (root + `apps/mobile/assets/images/`). `constants/enemies.ts` defines Goblin as first enemy for future Phase 4 combat/bestiary.
+
 **Where we can go from here (quests & skills):**
 - **More quests:** Act III story quests; radiant/repeatable quests (e.g. "Bring Nick 10 copper" on cooldown). Reuse existing step auto-complete and hand-in flow.
 - **More skills:** Data + UI for **Cooking** (fish/meat → food, healing/boosts), **Harvesting** (gather herbs/plants), **Scavenging** (random loot tables). ROADMAP already lists these; implement in same pattern as Mining/Logging/Fishing (nodes, ticks, bank).

@@ -26,6 +26,7 @@ function getToastStyles(palette: { red: string; gold: string; accentPrimary: str
         warning: { borderColor: palette.gold, titleColor: palette.gold, icon: 'alert' },
         error: { borderColor: palette.red, titleColor: palette.red, icon: 'alert-circle' },
         info: { borderColor: palette.accentPrimary, titleColor: palette.accentPrimary, icon: 'information' },
+        lucky: { borderColor: palette.gold, titleColor: palette.gold, icon: 'star-four-points' },
     };
 }
 
@@ -39,6 +40,7 @@ export default function FeedbackToast() {
 
     const translateY = useRef(new Animated.Value(-80)).current;
     const opacity = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
         if (isAnimating.current || queue.length === 0) return;
@@ -50,12 +52,14 @@ export default function FeedbackToast() {
 
         translateY.setValue(-80);
         opacity.setValue(0);
+        if (next.type === 'lucky') scaleAnim.setValue(0.85);
 
         const hapticMap: Record<FeedbackToastType, Haptics.NotificationFeedbackType> = {
             locked: Haptics.NotificationFeedbackType.Error,
             warning: Haptics.NotificationFeedbackType.Warning,
             error: Haptics.NotificationFeedbackType.Error,
             info: Haptics.NotificationFeedbackType.Warning,
+            lucky: Haptics.NotificationFeedbackType.Success,
         };
         Haptics.notificationAsync(hapticMap[next.type]);
 
@@ -63,13 +67,16 @@ export default function FeedbackToast() {
             Animated.spring(translateY, {
                 toValue: 0,
                 useNativeDriver: true,
-                bounciness: 8,
+                bounciness: next.type === 'lucky' ? 12 : 8,
             }),
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 200,
                 useNativeDriver: true,
             }),
+            ...(next.type === 'lucky'
+                ? [Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true, speed: 14, bounciness: 8 })]
+                : []),
         ]).start();
 
         const ANIM_OUT_MS = 350;
@@ -103,7 +110,7 @@ export default function FeedbackToast() {
         }, DURATION_MS);
 
         return () => clearTimeout(timer);
-    }, [queue.length, queue[0]?.id, dispatch, translateY, opacity]);
+    }, [queue.length, queue[0]?.id, dispatch, translateY, opacity, scaleAnim]);
 
     const toastStyles = useMemo(() => getToastStyles(palette), [palette]);
     const styles = useMemo(
@@ -132,6 +139,15 @@ export default function FeedbackToast() {
                     shadowRadius: 6,
                     elevation: 8,
                 },
+                toastLucky: {
+                    borderWidth: 3,
+                    shadowColor: palette.gold,
+                    shadowOpacity: 0.5,
+                    shadowRadius: 10,
+                },
+                titleLucky: {
+                    fontSize: FontSize.lg,
+                },
                 icon: { marginRight: Spacing.md },
                 textStack: {
                     flex: 1,
@@ -153,24 +169,36 @@ export default function FeedbackToast() {
     if (!visible) return null;
 
     const style = toastStyles[visible.type];
+    const isLucky = visible.type === 'lucky';
 
     return (
         <Animated.View
             style={[
                 styles.container,
-                { transform: [{ translateY }], opacity },
+                {
+                    transform: [{ translateY }, ...(isLucky ? [{ scale: scaleAnim }] : [])],
+                    opacity,
+                },
             ]}
             pointerEvents="none"
         >
-            <View style={[styles.toast, { borderColor: style.borderColor }]}>
+            <View
+                style={[
+                    styles.toast,
+                    { borderColor: style.borderColor },
+                    isLucky && styles.toastLucky,
+                ]}
+            >
                 <MaterialCommunityIcons
                     name={style.icon}
-                    size={24}
+                    size={isLucky ? 28 : 24}
                     color={style.titleColor}
                     style={styles.icon}
                 />
                 <View style={styles.textStack}>
-                    <Text style={[styles.title, { color: style.titleColor }]}>{visible.title}</Text>
+                    <Text style={[styles.title, { color: style.titleColor }, isLucky && styles.titleLucky]}>
+                        {visible.title}
+                    </Text>
                     <Text style={styles.message}>{visible.message}</Text>
                 </View>
             </View>

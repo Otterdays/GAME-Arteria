@@ -13,7 +13,7 @@
 
 ## [Unreleased]
 ### Added
-- (Nothing yet.)
+- **Goblin — first random enemy:** New random event "Goblin Peek": a goblin peeks from the shadows during skilling, then scurries away (flavor only; combat not implemented). Uses `goblin_1.svg` asset. `constants/enemies.ts` defines Goblin as first enemy (id, name, assetPath); `constants/randomEvents.ts` adds `goblin_peek`; `useGameLoop` dispatches lucky toast + activity log. Asset copied to `apps/mobile/assets/images/goblin_1.svg` for future combat/bestiary UI.
 
 ---
 

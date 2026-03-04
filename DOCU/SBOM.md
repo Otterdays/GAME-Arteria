@@ -56,6 +56,8 @@
 | 2026-02-26 | react-native-reanimated         | 4.1.6     | 4.2.2     | recent               | Smooth animations                      |
 | 2026-02-26 | react-native-safe-area-context  | 5.6.2     | 5.7.0     | recent               | Safe area insets                       |
 | 2026-02-26 | react-native-screens            | 4.16.0    | 4.24.0    | recent               | Native screen containers               |
+| 2026-03-03 | react-native-svg                | 15.15.3   | current   | recent               | SVG rendering (Goblin Peek modal)       |
+| 2026-03-03 | react-native-svg-transformer    | 1.5.3     | current   | recent               | Import .svg as React components (dev)   |
 | 2026-02-26 | react-native-web                | 0.21.2    | 0.21.2    | current              | Web compatibility layer                |
 | 2026-02-26 | react-native-worklets           | 0.5.1     | 0.7.4     | recent               | Reanimated worklet threading            |
 | 2026-02-26 | react-redux                     | 9.2.0     | 9.2.0     | current              | React bindings for Redux               |
