@@ -27,11 +27,21 @@
 - **Bank OSRS-style redesign:** Main tab + up to 6 custom tabs. Tab bar row, type-filter row. Tab icon = first item in tab. Long-press item → "Create new tab with this item". Remember last tab (`lastBankTab`). 50 F2P / 100 Patron slot cap. Migration: >6 tabs truncated to 6.
 - **World Exploration:** Explore tab = World Map. 6 locations (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen with NPCs, Shop, Quests. Unlock: always, quest, level, calendar (Frostvale December), event.
 - **Lumina Shop:** Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina, +25% XP). Shop Buy tab shows Lumina items.
-- **Mastery expansion:** Yield +3%/level (max 3) and Speed +4%/level (max 3) for all 8 skills. Settings → Mastery: Gathering/Crafting pillars, skill cards, Spend/Max.
+- **Mastery expansion:** Yield +3%/level (max 3) and Speed +4%/level (max 3) for all 10 skills (now includes harvesting, scavenging, herblore). Settings → Mastery: Gathering/Crafting pillars, skill cards, Spend/Max.
+- **MasteryBadges on skill screens:** Active mastery bonuses (📖 XP, 📦 yield, ⚡ speed) displayed as compact gold badges in the skill header. Only show purchased upgrades. All 10 skill screens wired.
+- **Expanded daily quests:** Template pool grown from 14 to 30 — now includes iron/steel bars (smithing), raw herring/trout (fishing), cooked salmon (cooking), bronze/iron daggers (forging), wheat/cabbage/tomato/snape grass (harvesting), rusty scrap/discarded tech/fey trinket (scavenging), minor healing potions/strength elixirs (herblore).
+- **Daily quest tracking:** All-time `totalDailyQuestsCompleted` counter shown on Quests screen. Each claim logged to Activity Log (📅 type).
 - **New NPCs:** Bianca the Herbalist, Kate the Traveler. Quests tab "NPCs in Town" with Talk. MASTER_DESIGN_DOC v2.0 (7 Parts, 20 Chapters) for design reference.
+- **Skills architecture:** `DOCU/SKILLS_ARCHITECTURE.md` — pre-implementation design for Farming, Agility, Thieving, Crafting. Patches, courses, targets, recipes. Implementation order: Agility → Thieving → Crafting → Farming.
+- **ComingSoonBadge:** Red (planned) or green (in progress) badge. Wired to Skills grid (unimplemented skills), Location screens, Explore (locked locations), Combat. Toggle via `SKILLS_IN_PROGRESS` / `FEATURES_IN_PROGRESS` in `constants/comingSoon.ts`.
+- **Thieving skill:** Added to `SkillId`, `SKILL_META` (🎭), theme. Shows on Skills grid with ComingSoonBadge until implemented.
+- **Runite forging tier:** Dagger, sword, half helmet, full helmet, platebody, shield. Narrative-gated (`knows_about_sneeze_cult`). Forging screen shows Story badge when locked.
+- **More forging equipment:** Sword (2 bars), platebody (3 bars), shield (2 bars) for Bronze, Iron, Steel, Mithril, Adamant. All tiers now have 6 equipment types.
+- **Gems (mining rare drops):** Sapphire (Iron+ 2%), Emerald (Coal+ 1.5%), Ruby (Mithril+ 1%), Diamond (Adamant+ 0.5%). Per successful mining tick on ore nodes only. Bank → Other filter. Per ORE_CHAIN_EXPANSION.md §2.3.
 
 ### Changed
 - Bank: two-row layout (tabs then filters). Custom tabs capped at 6. `addCustomBankTab` / `addCustomBankTabWithItem` enforce limit; `setLastBankTab` persists selection.
+- Daily quest rotation: 30 templates across all 10 skills (was 14 across 5).
 
 ---
 

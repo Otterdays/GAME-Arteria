@@ -24,6 +24,8 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
 import { SKILL_META, IMPLEMENTED_SKILLS } from '@/constants/skills';
+import { isSkillInProgress } from '@/constants/comingSoon';
+import { ComingSoonBadge } from '@/components/ComingSoonBadge';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
@@ -45,7 +47,7 @@ const ALL_SKILLS: SkillId[] = [
   'defence', 'herblore', 'fishing',
   'scavenging', 'cooking', 'logging',
   'harvesting', 'crafting', 'farming',
-  'runecrafting',
+  'runecrafting', 'thieving',
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -113,6 +115,11 @@ function SkillBox({
       <View style={styles.skillBoxRight}>
         <Text style={styles.skillBoxLevelTop}>{currentLevel}</Text>
         <Text style={styles.skillBoxLevelBottom}>99</Text>
+        {!isImplemented && (
+          <View style={{ marginTop: 4 }}>
+            <ComingSoonBadge inProgress={isSkillInProgress(skillId)} size="sm" />
+          </View>
+        )}
       </View>
     </BouncyButton>
   );

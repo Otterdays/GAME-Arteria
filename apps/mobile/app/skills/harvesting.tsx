@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
@@ -189,6 +190,7 @@ export default function HarvestingScreen() {
                 </View>
                 <Text style={styles.miningTitle}>Harvesting</Text>
                 <Text style={styles.miningSub}>Gather plants, fibers, and magical reagents.</Text>
+                <MasteryBadges skillId="harvesting" />
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
                         <ProgressBarWithPulse progress={pct} fillColor={palette.skillHarvesting} widthPercent={pct} />

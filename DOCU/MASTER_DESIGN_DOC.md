@@ -120,7 +120,7 @@ These skills gather raw materials from the world. All 5 are **fully implemented*
 - **Nodes:** Copper (Lv 1), Tin, Iron, Coal, Gold, Mithril, Adamant, Runite (Lv 85)
 - **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
 - **SFX:** Tink (expo-audio) on each successful tick
-- **Crossover:** Ore → Smithing (smelt to bars), Forging (make equipment), Runecrafting (essence for runes)
+- **Crossover:** Ore → Smithing (smelt to bars); essence → Runecrafting. *Part of **Ore Chain** (Mining → Smithing → Forging).*
 - **Pet:** Rocky — rare drop from mining nodes
 
 #### **🪓 Logging — "The Whispering Cut"**
@@ -131,7 +131,7 @@ These skills gather raw materials from the world. All 5 are **fully implemented*
 - **Seasonal Rotation:** Certain trees only available specific real-world weeks
 - **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
 - **SFX:** Thump on tick
-- **Crossover:** Logs → Smithing (fuel), Construction (housing), Fletching (bows)
+- **Crossover:** Logs → Smithing (fuel), Construction (housing), Fletching (bows). *Part of **Wood Chain** (Logging ↔ Firemaking, planned).*
 - **Pet:** Timber — rare drop from logging
 
 #### **🎣 Fishing — "The Patient Reel"**
@@ -142,7 +142,7 @@ These skills gather raw materials from the world. All 5 are **fully implemented*
 - **Void-Fishing:** Late-game spots in reality tears for void-scaled fish
 - **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
 - **SFX:** Splash on tick
-- **Crossover:** Raw fish → Cooking (food for HP/combat buffs)
+- **Crossover:** Raw fish → Cooking (food for HP/combat buffs). *Part of **Food Chain** (Fishing → Cooking).*
 - **Pet:** Bubbles — rare drop from fishing
 
 #### **🪴 Harvesting — "The Green Touch"**
@@ -153,7 +153,7 @@ These skills gather raw materials from the world. All 5 are **fully implemented*
 - **Key Resource:** Void Cap Mushroom — required for Void Resistance potions
 - **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
 - **SFX:** Thump on tick
-- **Crossover:** Herbs → Herblore (potions), Cooking (ingredients), Farming (seeds)
+- **Crossover:** Herbs → Herblore (potions), Cooking (ingredients), Farming (seeds). *Part of **Herb Chain** (Harvesting → Herblore).*
 - **Pet:** Sprout — rare drop from harvesting
 
 #### **🏕️ Scavenging — "The Lucky Find"**
@@ -181,7 +181,7 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Process:** Consume essence → Produce runes (used for magic/enchanting)
 - **Mastery Bonuses:** +5% XP, +3% runes, +4% speed per level
 - **SFX:** Tink on tick
-- **Crossover:** Runes → Magic skill (spellcasting), Equipment enchanting
+- **Crossover:** Runes → Magic skill (spellcasting), Equipment enchanting. *Part of **Rune Chain** (Mining essence → Runecrafting).*
 - **Pet:** Runebound — rare drop from runecrafting
 
 #### **🔨 Smithing — "The Forge's Heat"**
@@ -192,7 +192,7 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Specializations (Lv 50):** Deep Delver → Armorsmith → Artificer path for magical equipment
 - **Mastery Bonuses:** +5% XP, +3% bars, +4% speed per level
 - **SFX:** Tink on tick
-- **Crossover:** Bars → Forging (equipment), Construction (nails), Crafting (arrowheads)
+- **Crossover:** Bars → Forging (equipment), Construction (nails), Crafting (arrowheads). *Part of **Ore Chain** (Mining → Smithing → Forging).*
 - **Pet:** Ember — rare drop from smithing
 
 #### **⚒️ Forging — "The Hammer's Song"**
@@ -203,7 +203,7 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Equipment Quirks:** Forged items gain random "Cosmic Quirks" (e.g., "...of Talking to Squirrels")
 - **Mastery Bonuses:** +5% XP, +3% gear, +4% speed per level
 - **SFX:** Tink on tick
-- **Crossover:** Bars (from Smithing) → Equipment (for Combat)
+- **Crossover:** Bars (from Smithing) → Equipment (for Combat). *Part of **Ore Chain** (Mining → Smithing → Forging).*
 - **Pet:** Anvil — rare drop from forging
 
 #### **🍳 Cooking — "The Hearth"**
@@ -214,7 +214,7 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Food Buffs:** Hearty (+HP), Brain Food (+XP), Lucky Charms (+drops), Speed Snacks (+action speed)
 - **Mastery Bonuses:** +5% XP, +3% food, +4% speed per level
 - **SFX:** Thump on tick
-- **Crossover:** Raw fish (from Fishing) → Cooked food (for Combat buffs), Gourmet Alchemy synergy with Herblore
+- **Crossover:** Raw fish (from Fishing) → Cooked food (for Combat buffs), Gourmet Alchemy synergy with Herblore. *Part of **Food Chain** (Fishing → Cooking).*
 - **Pet:** Chef — rare drop from cooking
 
 #### **🧪 Herblore — "The Cauldron's Secret"**
@@ -225,7 +225,7 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Key Ingredient:** Empty Vial (purchased from Nick) + Herb (from Harvesting)
 - **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
 - **SFX:** Tink on tick
-- **Crossover:** Herbs (Harvesting) + Vials (Shop) → Potions (buffs/combat)
+- **Crossover:** Herbs (Harvesting) + Vials (Shop) → Potions (buffs/combat). *Part of **Herb Chain** (Harvesting → Herblore).*
 - **Pet:** Fizz — rare drop from herblore (tiny cauldron)
 
 ---
@@ -296,6 +296,22 @@ Logging ───┬──► Smithing (fuel)
             ├──► Construction (housing materials)
             └──► Fletching (bow materials) [coming soon]
 ```
+
+#### **2.6.1 Labeled Skill Chains — Explicit Associations**
+
+Skills are grouped into **chains** — linear or branching flows where one skill feeds another. Use these labels in docs, Bank "Used in", and UI tooltips.
+
+| Chain | Skills | Flow | Notes |
+|-------|--------|------|-------|
+| **Ore Chain** | Mining → Smithing → Forging | Ore → Bars → Equipment | Core metal economy. Runite gated by narrative. |
+| **Rune Chain** | Mining (essence) → Runecrafting | Essence → Runes | Runes feed Magic, enchanting. |
+| **Food Chain** | Fishing → Cooking | Raw fish → Cooked food | Food for Combat buffs, HP. |
+| **Herb Chain** | Harvesting → Herblore | Herbs + Vial → Potions | Potions for buffs, combat. |
+| **Wood Chain** *(planned)* | Logging ↔ Firemaking | Logs ↔ Ash/Heat | Firemaking consumes logs; may fuel Smithing, Cooking. |
+| **Life Chain** *(planned)* | Fishing ↔ Farming ↔ Cooking | Fish + Crops → Food | Farming produces crops; Cooking uses both. |
+| **Craft Chain** *(planned)* | Logging + Smithing → Crafting | Logs + Bars → Arrows, Bags | Crafting is the misc hub. |
+
+**Future crossovers:** Woodcutting (Logging) ↔ Firemaking; Fishing ↔ Farming ↔ Cooking; Scavenging → Crafting (cloth, junk); Thieving → Gold/items (no skill input).
 
 **The Accidental Progression Loop:**
 1. Log in to craft a sword

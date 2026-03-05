@@ -24,6 +24,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
@@ -233,6 +234,7 @@ export default function HerbloreScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Herblore</Text>
                 <Text style={styles.screenSub}>Brew herbs and vials into potions. Buy empty vials from Nick.</Text>
+                <MasteryBadges skillId="herblore" />
 
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>

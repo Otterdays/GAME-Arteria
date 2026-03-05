@@ -375,6 +375,40 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                 }
                 dispatch(gameActions.addItems(items));
 
+                // Mining rare gem drops (ore nodes only, per ORE_CHAIN_EXPANSION.md)
+                const ORE_NODE_IDS = new Set(['copper_ore', 'tin_ore', 'iron_ore', 'coal_ore', 'gold_ore', 'mithril_ore', 'adamantite_ore', 'runite_ore']);
+                const GEM_DROPS: { nodeIds: string[]; gemId: string; chance: number }[] = [
+                    { nodeIds: ['iron_ore', 'coal_ore', 'gold_ore', 'mithril_ore', 'adamantite_ore', 'runite_ore'], gemId: 'sapphire', chance: 0.02 },
+                    { nodeIds: ['coal_ore', 'gold_ore', 'mithril_ore', 'adamantite_ore', 'runite_ore'], gemId: 'emerald', chance: 0.015 },
+                    { nodeIds: ['mithril_ore', 'adamantite_ore', 'runite_ore'], gemId: 'ruby', chance: 0.01 },
+                    { nodeIds: ['adamantite_ore', 'runite_ore'], gemId: 'diamond', chance: 0.005 },
+                ];
+                if (skillId === 'mining' && ORE_NODE_IDS.has(activeTask.actionId)) {
+                    const gemItems: { id: string; quantity: number }[] = [];
+                    for (let t = 0; t < successfulTicks; t++) {
+                        for (const drop of GEM_DROPS) {
+                            if (drop.nodeIds.includes(activeTask.actionId) && Math.random() < drop.chance) {
+                                gemItems.push({ id: drop.gemId, quantity: 1 });
+                            }
+                        }
+                    }
+                    if (gemItems.length > 0) {
+                        const combined: Record<string, number> = {};
+                        for (const g of gemItems) {
+                            combined[g.id] = (combined[g.id] ?? 0) + g.quantity;
+                        }
+                        const gemEntries = Object.entries(combined).map(([id, qty]) => ({ id, quantity: qty }));
+                        dispatch(gameActions.addItems(gemEntries));
+                        if (accumulator) {
+                            for (const item of gemEntries) {
+                                const existing = accumulator.itemsGained.find((i) => i.id === item.id);
+                                if (existing) existing.quantity += item.quantity;
+                                else accumulator.itemsGained.push({ ...item });
+                            }
+                        }
+                    }
+                }
+
                 onTickCompleteRef.current?.(skillId);
 
                 // If accumulating for an offline report, add effective XP (reducer applies Patron multiplier)

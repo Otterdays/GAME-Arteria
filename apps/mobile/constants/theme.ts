@@ -55,6 +55,9 @@ export type PaletteShape = {
   skillFarming: string;
   skillHerblore: string;
   skillAgility: string;
+  skillThieving: string;
+  skillFletching: string;
+  skillTailoring: string;
   skillAttack: string;
   skillStrength: string;
   skillDefence: string;
@@ -117,6 +120,9 @@ const DARK_PALETTE: PaletteShape = {
   skillFarming: '#27ae60',
   skillHerblore: '#2ecc71',
   skillAgility: '#3498db',
+  skillThieving: '#8e44ad',
+  skillFletching: '#d35400',
+  skillTailoring: '#e91e63',
   skillAttack: '#e74c3c',
   skillStrength: '#2ecc71',
   skillDefence: '#3498db',

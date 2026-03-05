@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 const TOOL_LABEL: Record<FishingSpot['tool'], string> = {
@@ -281,6 +282,7 @@ export default function FishingScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Fishing</Text>
                 <Text style={styles.screenSub}>Cast your line and reel in the catch of the day.</Text>
+                <MasteryBadges skillId="fishing" />
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
                         <ProgressBarWithPulse

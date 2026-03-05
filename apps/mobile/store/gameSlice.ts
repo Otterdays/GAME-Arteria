@@ -36,6 +36,9 @@ export type SkillId =
     | 'farming'
     | 'herblore'
     | 'agility'
+    | 'thieving'
+    | 'fletching'
+    | 'tailoring'
     | 'attack'
     | 'strength'
     | 'defence'
@@ -173,13 +176,15 @@ export interface PlayerState {
         activePetId: string | null;
         unlocked: string[];
     };
+    /** All-time count of daily quests claimed (for display on Quests screen). */
+    totalDailyQuestsCompleted?: number;
 }
 
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
     'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing', 'forging',
-    'crafting', 'farming', 'herblore', 'agility',
+    'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring',
     'attack', 'strength', 'defence', 'hitpoints',
 ];
 
@@ -269,6 +274,7 @@ function createFreshPlayer(): PlayerState {
         lumina: 0,
         seenEnemies: [],
         pets: { activePetId: null, unlocked: [] },
+        totalDailyQuestsCompleted: 0,
     };
 }
 
@@ -341,7 +347,8 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const name = saved.name ?? '';
     const seenEnemies = saved.seenEnemies ?? [];
     const pets = saved.pets ?? { activePetId: null, unlocked: [] };
-    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets };
+    const totalDailyQuestsCompleted = saved.totalDailyQuestsCompleted ?? 0;
+    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted };
 }
 
 // ─── Slice ───
@@ -367,8 +374,8 @@ export interface LootVacuumEvent {
     quantity: number;
 }
 
-/** Activity log entry — random events, level-ups, skill happenings. [TRACE: User request] */
-export type ActivityLogType = 'random_event' | 'level_up' | 'skill_start';
+/** Activity log entry — random events, level-ups, skill happenings, daily quest claims. [TRACE: User request] */
+export type ActivityLogType = 'random_event' | 'level_up' | 'skill_start' | 'daily_quest_complete';
 
 export interface ActivityLogEntry {
     id: string;
@@ -882,7 +889,7 @@ export const gameSlice = createSlice({
                 q.current = Math.min(q.objective.quantity, q.current + quantity);
             }
         },
-        /** Mark a daily quest complete and grant rewards. */
+        /** Mark a daily quest complete and grant rewards. Increment all-time counter and log. */
         completeDailyQuest(state, action: PayloadAction<string>) {
             const questId = action.payload;
             const dq = state.player.dailyQuests?.quests.find((q) => q.id === questId);
@@ -891,6 +898,19 @@ export const gameSlice = createSlice({
             state.player.gold += dq.rewardGold;
             if (dq.rewardLumina) {
                 state.player.lumina = (state.player.lumina ?? 0) + dq.rewardLumina;
+            }
+            state.player.totalDailyQuestsCompleted = (state.player.totalDailyQuestsCompleted ?? 0) + 1;
+            const entry: ActivityLogEntry = {
+                id: Math.random().toString(36).substring(7),
+                timestamp: Date.now(),
+                type: 'daily_quest_complete',
+                message: `Completed: ${dq.label}`,
+                data: { questId: dq.id, label: dq.label, rewardGold: dq.rewardGold },
+            };
+            state.activityLog = state.activityLog ?? [];
+            state.activityLog.unshift(entry);
+            if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
             }
         },
 

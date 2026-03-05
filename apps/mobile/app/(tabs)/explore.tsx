@@ -13,6 +13,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector } from '@/store/hooks';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { LOCATIONS, meetsLocationRequirement } from '@/constants/locations';
+import { isFeatureInProgress, LOCATION_TO_FEATURE } from '@/constants/comingSoon';
+import { ComingSoonBadge } from '@/components/ComingSoonBadge';
 
 function getLockReason(loc: (typeof LOCATIONS)[0]): string {
     switch (loc.unlockType) {
@@ -153,7 +155,10 @@ export default function ExploreScreen() {
                             )}
                             {!unlocked && (
                                 <View style={styles.lockBadge}>
-                                    <IconSymbol name="clock" size={14} color={palette.textMuted} />
+                                    <ComingSoonBadge
+                                        inProgress={!!(LOCATION_TO_FEATURE[loc.id] && isFeatureInProgress(LOCATION_TO_FEATURE[loc.id]))}
+                                        size="sm"
+                                    />
                                     <Text style={styles.lockText}>{getLockReason(loc)}</Text>
                                 </View>
                             )}

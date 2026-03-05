@@ -23,6 +23,7 @@ const TYPE_EMOJI: Record<ActivityLogType, string> = {
     random_event: '🎲',
     level_up: '⭐',
     skill_start: '▶️',
+    daily_quest_complete: '📅',
 };
 
 function formatTimeAgo(timestamp: number): string {

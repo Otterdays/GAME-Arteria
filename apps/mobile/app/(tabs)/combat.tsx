@@ -5,6 +5,8 @@ import { Spacing, FontSize, Radius, CardStyle } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector } from '@/store/hooks';
 import { ENEMIES } from '@/constants/enemies';
+import { isFeatureInProgress } from '@/constants/comingSoon';
+import { ComingSoonBadge } from '@/components/ComingSoonBadge';
 
 export default function CombatScreen() {
     const { palette } = useTheme();
@@ -109,7 +111,9 @@ export default function CombatScreen() {
             </View>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingBottom: Spacing.xl }}>
                 <Text style={styles.emoji}>⚔️</Text>
-                <Text style={styles.comingSoon}>Coming Soon</Text>
+                <View style={{ marginBottom: Spacing.sm }}>
+                    <ComingSoonBadge inProgress={isFeatureInProgress('combat_phase4')} size="md" />
+                </View>
                 <Text style={styles.description}>
                     Auto-battler combat with melee, ranged, and magic styles.
                     Defeat enemies, collect loot, and conquer dungeons.

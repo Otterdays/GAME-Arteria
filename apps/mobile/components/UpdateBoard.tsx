@@ -175,11 +175,24 @@ export default function UpdateBoard() {
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>✨ Lumina Shop & Mastery</Text>
-                                    <Text style={styles.changeText}>• Lumina Shop: Reroll Daily Quests (5✨, 2/day), XP Boost 1h (15✨). Mastery: +yield and +speed for all 8 skills. Settings → Mastery.</Text>
+                                    <Text style={styles.changeText}>• Lumina Shop: Reroll Daily Quests (5✨, 2/day), XP Boost 1h (15✨). Mastery: +yield and +speed for all 10 skills. Settings → Mastery.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏅 Mastery Badges & Daily Quests</Text>
+                                    <Text style={styles.changeText}>• Gold badges on skill screens show active mastery bonuses (📖 XP, 📦 yield, ⚡ speed). 30 daily quest templates across all 10 skills. All-time quest counter on Quests screen.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>💬 New NPCs</Text>
                                     <Text style={styles.changeText}>• Bianca the Herbalist, Kate the Traveler. Find them in Quests → NPCs in Town. Talk to learn about the world.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏷️ Coming Soon Badges</Text>
+                                    <Text style={styles.changeText}>• Red = planned, green = in progress. Unimplemented skills, locked locations, and Combat show status badges. Thieving added to the skill roster.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚒️ Runite Forging & Gems</Text>
+                                    <Text style={styles.changeText}>• Runite tier: dagger, sword, half helmet, full helmet, platebody, shield. Story-gated. Swords, platebodies, shields for all metal tiers.</Text>
+                                    <Text style={styles.changeText}>• Rare mining drops: Sapphire (Iron+), Emerald (Coal+), Ruby (Mithril+), Diamond (Adamant+). Bank → Other.</Text>
                                 </View>
                             </>
                         ) : currentVersion.startsWith('0.4.4') ? (

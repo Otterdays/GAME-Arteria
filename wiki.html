@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arteria Wiki — The Official Chronicles</title>
+    <meta name="description"
+        content="The comprehensive guide to Arteria: The Idle RPG. Explore skills, lore, regions, and characters of Valdoria.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #050608;
+            --bg-sidebar: #0a0b0f;
+            --bg-card: rgba(17, 19, 26, 0.8);
+            --border: rgba(139, 92, 246, 0.2);
+            --border-glow: rgba(139, 92, 246, 0.4);
+            --accent: #8b5cf6;
+            --accent-dim: rgba(139, 92, 246, 0.1);
+            --gold: #f59e0b;
+            --gold-dim: rgba(245, 158, 11, 0.1);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            --sidebar-width: 260px;
+            --radius: 8px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .wiki-sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 24px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .wiki-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            margin-bottom: 40px;
+        }
+
+        .wiki-nav-group {
+            margin-bottom: 32px;
+        }
+
+        .wiki-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .wiki-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            margin-left: -12px;
+        }
+
+        .wiki-nav-link:hover,
+        .wiki-nav-link.active {
+            color: var(--text-main);
+            background: var(--accent-dim);
+        }
+
+        .wiki-nav-link.active {
+            border-left: 3px solid var(--accent);
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        /* --- Main Content --- */
+        .wiki-main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 60px 80px;
+            max-width: 1400px;
+        }
+
+        .wiki-hero {
+            width: 100%;
+            height: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: #111;
+        }
+
+        .wiki-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .wiki-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(transparent, rgba(5, 6, 8, 0.9));
+        }
+
+        .wiki-hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+
+        .wiki-section {
+            margin-bottom: 80px;
+            display: none;
+        }
+
+        .wiki-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+        }
+
+        h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            margin: 32px 0 16px;
+            color: var(--gold);
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        /* --- Infobox --- */
+        .infobox {
+            float: right;
+            width: 320px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-left: 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .infobox-title {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .infobox-img {
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--bg-body);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .infobox-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .infobox-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .infobox-value {
+            color: var(--text-main);
+            text-align: right;
+            max-width: 60%;
+        }
+
+        /* --- Content Blocks --- */
+        .wiki-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .wiki-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wiki-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .wiki-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .wiki-card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--gold);
+        }
+
+        .wiki-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* --- Footer --- */
+        .wiki-footer {
+            margin-top: 100px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .wiki-sidebar {
+                width: 80px;
+                padding: 20px 0;
+                align-items: center;
+            }
+
+            .wiki-nav-title,
+            .wiki-nav-link span,
+            .wiki-logo {
+                display: none;
+            }
+
+            .wiki-nav-link {
+                justify-content: center;
+                margin: 0;
+            }
+
+            .wiki-main {
+                margin-left: 80px;
+                padding: 40px;
+            }
+
+            .infobox {
+                float: none;
+                width: 100%;
+                margin: 32px 0;
+            }
+        }
+
+        /* --- Skill Modal --- */
+        .skill-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .skill-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .skill-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-modal-overlay.active .skill-modal {
+            transform: translateY(0);
+        }
+
+        .skill-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 24px;
+            font-size: 2rem;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .skill-modal-close:hover {
+            color: var(--accent);
+        }
+
+        .skill-modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .skill-modal-table th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid var(--border);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+        }
+
+        .skill-modal-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="wiki-sidebar">
+        <a href="#" class="wiki-logo">ARTERIA Wiki</a>
+
+        <div class="wiki-nav-group">
+            <div class="wiki-nav-title">Navigation</div>
+            <a href="#home" class="wiki-nav-link active" onclick="showSection('home')">🏠 <span>Home</span></a>
+            <a href="#skills" class="wiki-nav-link" onclick="showSection('skills')">⛏️ <span>Skills</span></a>
+            <a href="#events" class="wiki-nav-link" onclick="showSection('events')">🎲 <span>Events & Pets</span></a>
+            <a href="#world" class="wiki-nav-link" onclick="showSection('world')">🗺️ <span>Valdoria Map</span></a>
+            <a href="#lore" class="wiki-nav-link" onclick="showSection('lore')">📜 <span>Lore & Quests</span></a>
+            <a href="#characters" class="wiki-nav-link" onclick="showSection('characters')">🤝 <span>NPCs &
+                    Companions</span></a>
+        </div>
+
+        <div class="wiki-nav-group">
+            <div class="wiki-nav-title">Community</div>
+            <a href="index.html" class="wiki-nav-link">🌐 <span>Main Website</span></a>
+            <a href="https://github.com/Otterdays/GAME-Arteria" class="wiki-nav-link" target="_blank">⭐
+                <span>GitHub</span></a>
+        </div>
+    </aside>
+
+    <main class="wiki-main">
+        <header class="wiki-hero">
+            <img src="arteria_wiki_hero_1772737888594.png" alt="Arteria Cosmic Hero">
+            <div class="wiki-hero-content">
+                <div
+                    style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 5px;">
+                    Encyclopedia Arteriana</div>
+                <h1>Arteria</h1>
+            </div>
+        </header>
+
+        <!-- HOME -->
+        <section id="home" class="wiki-section active">
+            <div class="infobox">
+                <div class="infobox-title">Arteria</div>
+                <div class="infobox-img">🌌</div>
+                <div class="infobox-row"><span class="infobox-label">Developer</span><span
+                        class="infobox-value">Otterdays</span></div>
+                <div class="infobox-row"><span class="infobox-label">Platform</span><span class="infobox-value">Android
+                        (React Native)</span></div>
+                <div class="infobox-row"><span class="infobox-label">Version</span><span class="infobox-value">v0.5.0
+                        "Big Weeds"</span></div>
+                <div class="infobox-row"><span class="infobox-label">Skills</span><span class="infobox-value">10
+                        Implemented / 25 Planned</span></div>
+                <div class="infobox-row"><span class="infobox-label">Engine</span><span class="infobox-value">Arteria
+                        Pure TS</span></div>
+            </div>
+
+            <h2>Welcome to Valdoria</h2>
+            <p><strong>Arteria</strong> is a cosmic fantasy idle RPG that blends magical wonder with eldritch dark
+                fantasy. As an <strong>Anchor</strong>, a soul of unusual cosmic weight, you are the only one capable of
+                surviving the <strong>Unraveling</strong>—a chaotic glitch in reality that transforms ordinary sheep
+                into abstract geometry and makes gravity take a holiday.</p>
+
+            <p>This wiki contains the comprehensive records of the game's mechanics, the history of the Divine Sneeze,
+                and guides on how to optimize your journey toward cosmic mastery.</p>
+
+            <h3>Core Game Loop</h3>
+            <p>Success in Arteria hinges on the cycle of training and efficiency:</p>
+            <ol style="margin-left: 20px; margin-bottom: 20px; color: var(--text-dim);">
+                <li><strong>Gathering</strong>: Mine ore, chop logs, fish deep waters, and scavenge debris.</li>
+                <li><strong>Crafting</strong>: Smelt bars, forge equipment, and brew powerful elixirs.</li>
+                <li><strong>Progressing</strong>: Unlock new tiers of content, complete story quests, and level up to 99
+                    across all skills.</li>
+                <li><strong>Idle Efficiency</strong>: Your progress continues even while you sleep, capped at 24 hours
+                    for F2P players and 7 days for Patrons.</li>
+            </ol>
+
+            <h3>Quick Features</h3>
+            <div class="wiki-grid">
+                <div class="wiki-card" onclick="showSection('skills')">
+                    <div class="wiki-card-icon">🏗️</div>
+                    <div class="wiki-card-title">10 Skills</div>
+                    <div class="wiki-card-desc">Fully implemented gathering and crafting subsystems with mastery loops.
+                    </div>
+                </div>
+                <div class="wiki-card" onclick="showSection('lore')">
+                    <div class="wiki-card-icon">📜</div>
+                    <div class="wiki-card-title">18 Quests</div>
+                    <div class="wiki-card-desc">Act I & II story content with radiant daily objectives.</div>
+                </div>
+                <div class="wiki-card" onclick="showSection('world')">
+                    <div class="wiki-card-icon">📍</div>
+                    <div class="wiki-card-title">6 Regions</div>
+                    <div class="wiki-card-desc">From the Crownlands to the Scorched Reach, explore all of Valdoria.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="wiki-section">
+            <h2>Skill Pillars</h2>
+            <p>Skills in Arteria are organized into five pillars. Currently, the Gathering and Crafting pillars are the
+                most developed.</p>
+
+            <h3>Gathering Pillar ✅</h3>
+            <div class="wiki-grid">
+                <div class="wiki-card" onclick="showSkillModal('mining')">
+                    <div class="wiki-card-icon">⛏️</div>
+                    <div class="wiki-card-title">Mining</div>
+                    <div class="wiki-card-desc">Strike the earth. Vein depletion mechanic forces strategic movement.
+                        Produces ores for Smithing.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('logging')">
+                    <div class="wiki-card-icon">🪓</div>
+                    <div class="wiki-card-title">Logging</div>
+                    <div class="wiki-card-desc">Trees gossip. Diplomacy Factor allows for asking nicely for better
+                        yields. Produces logs.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('fishing')">
+                    <div class="wiki-card-icon">🎣</div>
+                    <div class="wiki-card-title">Fishing</div>
+                    <div class="wiki-card-desc">Catch everything from Shrimp to Cosmic Jellyfish. Mythic catch mechanics
+                        for rare rewards.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('harvesting')">
+                    <div class="wiki-card-icon">🪴</div>
+                    <div class="wiki-card-title">Harvesting</div>
+                    <div class="wiki-card-desc">Collect herbs and crops items like Snape Grass and Void Caps. Seasonal
+                        rotations apply.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('scavenging')">
+                    <div class="wiki-card-icon">🏕️</div>
+                    <div class="wiki-card-title">Scavenging</div>
+                    <div class="wiki-card-desc">Find treasure in ruins. Curse Chance mechanic introduces unstable items.
+                    </div>
+                </div>
+            </div>
+
+            <h3>Crafting Pillar ✅</h3>
+            <div class="wiki-grid">
+                <div class="wiki-card" onclick="showSkillModal('runecrafting')">
+                    <div class="wiki-card-icon">✨</div>
+                    <div class="wiki-card-title">Runecrafting</div>
+                    <div class="wiki-card-desc">Bind essence at sacred altars. Power spellcasting and equipment
+                        enchanting.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('smithing')">
+                    <div class="wiki-card-icon">🔨</div>
+                    <div class="wiki-card-title">Smithing</div>
+                    <div class="wiki-card-desc">Smelt ore into bars. Heat Management mini-game for active players.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('forging')">
+                    <div class="wiki-card-icon">⚒️</div>
+                    <div class="wiki-card-title">Forging</div>
+                    <div class="wiki-card-desc">Transform bars into weapons and armor. Equipment Quirks add random funny
+                        traits.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('cooking')">
+                    <div class="wiki-card-icon">🍳</div>
+                    <div class="wiki-card-title">Cooking</div>
+                    <div class="wiki-card-desc">Raw food becomes feasts. Taste Testing affects buff durations.</div>
+                </div>
+                <div class="wiki-card" onclick="showSkillModal('herblore')">
+                    <div class="wiki-card-icon">🧪</div>
+                    <div class="wiki-card-title">Herblore</div>
+                    <div class="wiki-card-desc">Combine herbs and vials for powerful combat and skilling boosts.</div>
+                </div>
+            </div>
+
+            <h3>Upcoming Skills 🚧</h3>
+            <p style="color: var(--text-muted); font-style: italic;">Thieving, Agility, Crafting, Farming, Combat Skills
+                (Atk/Str/Def/HP).</p>
+        </section>
+
+        <!-- EVENTS & PETS -->
+        <section id="events" class="wiki-section">
+            <div class="infobox">
+                <div class="infobox-title">Random Events</div>
+                <div class="infobox-img">🎲</div>
+                <div class="infobox-row"><span class="infobox-label">Base Rate</span><span class="infobox-value">0.5% (1
+                        in 200) / tick</span></div>
+                <div class="infobox-row"><span class="infobox-label">Cooldown</span><span class="infobox-value">60 ticks
+                        minimum</span></div>
+                <div class="infobox-row"><span class="infobox-label">Pet Drop Rate</span><span
+                        class="infobox-value">0.01% (1 in 10k) / tick</span></div>
+            </div>
+
+            <h2>Random Events & Skill Pets</h2>
+            <p>Arteria features a dynamic <strong>Random Event System</strong> that directly interacts with your
+                Skilling. Each successful "tick" (when you gain an item or XP) has a chance to trigger various cosmic
+                anomalies, blessings, or attract a rare wandering companion.</p>
+
+            <h3>The Event Pool</h3>
+            <p>During active or offline skilling, you have a baseline <strong>0.5% chance</strong> per successful tick
+                to trigger a Random Event. A minimum cooldown of 60 ticks prevents event spamming.</p>
+            <div class="wiki-grid">
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Blibbertooth's Blessing</div>
+                    <div class="wiki-card-desc">Provides a massive burst of bonus XP. Amount = Active Skill Level × 5.
+                    </div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Genie's Gift</div>
+                    <div class="wiki-card-desc">A classic lamp offering. Grants XP to a chosen skill equal to Level ×
+                        10.</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Treasure Chest</div>
+                    <div class="wiki-card-desc">Grants a cache of gold. Base 25 + (Skill Level × 8).</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Lucky Strike</div>
+                    <div class="wiki-card-desc">Instantly multiplies the XP gained on the current tick by 2x.</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Cosmic Sneeze</div>
+                    <div class="wiki-card-desc">Duplicates your gathered resources when a reality-bending sneeze occurs.
+                    </div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Goblin Peek</div>
+                    <div class="wiki-card-desc">Your first enemy sighting (flavor event) pointing toward future combat.
+                    </div>
+                </div>
+            </div>
+
+            <h3>Skill Pets</h3>
+            <p>Every single training action carries a tiny <strong>0.01% chance (1 in 10,000)</strong> to drop a
+                permanent, equippable <strong>Skill Pet</strong> associated with the skill being trained. Earning one is
+                a mark of true dedication.</p>
+            <ul style="margin-left: 24px; color: var(--text-dim); margin-bottom: 20px;">
+                <li>🪨 <strong>Rocky</strong>: A small, weirdly smooth rock. (Mining)</li>
+                <li>🪵 <strong>Timber</strong>: A tiny sapling that yells "Timber!". (Logging)</li>
+                <li>🫧 <strong>Bubbles</strong>: A fish that floats in the air. (Fishing)</li>
+                <li>🌌 <strong>Voidling</strong>: A wisp of cosmic energy. (Runecrafting)</li>
+                <li>🔥 <strong>Sparks</strong>: A tiny, harmless flame. (Smithing)</li>
+                <li>🐀 <strong>Lil Chef</strong>: A rat with a chef hat. Wait a minute... (Cooking)</li>
+                <li>🔨 <strong>Clank</strong>: A very dense, miniature anvil. (Forging)</li>
+                <li>🧪 <strong>Fizz</strong>: A tiny cauldron that follows you around. (Herblore)</li>
+            </ul>
+        </section>
+
+        <!-- WORLD -->
+        <section id="world" class="wiki-section">
+            <div class="infobox">
+                <div class="infobox-title">Valdoria</div>
+                <div class="infobox-img">🗺️</div>
+                <div class="infobox-row"><span class="infobox-label">Type</span><span class="infobox-value">Island
+                        Peninsula</span></div>
+                <div class="infobox-row"><span class="infobox-label">Major Landmark</span><span
+                        class="infobox-value">Celestial Spires</span></div>
+                <div class="infobox-row"><span class="infobox-label">World Boss</span><span class="infobox-value">The
+                        Accountant (Stub)</span></div>
+            </div>
+
+            <h2>Geography of Valdoria</h2>
+            <p>Valdoria is a floating peninsula kingdom roughly the size of Ireland, surrounded by the Shimmering Sea
+                and the endless void beyond. It is the last bastion of stability in an unraveling cosmos.</p>
+
+            <h3>The Six Major Regions</h3>
+            <ul style="margin-left: 24px; color: var(--text-dim);">
+                <li><strong>The Crownlands</strong>: The central hub and location of the player's home and the main
+                    market.</li>
+                <li><strong>Frostvale</strong>: A snowy wonder available during the Voidmas season (December).</li>
+                <li><strong>Whispering Woods</strong>: An enchanted forest where the trees actually gossip about your
+                    training speed.</li>
+                <li><strong>Fey Markets</strong>: A planar crossover point where otherworldly traders offer bizarre
+                    artifacts.</li>
+                <li><strong>Scorched Reach</strong>: A volcanic wasteland pooling with Voidmire essence. Level 40
+                    required.</li>
+                <li><strong>Skyward Peaks</strong>: High-altitude mountains that touch the lower Celestial Spires. Level
+                    70 required.</li>
+            </ul>
+
+            <h3 style="margin-top: 40px;">The Unraveling</h3>
+            <p>Each location has a <code>Corruption Level</code> from 0% to 100%. As the Unraveling spreads, physics
+                cease to function correctly. Community cleansing events are required to keep the collapse from becoming
+                permanent.</p>
+        </section>
+
+        <!-- LORE -->
+        <section id="lore" class="wiki-section">
+            <h2>Lore & Narrative</h2>
+            <h3>The Cosmic Sneeze</h3>
+            <p>The universe was not created by a grand design, but by an accident. <strong>Blibbertooth the
+                    Unserious</strong>, a being of pure cosmic energy, felt a tickle while observing the primordial
+                void. The resulting sneeze birthed our reality.</p>
+            <p>This is why magic is unpredictable, why chickens exist, and why the universe doesn't take itself too
+                seriously. However, the <strong>Cult of the Serious</strong> believes this was a mistake. Led by "The
+                Accountant," they seek to balance the cosmic books and eliminate all absurdity—which would effectively
+                delete existence as we know it.</p>
+
+            <h3>The Story Acts</h3>
+            <div class="infobox">
+                <div class="infobox-title">The Anchor</div>
+                <div class="infobox-img">⚓</div>
+                <div class="infobox-row"><span class="infobox-label">Role</span><span class="infobox-value">Cosmic
+                        Safety Device</span></div>
+                <div class="infobox-row"><span class="infobox-label">Ability</span><span class="infobox-value">Absord
+                        Absurdity</span></div>
+                <div class="infobox-row"><span class="infobox-label">Mission</span><span class="infobox-value">Prevent
+                        the Total Audit</span></div>
+            </div>
+
+            <p><strong>Act I: The Awakening</strong> — You discover your status as an Anchor after surviving a
+                reality-tearing event at the village well. You meet Sir Reginald and begin your training.</p>
+            <p><strong>Act II: The Cosmic Conspiracy</strong> — Travel across Valdoria to stop The Accountant's
+                sub-agents. Encounter the Fey Markets and the Celestial Bureaucracy.</p>
+            <p><strong>Act III & IV</strong> — (Coming Soon) The ultimate choice between Order, Chaos, or the Punchline.
+            </p>
+        </section>
+
+        <!-- CHARACTERS -->
+        <section id="characters" class="wiki-section">
+            <h2>Important Figures</h2>
+
+            <h3>Key NPCs</h3>
+            <div class="wiki-grid">
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Nick — The Merchant</div>
+                    <div class="wiki-card-desc">Sells mining tools and buys raw materials. Always looking for a good
+                        deal.</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Bianca — Herbalist</div>
+                    <div class="wiki-card-desc">An expert in Herblore who knows the secrets of Void Caps and Snape
+                        Grass.</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-card-title">Kate — Traveler</div>
+                    <div class="wiki-card-desc">A nomadic explorer who provides hints about distant regions and the
+                        world map.</div>
+                </div>
+            </div>
+
+            <h3>Companions (Wandering Souls)</h3>
+            <p>Locked behind the <strong>Leadership</strong> skill, these NPCs assist you while you are away.</p>
+            <div class="wiki-grid">
+                <div class="wiki-card">
+                    <div class="wiki-nav-title">Leadership 20</div>
+                    <div class="wiki-card-title">Barnaby the Uncertain</div>
+                    <div class="wiki-card-desc">Warrior. Deals 2x damage, but has a 50% chance to hit himself instead.
+                    </div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-nav-title">Leadership 35</div>
+                    <div class="wiki-card-title">Scholar Yvette</div>
+                    <div class="wiki-card-desc">Researcher. Increases crafting speed by 30%. Occasional "lab explosions"
+                        refund resources.</div>
+                </div>
+                <div class="wiki-card">
+                    <div class="wiki-nav-title">Leadership 50</div>
+                    <div class="wiki-card-title">Sir Reginald Pomp</div>
+                    <div class="wiki-card-desc">Knight. Auto-sells junk items for gold and delivers long, aristrocratic
+                        speeches.</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="wiki-footer">
+            <p>© 2026 Arteriana Chronicles · Written in the blood of stars and the ink of the void.</p>
+        </footer>
+    </main>
+
+    <script>
+        function showSection(id) {
+            // Update active state in sidebar
+            document.querySelectorAll('.wiki-nav-link').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+
+            // Show section
+            document.querySelectorAll('.wiki-section').forEach(section => {
+                section.classList.toggle('active', section.id === id);
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Handle initial hash
+        window.onload = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) showSection(hash);
+        };
+    </script>
+    <!-- SKILL MODALS -->\n<div id="skill-modal-overlay" class="skill-modal-overlay" onclick="closeSkillModal()">\n <div
+            class="skill-modal" onclick="event.stopPropagation()">\n <button class="skill-modal-close"
+                onclick="closeSkillModal()">×</button>\n <h2 id="skill-modal-title">Skill</h2>\n <div
+                id="skill-modal-content"></div>\n </div>\n</div>\n
+    <script>\nconst SKILL_DATA = { \n  'mining': [\n    { name: 'Copper Vein', level: 1, xp: 17.5 }, \n    { name: 'Tin Vein', level: 1, xp: 17.5 }, \n    { name: 'Iron Vein', level: 15, xp: 35 }, \n    { name: 'Coal Vein', level: 30, xp: 50 }, \n    { name: 'Gold Vein', level: 40, xp: 65 }, \n    { name: 'Mithril Vein', level: 55, xp: 80 }, \n    { name: 'Adamantite Vein', level: 70, xp: 95 }, \n    { name: 'Runite Vein', level: 85, xp: 125 }, \n    { name: 'Rune Essence Vein', level: 1, xp: 5 }, \n    { name: 'Pure Essence Vein', level: 30, xp: 15 }, \n    { name: 'Cosmic Shard Vein', level: 65, xp: 40 }, \n], \n  'logging': [\n    { name: 'Normal Tree', level: 1, xp: 10 }, \n    { name: 'Oak Tree', level: 15, xp: 37.5 }, \n    { name: 'Willow Tree', level: 30, xp: 67.5 }, \n    { name: 'Teak Tree', level: 35, xp: 85 }, \n    { name: 'Maple Tree', level: 45, xp: 100 }, \n    { name: 'Mahogany Tree', level: 50, xp: 125 }, \n    { name: 'Yew Tree', level: 60, xp: 175 }, \n    { name: 'Magic Tree', level: 75, xp: 250 }, \n    { name: 'Cosmic Tree', level: 90, xp: 500 }, \n], \n  'fishing': [\n    { name: 'Shrimp Spot', level: 1, xp: 10 }, \n    { name: 'Sardine Spot', level: 5, xp: 20 }, \n    { name: 'Herring Spot', level: 10, xp: 30 }, \n    { name: 'Trout Spot', level: 20, xp: 50 }, \n    { name: 'Salmon Spot', level: 30, xp: 70 }, \n    { name: 'Tuna Spot', level: 35, xp: 80 }, \n    { name: 'Lobster Spot', level: 40, xp: 90 }, \n    { name: 'Swordfish Spot', level: 50, xp: 100 }, \n    { name: 'Shark Spot', level: 76, xp: 110 }, \n    { name: 'Cosmic Jellyfish', level: 90, xp: 250 }, \n], \n  'harvesting': [\n    { name: 'Wheat Field', level: 1, xp: 12 }, \n    { name: 'Cabbage Patch', level: 10, xp: 25 }, \n    { name: 'Tomato Vine', level: 20, xp: 45 }, \n    { name: 'Sweetcorn Field', level: 35, xp: 65 }, \n    { name: 'Strawberry Bush', level: 50, xp: 90 }, \n    { name: 'Snape Grass', level: 65, xp: 130 }, \n    { name: 'Void Caps', level: 80, xp: 210 }, \n], \n  'scavenging': [\n    { name: 'Surface Ruins', level: 1, xp: 15 }, \n    { name: 'Buried Settlement', level: 20, xp: 35 }, \n    { name: 'Fey Outpost', level: 40, xp: 75 }, \n    { name: 'Skyward Debris', level: 60, xp: 125 }, \n    { name: 'Void Rupture', level: 80, xp: 200 }, \n], \n  'runecrafting': [\n    { name: 'Air Altar', level: 1, xp: 5 }, \n    { name: 'Mind Altar', level: 2, xp: 5.5 }, \n    { name: 'Water Altar', level: 5, xp: 6 }, \n    { name: 'Earth Altar', level: 9, xp: 6.5 }, \n    { name: 'Fire Altar', level: 14, xp: 7 }, \n    { name: 'Body Altar', level: 20, xp: 7.5 }, \n    { name: 'Cosmic Altar', level: 27, xp: 8 }, \n    { name: 'Chaos Altar', level: 35, xp: 8.5 }, \n    { name: 'Nature Altar', level: 44, xp: 9 }, \n    { name: 'Law Altar', level: 54, xp: 9.5 }, \n    { name: 'Death Altar', level: 65, xp: 10 }, \n    { name: 'Blood Altar', level: 77, xp: 10.5 }, \n    { name: 'Soul Altar', level: 90, xp: 12 }, \n    { name: 'Void Altar', level: 99, xp: 15 }, \n], \n  'smithing': [\n    { name: 'Bronze Bar', level: 1, xp: 6.25 }, \n    { name: 'Iron Bar', level: 15, xp: 12.5 }, \n    { name: 'Steel Bar', level: 30, xp: 17.5 }, \n    { name: 'Gold Bar', level: 40, xp: 22.5 }, \n    { name: 'Mithril Bar', level: 50, xp: 30 }, \n    { name: 'Adamant Bar', level: 70, xp: 37.5 }, \n    { name: 'Runite Bar', level: 85, xp: 50 }, \n], \n  'forging': [\n    { name: 'Bronze Dagger', level: 1, xp: 12.5 }, \n    { name: 'Bronze Half Helmet', level: 1, xp: 12.5 }, \n    { name: 'Bronze Full Helmet', level: 5, xp: 25 }, \n    { name: 'Iron Dagger', level: 15, xp: 25 }, \n    { name: 'Iron Sword', level: 17, xp: 30 }, \n    { name: 'Iron Half Helmet', level: 16, xp: 25 }, \n    { name: 'Iron Full Helmet', level: 18, xp: 37.5 }, \n    { name: 'Iron Platebody', level: 22, xp: 45 }, \n    { name: 'Iron Shield', level: 16, xp: 28 }, \n    { name: 'Steel Dagger', level: 30, xp: 37.5 }, \n    { name: 'Steel Sword', level: 32, xp: 45 }, \n    { name: 'Steel Half Helmet', level: 31, xp: 37.5 }, \n    { name: 'Steel Full Helmet', level: 33, xp: 50 }, \n    { name: 'Steel Platebody', level: 38, xp: 60 }, \n    { name: 'Steel Shield', level: 31, xp: 40 }, \n    { name: 'Mithril Dagger', level: 50, xp: 50 }, \n    { name: 'Mithril Sword', level: 52, xp: 60 }, \n    { name: 'Mithril Half Helmet', level: 51, xp: 50 }, \n    { name: 'Mithril Full Helmet', level: 53, xp: 62.5 }, \n    { name: 'Mithril Platebody', level: 58, xp: 75 }, \n    { name: 'Mithril Shield', level: 51, xp: 52 }, \n    { name: 'Adamant Dagger', level: 70, xp: 62.5 }, \n    { name: 'Adamant Sword', level: 72, xp: 75 }, \n    { name: 'Adamant Half Helmet', level: 71, xp: 62.5 }, \n    { name: 'Adamant Full Helmet', level: 73, xp: 75 }, \n    { name: 'Adamant Platebody', level: 78, xp: 90 }, \n    { name: 'Adamant Shield', level: 71, xp: 65 }, \n    { name: 'Runite Dagger', level: 85, xp: 75 }, \n    { name: 'Runite Sword', level: 87, xp: 90 }, \n    { name: 'Runite Half Helmet', level: 86, xp: 75 }, \n    { name: 'Runite Full Helmet', level: 88, xp: 90 }, \n    { name: 'Runite Platebody', level: 93, xp: 110 }, \n    { name: 'Runite Shield', level: 86, xp: 78 }, \n], \n  'cooking': [\n    { name: 'Cooked Shrimp', level: 1, xp: 8 }, \n    { name: 'Cooked Sardine', level: 5, xp: 15 }, \n    { name: 'Cooked Herring', level: 10, xp: 22 }, \n    { name: 'Cooked Trout', level: 15, xp: 30 }, \n    { name: 'Cooked Salmon', level: 25, xp: 45 }, \n    { name: 'Cooked Tuna', level: 40, xp: 60 }, \n    { name: 'Cooked Lobster', level: 55, xp: 75 }, \n    { name: 'Cooked Swordfish', level: 65, xp: 90 }, \n    { name: 'Cooked Shark', level: 80, xp: 110 }, \n    { name: 'Cooked Cosmic Jellyfish', level: 90, xp: 150 }, \n], \n  'herblore': [\n    { name: 'Minor Healing Potion', level: 1, xp: 12 }, \n    { name: 'Strength Elixir', level: 5, xp: 20 }, \n    { name: 'Agility Tonic', level: 15, xp: 35 }, \n    { name: 'Defence Brew', level: 25, xp: 50 }, \n    { name: 'XP Boost Potion', level: 40, xp: 75 }, \n    { name: 'Void Resistance', level: 75, xp: 140 }, \n], \n }; \n
+        function showSkillModal(skillId) {
+            const data = SKILL_DATA[skillId];
+            if (!data) return;
+
+            const titleCap = skillId.charAt(0).toUpperCase() + skillId.slice(1);
+            document.getElementById('skill-modal-title').textContent = titleCap + ' Nodes';
+
+            let html = '<table class="skill-modal-table">';
+            html += '<tr><th>Level</th><th>Name</th><th>XP / Action</th></tr>';
+            data.forEach(node => {
+                html += `<tr><td>${node.level}</td><td>${node.name}</td><td>${node.xp}</td></tr>`;
+            });
+            html += '</table>';
+
+            document.getElementById('skill-modal-content').innerHTML = html;
+            document.getElementById('skill-modal-overlay').classList.add('active');
+        }
+
+        function closeSkillModal() {
+            document.getElementById('skill-modal-overlay').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

@@ -24,6 +24,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
@@ -331,6 +332,7 @@ export default function SmithingScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Smithing</Text>
                 <Text style={styles.screenSub}>Smelt ore into bars at the furnace.</Text>
+                <MasteryBadges skillId="smithing" />
 
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>

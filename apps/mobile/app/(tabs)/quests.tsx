@@ -277,9 +277,15 @@ export default function QuestsScreen() {
                 {dailyQuests && dailyQuests.quests.length > 0 && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Daily Quests</Text>
-                        <Text style={[styles.questDesc, { marginBottom: Spacing.sm }]}>
+                        <Text style={[styles.questDesc, { marginBottom: Spacing.xs }]}>
                             Resets at midnight. Complete for gold and Lumina.
                         </Text>
+                        {(player.totalDailyQuestsCompleted ?? 0) > 0 && (
+                            <Text style={[styles.questDesc, { marginBottom: Spacing.sm, opacity: 0.9 }]}>
+                                📅 Total completed (all time): {player.totalDailyQuestsCompleted}
+                            </Text>
+                        )}
+                        {!(player.totalDailyQuestsCompleted ?? 0) && <View style={{ marginBottom: Spacing.sm }} />}
                         {dailyQuests.quests.map((dq) => {
                             const meta = getItemMeta(dq.objective.itemId);
                             const done = dq.completed || dq.current >= dq.objective.quantity;

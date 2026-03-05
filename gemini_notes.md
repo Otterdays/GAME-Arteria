@@ -23,9 +23,11 @@
 
 | Pillar | Implemented | Unimplemented / Planned |
 |--------|-------------|-------------------------|
-| **Gathering** | Mining, Logging, Fishing, Harvesting, Scavenging | — |
-| **Crafting** | Smithing, Forging, Cooking, Runecrafting, Herblore | Alchemy, Tailoring, Fletching |
-| **Support** | Mastery, Pets | Leadership (Companions), Construction |
+| **Gathering** | Mining, Logging, Fishing, Harvesting, Scavenging | Thieving |
+| **Crafting** | Smithing, Forging, Cooking, Runecrafting, Herblore | Crafting, Alchemy, Tailoring, Fletching |
+| **Support** | Mastery, Pets | Agility, Farming, Leadership (Companions), Construction |
+
+> **SKILLS_ARCHITECTURE.md** — Full pre-implementation design for Farming, Agility, Thieving, Crafting. Use `ComingSoonBadge` (red = planned, green = in progress) on Skills grid, Location screens, Explore, Combat.
 
 ---
 
@@ -45,7 +47,7 @@
 | **Engine consolidation** | `useGameLoop.ts` inlines engine math; no `@arteria/engine` import | [ ] Decide: migrate to package import or keep inline? |
 | **Crafting queue** | Phase 3.1 not implemented; 8h queue planned | See §6.1 |
 | **Resource discovery** | Bank "Used in" exists; no "Go to Recipe" shortcut | [ ] Target skill screen? Deep link path? |
-| **Heat management** | Smithing active mechanic (tap to keep heat) planned | [ ] Design: green zone size, multiplier, minigame UX |
+| **Heat management** | Smithing active mechanic (tap to keep heat) planned | [ ] Design: green zone size, multiplier, minigame UX. See ORE_CHAIN_EXPANSION.md §4.1 |
 
 ---
 

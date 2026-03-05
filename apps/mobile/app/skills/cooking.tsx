@@ -24,6 +24,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
@@ -233,6 +234,7 @@ export default function CookingScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Cooking</Text>
                 <Text style={styles.screenSub}>Turn raw fish into nourishing food for the road.</Text>
+                <MasteryBadges skillId="cooking" />
 
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>

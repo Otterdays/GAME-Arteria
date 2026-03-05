@@ -21,6 +21,9 @@ export type SkillId =
     | 'farming'
     | 'herblore'
     | 'agility'
+    | 'thieving'
+    | 'fletching'
+    | 'tailoring'
     | 'attack'
     | 'strength'
     | 'defence'
@@ -46,6 +49,9 @@ export const SKILL_META: Record<SkillId, SkillMeta> = {
     farming: { label: 'Farming', color: palette.skillFarming, emoji: '🌾' },
     herblore: { label: 'Herblore', color: palette.skillHerblore, emoji: '🧪' },
     agility: { label: 'Agility', color: palette.skillAgility, emoji: '🏃' },
+    thieving: { label: 'Thieving', color: palette.skillThieving, emoji: '🎭' },
+    fletching: { label: 'Fletching', color: palette.skillFletching, emoji: '🏹' },
+    tailoring: { label: 'Tailoring', color: palette.skillTailoring, emoji: '🧵' },
     attack: { label: 'Attack', color: palette.skillAttack, emoji: '⚔️' },
     strength: { label: 'Strength', color: palette.skillStrength, emoji: '💪' },
     defence: { label: 'Defence', color: palette.skillDefence, emoji: '🛡️' },

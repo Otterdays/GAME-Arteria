@@ -5,7 +5,26 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** MASTER_DESIGN_DOC v2.0 consolidated — 8 appendices (A-H) merged from satellite docs. Ready for APK rebuild.
+**Active Task:** v0.5.0 shipped. Runite forging, gems, rare mining drops done. Ready for APK rebuild.
+
+## [2026-03-05] Runite Forging + Gems + Rare Mining Drops
+- **Runite forging tier:** Dagger, sword, half helmet, full helmet, platebody, shield. Gated by `knows_about_sneeze_cult` (same as runite ore). `constants/forging.ts`, `app/skills/forging.tsx` (meetsNarrativeRequirement).
+- **More equipment types:** Sword (2 bars), platebody (3 bars), shield (2 bars) for Bronze, Iron, Steel, Mithril, Adamant. `constants/items.ts` — all new equipment entries.
+- **Gems (mining rare drops):** Sapphire (Iron+ 2%), Emerald (Coal+ 1.5%), Ruby (Mithril+ 1%), Diamond (Adamant+ 0.5%). Per successful mining tick on ore nodes only (not essence). `useGameLoop.ts` gem roll logic; `items.ts` sapphire, emerald, ruby, diamond (type: other).
+- **Docs:** ORE_CHAIN_EXPANSION.md §2.1–2.3 implemented. Version remains 0.5.0.
+
+## [2026-03-05] Skills Architecture + ComingSoonBadge
+- **SKILLS_ARCHITECTURE.md:** Pre-implementation design for Farming (patches, seeds, growth), Agility (courses, XP-only), Thieving (pickpocket/stalls, risk), Crafting (arrows, bags, jewelry). Implementation order: Agility → Thieving → Crafting → Farming.
+- **Thieving skill:** Added to SkillId, SKILL_META (🎭), theme (skillThieving #8e44ad), ALL_SKILLS. Migration auto-adds skills.thieving.
+- **ComingSoonBadge:** `components/ComingSoonBadge.tsx` — red (planned) or green (in progress) badge with dot + label. `constants/comingSoon.ts`: SKILLS_IN_PROGRESS, FEATURES_IN_PROGRESS, LOCATION_TO_FEATURE.
+- **Badge wiring:** Skills grid (unimplemented skills), Location screen (NPCs/Shop/Quests banners), Explore (locked locations), Combat (Phase 4). Add skill/feature IDs to *_IN_PROGRESS sets to flip to green.
+
+## [2026-03-05] Mastery + Dailies + MasteryBadges
+- **Mastery for new skills:** Added harvesting, scavenging, herblore to `MASTERY_UPGRADES` (xp_bonus, yield_bonus, speed_bonus). Settings → Mastery pillars now show all 10 skills.
+- **Daily quest pool:** 14 → 30 templates. New: iron/steel bars, raw herring/trout, cooked salmon, bronze/iron daggers, wheat/cabbage/tomato/snape_grass, rusty_scrap/discarded_tech/fey_trinket, minor_healing/strength_elixir.
+- **Daily quest logging:** `totalDailyQuestsCompleted` field in PlayerState (persisted, migrated). `completeDailyQuest` now increments counter and pushes `daily_quest_complete` entry to activityLog. Quests screen shows all-time count.
+- **MasteryBadges component:** `components/MasteryBadges.tsx` — compact gold-tinted badge row (📖 XP, 📦 yield, ⚡ speed). Only renders when upgrades purchased. Added to all 10 skill screens (mining, logging, fishing, harvesting, scavenging, runecrafting, smithing, forging, cooking, herblore).
+- **Activity log type:** Added `daily_quest_complete` to `ActivityLogType`. ActivityLogModal emoji map updated (📅).
 
 ## [2026-03-05] v0.5.0 "Big Weeds Update" — Version bump
 - **Version:** app.json, build.gradle, runtimeVersion → 0.5.0.

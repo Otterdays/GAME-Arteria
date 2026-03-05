@@ -1,0 +1,229 @@
+# Skills Architecture — Farming, Agility, Thieving, Crafting
+
+> **Purpose:** Pre-implementation design for four upcoming skills. Fill in content details before coding.
+> **Status:** Architecting. Use `ComingSoonBadge` (red = planned, green = in progress) on UI.
+> **Last updated:** 2026-03-05
+
+---
+
+## 1. Farming
+
+### 1.1 Overview
+
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Support (feeds Herblore, Cooking, economy) |
+| **Core loop** | Plant seeds → wait (growth timer) → harvest crops |
+| **Outputs** | Same herbs/crops as Harvesting (wheat, cabbage, tomato, etc.) — Farming is *cultivated* source; Harvesting is *wild* source |
+
+### 1.2 Patches
+
+| Option | Content details |
+|--------|-----------------|
+| **Patch count** | 3–5 fixed patches (e.g. Crownlands Farm, Frostvale Greenhouse) |
+| **Patch types** | All-purpose (any crop) or crop-specific (wheat-only, herb-only) |
+| **Location** | Per-patch: `locationId` from `constants/locations.ts` — Crownlands, Frostvale, etc. |
+
+### 1.3 Seeds & Growth
+
+| Option | Content details |
+|--------|-----------------|
+| **Seed items** | `wheat_seed`, `cabbage_seed`, `tomato_seed`, … — buy from Nick or drops |
+| **Growth stages** | 3–5 stages (planted → growing → ready). Real-time or in-game ticks? |
+| **Duration** | Per crop: e.g. wheat 5 min, void_cap 30 min. Config: `growthTicks` or `growthMs` |
+| **Harvest** | Same as Harvesting skill? **No** — Farming has its own XP curve; harvest grants Farming XP + items |
+
+### 1.4 Data Structures (draft)
+
+```ts
+interface FarmingPatch {
+  id: string;
+  name: string;
+  locationId: string;
+  levelReq: number;
+  cropType?: 'all' | 'herb' | 'grain'; // optional restriction
+}
+
+interface FarmingCrop {
+  id: string;
+  seedId: string;
+  outputId: string;
+  outputQty: number;
+  levelReq: number;
+  growthMs: number; // or growthTicks
+  xpPerHarvest: number;
+  emoji: string;
+}
+```
+
+### 1.5 Integration
+
+- **Bank filter:** Add "Seeds" or fold into "Other"
+- **Stats:** "Crops harvested"
+- **Daily quests:** "Harvest X wheat", "Plant Y seeds"
+- **Mastery:** xp_bonus, yield_bonus (more crops per harvest), speed_bonus (faster growth)
+
+---
+
+## 2. Agility
+
+### 2.1 Overview
+
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Support |
+| **Core loop** | Run courses (obstacle laps) — XP only, no items |
+| **Unlocks** | Shortcuts (travel), passive bonuses (e.g. +1% global speed per course tier) |
+
+### 2.2 Courses
+
+| Option | Content details |
+|--------|-----------------|
+| **Structure** | Same as gathering nodes: `id`, `name`, `levelReq`, `xpPerTick`, `baseTickMs`, `successRate` |
+| **No items** | Courses produce XP only; no consumedItems, no items array |
+| **Count** | 6–8 courses from low (Crownlands Rooftops) to high (Void Rift) |
+
+### 2.3 Course List (draft)
+
+| id | name | levelReq | xpPerTick | baseTickMs | successRate |
+|----|------|----------|-----------|------------|-------------|
+| crownlands_rooftops | Crownlands Rooftops | 1 | 8 | 4000 | 1 |
+| forest_stumps | Forest Stump Run | 10 | 18 | 4500 | 0.95 |
+| docks_balance | Docks Balance Beam | 25 | 35 | 5000 | 0.9 |
+| fey_ring | Fey Ring Leap | 45 | 60 | 6000 | 0.85 |
+| scorched_ledge | Scorched Ledge | 65 | 95 | 7000 | 0.8 |
+| void_rift | Void Rift Traverse | 85 | 140 | 8500 | 0.7 |
+
+### 2.4 Unlocks (Phase 2)
+
+- **Shortcuts:** Reduce travel time between locations (e.g. Crownlands → Forest)
+- **Passive:** +0.5% global action speed per course mastered (max 3%)
+
+### 2.5 Integration
+
+- **Bank:** No new filters (no items)
+- **Stats:** "Laps completed" or "Agility XP"
+- **Daily quests:** "Complete X laps at Crownlands Rooftops"
+- **Mastery:** xp_bonus, speed_bonus (faster laps)
+
+---
+
+## 3. Thieving
+
+### 3.1 Overview
+
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Gathering (alternative economy) |
+| **Core loop** | Pickpocket NPCs or loot stalls → gold, items, chance of failure/stun |
+| **Risk** | Success rate < 1; failure = no loot, possible stun (skip N ticks) |
+
+### 3.2 Targets
+
+| Option | Content details |
+|--------|-----------------|
+| **NPCs** | Pickpocket: Guard, Nick, Bianca, Kate — each has `levelReq`, `successRate`, `lootTable` |
+| **Stalls** | Loot stalls (e.g. Fruit Stall, Silk Stall) — same structure as nodes |
+| **Loot** | Gold + chance of item (e.g. fruit, silk, rune essence) |
+
+### 3.3 Data Structures (draft)
+
+```ts
+interface ThievingTarget {
+  id: string;
+  name: string;
+  type: 'pickpocket' | 'stall';
+  levelReq: number;
+  xpPerTick: number;
+  baseTickMs: number;
+  successRate: number;
+  lootGold: { min: number; max: number };
+  lootItems?: { id: string; quantity: number; chance: number }[];
+  emoji: string;
+}
+```
+
+### 3.4 Failure / Stun
+
+- **On fail:** No XP, no loot. Optional: `stunTicks` (e.g. 3 ticks = 12s) — task auto-pauses
+- **Detection:** Roll `successRate` per tick; on fail, dispatch `thieving_fail` toast + optional stun
+
+### 3.5 Integration
+
+- **Bank filter:** "Stolen" or fold into existing (gold from thieving goes to player.gold)
+- **Stats:** "Pickpockets", "Stalls looted"
+- **Daily quests:** "Pickpocket X from Guard", "Loot Y fruit"
+- **Mastery:** xp_bonus, yield_bonus (more gold/items), speed_bonus
+
+---
+
+## 4. Crafting
+
+### 4.1 Overview
+
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Crafting |
+| **Core loop** | Logs + bars/cloth → arrows, bags, jewelry, etc. |
+| **Cross-skill** | Consumes Logging (logs), Smithing (bars), Scavenging (cloth?), Herblore (optional reagents) |
+
+### 4.2 Recipes (draft)
+
+| Option | Content details |
+|--------|-----------------|
+| **Arrow fletching** | Logs → arrow shafts; shafts + feathers + tips → arrows |
+| **Bags** | Cloth + leather → small/medium/large bag (bank slot expansion?) |
+| **Jewelry** | Gold bar + gem → ring/necklace (cosmetic or stats) |
+| **Simplified** | Start with 5–7 recipes: e.g. bronze arrows, iron arrows, oak shortbow, leather bag, silk bag |
+
+### 4.3 Item Types
+
+| Option | Content details |
+|--------|-----------------|
+| **New types** | `arrow`, `bow`, `bag`, `jewelry` |
+| **Bank filter** | "Crafted" or "Arrows" / "Bags" / "Jewelry" |
+
+### 4.4 Data Structures (draft)
+
+```ts
+interface CraftingRecipe {
+  id: string;
+  name: string;
+  levelReq: number;
+  xpPerTick: number;
+  baseTickMs: number;
+  successRate: number;
+  consumedItems: { id: string; quantity: number }[];
+  items: { id: string; quantity: number }[];
+  emoji: string;
+}
+```
+
+### 4.5 Integration
+
+- **Bank filter:** "Crafted" or per-type
+- **Stats:** "Items crafted"
+- **Daily quests:** "Craft X bronze arrows", "Craft Y leather bags"
+- **Mastery:** xp_bonus, yield_bonus, speed_bonus
+
+---
+
+## 5. Implementation Order (Suggested)
+
+| Order | Skill | Rationale |
+|-------|-------|-----------|
+| 1 | **Agility** | Simplest — XP-only courses, no new items, no growth timers |
+| 2 | **Thieving** | Adds risk/reward, reuses NPCs, new loot tables |
+| 3 | **Crafting** | Cross-skill recipes, new item types, feeds combat (arrows) |
+| 4 | **Farming** | Most complex — patches, seeds, growth timers, new subsystem |
+
+---
+
+## 6. ComingSoonBadge Usage
+
+Use the shared `ComingSoonBadge` component:
+
+- **`inProgress={true}`** → Green badge: "In progress"
+- **`inProgress={false}`** → Red badge: "Coming soon"
+
+Wire to: Skills grid (unimplemented skills), Location screens (NPCs/Shop/Quests stubs), Explore (locked locations), Combat (Phase 4 teaser).

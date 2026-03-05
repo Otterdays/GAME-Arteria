@@ -15,6 +15,8 @@ import { gameActions } from '@/store/gameSlice';
 import { BouncyButton } from '@/components/BouncyButton';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLocationById, meetsLocationRequirement } from '@/constants/locations';
+import { isFeatureInProgress, LOCATION_TO_FEATURE } from '@/constants/comingSoon';
+import { ComingSoonBadge } from '@/components/ComingSoonBadge';
 
 const TOWN_NPCS: { id: string; name: string; emoji: string; treeId: string }[] = [
     { id: 'guard', name: 'Confused Gate Guard', emoji: '🛡️', treeId: 'dt_guard_intro' },
@@ -23,12 +25,22 @@ const TOWN_NPCS: { id: string; name: string; emoji: string; treeId: string }[] =
     { id: 'kate', name: 'Kate the Traveler', emoji: '🧭', treeId: 'dt_kate_traveler' },
 ];
 
-function ComingSoonBanner({ label, styles }: { label: string; styles: ReturnType<typeof createStyles> }) {
+function ComingSoonBanner({
+    label,
+    locationId,
+    styles,
+}: {
+    label: string;
+    locationId?: string;
+    styles: ReturnType<typeof createStyles>;
+}) {
     const { palette } = useTheme();
+    const featureId = locationId ? LOCATION_TO_FEATURE[locationId] : undefined;
+    const inProgress = featureId ? isFeatureInProgress(featureId) : false;
     return (
         <View style={[styles.comingSoonBanner, { backgroundColor: palette.bgCardHover, borderColor: palette.border }]}>
-            <IconSymbol name="clock" size={20} color={palette.textMuted} />
-            <Text style={[styles.comingSoonText, { color: palette.textMuted }]}>{label} — Coming soon</Text>
+            <ComingSoonBadge inProgress={inProgress} size="md" />
+            <Text style={[styles.comingSoonText, { color: palette.textMuted, marginLeft: Spacing.sm }]}>{label}</Text>
         </View>
     );
 }
@@ -189,10 +201,8 @@ export default function LocationScreen() {
                                         </BouncyButton>
                                     </View>
                                 ))
-                            ) : hasNpcs ? (
-                                <ComingSoonBanner label="NPCs" styles={styles} />
                             ) : (
-                                <ComingSoonBanner label="NPCs" styles={styles} />
+                                <ComingSoonBanner label="NPCs" locationId={location.id} styles={styles} />
                             )}
                         </View>
 
@@ -214,21 +224,15 @@ export default function LocationScreen() {
                                         </Text>
                                     </BouncyButton>
                                 </View>
-                            ) : hasShop ? (
-                                <ComingSoonBanner label="Shop" styles={styles} />
                             ) : (
-                                <ComingSoonBanner label="Shop" styles={styles} />
+                                <ComingSoonBanner label="Shop" locationId={location.id} styles={styles} />
                             )}
                         </View>
 
                         {/* Quests */}
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>Quests</Text>
-                            {hasQuests ? (
-                                <ComingSoonBanner label="Location quests" styles={styles} />
-                            ) : (
-                                <ComingSoonBanner label="Location quests" styles={styles} />
-                            )}
+                            <ComingSoonBanner label="Location quests" locationId={location.id} styles={styles} />
                         </View>
                     </>
                 )}

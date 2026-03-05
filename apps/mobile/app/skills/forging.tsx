@@ -15,6 +15,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { useRequestStartTask } from '@/hooks/useRequestStartTask';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
+import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
 import { FORGING_RECIPES, METAL_TIERS, ForgingRecipe } from '@/constants/forging';
 import { getItemMeta } from '@/constants/items';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -26,6 +27,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
@@ -59,6 +61,7 @@ const METAL_TIER_LABELS: Record<string, string> = {
     steel: 'Steel',
     mithril: 'Mithril',
     adamant: 'Adamant',
+    runite: 'Runite',
 };
 
 export default function ForgingScreen() {
@@ -292,6 +295,15 @@ export default function ForgingScreen() {
     const pct = forgeSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
     const handleRecipePress = (recipe: ForgingRecipe) => {
+        const meetsReq = !recipe.requirement || meetsNarrativeRequirement(player, recipe.requirement);
+        if (!meetsReq) {
+            showFeedbackToast({
+                type: 'locked',
+                title: 'Locked',
+                message: 'You must progress further in the story to forge this.',
+            });
+            return;
+        }
         if (forgeSkill.level < recipe.levelReq) {
             showFeedbackToast({
                 type: 'locked',
@@ -357,6 +369,7 @@ export default function ForgingScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Forging</Text>
                 <Text style={styles.screenSub}>Forge bars into weapons and armour at the anvil.</Text>
+                <MasteryBadges skillId="forging" />
 
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
@@ -391,8 +404,9 @@ export default function ForgingScreen() {
                             </View>
 
                             {recipes.map((recipe) => {
+                                const meetsReq = !recipe.requirement || meetsNarrativeRequirement(player, recipe.requirement);
                                 const isLevelLocked = forgeSkill.level < recipe.levelReq;
-                                const isLocked = isLevelLocked;
+                                const isLocked = isLevelLocked || !meetsReq;
                                 const isActive = activeRecipeId === recipe.id;
                                 const outOfMaterials = !isLocked && !canAffordRecipe(inventory, recipe);
                                 const batches = minBatchesAffordable(inventory, recipe);
@@ -453,6 +467,11 @@ export default function ForgingScreen() {
                                                             </View>
                                                         );
                                                     })}
+                                                    {recipe.requirement && !meetsReq && (
+                                                        <View style={[styles.reqBadge, styles.reqBadgeLocked]}>
+                                                            <Text style={styles.reqBadgeText}>📖 Story</Text>
+                                                        </View>
+                                                    )}
                                                 </View>
                                             </View>
                                         </View>

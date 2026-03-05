@@ -19,6 +19,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
@@ -396,6 +397,7 @@ export default function RunecraftingScreen() {
                 </View>
                 <Text style={styles.screenTitle}>Runecrafting</Text>
                 <Text style={styles.screenSub}>Bind essence at the altars to forge powerful runes.</Text>
+                <MasteryBadges skillId="runecrafting" />
 
                 {/* Essence stock row */}
                 <View style={styles.essenceRow}>

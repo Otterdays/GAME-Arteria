@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
@@ -284,6 +285,7 @@ export default function MiningScreen() {
                 </View>
                 <Text style={styles.miningTitle}>Mining</Text>
                 <Text style={styles.miningSub}>Swing your pickaxe and gather ores.</Text>
+                <MasteryBadges skillId="mining" />
                 {/* XP progress [current/next] */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
