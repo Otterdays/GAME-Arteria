@@ -3,7 +3,7 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`.
+> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`. Current: **0.4.2**.
 
 > **⚠️ SDK 55 Note:** Expo SDK 54 is the last version supporting the Legacy Architecture.
 > SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
@@ -107,10 +107,20 @@ Arteria/
 - Formula: `gained = Math.floor(elapsed / TICK_MS) * ratePerTick`
 
 ## Universal UI Components
-- **Update Board:** In-app modal (`UpdateBoard.tsx`) that pops when `lastSeenVersion !== currentVersion` (from `app.json`). Shows changelog for the new version. Dismissing stores the version so it won't show again until the next bump. See SCRATCHPAD §Versioning.
-- **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).
-- **Manual Inset Management:** Uses `useSafeAreaInsets` instead of `SafeAreaView` to ensure edge-to-edge content flows correctly under translucent system bars.
 - **Node-local State:** Screens (like Mining) subscribe to `activeTask` directly to render micro-progress visuals synchronized with the global ticker.
+
+## OTA Update System (v0.4.2+)
+- **Engine:** `expo-updates` native module integrated. Explicit plugin in `app.json` with `checkAutomatically: ON_LAUNCH`. `fallbackToCacheTimeout: 0` (don't block launch).
+- **Runtime Version:** `appVersion` policy (derives from `expo.version` in app.json). OTA updates only reach devices running the same version. If native modules change, bump version → redistribute APK.
+- **Batch Export:** `Update_2_EAS_OTA_Update.bat` pushes a compiled JS bundle to the EAS `production` channel. `Rollback_OTA.bat` for emergency rollbacks.
+- **Identity Alignment:** Uses `ARTERIA_LEAN_PROD=1` to ensure the exported bundle matches the production APK's package name (`com.anonymous.arteria`) and native module configuration.
+- **ABI Splits Plugin:** `plugins/withAbiSplits.js` — Expo config plugin that auto-injects `splits { abi { ... } }` into build.gradle during prebuild. Survives `expo prebuild --clean`.
+- **Settings UI:** Settings → About → "Check for Updates" — manual OTA check via `Updates.checkForUpdateAsync()` / `fetchUpdateAsync()` / `reloadAsync()`. Shows status (checking, downloading, ready, up to date, error, dev mode). Disabled in dev builds.
+
+## Global Components & Modals
+- **Update Board:** In-app modal (`UpdateBoard.tsx`) that pops when `lastSeenVersion !== currentVersion` (from `app.json`). Shows changelog for the new version.
+- **Special Message Modal:** A premium animated modal (`SpecialMessageModal.tsx`) for global announcements or milestone celebrations. Triggered via `testMessage` state in `AppShell` (root layout). Supports spring entry, bouncing emojis, and shimmering border glows.
+- **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).
 
 ## Horizon System & Action Mechanics
 - **Horizon HUD:** A 3-tier goal tracking system (`ImmediateGoal`, `SessionGoal`, `GrindGoal`). 

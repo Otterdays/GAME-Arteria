@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform, Modal, TextInput } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform, Modal, TextInput, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 import * as Haptics from 'expo-haptics';
 import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -329,6 +330,39 @@ export default function SettingsScreen() {
     const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
     const [nicknameEdit, setNicknameEdit] = useState('');
 
+    // OTA update check state
+    const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'downloading' | 'ready' | 'upToDate' | 'error' | 'dev'>('idle');
+    const [updateError, setUpdateError] = useState('');
+    const handleCheckForUpdates = useCallback(async () => {
+        if (!Updates.isEnabled) {
+            setUpdateStatus('dev');
+            return;
+        }
+        try {
+            setUpdateStatus('checking');
+            setUpdateError('');
+            const check = await Updates.checkForUpdateAsync();
+            if (check.isAvailable) {
+                setUpdateStatus('downloading');
+                await Updates.fetchUpdateAsync();
+                setUpdateStatus('ready');
+                Alert.alert(
+                    '🔄 Update Ready',
+                    'A new update has been downloaded. Restart the app to apply it.',
+                    [
+                        { text: 'Later', style: 'cancel' },
+                        { text: 'Restart Now', onPress: () => Updates.reloadAsync() },
+                    ]
+                );
+            } else {
+                setUpdateStatus('upToDate');
+            }
+        } catch (err: any) {
+            setUpdateStatus('error');
+            setUpdateError(err?.message ?? 'Unknown error');
+        }
+    }, []);
+
     // QoL I — Reset save with confirmation
     const handleResetSave = () => {
         Alert.alert(
@@ -350,7 +384,7 @@ export default function SettingsScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: palette.bgApp }]}>
-                <View style={styles.header}>
+            <View style={styles.header}>
                 <Text style={[styles.title, { color: palette.textPrimary }]}>Settings</Text>
             </View>
             <ScrollView
@@ -358,284 +392,332 @@ export default function SettingsScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Character</Text>
-                <View style={styles.sectionCard}>
-                    <Pressable
-                        style={styles.row}
-                        onPress={() => {
-                            setNicknameEdit(playerName || '');
-                            setNicknameModalOpen(true);
-                        }}
-                        android_ripple={{ color: palette.bgCardHover }}
-                    >
-                        <View style={styles.rowInfo}>
-                            <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Nickname</Text>
-                            <Text style={styles.rowDesc}>
-                                You are {PROTAGONIST_CANONICAL_NAME}. Friends call you: <Text style={{ fontWeight: '700', color: palette.gold }}>{displayName}</Text>
-                            </Text>
-                        </View>
-                        <Text style={styles.arrow}>›</Text>
-                    </Pressable>
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Appearance</Text>
-                <View style={styles.sectionCard}>
-                    <View style={styles.themeRow}>
-                        <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Theme</Text>
-                        <Text style={[styles.rowDesc, { color: palette.textSecondary }]}>Follow system or pick a theme</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Character</Text>
+                    <View style={styles.sectionCard}>
+                        <Pressable
+                            style={styles.row}
+                            onPress={() => {
+                                setNicknameEdit(playerName || '');
+                                setNicknameModalOpen(true);
+                            }}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Nickname</Text>
+                                <Text style={styles.rowDesc}>
+                                    You are {PROTAGONIST_CANONICAL_NAME}. Friends call you: <Text style={{ fontWeight: '700', color: palette.gold }}>{displayName}</Text>
+                                </Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </Pressable>
                     </View>
-                    <View style={styles.themeChips}>
-                        {THEME_OPTIONS.map((opt) => {
-                            const isActive = themeId === opt.id;
-                            return (
-                                <Pressable
-                                    key={opt.id}
-                                    onPress={() => {
-                                        if (Platform.OS !== 'web') {
-                                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                                        }
-                                        setThemeId(opt.id);
-                                    }}
-                                    style={[
-                                        styles.themeChip,
-                                        {
-                                            backgroundColor: isActive ? palette.accentPrimary : palette.bgInput,
-                                            borderColor: isActive ? palette.accentPrimary : palette.border,
-                                        },
-                                    ]}
-                                >
-                                    <Text
+                </View>
+
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Pets</Text>
+                    <View style={styles.sectionCard}>
+                        <Pressable
+                            style={styles.row}
+                            onPress={() => router.push('/pets')}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Manage Pets</Text>
+                                <Text style={styles.rowDesc}>
+                                    Equip your rare companions found while skilling.
+                                </Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </Pressable>
+                    </View>
+                </View>
+
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Appearance</Text>
+                    <View style={styles.sectionCard}>
+                        <View style={styles.themeRow}>
+                            <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Theme</Text>
+                            <Text style={[styles.rowDesc, { color: palette.textSecondary }]}>Follow system or pick a theme</Text>
+                        </View>
+                        <View style={styles.themeChips}>
+                            {THEME_OPTIONS.map((opt) => {
+                                const isActive = themeId === opt.id;
+                                return (
+                                    <Pressable
+                                        key={opt.id}
+                                        onPress={() => {
+                                            if (Platform.OS !== 'web') {
+                                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                            }
+                                            setThemeId(opt.id);
+                                        }}
                                         style={[
-                                            styles.themeChipText,
-                                            { color: isActive ? palette.white : palette.textSecondary },
+                                            styles.themeChip,
+                                            {
+                                                backgroundColor: isActive ? palette.accentPrimary : palette.bgInput,
+                                                borderColor: isActive ? palette.accentPrimary : palette.border,
+                                            },
                                         ]}
                                     >
-                                        {opt.label}
-                                    </Text>
-                                </Pressable>
-                            );
-                        })}
+                                        <Text
+                                            style={[
+                                                styles.themeChipText,
+                                                { color: isActive ? palette.white : palette.textSecondary },
+                                            ]}
+                                        >
+                                            {opt.label}
+                                        </Text>
+                                    </Pressable>
+                                );
+                            })}
+                        </View>
                     </View>
                 </View>
-            </View>
 
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Gameplay</Text>
-                <View style={styles.sectionCard}>
-                <SettingsRow
-                    styles={styles}
-                    label="Bank Tab Pulse"
-                    value={bankPulseEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setBankPulseEnabled(v))}
-                    description="Gold glow on Bank tab when gaining loot"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Horizon HUD"
-                    value={horizonHudEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setHorizonHudEnabled(v))}
-                    description="Goal cards (Immediate / Session / Grind) on Skills screen"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Offline Progression"
-                    value={true}
-                    description="Calculate progress while app is closed"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Confirm Task Switch"
-                    value={confirmTaskSwitch}
-                    onValueChange={(v) => dispatch(gameActions.setConfirmTaskSwitch(v))}
-                    description="Ask before switching active tasks"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Battery Saver"
-                    value={batterySaverEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setBatterySaverEnabled(v))}
-                    description="Dim screen after 5 min idle (touch to wake)"
-                />
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Audio</Text>
-                <View style={styles.sectionCard}>
-                <SettingsRow
-                    styles={styles}
-                    label="Sound Effects"
-                    value={sfxEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setSfxEnabled(v))}
-                    description="Haptics, ticks, level-up feedback"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Background Music"
-                    value={bgmEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setBgmEnabled(v))}
-                    description="Ambient music (coming soon)"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Idle Soundscapes"
-                    value={idleSoundscapesEnabled}
-                    onValueChange={(v) => dispatch(gameActions.setIdleSoundscapesEnabled(v))}
-                    description="Ambient loops per skill (planned). SFX (tink/thump/splash) play on tick."
-                />
-                <Pressable
-                    style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}
-                    onPress={() => {
-                        playTink();
-                        setTimeout(() => playThump(), 150);
-                        setTimeout(() => playSplash(), 300);
-                    }}
-                    android_ripple={{ color: palette.bgCardHover }}
-                >
-                    <View style={styles.rowInfo}>
-                        <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Test sound</Text>
-                        <Text style={styles.rowDesc}>Play tink, thump, splash</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Gameplay</Text>
+                    <View style={styles.sectionCard}>
+                        <SettingsRow
+                            styles={styles}
+                            label="Bank Tab Pulse"
+                            value={bankPulseEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setBankPulseEnabled(v))}
+                            description="Gold glow on Bank tab when gaining loot"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Horizon HUD"
+                            value={horizonHudEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setHorizonHudEnabled(v))}
+                            description="Goal cards (Immediate / Session / Grind) on Skills screen"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Offline Progression"
+                            value={true}
+                            description="Calculate progress while app is closed"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Confirm Task Switch"
+                            value={confirmTaskSwitch}
+                            onValueChange={(v) => dispatch(gameActions.setConfirmTaskSwitch(v))}
+                            description="Ask before switching active tasks"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Battery Saver"
+                            value={batterySaverEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setBatterySaverEnabled(v))}
+                            description="Dim screen after 5 min idle (touch to wake)"
+                        />
                     </View>
-                    <Text style={styles.arrow}>›</Text>
-                </Pressable>
                 </View>
-            </View>
 
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Mastery</Text>
-                <Text style={[styles.rowDesc, { marginLeft: Spacing.md, marginBottom: Spacing.sm }]}>
-                    Earn 1 point per level-up per skill. Spend on permanent buffs.
-                </Text>
-                <View style={styles.sectionCard}>
-                    <MasterySection />
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Notifications</Text>
-                <View style={styles.sectionCard}>
-                <SettingsRow
-                    styles={styles}
-                    label="Level Up Alerts"
-                    value={notifyLevelUp}
-                    onValueChange={(v) => dispatch(gameActions.setNotifyLevelUp(v))}
-                    description="Notify when you gain a level"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Task Complete"
-                    value={notifyTaskComplete}
-                    onValueChange={(v) => dispatch(gameActions.setNotifyTaskComplete(v))}
-                    description="Notify when a task finishes"
-                />
-                <SettingsRow
-                    styles={styles}
-                    label="Idle Cap Reached"
-                    value={notifyIdleCapReached}
-                    onValueChange={(v) => dispatch(gameActions.setNotifyIdleCapReached(v))}
-                    description="Notify when 24h / 7-day offline cap is full"
-                />
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Login bonus & Lumina</Text>
-                <View style={styles.sectionCard}>
-                <LoginBonusRow styles={styles} />
-                <View style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}>
-                    <View style={styles.rowInfo}>
-                        <Text style={styles.rowLabel}>✨ Lumina</Text>
-                        <Text style={styles.rowDesc}>Premium currency. Day 7 login bonus, future shop.</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Audio</Text>
+                    <View style={styles.sectionCard}>
+                        <SettingsRow
+                            styles={styles}
+                            label="Sound Effects"
+                            value={sfxEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setSfxEnabled(v))}
+                            description="Haptics, ticks, level-up feedback"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Background Music"
+                            value={bgmEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setBgmEnabled(v))}
+                            description="Ambient music (coming soon)"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Idle Soundscapes"
+                            value={idleSoundscapesEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setIdleSoundscapesEnabled(v))}
+                            description="Ambient loops per skill (planned). SFX (tink/thump/splash) play on tick."
+                        />
+                        <Pressable
+                            style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}
+                            onPress={() => {
+                                playTink();
+                                setTimeout(() => playThump(), 150);
+                                setTimeout(() => playSplash(), 300);
+                            }}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Test sound</Text>
+                                <Text style={styles.rowDesc}>Play tink, thump, splash</Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </Pressable>
                     </View>
-                    <Text style={[styles.rowLabel, { color: palette.accentPrimary }]}>{lumina.toLocaleString()}</Text>
                 </View>
-                </View>
-            </View>
 
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Premium</Text>
-                <View style={styles.sectionCard}>
-                <TouchableOpacity
-                    style={styles.row}
-                    onPress={() => router.push('/patron')}
-                    activeOpacity={0.7}
-                >
-                    <View style={styles.rowInfo}>
-                        <Text style={styles.rowLabel}>Patron's Pack</Text>
-                        <Text style={styles.rowDesc}>7-day offline cap, 100 slots, +20% XP</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Mastery</Text>
+                    <Text style={[styles.rowDesc, { marginLeft: Spacing.md, marginBottom: Spacing.sm }]}>
+                        Earn 1 point per level-up per skill. Spend on permanent buffs.
+                    </Text>
+                    <View style={styles.sectionCard}>
+                        <MasterySection />
                     </View>
-                    {isPatron ? (
-                        <Text style={[styles.rowLabel, { color: palette.gold, fontWeight: '700' }]}>Active</Text>
-                    ) : (
-                        <Text style={styles.arrow}>›</Text>
-                    )}
-                </TouchableOpacity>
                 </View>
-            </View>
 
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>About</Text>
-                <View style={styles.sectionCard}>
-                <View style={styles.row}>
-                    <Text style={styles.rowLabel}>Version</Text>
-                    <Text style={styles.versionText}>{Constants.expoConfig?.version ?? '0.1.0'}</Text>
-                </View>
-                <TouchableOpacity
-                    style={styles.row}
-                    onPress={() => router.push('/patches')}
-                    activeOpacity={0.7}
-                >
-                    <View style={styles.rowInfo}>
-                        <Text style={styles.rowLabel}>Patch Notes</Text>
-                        <Text style={styles.rowDesc}>View full changelog from v0.1.0</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Notifications</Text>
+                    <View style={styles.sectionCard}>
+                        <SettingsRow
+                            styles={styles}
+                            label="Level Up Alerts"
+                            value={notifyLevelUp}
+                            onValueChange={(v) => dispatch(gameActions.setNotifyLevelUp(v))}
+                            description="Notify when you gain a level"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Task Complete"
+                            value={notifyTaskComplete}
+                            onValueChange={(v) => dispatch(gameActions.setNotifyTaskComplete(v))}
+                            description="Notify when a task finishes"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Idle Cap Reached"
+                            value={notifyIdleCapReached}
+                            onValueChange={(v) => dispatch(gameActions.setNotifyIdleCapReached(v))}
+                            description="Notify when 24h / 7-day offline cap is full"
+                        />
                     </View>
-                    <Text style={styles.arrow}>›</Text>
-                </TouchableOpacity>
                 </View>
-            </View>
 
-            {/* Easter egg: "Don't Push This" — 1000 presses unlocks title "The Stubborn" */}
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Easter Egg</Text>
-                <View style={styles.sectionCard}>
-                <TouchableOpacity
-                    style={styles.easterEggRow}
-                    onPress={() => dispatch(gameActions.incrementDontPushCount())}
-                    activeOpacity={0.8}
-                >
-                    <View style={styles.rowInfo}>
-                        <Text style={styles.easterEggLabel}>Don&apos;t Push This</Text>
-                        <Text style={styles.rowDesc}>
-                            {hasStubbornTitle
-                                ? "You unlocked the title \"The Stubborn\"!"
-                                : `Presses: ${dontPushCount < 1000 ? dontPushCount : '1000'}`}
-                        </Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Login bonus & Lumina</Text>
+                    <View style={styles.sectionCard}>
+                        <LoginBonusRow styles={styles} />
+                        <View style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}>
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.rowLabel}>✨ Lumina</Text>
+                                <Text style={styles.rowDesc}>Premium currency. Day 7 login bonus, future shop.</Text>
+                            </View>
+                            <Text style={[styles.rowLabel, { color: palette.accentPrimary }]}>{lumina.toLocaleString()}</Text>
+                        </View>
                     </View>
-                    {hasStubbornTitle ? (
-                        <Text style={styles.titleBadge}>🏆 The Stubborn</Text>
-                    ) : (
-                        <Text style={styles.arrow}>›</Text>
-                    )}
-                </TouchableOpacity>
                 </View>
-            </View>
 
-            {/* QoL I — Developer / Reset */}
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Developer</Text>
-                <View style={styles.sectionCard}>
-                <TouchableOpacity style={styles.dangerRow} onPress={handleResetSave} activeOpacity={0.7}>
-                    <View style={styles.rowInfo}>
-                        <Text style={styles.dangerLabel}>Wipe Save Data</Text>
-                        <Text style={styles.rowDesc}>Deletes all progress and starts fresh</Text>
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Premium</Text>
+                    <View style={styles.sectionCard}>
+                        <TouchableOpacity
+                            style={styles.row}
+                            onPress={() => router.push('/patron')}
+                            activeOpacity={0.7}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.rowLabel}>Patron's Pack</Text>
+                                <Text style={styles.rowDesc}>7-day offline cap, 100 slots, +20% XP</Text>
+                            </View>
+                            {isPatron ? (
+                                <Text style={[styles.rowLabel, { color: palette.gold, fontWeight: '700' }]}>Active</Text>
+                            ) : (
+                                <Text style={styles.arrow}>›</Text>
+                            )}
+                        </TouchableOpacity>
                     </View>
-                    <Text style={styles.dangerArrow}>›</Text>
-                </TouchableOpacity>
                 </View>
-            </View>
+
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>About</Text>
+                    <View style={styles.sectionCard}>
+                        <View style={styles.row}>
+                            <Text style={styles.rowLabel}>Version</Text>
+                            <Text style={styles.versionText}>{Constants.expoConfig?.version ?? '0.1.0'}</Text>
+                        </View>
+                        <Pressable
+                            style={styles.row}
+                            onPress={handleCheckForUpdates}
+                            android_ripple={{ color: palette.bgCardHover }}
+                            disabled={updateStatus === 'checking' || updateStatus === 'downloading'}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.rowLabel}>Check for Updates</Text>
+                                <Text style={[
+                                    styles.rowDesc,
+                                    updateStatus === 'error' && { color: palette.red },
+                                    updateStatus === 'upToDate' && { color: palette.green },
+                                    updateStatus === 'ready' && { color: palette.gold },
+                                ]}>
+                                    {updateStatus === 'idle' && 'Tap to check for OTA updates'}
+                                    {updateStatus === 'checking' && 'Checking...'}
+                                    {updateStatus === 'downloading' && 'Downloading update...'}
+                                    {updateStatus === 'ready' && 'Update ready — restart to apply'}
+                                    {updateStatus === 'upToDate' && '✓ You\'re on the latest version'}
+                                    {updateStatus === 'error' && `Error: ${updateError}`}
+                                    {updateStatus === 'dev' && 'Dev mode — OTA disabled'}
+                                </Text>
+                            </View>
+                            {(updateStatus === 'checking' || updateStatus === 'downloading') ? (
+                                <ActivityIndicator size="small" color={palette.accentPrimary} />
+                            ) : (
+                                <Text style={styles.arrow}>⟳</Text>
+                            )}
+                        </Pressable>
+                        <TouchableOpacity
+                            style={styles.row}
+                            onPress={() => router.push('/patches')}
+                            activeOpacity={0.7}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.rowLabel}>Patch Notes</Text>
+                                <Text style={styles.rowDesc}>View full changelog from v0.1.0</Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* Easter egg: "Don't Push This" — 1000 presses unlocks title "The Stubborn" */}
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Easter Egg</Text>
+                    <View style={styles.sectionCard}>
+                        <TouchableOpacity
+                            style={styles.easterEggRow}
+                            onPress={() => dispatch(gameActions.incrementDontPushCount())}
+                            activeOpacity={0.8}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.easterEggLabel}>Don&apos;t Push This</Text>
+                                <Text style={styles.rowDesc}>
+                                    {hasStubbornTitle
+                                        ? "You unlocked the title \"The Stubborn\"!"
+                                        : `Presses: ${dontPushCount < 1000 ? dontPushCount : '1000'}`}
+                                </Text>
+                            </View>
+                            {hasStubbornTitle ? (
+                                <Text style={styles.titleBadge}>🏆 The Stubborn</Text>
+                            ) : (
+                                <Text style={styles.arrow}>›</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* QoL I — Developer / Reset */}
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Developer</Text>
+                    <View style={styles.sectionCard}>
+                        <TouchableOpacity style={styles.dangerRow} onPress={handleResetSave} activeOpacity={0.7}>
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.dangerLabel}>Wipe Save Data</Text>
+                                <Text style={styles.rowDesc}>Deletes all progress and starts fresh</Text>
+                            </View>
+                            <Text style={styles.dangerArrow}>›</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </ScrollView>
 
             {/* Nickname edit modal */}

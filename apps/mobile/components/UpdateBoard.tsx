@@ -149,11 +149,31 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary' : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina' : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                            : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                    : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.4.1') ? (
+                        {currentVersion.startsWith('0.4.2') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🐾 Skill Pets</Text>
+                                    <Text style={styles.changeText}>• Rare companions drop from skilling! Every skill has its own unique pet with a tiny drop chance per tick.</Text>
+                                    <Text style={styles.changeText}>• Found a pet? Head to Settings → Pets to equip it. Your active pet shows as an emoji on the Skills screen.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🔊 Tick Sound Effects</Text>
+                                    <Text style={styles.changeText}>• Each skill now plays a distinct sound on every successful tick — satisfying tinks, thumps, and splashes.</Text>
+                                    <Text style={styles.changeText}>• Head to Settings → Audio to toggle SFX on/off, or tap "Test Sound" to preview.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🔧 Connection Fix</Text>
+                                    <Text style={styles.changeText}>• Fixed the dev server so your phone can reconnect to Metro over Wi-Fi again. No more manual IP entry needed.</Text>
+                                </View>
+                            </>
+                        ) : currentVersion.startsWith('0.4.1') ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>👤 The Anchor Man</Text>
@@ -197,56 +217,56 @@ export default function UpdateBoard() {
                             </>
                         ) : (
                             <>
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>🎨 Theme Engine</Text>
-                            <Text style={styles.changeText}>• Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, and StatusBar follow your theme. Persisted with save.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎨 Theme Engine</Text>
+                                    <Text style={styles.changeText}>• Settings → Appearance. Choose System, Dark, Light, or Sepia. Tab bar, headers, and StatusBar follow your theme. Persisted with save.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>⚡ Quick-Switch Sidebar</Text>
-                            <Text style={styles.changeText}>• Floating pill on the left edge when in a skill screen. Tap to slide open a beautiful drawer.</Text>
-                            <Text style={styles.changeText}>• Jump between Mining, Logging, Fishing, Runecrafting, Smithing, Forging without going back to the Skills tab. Active skill highlighted in gold.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚡ Quick-Switch Sidebar</Text>
+                                    <Text style={styles.changeText}>• Floating pill on the left edge when in a skill screen. Tap to slide open a beautiful drawer.</Text>
+                                    <Text style={styles.changeText}>• Jump between Mining, Logging, Fishing, Runecrafting, Smithing, Forging without going back to the Skills tab. Active skill highlighted in gold.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>🔨 Smithing & ⚒️ Forging</Text>
-                            <Text style={styles.changeText}>• Smithing: Smelt ore into bars at the furnace (Bronze → Runite).</Text>
-                            <Text style={styles.changeText}>• Forging: Forge bars into weapons and armour at the anvil. Daggers, half helmets, full helmets. Grouped by metal tier (Bronze, Iron, Steel, Mithril, Adamant). Bank Equipment filter.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🔨 Smithing & ⚒️ Forging</Text>
+                                    <Text style={styles.changeText}>• Smithing: Smelt ore into bars at the furnace (Bronze → Runite).</Text>
+                                    <Text style={styles.changeText}>• Forging: Forge bars into weapons and armour at the anvil. Daggers, half helmets, full helmets. Grouped by metal tier (Bronze, Iron, Steel, Mithril, Adamant). Bank Equipment filter.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>🎲 Random Events</Text>
-                            <Text style={styles.changeText}>• Blibbertooth's Blessing: Bonus XP (level × 5) to active skill.</Text>
-                            <Text style={styles.changeText}>• Cosmic Sneeze: Double your next item haul.</Text>
-                            <Text style={styles.changeText}>• Genie's Gift: Bonus XP (level × 10) to a random trained skill.</Text>
-                            <Text style={styles.changeText}>• Treasure Chest: Gold reward (scales with level).</Text>
-                            <Text style={styles.changeText}>• Lucky Strike: Double XP for this tick.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎲 Random Events</Text>
+                                    <Text style={styles.changeText}>• Blibbertooth's Blessing: Bonus XP (level × 5) to active skill.</Text>
+                                    <Text style={styles.changeText}>• Cosmic Sneeze: Double your next item haul.</Text>
+                                    <Text style={styles.changeText}>• Genie's Gift: Bonus XP (level × 10) to a random trained skill.</Text>
+                                    <Text style={styles.changeText}>• Treasure Chest: Gold reward (scales with level).</Text>
+                                    <Text style={styles.changeText}>• Lucky Strike: Double XP for this tick.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>🎣 Fishing & ✨ Runecrafting</Text>
-                            <Text style={styles.changeText}>• Fishing: 10 spots from Shrimp to Cosmic Jellyfish.</Text>
-                            <Text style={styles.changeText}>• Runecrafting: Mine essence, bind at 14 altars. Requirements indicator on each altar (Lv., essence, Story). Loop auto-stops when you run out.</Text>
-                            <Text style={styles.changeText}>• Bank filters for Fish and Runes.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎣 Fishing & ✨ Runecrafting</Text>
+                                    <Text style={styles.changeText}>• Fishing: 10 spots from Shrimp to Cosmic Jellyfish.</Text>
+                                    <Text style={styles.changeText}>• Runecrafting: Mine essence, bind at 14 altars. Requirements indicator on each altar (Lv., essence, Story). Loop auto-stops when you run out.</Text>
+                                    <Text style={styles.changeText}>• Bank filters for Fish and Runes.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>💬 Feedback Toasts</Text>
-                            <Text style={styles.changeText}>• In-game stylized prompts replace system alerts for locked nodes, no essence, level requirements. Themed variants (locked, warning, error, info), haptics, auto-dismiss.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>💬 Feedback Toasts</Text>
+                                    <Text style={styles.changeText}>• In-game stylized prompts replace system alerts for locked nodes, no essence, level requirements. Themed variants (locked, warning, error, info), haptics, auto-dismiss.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>⚙️ Settings & Notifications</Text>
-                            <Text style={styles.changeText}>• Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Idle Soundscapes. Whole row tap to toggle.</Text>
-                            <Text style={styles.changeText}>• Idle Cap Reached: Notify when 24h/7-day offline cap is full.</Text>
-                            <Text style={styles.changeText}>• Easter egg: "Don't Push This" → title "The Stubborn" at 1,000 presses.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚙️ Settings & Notifications</Text>
+                                    <Text style={styles.changeText}>• Confirm Task Switch, Battery Saver, Horizon HUD (hide 3 goal cards), Idle Soundscapes. Whole row tap to toggle.</Text>
+                                    <Text style={styles.changeText}>• Idle Cap Reached: Notify when 24h/7-day offline cap is full.</Text>
+                                    <Text style={styles.changeText}>• Easter egg: "Don't Push This" → title "The Stubborn" at 1,000 presses.</Text>
+                                </View>
 
-                        <View style={styles.changeBlock}>
-                            <Text style={styles.changeHeader}>⚔️ Next Up (Coming Soon)</Text>
-                            <Text style={styles.changeText}>• Combat Alpha: Early testing for weapons, stats, and simple mobs.</Text>
-                            <Text style={styles.changeText}>• Mastery Overhaul: Spend mastery points for efficiency boosts.</Text>
-                        </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚔️ Next Up (Coming Soon)</Text>
+                                    <Text style={styles.changeText}>• Combat Alpha: Early testing for weapons, stats, and simple mobs.</Text>
+                                    <Text style={styles.changeText}>• Mastery Overhaul: Spend mastery points for efficiency boosts.</Text>
+                                </View>
                             </>
                         )}
 

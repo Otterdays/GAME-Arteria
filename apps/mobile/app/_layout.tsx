@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -31,6 +31,7 @@ import { BatterySaver } from '@/components/BatterySaver';
 import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
 import { ThemeProvider as AppThemeProvider } from '@/contexts/ThemeContext';
 import { QuickSwitchSidebar } from '@/components/QuickSwitchSidebar';
+import { SpecialMessageModal, SpecialMessage } from '@/components/SpecialMessageModal';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -72,6 +73,14 @@ function AppShell() {
   useGameLoop({ onTickComplete: playForSkill });
   usePersistence();
 
+  // OTA announcement — "Fixed by Claude"
+  const [announcement, setAnnouncement] = useState<SpecialMessage | null>({
+    emoji: '🤖',
+    title: 'Fixed by Claude',
+    body: 'Your OTA pipeline just got hardened by an AI.\n\nNew: Check for Updates in Settings, smarter versioning, emergency rollbacks, and optimized builds.\n\nIf you\'re reading this, the update delivered itself. How meta.',
+    cta: 'Nice.',
+  });
+
   useEffect(() => {
     if (fontsLoaded || fontError) SplashScreen.hideAsync();
   }, [fontsLoaded, fontError]);
@@ -81,27 +90,28 @@ function AppShell() {
   return (
     <AppThemeProvider>
       <NavThemeWrapper>
-      <QuickSwitchProvider>
-      <BatterySaver>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="patches" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <UpdateBoard />
-        <WhileYouWereAway />
-        <LevelUpToast />
-        <TrainToast />
-        <FeedbackToast />
-        <LootVacuum />
-        <GlobalActionTicker />
-        <QuickSwitchSidebar />
-        <DialogueOverlay />
-        <GoblinPeekModal />
-        <NameEntryModal />
-        <StatusBarFromTheme />
-      </BatterySaver>
-      </QuickSwitchProvider>
+        <QuickSwitchProvider>
+          <BatterySaver>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="patches" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
+            <UpdateBoard />
+            <WhileYouWereAway />
+            <LevelUpToast />
+            <TrainToast />
+            <FeedbackToast />
+            <LootVacuum />
+            <GlobalActionTicker />
+            <QuickSwitchSidebar />
+            <DialogueOverlay />
+            <GoblinPeekModal />
+            <NameEntryModal />
+            <SpecialMessageModal message={announcement} onDismiss={() => setAnnouncement(null)} />
+            <StatusBarFromTheme />
+          </BatterySaver>
+        </QuickSwitchProvider>
       </NavThemeWrapper>
     </AppThemeProvider>
   );

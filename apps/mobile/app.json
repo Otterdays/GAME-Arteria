@@ -2,13 +2,16 @@
   "expo": {
     "name": "Arteria",
     "slug": "arteria",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "arteria",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +22,16 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.arteria"
+      "package": "com.anonymous.arteria.dev",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "output": "static",
@@ -28,6 +40,12 @@
     "plugins": [
       "expo-audio",
       "expo-router",
+      [
+        "expo-updates",
+        {
+          "checkAutomatically": "ON_LAUNCH"
+        }
+      ],
       [
         "expo-font",
         {
@@ -48,7 +66,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "./plugins/withAbiSplits"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -59,6 +78,10 @@
       "eas": {
         "projectId": "708ed485-f6e9-4de5-96ff-91c92d09face"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/708ed485-f6e9-4de5-96ff-91c92d09face",
+      "fallbackToCacheTimeout": 0
     }
   }
 }

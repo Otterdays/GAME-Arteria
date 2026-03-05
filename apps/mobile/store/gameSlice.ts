@@ -161,6 +161,11 @@ export interface PlayerState {
     lumina?: number;
     /** Bestiary: enemy IDs the player has spotted (e.g. goblin_peek adds enemy_goblin). */
     seenEnemies?: string[];
+    /** Skill pets unlocked and active. */
+    pets?: {
+        activePetId: string | null;
+        unlocked: string[];
+    };
 }
 
 // ─── Helpers ───
@@ -255,6 +260,7 @@ function createFreshPlayer(): PlayerState {
         loginBonus: { lastClaimDate: null, consecutiveDays: 0 },
         lumina: 0,
         seenEnemies: [],
+        pets: { activePetId: null, unlocked: [] },
     };
 }
 
@@ -323,7 +329,8 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const lumina = saved.lumina ?? 0;
     const name = saved.name ?? '';
     const seenEnemies = saved.seenEnemies ?? [];
-    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina, seenEnemies };
+    const pets = saved.pets ?? { activePetId: null, unlocked: [] };
+    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina, seenEnemies, pets };
 }
 
 // ─── Slice ───
@@ -790,6 +797,26 @@ export const gameSlice = createSlice({
             if (item) {
                 item.isLocked = !item.isLocked;
             }
+        },
+
+        // ─── Pets ───
+
+        /** Unlock a new pet */
+        unlockPet(state, action: PayloadAction<string>) {
+            if (!state.player.pets) {
+                state.player.pets = { activePetId: null, unlocked: [] };
+            }
+            if (!state.player.pets.unlocked.includes(action.payload)) {
+                state.player.pets.unlocked.push(action.payload);
+            }
+        },
+
+        /** Equip or unequip a pet */
+        setActivePet(state, action: PayloadAction<string | null>) {
+            if (!state.player.pets) {
+                state.player.pets = { activePetId: null, unlocked: [] };
+            }
+            state.player.pets.activePetId = action.payload;
         },
 
         // ─── Narrative / Quest Actions ───

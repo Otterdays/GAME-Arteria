@@ -74,6 +74,11 @@ export interface PlayerState {
     lastSaveTimestamp: number;
     /** Narrative progression (quests, flags, dialogues) */
     narrative: PlayerNarrativeState;
+    /** Skill pets unlocked and active */
+    pets?: {
+        activePetId: string | null;
+        unlocked: string[];
+    };
 }
 
 /** The narrative and quest progression state of the player */

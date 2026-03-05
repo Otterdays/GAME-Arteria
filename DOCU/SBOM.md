@@ -45,6 +45,7 @@
 | 2026-02-26 | expo-splash-screen              | 31.0.13   | 55.0.9    | Jan 2026             | Splash screen                          |
 | 2026-02-26 | expo-status-bar                 | 3.0.9     | 55.0.4    | Jan 2026             | Status bar control                     |
 | 2026-02-26 | expo-symbols                    | 1.0.8     | 55.0.4    | Jan 2026             | SF Symbols                             |
+| 2026-03-05 | expo-updates                    | ~0.23.1   | (SDK 55)  | Jan 2026             | Over-the-air (OTA) updates             |
 | 2026-02-26 | expo-system-ui                  | 6.0.9     | 55.0.9    | Jan 2026             | System UI control                      |
 | 2026-02-26 | expo-web-browser                | 15.0.10   | 55.0.9    | Jan 2026             | In-app browser                         |
 | 2026-02-26 | eslint                          | 9.39.3    | 10.0.2     | 2026                 | Linting (dev)                          |

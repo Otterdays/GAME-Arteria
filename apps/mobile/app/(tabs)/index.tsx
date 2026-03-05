@@ -34,6 +34,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLoginBonusStatus } from '@/constants/loginBonus';
 import { getDisplayName } from '@/constants/character';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
+import { SKILL_PETS } from '@/constants/pets';
 
 // ─── Skill metadata (from shared constants) ───────────────────────────────────
 
@@ -146,6 +147,8 @@ export default function SkillsScreen() {
   const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
   const playerName = useAppSelector((s) => s.game.player.name);
   const displayName = getDisplayName(playerName);
+  const activePetId = useAppSelector((s) => s.game.player.pets?.activePetId ?? null);
+  const activePet = activePetId ? SKILL_PETS[activePetId] : null;
 
   const handleNavigate = useCallback(
     (skillId: SkillId) => {
@@ -414,7 +417,9 @@ export default function SkillsScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
             <View>
               <Text style={styles.headerTitle}>Skills</Text>
-              <Text style={{ fontSize: FontSize.xs, color: palette.textMuted, marginTop: 1 }}>Welcome, {displayName}</Text>
+              <Text style={{ fontSize: FontSize.xs, color: palette.textMuted, marginTop: 1 }}>
+                Welcome, {displayName}{activePet ? ` ${activePet.emoji}` : ''}
+              </Text>
               <View style={styles.totalLevelRow}>
                 <Text style={styles.totalLevel}>Total Lv. {totalLevel} / {maxTotalLevel}</Text>
                 {isPatron && (

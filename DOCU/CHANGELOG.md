@@ -11,28 +11,29 @@
 
 ---
 
-## [Unreleased]
-### Fixed
-- **Idle cap notification:** Cancel now runs on app mount when active (cold start). Previously only ran on background→active transition, so a stale notification from a prior session could still fire after user had returned to the app multiple times.
-
+## [0.4.2] - 2026-03-05 — "Skill Pets & Polish"
 ### Added
-- **SFX (sound effects):** Real tink, thump, and splash sounds. `expo-audio` added; `scripts/generate-sounds.js` generates minimal WAVs (tink 700Hz, thump 120Hz, splash noise+tail) to `assets/sounds/`. `utils/sounds.ts`: `useSfx()` with `playTink`, `playThump`, `playSplash`, `playForSkill(skillId)`; respects `settings.sfxEnabled`. `useGameLoop` supports optional `onTickComplete(skillId)`; root layout wires `playForSkill` so SFX play on each skill tick. Skill mapping: mining/smithing/forging/runecrafting → tink; logging/cooking → thump; fishing → splash. Settings → Audio: "Test sound" row to play all three without waiting for ticks.
-- **Docs viewer on website:** index.html Docs nav opens in-page modal (fetches markdown from raw GitHub, renders with marked.js). Sidebar: Summary, Roadmap, Architecture, Companions, Changelog, Style Guide, Theming, Improvements, Scratchpad. Escape / click-outside to close.
-- **COMPANIONS.md:** Standalone companion design doc — roster, Leadership-based unlocks (Barnaby 20, Yvette 35, Reginald 50), companion leveling (levels like player for skilling/crafting/collecting), design uncertainties.
-- **index.html Cooking card:** Added Cooking system card to Latest section (10 recipes, Bank Food filter, daily quests).
-- **Bestiary groundwork:** `constants/enemies.ts` — `EnemyDrop`, `EnemyLocation`, `EnemyCombatStats` interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only; not in random events yet). Combat tab: "Found in" shown when enemy has locations.
-- **Login bonus toast:** FeedbackToast (lucky type) on claim — "Day X Login Bonus!" with reward amount. Success haptic.
-- **Haptics:** Skill pill tap (implemented skills), Bank Sell/filter chips, Shop Buy/Sell, Sell All Junk. Light/Medium impact per action.
-- **Soundscapes stub:** `useIdleSoundscape` wired to all 7 skill screens; SoundscapeId includes smithing, forging, cooking. Ambient loops still "Coming soon."
+- **Skill Pets:** Rare companions found while skilling! Each skill has a unique pet (e.g. Rocky for Mining, Timber for Logging) with a low drop chance in `useGameLoop`. Triggers a "lucky" toast and adds to activity log.
+- **Pets Screen & Equipping:** New screen (Settings → Pets) to view unlocked pets and equip them. Active pet emoji appears next to player name on Skills screen.
+- **Special Message Modal:** Premium animated popup for special announcements (title, body, emoji, CTA). Features spring entry, bouncing emoji, and shimmer border glow. Used for the "🧪 OTA Update Works!" test.
+- **OTA Update Pipeline:** Integrated `expo-updates` into the native APK. Updated `Update_2_EAS_OTA_Update.bat` with `CI=1`, `ARTERIA_LEAN_PROD=1`, and `--platform android` to handle headless Metro bundling and correct package name resolution for prod APKs.
+- **OTA Hotfix Strategy:** Established a reliable "Wait-Close-Reopen" flow for delivering JS fixes to a crashing app via background `expo-updates` downloads while the error screen is active.
+- **OTA Pipeline Hardening:** Added `expo-updates` to plugins array (`checkAutomatically: ON_LAUNCH`). Switched `runtimeVersion` from static `"1.0.0"` to `appVersion` policy (tags OTA updates by version). Created `plugins/withAbiSplits.js` config plugin to auto-inject ABI splits into build.gradle (survives `expo prebuild --clean`). Added `fallbackToCacheTimeout: 0` to prevent launch blocking. Created `Rollback_OTA.bat` for emergency rollbacks.
+- **Check for Updates (Settings):** New "Check for Updates" row in Settings → About. Uses `expo-updates` API with full status feedback (checking, downloading, ready, up to date, error, dev mode) and a restart prompt when an update is downloaded.
+
+### Fixed
+- **Cooking Screen Crash:** Fixed `ReferenceError: Radius is not defined` by adding the missing `Radius` import from `@/constants/theme`.
+- **Missing Tab Icons:** Added mappings for `book.pages.fill` (Quests) and `chart.bar.fill` (Stats) in `IconSymbol.tsx` to prevent default `help-circle` fallback.
+- **Bank Filter Stretching:** Removed duplicate padding in `filterChipActive` and added `alignItems: 'center'` to `filterRow` to prevent vertical expansion/stretching of pills on tap.
+- **SpecialMessageModal Animation Crash:** Resolved a `useNativeDriver` conflict. Split the animated container into two layers: an outer `Animated.View` for native transforms (scale/opacity) and an inner `Animated.View` for JS-driven color transitions (shimmer border).
+- **Launch Crash:** Removed the hardcoded test message from `_layout.tsx` that was prematurely triggering the modal before full system initialization.
+- **Idle cap notification:** Cancel now runs on app mount when active (cold start). Previously only ran on background→active transition.
 
 ### Changed
-- **Companion unlocks:** Website and design docs use Leadership skill levels (Barnaby 20, Yvette 35, Reginald 50) instead of vague "Level 20."
-- **README:** Modernized layout, v0.4.1 content, cleaner feature tables and quick start.
-- **Bank item detail:** "Used in: Mining, Smithing" (etc.) per item type. Stale Phase comments removed (bank, index).
-- **Combat teaser:** "Goblin spotted first. Loadouts, weapon stats, and more enemies coming soon."
-- **Shop Sell:** Added Food filter to SELL_FILTERS (cooked food sellable).
-- **HorizonHUD Grind:** Label "Lv. X → Lv. Y"; subtext "X/Y levels" for clearer progress.
-- **Login bonus banner:** Shows reward in header text — "Day 3 — Claim 300 gp!" or "Day 7 — Claim 500 gp + 10 Lumina!" before claiming.
+- **Sound Effects:** Wired real tink/thump/splash sounds to all skills via `useGameLoop`.
+- **Docs viewer:** index.html Docs nav now fetches and renders DOCU/ folder markdown files.
+- **Bestiary groundwork:** Enemy data structures and Goblin base stats for future combat.
+- **Login bonus banner:** Now shows the exact reward before claiming.
 
 ---
 

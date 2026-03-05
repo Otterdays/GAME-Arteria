@@ -14,6 +14,18 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
+    version: '0.4.2',
+    date: '2026-03-05',
+    added: [
+      '🐾 Skill Pets: Rare companion drops from skilling. Find pets by training — each skill has its own unique pet. Equip one in Settings → Pets to display it on the Skills screen.',
+      '🔊 Tick SFX: Each skill now plays a unique sound on every successful tick (tink for mining, thump for logging, splash for fishing). Settings → Audio to toggle.',
+      '🔗 Dev server fix: Metro now binds to your LAN IP so your phone can connect over Wi-Fi without needing a manual IP entry.',
+    ],
+    fixed: [
+      'Dev server --localhost flag removed; phone can now reach Metro over Wi-Fi again.',
+    ],
+  },
+  {
     version: '0.4.1',
     date: '2026-03-03',
     added: [

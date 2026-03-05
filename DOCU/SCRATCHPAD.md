@@ -5,7 +5,32 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. SFX (tink/thump/splash) and Test sound in Settings done. Docs updated.
+**Active Task:** OTA pipeline hardening complete. Ready for APK rebuild + redistribution.
+
+## [2026-03-05] OTA Pipeline Hardening
+- **Review:** Full A-to-Z audit of OTA update pipeline. Identified 9 issues across critical/medium/low severity.
+- **build.gradle:** Synced `versionName` from `0.4.1` → `0.4.2` to match app.json. Switched `proguard-android.txt` → `proguard-android-optimize.txt` for full R8 optimizations (method inlining, class merging, smaller APKs).
+- **app.json (expo-updates plugin):** Added `expo-updates` to plugins array with `checkAutomatically: ON_LAUNCH`. Added `fallbackToCacheTimeout: 0` to updates config (don't block launch).
+- **app.json (runtimeVersion):** Changed Android `runtimeVersion` from static `"1.0.0"` to `{ "policy": "appVersion" }` — now matches iOS config. OTA updates tagged by app version (e.g. `0.4.2`). **⚠️ Breaking:** Existing users on `runtimeVersion "1.0.0"` need a new APK to receive future OTA updates.
+- **Config plugin (ABI splits):** Created `plugins/withAbiSplits.js` — Expo config plugin that injects `splits { abi { ... } }` into build.gradle during prebuild. Survives `expo prebuild --clean`. No more manual re-adding of ABI splits block.
+- **Settings → Check for Updates:** New row in About section. Uses `expo-updates` API: `checkForUpdateAsync()` → `fetchUpdateAsync()` → `reloadAsync()`. Shows status (checking, downloading, up to date, error, dev mode). Full error handling. Spinner while loading.
+- **Rollback_OTA.bat:** New batch script for emergency OTA rollbacks via `eas-cli update:rollback`. Includes fallback instructions (re-publish old commit).
+- **⚠️ Next step:** Rebuild APK with `2_Build_APK_Local.bat` and redistribute to bake in the new runtimeVersion + ABI splits plugin + expo-updates plugin config.
+
+## [2026-03-05] OTA Update & UI Polish (v0.4.2)
+- **OTA Fixes:** Integrated `expo-updates`. Updated bat with `CI=1`, `ARTERIA_LEAN_PROD=1`.
+- **Hotfix Delivery:** Established "Wait-Close-Reopen" drill for crashing apps.
+- **SpecialMessageModal:** Fixed `useNativeDriver` conflict by splitting into outer (native) and inner (JS) Animated.Views.
+- **Launch Crash:** Nulled out test message in `_layout.tsx` to stop modal firing during cold start.
+- **Cooking Fix:** Added missing `Radius` import to stop 100% screen crash.
+- **Bank Fixes:** Fixed filter pill stretching and missing tab icons (Quests/Stats).
+
+## [2026-03-05] Skill Pets Implementation
+- **Data:** Created `constants/pets.ts` defining 7 distinct pets with unique emojis, drop chances, and skill affinities. `SKILL_PETS` object is the core source of truth.
+- **Engine State:** Updated `PlayerState` in `@arteria/engine` with an optional `pets` object containing `unlocked[]` and `activePetId`.
+- **Game Loop:** Added rare drop logic inside `useGameLoop`'s success branch. Checks the `dropChanceBase` multiplied by `successfulTicks` to roll for a pet on each successful action. Dispatches `unlockPet` and a 'lucky' FeedbackToast + Activity Log if found.
+- **Redux:** Added Redux reducers `unlockPet` and `setActivePet` in `gameSlice.ts`. Included `pets` field in migrations and fresh saves.
+- **UI:** Added a "Pets" section to the Settings screen linking to the new `pets.tsx` screen. The Pets screen shows a grid of available pets (unlocked sorted first) with Equippable mechanics. The Skills screen header (`index.tsx`) now displays the active pet's emoji next to the player's name.
 
 ## [2026-03-05] SFX — real tink, thump, splash
 - **expo-audio:** Added and configured in app.json. SBOM updated.

@@ -15,6 +15,8 @@ const MAPPING = {
   'archivebox.fill': 'treasure-chest',
   'cart.fill': 'cart',
   'gearshape.fill': 'cog',
+  'book.pages.fill': 'book-open-page-variant',
+  'chart.bar.fill': 'chart-bar',
 
   // RPG Specific Backlog
   'sword': 'sword',

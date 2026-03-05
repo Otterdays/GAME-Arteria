@@ -16,7 +16,9 @@ if "%msg%"=="" (
     exit /b
 )
 echo Executing EAS Update...
-npx eas-cli update --branch production --message "%msg%"
+set CI=1
+set ARTERIA_LEAN_PROD=1
+npx eas-cli update --channel production --environment production --platform android --message "%msg%"
 echo.
 echo [COMPLETE] Players will download this update the next time they open the app!
 pause

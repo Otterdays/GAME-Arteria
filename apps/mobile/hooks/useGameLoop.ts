@@ -64,6 +64,7 @@ import {
     LUCKY_STRIKE_XP_MULTIPLIER,
     RANDOM_EVENT_TYPES,
 } from '@/constants/randomEvents';
+import { SKILL_PETS } from '@/constants/pets';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
@@ -303,6 +304,35 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     }
                 }
 
+                // Pet Roll
+                let rolledPetId: string | null = null;
+                for (const [petId, petInfo] of Object.entries(SKILL_PETS)) {
+                    if (petInfo.skillId === skillId) {
+                        for (let i = 0; i < successfulTicks; i++) {
+                            if (Math.random() < petInfo.dropChanceBase) {
+                                rolledPetId = petId;
+                                break;
+                            }
+                        }
+                    }
+                    if (rolledPetId) break;
+                }
+
+                if (rolledPetId) {
+                    const unlockedPets = playerRef.current.pets?.unlocked || [];
+                    if (!unlockedPets.includes(rolledPetId)) {
+                        dispatch(gameActions.unlockPet(rolledPetId));
+                        const pet = SKILL_PETS[rolledPetId];
+                        dispatch(gameActions.pushFeedbackToast({
+                            type: 'lucky',
+                            title: 'A New Friend!',
+                            message: `You found ${pet.name}! Go to Settings to equip it.`
+                        }));
+                        dispatch(gameActions.pushActivityLog({ type: 'random_event', message: `Found skill pet: ${pet.name}!`, data: { petId: rolledPetId } }));
+                        logger.info('Engine', 'Pet Unlocked', { skillId, petId: rolledPetId });
+                    }
+                }
+
                 dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
 
                 let items = action.items.map((item) => ({
@@ -343,13 +373,20 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         [activeTask, dispatch, isPatron]
     );
 
-    // Auto-complete quest steps when inventory/skills meet completionRequirements (engine)
+    const playerRef = useRef(player);
+    playerRef.current = player;
+
+    // Independent polling interval for quest auto-completion (every 1s)
     useEffect(() => {
-        const steps = getQuestStepsToComplete(player, ALL_QUESTS);
-        steps.forEach(({ questId, stepId }) => {
-            dispatch(gameActions.completeQuestStep({ questId, stepId }));
-        });
-    }, [player, dispatch]);
+        if (!isLoaded) return;
+        const intervalId = setInterval(() => {
+            const steps = getQuestStepsToComplete(playerRef.current, ALL_QUESTS);
+            steps.forEach(({ questId, stepId }) => {
+                dispatch(gameActions.completeQuestStep({ questId, stepId }));
+            });
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [isLoaded, dispatch]);
 
     // Main game loop interval
     useEffect(() => {

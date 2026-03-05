@@ -118,7 +118,12 @@ export function DialogueOverlay() {
             if (option.onSelect.completeQuestStep) {
                 dispatch(gameActions.completeQuestStep(option.onSelect.completeQuestStep));
             }
-            // TODO: handle giveItems / removeItems when inventory refactor is complete
+            if (option.onSelect.giveItems) {
+                dispatch(gameActions.addItems(option.onSelect.giveItems));
+            }
+            if (option.onSelect.removeItems) {
+                dispatch(gameActions.removeItems(option.onSelect.removeItems));
+            }
         }
 
         // Move to next node or close

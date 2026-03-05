@@ -87,7 +87,7 @@ function ItemDetailModal({
     return (
         <Modal visible transparent animationType="fade" onRequestClose={onClose}>
             <Pressable style={styles.detailOverlay} onPress={onClose}>
-                <Pressable style={styles.detailCard} onPress={() => {}}>
+                <Pressable style={styles.detailCard} onPress={() => { }}>
                     <Text style={styles.detailEmoji}>{meta.emoji}</Text>
                     <Text style={styles.detailName}>{meta.label}</Text>
                     <Text style={styles.detailDesc}>{meta.description}</Text>
@@ -370,6 +370,7 @@ export default function BankScreen() {
                 },
                 filterRow: {
                     flexDirection: 'row',
+                    alignItems: 'center',
                     paddingHorizontal: Spacing.md,
                     paddingVertical: Spacing.sm,
                     gap: Spacing.sm,
@@ -382,10 +383,6 @@ export default function BankScreen() {
                     borderColor: palette.border,
                 },
                 filterChipActive: {
-                    paddingHorizontal: Spacing.sm,
-                    paddingVertical: 4,
-                    borderRadius: Radius.full,
-                    borderWidth: 1,
                     borderColor: palette.accentPrimary,
                     backgroundColor: palette.accentPrimary + '22',
                 },
@@ -765,7 +762,7 @@ export default function BankScreen() {
             {/* Manage Tabs Modal */}
             <Modal visible={manageTabsOpen} transparent animationType="fade">
                 <Pressable style={styles.detailOverlay} onPress={() => setManageTabsOpen(false)}>
-                    <Pressable style={styles.detailCard} onPress={() => {}}>
+                    <Pressable style={styles.detailCard} onPress={() => { }}>
                         <Text style={styles.detailName}>Custom bank tabs</Text>
                         <Text style={[styles.detailDesc, { marginBottom: Spacing.md }]}>
                             Create tabs and assign items from the item detail view.

@@ -42,11 +42,11 @@
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.4.1** "The Anchor Man" (Cooking, Bestiary stub, Goblin, main character). Post-0.4.1: polish, bestiary groundwork, docs viewer, companion Leadership unlocks, SFX (tink/thump/splash), Test sound in Settings (2026-03-04–05).
+**Version scheme:** 0.x.x. Current **0.4.2** "Skill Pets & Polish" (Pets, OTA fixes, special modal, UI polish). Post-0.4.2: Bestiary expansion, companion unlocks, combat alpha groundwork.
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**Post-0.4.1 (2026-03-04–05):** **SFX:** expo-audio, generated tink/thump/splash WAVs (`scripts/generate-sounds.js`), `utils/sounds.ts` (`useSfx`, `playForSkill`), play on skill tick via `useGameLoop` `onTickComplete`; Settings → Audio "Test sound" row. **Docs viewer:** index.html Docs nav opens in-page modal (marked.js, sidebar: Summary, Roadmap, Architecture, etc.). **Companions:** COMPANIONS.md; Leadership-based unlocks (Barnaby 20, Yvette 35, Reginald 50); companion leveling design. **Polish:** Bank "Used in", Combat teaser, idle cap notification fix (cancel on mount when active). **Bestiary groundwork:** EnemyDrop/Location/CombatStats; Goblin/Slime/Wolf. **Login bonus UX:** Banner reward text; FeedbackToast on claim.
+**Post-0.4.2 (2026-03-05):** **OTA Pipeline Hardened:** `expo-updates` explicit plugin with `checkAutomatically: ON_LAUNCH`. `runtimeVersion` switched from static `"1.0.0"` to `appVersion` policy (aligned iOS/Android). ABI splits config plugin (`plugins/withAbiSplits.js`) survives `expo prebuild --clean`. `proguard-android-optimize.txt` for full R8. `versionName` synced to `0.4.2`. Settings → About: "Check for Updates" row with status/error/restart. `Rollback_OTA.bat` for emergency rollbacks. **⚠️ Rebuild APK required** to bake in new runtimeVersion + config plugin. **Skill Pets:** 7 pets with rare drops, Pets screen, active emoji. **SpecialMessageModal:** Premium animated modal; fixed `useNativeDriver` conflict (outer-native/inner-JS split). **UI Polish:** Resolved Cooking crash (missing Radius), Bank filter pill stretching, and missing tab icons.
 
 **v0.4.1 (2026-03-03) — The Anchor Man:** Main character & nickname (The Anchor, NameEntryModal, Settings → Character). Goblin first random enemy + GoblinPeekModal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix (ScrollView).
 
@@ -86,8 +86,9 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **Crafting queue / Alchemy:** Phase 3 items; cross-skill dependencies. Combat deferred until core skilling/quest loop is rich.
 
 **Current Status (Phase 2.3 — Lore & Progression):**
-- **Phase 1 Complete:** Engine, native pipeline, save/load, real-time loop, offline catchup.
-- **v0.4.0 QoL + Daily & Lumina:** Daily quests (3/day, reset midnight, Claim gold/Lumina). Detailed Stats tab (gathered by type, play time). Custom bank tabs (+ Tabs, assign from item detail). Sell All Junk (configurable junk, button in Bank). Login bonus (7-day streak, banner on Skills, Settings section). Lumina currency (Bank/Shop/Settings; day 7 bonus).
+- **v0.4.2 Skill Pets & OTA Polish:** Rare skilling companions (Rocky, Timber, etc.), Pets screen, active pet emoji. Integrated `expo-updates` + fixed OTA batch pipeline (CI/LeanProd). Premium `SpecialMessageModal`. Fixed Cooking crash & Bank UI bugs.
+- **v0.4.1 The Anchor Man:** Cooking skill (10 fish), Goblin first enemy, nickname system (NameEntryModal).
+- **v0.4.0 QoL + Daily & Lumina:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina.
 - **v0.3.0 UX + Quest + Mastery:** Bank sort/empty state, Shop Buy 25/50/Max. Quests: real completion (rewards when all steps done); **quest step auto-complete** (engine completionRequirements + getQuestStepsToComplete; app dispatches completeQuestStep). **Mastery:** 1 pt/level-up, spend in Settings → Mastery for +% XP buffs.
 - **v0.2.6 (Lore Expansion):** Branching NPC dialogue, universal quest ledger, narrative gating for skilling nodes.
 - **v0.2.5 (Build & Release):** Smaller APKs (ABI split, lean prod). AnimatedNumber, BouncyButton, ActivePulseGlow, tick shake.

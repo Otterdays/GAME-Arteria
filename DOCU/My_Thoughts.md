@@ -32,3 +32,11 @@ The jump from "basic AFK loop" to "Immersive RPG" happened here.
 - **Symptom**: `:app:createBundleReleaseJsAndAssets` fails with "Android Bundling failed".
 - **Root Cause**: Desync in relative import paths (`../../../../packages/engine/...`). In `DialogueOverlay.tsx` (depth 3), 4 dots were used, pointing outside the project root.
 - **Fix**: Adjusted relative paths in `DialogueOverlay.tsx`, `constants/mining.ts`, and `constants/runecrafting.ts` to correctly point to the engine package at `Arteria/packages/engine`.
+
+- **Conclusion**: OTA is the "final prize" of the dev cycle. The current rebuild of the APK is the one that enables this magic forever.
+
+# The Animation Driver Trap (v0.4.2)
+- **The Conflict**: React Native animations have two worlds: `useNativeDriver: true` (transforms/opacity running on the UI thread) and `useNativeDriver: false` (layout/color running on the JS thread).
+- **The Crash**: Trying to animate both on the same `Animated.View` causes a hard crash. In `SpecialMessageModal`, I tried to scale the card (native) while shimmering the border color (JS).
+- **The Solution**: Nested `Animated.View` hierarchy. The outer View handles the native transforms. The inner View handles the JS color transitions. This separates the "ownership" of the node between the threads.
+- **The Hot-OTA Drill**: This crash was the perfect stress test. Because the crash happened during JS execution (after the native layer started), the background `expo-updates` check was already alive. Players can "wait 10 seconds" on the crash screen, force-quit, and reopen into a fixed JS bundle without a full re-install.
