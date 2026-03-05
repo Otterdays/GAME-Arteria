@@ -113,7 +113,7 @@ export default function CombatScreen() {
                 <View style={styles.teaserCard}>
                     <Text style={styles.teaserTitle}>Phase 4 — Combat Alpha</Text>
                     <Text style={styles.teaserText}>
-                        Loadouts, weapon stats, and first enemies are in the roadmap. Stay tuned.
+                        Goblin spotted first. Loadouts, weapon stats, and more enemies coming soon.
                     </Text>
                 </View>
 

@@ -11,7 +11,9 @@ import {
     FlatList,
     TouchableOpacity,
     ListRenderItemInfo,
+    Platform,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -70,7 +72,10 @@ function BuyRow({
                     <TouchableOpacity
                         key={n}
                         style={[styles.qtyChip, qty === n && styles.qtyChipActive]}
-                        onPress={() => setQty(n)}
+                        onPress={() => {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setQty(n);
+                        }}
                         activeOpacity={0.7}
                     >
                         <Text style={[styles.qtyChipText, qty === n && styles.qtyChipTextActive]}>{n}</Text>
@@ -79,7 +84,10 @@ function BuyRow({
                 {maxAfford > 0 && (
                     <TouchableOpacity
                         style={[styles.qtyChip, isMax && styles.qtyChipActive]}
-                        onPress={() => setQty(maxAfford)}
+                        onPress={() => {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setQty(maxAfford);
+                        }}
                         activeOpacity={0.7}
                     >
                         <Text style={[styles.qtyChipText, isMax && styles.qtyChipTextActive]}>Max</Text>
@@ -88,7 +96,12 @@ function BuyRow({
             </View>
             <TouchableOpacity
                 style={[styles.buyButton, !canAfford && styles.buyButtonDisabled]}
-                onPress={() => canAfford && onBuy(qty, cost)}
+                onPress={() => {
+                    if (canAfford) {
+                        if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        onBuy(qty, cost);
+                    }
+                }}
                 disabled={!canAfford}
                 activeOpacity={0.8}
             >
@@ -126,7 +139,12 @@ function SellRow({
             <View style={styles.sellButtons}>
                 <TouchableOpacity
                     style={[styles.sellBtn, locked && styles.sellBtnDisabled]}
-                    onPress={() => !locked && onSell1()}
+                    onPress={() => {
+                        if (!locked) {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onSell1();
+                        }
+                    }}
                     disabled={locked}
                     activeOpacity={0.8}
                 >
@@ -134,7 +152,12 @@ function SellRow({
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.sellBtn, locked && styles.sellBtnDisabled]}
-                    onPress={() => !locked && onSellAll()}
+                    onPress={() => {
+                        if (!locked) {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onSellAll();
+                        }
+                    }}
                     disabled={locked}
                     activeOpacity={0.8}
                 >

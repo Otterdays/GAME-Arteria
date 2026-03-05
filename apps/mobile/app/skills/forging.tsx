@@ -26,6 +26,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
     if (level <= 1) return 0;
@@ -61,6 +62,7 @@ const METAL_TIER_LABELS: Record<string, string> = {
 };
 
 export default function ForgingScreen() {
+    useIdleSoundscape('forging');
     const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();

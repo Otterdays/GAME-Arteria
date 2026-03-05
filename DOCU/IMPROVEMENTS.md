@@ -1,9 +1,9 @@
 # Arteria — Systems Audit & Improvement Ideas
 
 > **Purpose:** Snapshot of current systems and prioritized UX/GUI/feature improvements. Use for sprint planning; append new ideas, do not delete existing entries.
-> **Last reviewed:** 2026-03-04
+> **Last reviewed:** 2026-03-05
 
-**Implemented (2026-03-04):** **Login bonus UX:** Banner shows reward in text ("Day 3 — Claim 300 gp!"); FeedbackToast (lucky) on claim. — **Post-0.4.1 polish:** index.html Cooking card. Shop Sell: Food filter. HorizonHUD Grind: "Lv. X → Lv. Y", "X/Y levels". **Bestiary groundwork:** EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin combat/drops/locations; Slime/Wolf placeholders; Combat "Found in". — **v0.4.1 The Anchor Man:** Cooking (10 fish→cooked recipes; Bank Food filter; daily quests; Stats). Bestiary stub (Enemies Spotted; seenEnemies; goblin_peek). Main character & nickname. Goblin first enemy + GoblinPeekModal. Bank fix. — **v0.4.0:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina. — Prior: Shop Sell filters, Bank sort/empty state/total value, Shop Buy Max, HorizonHUD Grind label, quest completion, Mastery, Idle Soundscapes "coming soon".
+**Implemented (2026-03-04–05):** **SFX:** expo-audio; generated tink/thump/splash WAVs (`scripts/generate-sounds.js`); `utils/sounds.ts` (`useSfx`, `playForSkill`); play on skill tick via `useGameLoop` `onTickComplete`; Settings → Audio "Test sound" row. — **Login bonus UX:** Banner shows reward in text ("Day 3 — Claim 300 gp!"); FeedbackToast (lucky) on claim. — **Post-0.4.1 polish:** index.html Cooking card; Docs viewer (in-page modal); COMPANIONS.md + Leadership unlocks; README modernization; Bank "Used in"; Combat teaser; idle cap notification fix; Haptics (skill pill, Bank/Shop); Soundscapes stub on all 7 skill screens. **Bestiary groundwork:** EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf; Combat "Found in". — **v0.4.1 The Anchor Man:** Cooking, Bestiary stub, main character & nickname, GoblinPeekModal, Bank fix. — **v0.4.0:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina. — Prior: Shop Sell filters, Bank sort/empty state/total value, Shop Buy Max, HorizonHUD Grind label, quest completion, Mastery, Idle Soundscapes "coming soon".
 
 ---
 
@@ -29,7 +29,7 @@
 - **Bank total value** — ✅ Done: "Worth ~X gp" in Bank header (totalWorth).
 - **Bank empty state** — ✅ Done: "No matching items" + "Clear filter & search" when filter/search returns empty.
 - **Shop Buy quantities** — ✅ Done: 1, 5, 10, 25, 50 + Max (cap by gold).
-- **Bank item detail copy** — Replace or remove "Used in recipes: Coming in Phase 1.3+". Either: "Used in: Smithing / Forging" (link to skill if possible) or remove line until recipe links are implemented.
+- **Bank item detail "Used in"** — ✅ Done: Shows "Used in: Mining, Smithing" (etc.) per item type. ore→Mining/Smithing, bar→Smithing/Forging, log→Logging, fish→Fishing/Cooking, food→Cooking, rune→Runecrafting, equipment→Forging.
 - **Quests dev button** — ✅ Done: Hidden in `__DEV__` only (0.3.0).
 - **HorizonHUD "The Grind"** — ✅ Done: "Lv. X → Lv. Y" label; subtext "X/Y levels".
 
@@ -48,7 +48,7 @@
 
 - **Quest completion for real** — ✅ Done: Complete when all steps done (rewards applied); step auto-complete via engine completionRequirements + getQuestStepsToComplete.
 - **Recipe / usage from Bank** — For each item, show "Used in: [Skill name]" (e.g. Copper ore → Smithing) from a small recipe lookup (action defs → required items). Improves discovery.
-- **Idle Soundscapes** — Implement actual ambient loops per skill (or disable the toggle and show "Coming soon" in Settings) so the toggle isn’t misleading.
+- **Idle Soundscapes** — Hook wired to all 7 skill screens; SFX (tink/thump/splash) now play on tick. Implement actual ambient loops per skill (or disable the toggle and show "Coming soon" in Settings) so the toggle isn’t misleading.
 - **Bank sort** — Optional sort by: Name, Quantity, Value (total), Type. Simple dropdown or segmented control above the grid.
 - **Offline queue / cap** — ROADMAP Phase 3: queue system and 8-hour offline queue; document here when scoped so UX (e.g. "Queued: 3h smithing") can be designed.
 - **Mastery system** — ✅ Done: 1 pt per level-up, Settings → Mastery, spend on +5% XP (and similar); applyXP uses getMasteryXpMultiplier. Spend mastery points for permanent buffs; needs design (where points come from, where they’re spent, UI).
@@ -69,10 +69,10 @@
 3. ~~**Quick:** Bank empty state + clear filter.~~ ✅  
 4. ~~**Quick:** Quests dev button hidden in prod.~~ ✅  
 5. ~~**Polish:** Shop Buy Max (or 25/50).~~ ✅  
-6. **Polish:** Bank item detail "Used in" line.  
+6. ~~**Polish:** Bank item detail "Used in" line.~~ ✅  
 7. ~~**Polish:** HorizonHUD Grind label.~~ ✅  
 8. ~~**Feature:** Quest real completion flow.~~ ✅  
 9. **Feature:** Recipe/usage in Bank.  
-10. **Feature:** Idle Soundscapes implementation or "Coming soon".
+10. ~~**Feature:** Idle Soundscapes — Hook wired; SFX (expo-audio + tink/thump/splash) play on tick.~~ ✅ SFX done. Idle ambient loops still "Coming soon."
 
 Use this list to pick items for the next sprint; append new ideas and mark done when shipped.

@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 function xpForLevel(level: number): number {
     if (level <= 1) return 0;
@@ -27,6 +28,7 @@ function xpForLevel(level: number): number {
 }
 
 export default function LoggingScreen() {
+    useIdleSoundscape('logging');
     const { palette } = useTheme();
     const { showFeedbackToast } = useFeedbackToast();
     const dispatch = useAppDispatch();

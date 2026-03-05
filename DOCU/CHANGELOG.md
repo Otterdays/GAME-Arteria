@@ -16,11 +16,20 @@
 - **Idle cap notification:** Cancel now runs on app mount when active (cold start). Previously only ran on background→active transition, so a stale notification from a prior session could still fire after user had returned to the app multiple times.
 
 ### Added
+- **SFX (sound effects):** Real tink, thump, and splash sounds. `expo-audio` added; `scripts/generate-sounds.js` generates minimal WAVs (tink 700Hz, thump 120Hz, splash noise+tail) to `assets/sounds/`. `utils/sounds.ts`: `useSfx()` with `playTink`, `playThump`, `playSplash`, `playForSkill(skillId)`; respects `settings.sfxEnabled`. `useGameLoop` supports optional `onTickComplete(skillId)`; root layout wires `playForSkill` so SFX play on each skill tick. Skill mapping: mining/smithing/forging/runecrafting → tink; logging/cooking → thump; fishing → splash. Settings → Audio: "Test sound" row to play all three without waiting for ticks.
+- **Docs viewer on website:** index.html Docs nav opens in-page modal (fetches markdown from raw GitHub, renders with marked.js). Sidebar: Summary, Roadmap, Architecture, Companions, Changelog, Style Guide, Theming, Improvements, Scratchpad. Escape / click-outside to close.
+- **COMPANIONS.md:** Standalone companion design doc — roster, Leadership-based unlocks (Barnaby 20, Yvette 35, Reginald 50), companion leveling (levels like player for skilling/crafting/collecting), design uncertainties.
 - **index.html Cooking card:** Added Cooking system card to Latest section (10 recipes, Bank Food filter, daily quests).
 - **Bestiary groundwork:** `constants/enemies.ts` — `EnemyDrop`, `EnemyLocation`, `EnemyCombatStats` interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only; not in random events yet). Combat tab: "Found in" shown when enemy has locations.
 - **Login bonus toast:** FeedbackToast (lucky type) on claim — "Day X Login Bonus!" with reward amount. Success haptic.
+- **Haptics:** Skill pill tap (implemented skills), Bank Sell/filter chips, Shop Buy/Sell, Sell All Junk. Light/Medium impact per action.
+- **Soundscapes stub:** `useIdleSoundscape` wired to all 7 skill screens; SoundscapeId includes smithing, forging, cooking. Ambient loops still "Coming soon."
 
 ### Changed
+- **Companion unlocks:** Website and design docs use Leadership skill levels (Barnaby 20, Yvette 35, Reginald 50) instead of vague "Level 20."
+- **README:** Modernized layout, v0.4.1 content, cleaner feature tables and quick start.
+- **Bank item detail:** "Used in: Mining, Smithing" (etc.) per item type. Stale Phase comments removed (bank, index).
+- **Combat teaser:** "Goblin spotted first. Loadouts, weapon stats, and more enemies coming soon."
 - **Shop Sell:** Added Food filter to SELL_FILTERS (cooked food sellable).
 - **HorizonHUD Grind:** Label "Lv. X → Lv. Y"; subtext "X/Y levels" for clearer progress.
 - **Login bonus banner:** Shows reward in header text — "Day 3 — Claim 300 gp!" or "Day 7 — Claim 500 gp + 10 Lumina!" before claiming.

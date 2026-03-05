@@ -24,6 +24,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
@@ -54,6 +55,7 @@ function minBatchesAffordable(inventory: { id: string; quantity: number }[], rec
 }
 
 export default function SmithingScreen() {
+    useIdleSoundscape('smithing');
     const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();

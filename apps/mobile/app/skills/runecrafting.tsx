@@ -19,6 +19,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
@@ -56,6 +57,7 @@ function groupByEssence(altars: RuneAltar[]): Tier[] {
 const TIERS = groupByEssence(RUNE_ALTARS);
 
 export default function RunecraftingScreen() {
+    useIdleSoundscape('runecrafting');
     const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();

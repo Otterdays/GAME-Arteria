@@ -36,6 +36,7 @@
 | 2026-02-26 | expo-constants                 | 18.0.13   | 55.0.7    | Jan 2026             | App constants (version, etc.)          |
 | 2026-02-26 | expo-dev-client                | 6.0.20    | 55.0.9    | Jan 2026             | Custom dev build client                |
 | 2026-02-26 | expo-font                       | 14.0.11   | 55.0.4    | Jan 2026             | Custom font loading                    |
+| 2026-03-05 | expo-audio                      | ~55.0.8   | (SDK 55)  | Jan 2026             | Audio playback (SFX: tink, thump, splash) |
 | 2026-02-26 | expo-haptics                    | 15.0.8    | 55.0.8    | Jan 2026             | Haptic feedback                        |
 | 2026-02-26 | expo-image                      | 3.0.11    | 55.0.5    | Jan 2026             | Image component                        |
 | 2026-02-27 | expo-linear-gradient           | 14.0.2    | 55.0.4    | Jan 2026             | Gradient backgrounds                   |

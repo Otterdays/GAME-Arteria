@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
@@ -30,6 +31,7 @@ function xpForLevel(level: number): number {
 }
 
 export default function MiningScreen() {
+    useIdleSoundscape('mining');
     const { palette } = useTheme();
     const { showFeedbackToast } = useFeedbackToast();
     const dispatch = useAppDispatch();

@@ -14,6 +14,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 SplashScreen.preventAutoHideAsync();
 import { store } from '@/store';
 import { useGameLoop } from '@/hooks/useGameLoop';
+import { useSfx } from '@/utils/sounds';
 import { usePersistence } from '@/hooks/usePersistence';
 import UpdateBoard from '@/components/UpdateBoard';
 import WhileYouWereAway from '@/components/WhileYouWereAway';
@@ -67,7 +68,8 @@ function AppShell() {
     Cinzel_700Bold,
   });
 
-  useGameLoop();
+  const { playForSkill } = useSfx();
+  useGameLoop({ onTickComplete: playForSkill });
   usePersistence();
 
   useEffect(() => {

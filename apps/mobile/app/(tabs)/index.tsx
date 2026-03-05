@@ -89,11 +89,11 @@ function SkillBox({
   return (
     <BouncyButton
       scaleTo={0.92}
-      hapticFeedback={false}
+      hapticFeedback={isImplemented}
       onPress={() => isImplemented && onNavigate(skillId)}
       disabled={!isImplemented}
       accessibilityRole="button"
-      accessibilityLabel={`${meta.label}, level ${currentLevel} of 99. ${!isImplemented ? 'Coming in Phase 2' : ''}`}
+      accessibilityLabel={`${meta.label}, level ${currentLevel} of 99. ${!isImplemented ? 'Coming soon' : ''}`}
       style={[
         styles.skillBox,
         isActive && styles.skillBoxActive,

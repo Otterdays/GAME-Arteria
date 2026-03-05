@@ -42,11 +42,11 @@
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.4.1** "The Anchor Man" (Cooking, Bestiary stub, Goblin, main character). Post-0.4.1 polish + bestiary groundwork (2026-03-04).
+**Version scheme:** 0.x.x. Current **0.4.1** "The Anchor Man" (Cooking, Bestiary stub, Goblin, main character). Post-0.4.1: polish, bestiary groundwork, docs viewer, companion Leadership unlocks, SFX (tink/thump/splash), Test sound in Settings (2026-03-04–05).
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**Post-0.4.1 (2026-03-04) — Polish & Bestiary groundwork:** index.html Cooking card. Shop Sell: Food filter. HorizonHUD Grind: "Lv. X → Lv. Y", "X/Y levels". Bestiary: EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin combat/drops/locations; Slime/Wolf placeholders; Combat "Found in". **Login bonus UX:** Banner shows reward ("Day 3 — Claim 300 gp!"); FeedbackToast (lucky) on claim.
+**Post-0.4.1 (2026-03-04–05):** **SFX:** expo-audio, generated tink/thump/splash WAVs (`scripts/generate-sounds.js`), `utils/sounds.ts` (`useSfx`, `playForSkill`), play on skill tick via `useGameLoop` `onTickComplete`; Settings → Audio "Test sound" row. **Docs viewer:** index.html Docs nav opens in-page modal (marked.js, sidebar: Summary, Roadmap, Architecture, etc.). **Companions:** COMPANIONS.md; Leadership-based unlocks (Barnaby 20, Yvette 35, Reginald 50); companion leveling design. **Polish:** Bank "Used in", Combat teaser, idle cap notification fix (cancel on mount when active). **Bestiary groundwork:** EnemyDrop/Location/CombatStats; Goblin/Slime/Wolf. **Login bonus UX:** Banner reward text; FeedbackToast on claim.
 
 **v0.4.1 (2026-03-03) — The Anchor Man:** Main character & nickname (The Anchor, NameEntryModal, Settings → Character). Goblin first random enemy + GoblinPeekModal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix (ScrollView).
 

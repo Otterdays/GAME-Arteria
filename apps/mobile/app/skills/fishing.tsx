@@ -18,6 +18,7 @@ import { SmoothProgressBar } from '@/components/SmoothProgressBar';
 import { BouncyButton } from '@/components/BouncyButton';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 
 const TOOL_LABEL: Record<FishingSpot['tool'], string> = {
     net: 'Small Net',
@@ -46,6 +47,7 @@ function groupByArea(spots: FishingSpot[]): { area: string; spots: FishingSpot[]
 const AREA_GROUPS = groupByArea(FISHING_SPOTS);
 
 export default function FishingScreen() {
+    useIdleSoundscape('fishing');
     const { palette } = useTheme();
     const { showFeedbackToast } = useFeedbackToast();
     const dispatch = useAppDispatch();

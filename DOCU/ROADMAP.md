@@ -122,6 +122,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ### 🎨 VFX & Feedback
 - [x] 🟡 **N. XP Floating Pop-ups** — When XP is gained, show a floating `+XP [Icon]` animation below the XP bar areas. (Includes node icon!)
 - [x] 🟢 **O. XP Bar "Pulse"** — Subtle glow or flash effect on the XP bar fill when it moves.
+- [x] 🟢 **SFX (tick sounds)** — Tink/thump/splash play on skill tick (expo-audio, `utils/sounds.ts`, `useGameLoop` onTickComplete). Settings → Test sound. (2026-03-05)
 
 ### ⚡ Juice & Polish (QoL Backlog)
 - [x] 🟢 **P. Haptic Heartbeat** — Subtle haptic pulse when a progress bar reaches 100% and resets.

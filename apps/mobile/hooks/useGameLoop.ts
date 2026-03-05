@@ -123,7 +123,12 @@ COOKING_RECIPES.forEach((recipe) => {
 
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
-export function useGameLoop() {
+export interface UseGameLoopOptions {
+    /** Called when ticks complete successfully (for SFX). Once per processDelta. */
+    onTickComplete?: (skillId: string) => void;
+}
+
+export function useGameLoop(options?: UseGameLoopOptions) {
     const dispatch = useAppDispatch();
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
     const lastSaveTimestamp = useAppSelector((s) => s.game.player.lastSaveTimestamp);
@@ -150,6 +155,8 @@ export function useGameLoop() {
     activeSkillLevelRef.current = activeSkillLevel;
     const skillsRef = useRef(skills);
     skillsRef.current = skills;
+    const onTickCompleteRef = useRef(options?.onTickComplete);
+    onTickCompleteRef.current = options?.onTickComplete;
 
     // Process a delta of time.
     // If accumulator is passed, results are added into it instead of dispatching immediately.
@@ -315,6 +322,8 @@ export function useGameLoop() {
                     dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Cosmic Sneeze!' }));
                 }
                 dispatch(gameActions.addItems(items));
+
+                onTickCompleteRef.current?.(skillId);
 
                 // If accumulating for an offline report, add effective XP (reducer applies Patron multiplier)
                 if (accumulator) {

@@ -12,6 +12,7 @@ import { MASTERY_UPGRADES } from '@/constants/mastery';
 import { SKILL_META } from '@/constants/skills';
 import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
 import { getDisplayName, PROTAGONIST_CANONICAL_NAME } from '@/constants/character';
+import { useSfx } from '@/utils/sounds';
 
 function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsStyles> }) {
     const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
@@ -319,6 +320,7 @@ export default function SettingsScreen() {
     const idleSoundscapesEnabled = useAppSelector(
         (s) => s.game.player.settings?.idleSoundscapesEnabled ?? false
     );
+    const { playTink, playThump, playSplash } = useSfx();
     const dontPushCount = useAppSelector((s) => s.game.player.dontPushCount ?? 0);
     const unlockedTitles = useAppSelector((s) => s.game.player.unlockedTitles ?? []);
     const hasStubbornTitle = unlockedTitles.includes('The Stubborn');
@@ -482,8 +484,23 @@ export default function SettingsScreen() {
                     label="Idle Soundscapes"
                     value={idleSoundscapesEnabled}
                     onValueChange={(v) => dispatch(gameActions.setIdleSoundscapesEnabled(v))}
-                    description="Ambient loops per skill — coming soon"
+                    description="Ambient loops per skill (planned). SFX (tink/thump/splash) play on tick."
                 />
+                <Pressable
+                    style={[styles.row, { borderTopWidth: 1, borderTopColor: palette.divider }]}
+                    onPress={() => {
+                        playTink();
+                        setTimeout(() => playThump(), 150);
+                        setTimeout(() => playSplash(), 300);
+                    }}
+                    android_ripple={{ color: palette.bgCardHover }}
+                >
+                    <View style={styles.rowInfo}>
+                        <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Test sound</Text>
+                        <Text style={styles.rowDesc}>Play tink, thump, splash</Text>
+                    </View>
+                    <Text style={styles.arrow}>›</Text>
+                </Pressable>
                 </View>
             </View>
 

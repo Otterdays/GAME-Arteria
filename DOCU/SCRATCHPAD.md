@@ -5,7 +5,24 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** None. Login bonus UX improved. Phase 3–4 theming complete.
+**Active Task:** None. SFX (tink/thump/splash) and Test sound in Settings done. Docs updated.
+
+## [2026-03-05] SFX — real tink, thump, splash
+- **expo-audio:** Added and configured in app.json. SBOM updated.
+- **WAV assets:** `scripts/generate-sounds.js` generates tink (700Hz), thump (120Hz), splash (noise+tail) to `assets/sounds/*.wav`. Run: `node scripts/generate-sounds.js` from apps/mobile.
+- **utils/sounds.ts:** `useSfx()` with `playTink`, `playThump`, `playSplash`, `playForSkill(skillId)`. Respects `settings.sfxEnabled`. Skill mapping: mining/smithing/forging/runecrafting → tink; logging/cooking → thump; fishing → splash.
+- **useGameLoop:** Optional `onTickComplete(skillId)` callback; ref-stable via `onTickCompleteRef` so processDelta deps stay minimal.
+- **_layout.tsx:** `useSfx()` + `useGameLoop({ onTickComplete: playForSkill })` so SFX play on each skill tick.
+- **Settings → Audio:** "Test sound" row — tap to play tink, thump, splash in sequence. Verifies SFX without waiting for ticks.
+
+## [2026-03-04] Haptics + Soundscapes
+- **Haptics:** Skill pill tap (when implemented), Bank Sell 1/All/Junk + filter chips, Shop Buy + qty chips + Sell 1/All. Light/Medium per action.
+- **Soundscapes:** useIdleSoundscape wired to all 7 skill screens (mining, logging, fishing, runecrafting, smithing, forging, cooking). SoundscapeId expanded. Hook still stub; Settings description "Coming soon."
+
+## [2026-03-04] Polish batch (curiosity pass)
+- **Bank item detail:** Added "Used in: Mining, Smithing" (etc.) per item type. IMPROVEMENTS #6 done.
+- **Stale comments:** bank.tsx Phase 1.3 → current; index.tsx "Coming in Phase 2" → "Coming soon".
+- **Combat teaser:** "Goblin spotted first. Loadouts, weapon stats, and more enemies coming soon."
 
 ## [2026-03-04] Idle cap notification fix
 - **Bug:** 24h max collection reminder showed up even after user was in app multiple times.

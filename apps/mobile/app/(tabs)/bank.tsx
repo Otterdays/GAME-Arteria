@@ -1,8 +1,6 @@
 /**
- * bank.tsx — Phase 1.3
- *
- * Full Bank & Inventory UI.
- * Z. Search + filters (Ore, Bar, Other).
+ * bank.tsx — Bank & Inventory UI.
+ * Search, filters (Ore, Bar, Log, Fish, Food, Runes, Equipment, Other), custom tabs, Sell All Junk.
  */
 import React, { useState, useMemo, useCallback } from 'react';
 import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
@@ -18,11 +16,28 @@ import {
     Pressable,
     ListRenderItemInfo,
     TextInput,
+    Platform,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
 import { getItemMeta, type ItemType } from '@/constants/items';
+
+/** Skills that use this item type. Improves discovery. */
+function getUsedInSkills(type: ItemType): string {
+    const map: Record<ItemType, string> = {
+        ore: 'Mining, Smithing',
+        bar: 'Smithing, Forging',
+        log: 'Logging',
+        fish: 'Fishing, Cooking',
+        food: 'Cooking',
+        rune: 'Runecrafting',
+        equipment: 'Forging',
+        other: '',
+    };
+    return map[type] ?? '';
+}
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, InventoryItem } from '@/store/gameSlice';
@@ -76,6 +91,11 @@ function ItemDetailModal({
                     <Text style={styles.detailEmoji}>{meta.emoji}</Text>
                     <Text style={styles.detailName}>{meta.label}</Text>
                     <Text style={styles.detailDesc}>{meta.description}</Text>
+                    {getUsedInSkills(meta.type) ? (
+                        <Text style={[styles.detailStatLabel, { marginTop: 4 }]}>
+                            Used in: {getUsedInSkills(meta.type)}
+                        </Text>
+                    ) : null}
 
                     <View style={styles.detailSeparator} />
 
@@ -102,7 +122,10 @@ function ItemDetailModal({
                         <TouchableOpacity
                             style={[styles.detailSellButton, item.isLocked && styles.detailSellButtonDisabled]}
                             disabled={item.isLocked}
-                            onPress={() => dispatch(gameActions.sellItem({ id: item.id, quantity: 1, pricePer: meta.sellValue }))}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                dispatch(gameActions.sellItem({ id: item.id, quantity: 1, pricePer: meta.sellValue }));
+                            }}
                             activeOpacity={0.8}
                         >
                             <Text style={styles.detailSellText}>Sell 1</Text>
@@ -112,6 +135,7 @@ function ItemDetailModal({
                             style={[styles.detailSellButton, item.isLocked && styles.detailSellButtonDisabled]}
                             disabled={item.isLocked}
                             onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                                 dispatch(gameActions.sellItem({ id: item.id, quantity: item.quantity, pricePer: meta.sellValue }));
                                 onClose();
                             }}
@@ -587,7 +611,10 @@ export default function BankScreen() {
                     {hasJunkToSell && (
                         <TouchableOpacity
                             style={[styles.goldBadge, { borderColor: palette.red, marginBottom: 4 }]}
-                            onPress={() => dispatch(gameActions.sellAllJunk())}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                dispatch(gameActions.sellAllJunk());
+                            }}
                             activeOpacity={0.8}
                         >
                             <Text style={[styles.goldText, { color: palette.red }]}>Sell All Junk</Text>
@@ -638,7 +665,10 @@ export default function BankScreen() {
                             <TouchableOpacity
                                 key={opt.key}
                                 style={[styles.filterChip, isActive && styles.filterChipActive]}
-                                onPress={() => setFilter(opt.key)}
+                                onPress={() => {
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    setFilter(opt.key);
+                                }}
                                 activeOpacity={0.7}
                             >
                                 <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
@@ -653,7 +683,10 @@ export default function BankScreen() {
                             <TouchableOpacity
                                 key={tab.id}
                                 style={[styles.filterChip, isActive && styles.filterChipActive]}
-                                onPress={() => setFilter(tab.id)}
+                                onPress={() => {
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    setFilter(tab.id);
+                                }}
                                 activeOpacity={0.7}
                             >
                                 <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
@@ -664,7 +697,10 @@ export default function BankScreen() {
                     })}
                     <TouchableOpacity
                         style={styles.filterChip}
-                        onPress={() => setManageTabsOpen(true)}
+                        onPress={() => {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setManageTabsOpen(true);
+                        }}
                         activeOpacity={0.7}
                     >
                         <Text style={styles.filterChipText}>+ Tabs</Text>
