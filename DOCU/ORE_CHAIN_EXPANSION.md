@@ -12,7 +12,7 @@
 |-------|---------|------|
 | **Mining** | 8 ore nodes (Copper→Runite), 3 essence nodes. **Gems:** Sapphire, Emerald, Ruby, Diamond (rare drops). | No pickaxe; no vein depletion; no fuel crossover. |
 | **Smithing** | 7 smelt recipes (Bronze→Runite). Iron = 1 ore; Steel = 1 iron + 2 coal; Gold/Mithril/Adamant/Runite use coal. | No Logging fuel; no Scavenging recycling; no Heat Management. |
-| **Forging** | 36 recipes: dagger, sword, half helmet, full helmet, platebody, shield × 6 tiers (Bronze→Runite). Runite story-gated. | No Equipment Quirks. |
+| **Forging** | 54 recipes: dagger, shortsword, longsword, scimitar, 2H Longblade, half helmet, full helmet, platebody, shield × 6 tiers (Bronze→Runite). Runite story-gated. | No Equipment Quirks. |
 
 ---
 

@@ -47,7 +47,7 @@ const ALL_SKILLS: SkillId[] = [
   'defence', 'herblore', 'fishing',
   'scavenging', 'cooking', 'logging',
   'harvesting', 'crafting', 'farming',
-  'runecrafting', 'thieving',
+  'runecrafting', 'thieving', 'fletching', 'tailoring',
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

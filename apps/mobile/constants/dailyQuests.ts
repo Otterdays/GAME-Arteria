@@ -41,6 +41,7 @@ export const DAILY_QUEST_TEMPLATES: DailyQuestTemplate[] = [
     { id: 'dq_cooked_salmon', itemId: 'cooked_salmon', quantityMin: 4, quantityMax: 12, rewardGold: 130, label: 'Cook Salmon' },
     // Forging
     { id: 'dq_bronze_dagger', itemId: 'bronze_dagger', quantityMin: 3, quantityMax: 8, rewardGold: 95, label: 'Forge Bronze Daggers' },
+    { id: 'dq_bronze_shortsword', itemId: 'bronze_shortsword', quantityMin: 2, quantityMax: 6, rewardGold: 110, label: 'Forge Bronze Shortswords' },
     { id: 'dq_iron_dagger', itemId: 'iron_dagger', quantityMin: 2, quantityMax: 6, rewardGold: 125, label: 'Forge Iron Daggers' },
     // Harvesting
     { id: 'dq_wheat', itemId: 'wheat', quantityMin: 15, quantityMax: 35, rewardGold: 45, label: 'Harvest Wheat' },

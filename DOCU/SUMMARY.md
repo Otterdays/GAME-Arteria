@@ -32,7 +32,8 @@
 | **CURRENT_IMPROVEMENTS.md** | Expansion opportunities using existing systems — what to add next without new architecture. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
 | **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. Patches, courses, targets, recipes. Implementation order. |
-| **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, more equipment types, gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
+| **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
+| **FLETCHING_TAILORING.md** | Future skills: Fletching (arrows, bows from logs) and Tailoring (gloves, hats, shoes, boots from cloth). Implementation order, data structures, crossover. |
 | **MASTER_DESIGN_DOC.md** | **v2.0 — The Expanded Cosmos.** Comprehensive GDD organized in 7 Parts, 21 Chapters. **New Chapter 2: Skills Overview** — complete encyclopedia of 10 implemented + 7 coming soon + 8+ planned skills with detailed descriptions, crossover connections, and pets. New systems: Absurdity/Chaos Theory, World State/Corruption, Prestige/Transcendence, Housing/Sanctum, Chronicle System, Three Stomach consumption, Equipment Quirks.
 | **STYLE_GUIDE.md** | Project conventions: trace tags, limits, naming, touch targets, theming (useTheme + migration pattern). |
 | **THEMING.md** | Theme architecture: PaletteShape, THEMES registry, ThemeContext, migration path. |
@@ -53,7 +54,7 @@
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
-**Post-0.5.0 (2026-03-05):** **v0.5.0 Big Weeds Update:** Runite forging (6 equipment types per tier), rare mining gems (Sapphire→Diamond). Harvesting, Scavenging, Herblore, Bank OSRS redesign (Main + 6 tabs, long-press create, remember tab), World Exploration (6 locations, map, travel), Lumina Shop (Reroll Daily, XP Boost), Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0.
+**Post-0.5.0 (2026-03-05):** **v0.5.0 Big Weeds Update:** Forging weapon expansion (dagger, shortsword, longsword, scimitar, 2H Longblade + armour; 54 recipes). Fletching & Tailoring skills (planned, red ComingSoonBadge). Runite forging, rare mining gems (Sapphire→Diamond). Harvesting, Scavenging, Herblore, Bank OSRS redesign (Main + 6 tabs, long-press create, remember tab), World Exploration (6 locations, map, travel), Lumina Shop (Reroll Daily, XP Boost), Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0.
 
 **Post-0.4.3 (2026-03-05):** **Lumina Shop & Mastery:** Lumina Shop in Shop Buy tab: Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (+25%, 15 Lumina). Mastery: yield_bonus (+3%/level, max 3) for all 8 skills. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max buttons.
 

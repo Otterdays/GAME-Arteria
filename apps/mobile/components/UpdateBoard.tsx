@@ -187,12 +187,16 @@ export default function UpdateBoard() {
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🏷️ Coming Soon Badges</Text>
-                                    <Text style={styles.changeText}>• Red = planned, green = in progress. Unimplemented skills, locked locations, and Combat show status badges. Thieving added to the skill roster.</Text>
+                                    <Text style={styles.changeText}>• Red = planned, green = in progress. Unimplemented skills (Thieving, Fletching, Tailoring), locked locations, and Combat show status badges.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
-                                    <Text style={styles.changeHeader}>⚒️ Runite Forging & Gems</Text>
-                                    <Text style={styles.changeText}>• Runite tier: dagger, sword, half helmet, full helmet, platebody, shield. Story-gated. Swords, platebodies, shields for all metal tiers.</Text>
+                                    <Text style={styles.changeHeader}>⚒️ Forging & Gems</Text>
+                                    <Text style={styles.changeText}>• 5 weapon types: dagger, shortsword, longsword, scimitar, 2H Longblade + armour. 54 recipes across 6 tiers. Runite story-gated.</Text>
                                     <Text style={styles.changeText}>• Rare mining drops: Sapphire (Iron+), Emerald (Coal+), Ruby (Mithril+), Diamond (Adamant+). Bank → Other.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏹 Fletching & Tailoring</Text>
+                                    <Text style={styles.changeText}>• New planned skills on the Skills grid (red Coming Soon). Arrows/bows from logs; gloves/hats/shoes/boots from cloth.</Text>
                                 </View>
                             </>
                         ) : currentVersion.startsWith('0.4.4') ? (

@@ -348,7 +348,16 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const seenEnemies = saved.seenEnemies ?? [];
     const pets = saved.pets ?? { activePetId: null, unlocked: [] };
     const totalDailyQuestsCompleted = saved.totalDailyQuestsCompleted ?? 0;
-    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted };
+
+    // Migrate legacy *_sword items to *_shortsword (weapon expansion: sword → shortsword, longsword, scimitar, 2h_longblade)
+    const inventory = (saved.inventory ?? []).map((item) => {
+        if (item.id.endsWith('_sword') && !['raw_swordfish', 'cooked_swordfish'].includes(item.id)) {
+            return { ...item, id: item.id.replace(/_sword$/, '_shortsword') };
+        }
+        return item;
+    });
+
+    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
 }
 
 // ─── Slice ───

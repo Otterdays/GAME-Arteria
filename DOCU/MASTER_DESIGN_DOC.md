@@ -196,10 +196,11 @@ Transform raw materials into useful items. The crossover hub of the economy.
 - **Pet:** Ember — rare drop from smithing
 
 #### **⚒️ Forging — "The Hammer's Song"**
-> *"Give form to metal. Daggers, helmets, the tools of survival."*
+> *"Give form to metal. Daggers, blades, helmets, the tools of survival."*
 
 - **Core Mechanic:** **Pattern Mastery** — Active mini-game for perfect temperature/timing (quality bonus). Offline produces standard quality.
-- **Recipes:** Daggers, helmets (Bronze → Adamant tiers)
+- **Weapons:** Dagger (1 bar), Shortsword (2), Longsword (2), Scimitar (2), 2H Longblade (3). Per tier Bronze → Runite.
+- **Armour:** Half helmet, full helmet, platebody, shield. Runite tier narrative-gated.
 - **Equipment Quirks:** Forged items gain random "Cosmic Quirks" (e.g., "...of Talking to Squirrels")
 - **Mastery Bonuses:** +5% XP, +3% gear, +4% speed per level
 - **SFX:** Tink on tick
@@ -251,9 +252,9 @@ These skills are defined in code but not yet fully implemented with screens and 
 These skills are planned in design documents but not yet coded. They represent the full 25-skill vision.
 
 **Crafting Expansion:**
-- **Tailoring** — Magic robes, bags, fishing nets. Pattern mastery mini-game.
+- **Fletching** — Logs → arrow shafts, bow parts; shafts + feathers + metal tips → arrows; bows. Feeds Ranged. *See DOCU/FLETCHING_TAILORING.md.*
+- **Tailoring** — Cloth/fiber → gloves, hats, shoes, boots, robes. Light armour alternative to forged plate. *See DOCU/FLETCHING_TAILORING.md.*
 - **Alchemy** — Potions, bombs, transmutations. Volatility: catch unstable reactions.
-- **Fletching** — Arrows, bows, thrown weapons. Aerodynamics wind-adjustment mini-game.
 - **Construction** — Player housing, guild halls. Blueprint system requiring multiple skills.
 
 **Combat Expansion:**

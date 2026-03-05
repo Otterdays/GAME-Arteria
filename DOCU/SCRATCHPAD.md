@@ -5,13 +5,17 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** v0.5.0 shipped. Runite forging, gems, rare mining drops done. Ready for APK rebuild.
+**Active Task:** v0.5.0 shipped. Weapon expansion, Fletching/Tailoring skills, Runite forging, gems done. Ready for APK rebuild.
+
+## [2026-03-05] Weapon Expansion + Fletching & Tailoring
+- **Forging weapons:** Replaced generic sword with 5 types: dagger (1 bar), shortsword (2), longsword (2), scimitar (2), 2H Longblade (3). All tiers Bronze→Runite. 54 recipes total (9 equipment × 6 tiers). Migration: `*_sword` → `*_shortsword` in inventory.
+- **Fletching & Tailoring:** Added to SkillId, SKILL_META (🏹 #d35400, 🧵 #e91e63), ALL_SKILLS. Skills grid shows both with red ComingSoonBadge (planned). `DOCU/FLETCHING_TAILORING.md` — design for arrows/bows (logs) and gloves/hats/shoes/boots (cloth).
+- **Daily quest:** Forge Bronze Shortswords template added.
 
 ## [2026-03-05] Runite Forging + Gems + Rare Mining Drops
-- **Runite forging tier:** Dagger, sword, half helmet, full helmet, platebody, shield. Gated by `knows_about_sneeze_cult` (same as runite ore). `constants/forging.ts`, `app/skills/forging.tsx` (meetsNarrativeRequirement).
-- **More equipment types:** Sword (2 bars), platebody (3 bars), shield (2 bars) for Bronze, Iron, Steel, Mithril, Adamant. `constants/items.ts` — all new equipment entries.
+- **Runite forging tier:** Dagger, shortsword, longsword, scimitar, 2H Longblade, half helmet, full helmet, platebody, shield. Gated by `knows_about_sneeze_cult` (same as runite ore). `constants/forging.ts`, `app/skills/forging.tsx` (meetsNarrativeRequirement).
 - **Gems (mining rare drops):** Sapphire (Iron+ 2%), Emerald (Coal+ 1.5%), Ruby (Mithril+ 1%), Diamond (Adamant+ 0.5%). Per successful mining tick on ore nodes only (not essence). `useGameLoop.ts` gem roll logic; `items.ts` sapphire, emerald, ruby, diamond (type: other).
-- **Docs:** ORE_CHAIN_EXPANSION.md §2.1–2.3 implemented. Version remains 0.5.0.
+- **Docs:** ORE_CHAIN_EXPANSION.md §2.1–2.3 implemented. MASTER_DESIGN_DOC Forging section updated. Version remains 0.5.0.
 
 ## [2026-03-05] Skills Architecture + ComingSoonBadge
 - **SKILLS_ARCHITECTURE.md:** Pre-implementation design for Farming (patches, seeds, growth), Agility (courses, XP-only), Thieving (pickpocket/stalls, risk), Crafting (arrows, bags, jewelry). Implementation order: Agility → Thieving → Crafting → Farming.

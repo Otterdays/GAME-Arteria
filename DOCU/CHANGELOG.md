@@ -35,8 +35,9 @@
 - **Skills architecture:** `DOCU/SKILLS_ARCHITECTURE.md` — pre-implementation design for Farming, Agility, Thieving, Crafting. Patches, courses, targets, recipes. Implementation order: Agility → Thieving → Crafting → Farming.
 - **ComingSoonBadge:** Red (planned) or green (in progress) badge. Wired to Skills grid (unimplemented skills), Location screens, Explore (locked locations), Combat. Toggle via `SKILLS_IN_PROGRESS` / `FEATURES_IN_PROGRESS` in `constants/comingSoon.ts`.
 - **Thieving skill:** Added to `SkillId`, `SKILL_META` (🎭), theme. Shows on Skills grid with ComingSoonBadge until implemented.
-- **Runite forging tier:** Dagger, sword, half helmet, full helmet, platebody, shield. Narrative-gated (`knows_about_sneeze_cult`). Forging screen shows Story badge when locked.
-- **More forging equipment:** Sword (2 bars), platebody (3 bars), shield (2 bars) for Bronze, Iron, Steel, Mithril, Adamant. All tiers now have 6 equipment types.
+- **Runite forging tier:** Dagger, shortsword, longsword, scimitar, 2H Longblade, half helmet, full helmet, platebody, shield. Narrative-gated (`knows_about_sneeze_cult`). Forging screen shows Story badge when locked.
+- **Forging weapon expansion:** 5 weapon types per tier (dagger 1 bar, shortsword/longsword/scimitar 2 bars, 2H Longblade 3 bars). 54 recipes total. Migration: legacy `*_sword` inventory items → `*_shortsword`.
+- **Fletching & Tailoring skills:** Added to SkillId, SKILL_META (🏹 Fletching, 🧵 Tailoring). Skills grid shows both with red ComingSoonBadge. `DOCU/FLETCHING_TAILORING.md` — design for arrows/bows (logs) and gloves/hats/shoes/boots (cloth).
 - **Gems (mining rare drops):** Sapphire (Iron+ 2%), Emerald (Coal+ 1.5%), Ruby (Mithril+ 1%), Diamond (Adamant+ 0.5%). Per successful mining tick on ore nodes only. Bank → Other filter. Per ORE_CHAIN_EXPANSION.md §2.3.
 
 ### Changed
