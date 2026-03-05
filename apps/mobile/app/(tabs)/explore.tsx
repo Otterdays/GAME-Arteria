@@ -1,112 +1,166 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+/**
+ * World Map — Explore Valdoria. Tap a location to travel (instant).
+ * [TRACE: DOCU/WORLD_EXPLORATION.md]
+ */
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzelBold } from '@/constants/theme';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAppSelector } from '@/store/hooks';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { LOCATIONS, meetsLocationRequirement } from '@/constants/locations';
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
+function getLockReason(loc: (typeof LOCATIONS)[0]): string {
+    switch (loc.unlockType) {
+        case 'quest':
+            return `Requires: ${loc.unlockValue}`;
+        case 'level':
+            return `Requires level ${loc.unlockValue}`;
+        case 'calendar':
+            return loc.unlockValue === 'dec' ? 'Visit during Voidmas (December)' : 'Seasonal';
+        case 'event':
+            return 'Opens during events';
+        default:
+            return '';
+    }
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
+function createStyles(palette: Record<string, string>) {
+    return StyleSheet.create({
+        container: { flex: 1, backgroundColor: palette.bgApp },
+        header: {
+            padding: Spacing.md,
+            paddingBottom: Spacing.sm,
+            backgroundColor: palette.bgCard,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.border,
+        },
+        headerTitle: {
+            fontFamily: FontCinzelBold,
+            fontSize: FontSize.xl,
+            color: palette.textPrimary,
+        },
+        headerSubtitle: {
+            fontSize: FontSize.sm,
+            color: palette.textSecondary,
+            marginTop: 2,
+        },
+        scrollContent: {
+            padding: Spacing.md,
+            paddingBottom: Spacing['2xl'],
+        },
+        locationCard: {
+            backgroundColor: palette.bgCard,
+            ...CardStyle,
+            borderColor: palette.border,
+            padding: Spacing.md,
+            marginBottom: Spacing.sm,
+        },
+        locationCardLocked: {
+            opacity: 0.7,
+            borderStyle: 'dashed',
+        },
+        locationHeader: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: Spacing.sm,
+            marginBottom: 4,
+        },
+        locationEmoji: { fontSize: 32 },
+        locationName: {
+            fontFamily: FontCinzelBold,
+            fontSize: FontSize.lg,
+            color: palette.textPrimary,
+            flex: 1,
+        },
+        locationDesc: {
+            fontSize: FontSize.sm,
+            color: palette.textSecondary,
+            marginBottom: 4,
+        },
+        lockBadge: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4,
+            marginTop: 4,
+        },
+        lockText: {
+            fontSize: FontSize.xs,
+            color: palette.textMuted,
+            fontStyle: 'italic',
+        },
+        youAreHere: {
+            fontSize: FontSize.xs,
+            fontWeight: '700',
+            color: palette.accentPrimary,
+            marginTop: 4,
+        },
+    });
+}
+
+export default function ExploreScreen() {
+    const router = useRouter();
+    const insets = useSafeAreaInsets();
+    const { palette } = useTheme();
+    const player = useAppSelector((s) => s.game.player);
+    const styles = useMemo(() => createStyles(palette), [palette]);
+
+    return (
+        <View style={[styles.container, { paddingTop: insets.top }]}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>World Map</Text>
+                <Text style={styles.headerSubtitle}>Tap a location to travel. Where do you want to be?</Text>
+            </View>
+
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+            >
+                {LOCATIONS.map((loc) => {
+                    const unlocked = meetsLocationRequirement(player, loc);
+                    const isCrownlands = loc.id === 'crownlands';
+
+                    return (
+                        <Pressable
+                            key={loc.id}
+                            style={({ pressed }) => [
+                                styles.locationCard,
+                                !unlocked && styles.locationCardLocked,
+                                { opacity: pressed ? 0.85 : 1 },
+                            ]}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                }
+                                router.push(`/location/${loc.id}`);
+                            }}
+                        >
+                            <View style={styles.locationHeader}>
+                                <Text style={styles.locationEmoji}>{loc.emoji}</Text>
+                                <Text style={styles.locationName}>{loc.name}</Text>
+                                {!unlocked && (
+                                    <IconSymbol name="lock.fill" size={18} color={palette.textMuted} />
+                                )}
+                            </View>
+                            <Text style={styles.locationDesc}>{loc.description}</Text>
+                            {unlocked && isCrownlands && (
+                                <Text style={styles.youAreHere}>You are here</Text>
+                            )}
+                            {!unlocked && (
+                                <View style={styles.lockBadge}>
+                                    <IconSymbol name="clock" size={14} color={palette.textMuted} />
+                                    <Text style={styles.lockText}>{getLockReason(loc)}</Text>
+                                </View>
+                            )}
+                        </Pressable>
+                    );
+                })}
+            </ScrollView>
+        </View>
+    );
+}

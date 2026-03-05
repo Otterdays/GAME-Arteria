@@ -151,14 +151,21 @@ export interface PlayerState {
             completed: boolean;
         }>;
     };
-    /** Custom bank tabs: user-created tabs with name, emoji, and assigned item IDs. */
+    /** Custom bank tabs: user-created tabs with name, emoji, and assigned item IDs. Max 6 (OSRS-style). */
     customBankTabs?: Array<{ id: string; name: string; emoji: string; itemIds: string[] }>;
+    /** Last selected bank tab id ('main' or custom tab id). Restored on next open. */
+    lastBankTab?: string;
     /** Item IDs the player has marked as junk (for "Sell All Junk"). */
     junkItemIds?: string[];
     /** Login bonus: last claim date (YYYY-MM-DD), consecutive day count (1–7). */
     loginBonus?: { lastClaimDate: string | null; consecutiveDays: number };
-    /** Premium currency (Lumina). Earned from login bonus day 7, future shop. */
+    /** Premium currency (Lumina). Earned from login bonus day 7, Lumina Shop. */
     lumina?: number;
+    /** Lumina Shop: rerolls used today (resets at midnight). */
+    luminaShopRerollsUsedToday?: number;
+    luminaShopRerollDate?: string;
+    /** XP boost from Lumina Shop: expires at timestamp. */
+    xpBoostExpiresAt?: number;
     /** Bestiary: enemy IDs the player has spotted (e.g. goblin_peek adds enemy_goblin). */
     seenEnemies?: string[];
     /** Skill pets unlocked and active. */
@@ -256,6 +263,7 @@ function createFreshPlayer(): PlayerState {
             lastPlayedAt: Date.now(),
         },
         customBankTabs: [],
+        lastBankTab: 'main',
         junkItemIds: [],
         loginBonus: { lastClaimDate: null, consecutiveDays: 0 },
         lumina: 0,
@@ -327,10 +335,13 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const junkItemIds = saved.junkItemIds ?? [];
     const loginBonus = saved.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 };
     const lumina = saved.lumina ?? 0;
+    const luminaShopRerollsUsedToday = saved.luminaShopRerollsUsedToday ?? 0;
+    const luminaShopRerollDate = saved.luminaShopRerollDate;
+    const xpBoostExpiresAt = saved.xpBoostExpiresAt;
     const name = saved.name ?? '';
     const seenEnemies = saved.seenEnemies ?? [];
     const pets = saved.pets ?? { activePetId: null, unlocked: [] };
-    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, junkItemIds, loginBonus, lumina, seenEnemies, pets };
+    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets };
 }
 
 // ─── Slice ───
@@ -485,12 +496,13 @@ export const gameSlice = createSlice({
             state.player.activeTask = null;
         },
 
-        /** Apply XP gains from a tick result (auto-computes level). Patron gets +20%. */
+        /** Apply XP gains from a tick result (auto-computes level). Patron gets +20%. Lumina XP boost +25%. */
         applyXP(state, action: PayloadAction<{ skillId: SkillId; xp: number }>) {
             const { skillId, xp } = action.payload;
             const masteryMult = getMasteryXpMultiplier(state.player, skillId);
             const xpMultiplier = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
-            const effectiveXp = Math.floor(xp * masteryMult * xpMultiplier);
+            const luminaXpBoost = (state.player.xpBoostExpiresAt && state.player.xpBoostExpiresAt > Date.now()) ? 1.25 : 1;
+            const effectiveXp = Math.floor(xp * masteryMult * xpMultiplier * luminaXpBoost);
             const skill = state.player.skills[skillId];
             if (skill) {
                 const oldLevel = skill.level;
@@ -888,10 +900,21 @@ export const gameSlice = createSlice({
             if (state.player.stats) state.player.stats.lastPlayedAt = Date.now();
         },
 
-        // ─── Custom Bank Tabs ───
+        // ─── Custom Bank Tabs (max 6, OSRS-style) ───
         addCustomBankTab(state, action: PayloadAction<{ id: string; name: string; emoji: string }>) {
             const tabs = state.player.customBankTabs ?? [];
+            if (tabs.length >= 6) return;
             state.player.customBankTabs = [...tabs, { ...action.payload, itemIds: [] }];
+        },
+        /** Create a new tab and assign one item (e.g. long-press "Put in new tab"). Max 6 tabs. */
+        addCustomBankTabWithItem(state, action: PayloadAction<{ id: string; name: string; emoji: string; itemId: string }>) {
+            const tabs = state.player.customBankTabs ?? [];
+            if (tabs.length >= 6) return;
+            const { id, name, emoji, itemId } = action.payload;
+            state.player.customBankTabs = [...tabs, { id, name, emoji, itemIds: [itemId] }];
+        },
+        setLastBankTab(state, action: PayloadAction<string>) {
+            state.player.lastBankTab = action.payload;
         },
         removeCustomBankTab(state, action: PayloadAction<string>) {
             state.player.customBankTabs = (state.player.customBankTabs ?? []).filter((t) => t.id !== action.payload);
@@ -949,6 +972,27 @@ export const gameSlice = createSlice({
         // ─── Lumina ───
         addLumina(state, action: PayloadAction<number>) {
             state.player.lumina = (state.player.lumina ?? 0) + action.payload;
+        },
+        spendLumina(state, action: PayloadAction<number>) {
+            const current = state.player.lumina ?? 0;
+            if (current >= action.payload) {
+                state.player.lumina = current - action.payload;
+            }
+        },
+        /** Track Lumina Shop reroll usage (per day). */
+        incrementLuminaRerollsUsed(state) {
+            const today = new Date().toISOString().slice(0, 10);
+            const stored = state.player.luminaShopRerollDate;
+            if (stored !== today) {
+                state.player.luminaShopRerollsUsedToday = 1;
+                state.player.luminaShopRerollDate = today;
+            } else {
+                state.player.luminaShopRerollsUsedToday = (state.player.luminaShopRerollsUsedToday ?? 0) + 1;
+            }
+        },
+        /** Set XP boost expiry (Lumina Shop). */
+        setXpBoostExpiresAt(state, action: PayloadAction<number>) {
+            state.player.xpBoostExpiresAt = action.payload;
         },
 
         // ─── Dialogue Modals ───

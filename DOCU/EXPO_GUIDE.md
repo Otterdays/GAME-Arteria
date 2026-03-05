@@ -78,6 +78,19 @@ Because we deleted the `android/` folder, we don't build the app locally on your
 
 *Note on Monorepos: Because we are in a Monorepo (`packages/engine` and `apps/mobile`), EAS needs to know to install dependencies at the root level. If a build fails on "Install Dependencies", it's usually a monorepo root path issue.*
 
+### 4a. Play Store Build (AAB — no phone, no local SDK)
+
+**For Google Play Store submission:** Run `4_Build_Play_Store_Cloud.bat` or from `apps/mobile`:
+```bash
+npx eas-cli build -p android --profile production
+```
+
+- **No phone connected** — builds in Expo's cloud
+- **No local Android SDK** — everything runs on Expo servers
+- **Output:** AAB (Android App Bundle) — Google's required format for Play Store
+- **First run:** EAS will prompt for credentials; let EAS manage your keystore (recommended)
+- **After build:** Download the `.aab` from the EAS dashboard URL, upload to [Google Play Console](https://play.google.com/console)
+
 ### 4b. Local APK Build (primary when EAS is queued or credits exhausted)
 
 When EAS is unavailable (concurrency limit or credits exhausted), use the **local build** to produce a shareable APK on your machine.
@@ -153,6 +166,11 @@ This doesn't send code to players, only to the repository.
 *Use this when: You change TypeScript/JavaScript logic, UI components, colors, text, or styling.*
 EAS has a feature called **EAS Update** that bypasses App Store reviews! When returning players open the app, it pulls down your new JavaScript bundle instantly over Wi-Fi.
 * **Run:** `Update_2_EAS_OTA_Update.bat`
+
+**⚠️ OTA Runtime Version Workflow:**
+Because Arteria uses a "bare" workflow (the `android/` and `ios/` folders are generated locally to optimize ABI splits), we **cannot** use Expo's clever `{"policy": "appVersion"}` for `runtimeVersion`. We must use a static string like `"0.4.2"` in `app.json`.
+* **JS/UI Changes only:** Do **NOT** change the `runtimeVersion`. Just run the script. The update will go to everyone running the current version.
+* **Native Module/Library changes:** You MUST bump the `runtimeVersion` string manually in `app.json` (e.g. from `"0.4.2"` to `"0.4.3"`) **before** building a new APK. Then, when you push future OTAs, they will be tagged with `"0.4.3"` and only reach the new APK users, preventing crashes on the old ones.
 
 ### 3. Native App Store Updates 🏗️ (Slow, requires Review)
 *Use this when: You upgrade Expo SDK versions, install new libraries with native code (like adding a custom native module), change app icons, or change permissions.*

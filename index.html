@@ -40,7 +40,9 @@
       overflow-x: hidden;
     }
 
-    img, video, iframe {
+    img,
+    video,
+    iframe {
       max-width: 100%;
       height: auto;
     }
@@ -1078,10 +1080,25 @@
       border-radius: var(--radius-xl);
     }
 
-    .quest-diff.novice { background: rgba(34, 197, 94, 0.2); color: var(--green); }
-    .quest-diff.intermediate { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
-    .quest-diff.experienced { background: rgba(139, 92, 246, 0.2); color: var(--accent-2); }
-    .quest-diff.master { background: rgba(106, 13, 173, 0.2); color: #c4b5fd; }
+    .quest-diff.novice {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--green);
+    }
+
+    .quest-diff.intermediate {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--gold);
+    }
+
+    .quest-diff.experienced {
+      background: rgba(139, 92, 246, 0.2);
+      color: var(--accent-2);
+    }
+
+    .quest-diff.master {
+      background: rgba(106, 13, 173, 0.2);
+      color: #c4b5fd;
+    }
 
     .quest-card .quest-act {
       font-family: 'JetBrains Mono', monospace;
@@ -1378,6 +1395,7 @@
 
     /* Touch-friendly: prevent double-tap zoom on buttons/links (optional) */
     @media (hover: none) and (pointer: coarse) {
+
       .btn-primary,
       .btn-secondary,
       .nav-links a,
@@ -1389,13 +1407,15 @@
 
     /* ==================== DOCS VIEWER MODAL ==================== */
     .docs-overlay {
+      display: none;
       position: fixed;
       inset: 0;
-      z-index: 1000;
-      background: rgba(10, 11, 15, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      display: none;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
       opacity: 0;
       transition: opacity 0.25s ease;
     }
@@ -1407,11 +1427,11 @@
 
     .docs-modal {
       position: relative;
-      width: min(96vw, 1100px);
-      height: min(90vh, 700px);
-      max-height: 90vh;
+      width: min(96vw, 1200px);
+      height: min(92vh, 860px);
+      max-height: 92vh;
       margin: auto;
-      background: var(--bg-card);
+      background: rgba(12, 13, 18, 0.95);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.15);
@@ -1426,6 +1446,7 @@
         opacity: 0;
         transform: scale(0.96) translateY(10px);
       }
+
       to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -1438,7 +1459,7 @@
       justify-content: space-between;
       padding: var(--space-md) var(--space-lg);
       border-bottom: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(0, 0, 0, 0.3) 100%);
       flex-shrink: 0;
     }
 
@@ -1450,6 +1471,17 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .docs-title .doc-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-xl);
+      background: rgba(139, 92, 246, 0.18);
+      color: var(--accent-3);
+      border: 1px solid rgba(139, 92, 246, 0.25);
     }
 
     .docs-close {
@@ -1481,12 +1513,15 @@
     }
 
     .docs-sidebar {
-      width: 220px;
+      width: 260px;
       flex-shrink: 0;
       border-right: 1px solid var(--border);
       overflow-y: auto;
       padding: var(--space-md);
-      background: rgba(0, 0, 0, 0.15);
+      background: rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .docs-sidebar::-webkit-scrollbar {
@@ -1498,15 +1533,51 @@
       border-radius: 3px;
     }
 
+    .docs-search {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    .docs-search:focus {
+      border-color: var(--accent);
+    }
+
+    .docs-search::placeholder {
+      color: var(--text-3);
+    }
+
+    .docs-category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      padding: 10px 12px 4px;
+      margin-top: 4px;
+    }
+
     .docs-nav-item {
-      display: block;
-      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
       border-radius: var(--radius-sm);
       color: var(--text-2);
-      font-size: 0.875rem;
+      font-size: 0.84rem;
       text-decoration: none;
-      transition: color 0.2s, background 0.2s;
-      margin-bottom: 4px;
+      transition: color 0.15s, background 0.15s, transform 0.15s;
+      margin-bottom: 1px;
       cursor: pointer;
       border: none;
       width: 100%;
@@ -1514,9 +1585,17 @@
       font-family: inherit;
     }
 
+    .docs-nav-item .nav-emoji {
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      width: 20px;
+      text-align: center;
+    }
+
     .docs-nav-item:hover {
       color: var(--text-1);
       background: rgba(139, 92, 246, 0.1);
+      transform: translateX(2px);
     }
 
     .docs-nav-item.active {
@@ -1524,6 +1603,15 @@
       background: rgba(139, 92, 246, 0.15);
       border-left: 3px solid var(--accent);
       padding-left: 9px;
+      font-weight: 600;
+    }
+
+    .docs-nav-item.hidden {
+      display: none;
+    }
+
+    .docs-category.hidden {
+      display: none;
     }
 
     .docs-content {
@@ -1543,23 +1631,168 @@
       border-radius: 4px;
     }
 
-    .docs-content h1 { font-size: 1.6rem; margin: 0 0 0.75em; color: var(--text-1); }
-    .docs-content h2 { font-size: 1.3rem; margin: 1.25em 0 0.5em; color: var(--text-1); border-bottom: 1px solid var(--border); padding-bottom: 0.25em; }
-    .docs-content h3 { font-size: 1.1rem; margin: 1em 0 0.4em; color: var(--text-1); }
-    .docs-content p { margin: 0 0 1em; color: var(--text-2); }
-    .docs-content ul, .docs-content ol { margin: 0 0 1em; padding-left: 1.5em; color: var(--text-2); }
-    .docs-content li { margin-bottom: 0.35em; }
-    .docs-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
-    .docs-content pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-md); overflow-x: auto; margin: 0 0 1em; }
-    .docs-content pre code { padding: 0; background: none; border: none; }
-    .docs-content blockquote { border-left: 4px solid var(--accent); padding-left: var(--space-md); margin: 0 0 1em; color: var(--text-3); }
-    .docs-content table { width: 100%; border-collapse: collapse; margin: 0 0 1em; font-size: 0.9rem; }
-    .docs-content th, .docs-content td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; color: var(--text-2); }
-    .docs-content th { background: rgba(139, 92, 246, 0.1); color: var(--accent-2); font-weight: 600; }
-    .docs-content a { color: var(--accent-2); text-decoration: none; }
-    .docs-content a:hover { text-decoration: underline; }
+    .docs-content h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      margin: 0 0 0.75em;
+      color: var(--text-1);
+      background: linear-gradient(135deg, var(--text-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-    .docs-loading, .docs-error {
+    .docs-content h2 {
+      font-size: 1.25rem;
+      margin: 1.5em 0 0.5em;
+      color: var(--text-1);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.3em;
+    }
+
+    .docs-content h3 {
+      font-size: 1.05rem;
+      margin: 1em 0 0.4em;
+      color: var(--accent-3);
+    }
+
+    .docs-content h4 {
+      font-size: 0.95rem;
+      margin: 0.8em 0 0.3em;
+      color: var(--text-2);
+    }
+
+    .docs-content p {
+      margin: 0 0 1em;
+      color: var(--text-2);
+    }
+
+    .docs-content ul,
+    .docs-content ol {
+      margin: 0 0 1em;
+      padding-left: 1.5em;
+      color: var(--text-2);
+    }
+
+    .docs-content li {
+      margin-bottom: 0.35em;
+    }
+
+    .docs-content strong {
+      color: var(--text-1);
+    }
+
+    .docs-content code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      color: var(--accent-3);
+    }
+
+    .docs-content pre {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      overflow-x: auto;
+      margin: 0 0 1em;
+    }
+
+    .docs-content pre code {
+      padding: 0;
+      background: none;
+      border: none;
+      color: var(--text-2);
+    }
+
+    .docs-content blockquote {
+      border-left: 4px solid var(--accent);
+      padding: var(--space-sm) var(--space-md);
+      margin: 0 0 1em;
+      color: var(--text-3);
+      background: rgba(139, 92, 246, 0.04);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .docs-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 1.2em;
+      font-size: 0.87rem;
+    }
+
+    .docs-content th,
+    .docs-content td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+      color: var(--text-2);
+    }
+
+    .docs-content th {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--accent-2);
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .docs-content a {
+      color: var(--accent-2);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .docs-content a:hover {
+      color: var(--accent-3);
+      text-decoration: underline;
+    }
+
+    .docs-content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5em 0;
+    }
+
+    .docs-content img {
+      max-width: 100%;
+      border-radius: var(--radius-sm);
+    }
+
+    .docs-scroll-top {
+      position: absolute;
+      bottom: 20px;
+      right: 28px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+      transition: transform 0.2s, opacity 0.2s;
+      z-index: 10;
+    }
+
+    .docs-scroll-top:hover {
+      transform: scale(1.1);
+    }
+
+    .docs-scroll-top.visible {
+      display: flex;
+    }
+
+    .docs-loading,
+    .docs-error {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1607,26 +1840,43 @@
 
       .docs-sidebar {
         width: 100%;
-        max-height: 140px;
+        max-height: 180px;
         border-right: none;
         border-bottom: 1px solid var(--border);
-        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 4px;
         padding: var(--space-sm);
+        overflow-y: auto;
+      }
+
+      .docs-search {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .docs-category {
+        width: 100%;
+        padding: 6px 8px 2px;
+        margin-top: 2px;
       }
 
       .docs-nav-item {
-        display: inline-block;
+        display: inline-flex;
         width: auto;
-        padding: 6px 12px;
+        padding: 5px 10px;
         margin: 0;
+        font-size: 0.78rem;
+      }
+
+      .docs-nav-item .nav-emoji {
+        display: none;
       }
 
       .docs-nav-item.active {
         border-left: none;
         border-bottom: 2px solid var(--accent);
-        padding-left: 12px;
+        padding-left: 10px;
       }
     }
   </style>
@@ -1642,26 +1892,59 @@
   <div class="docs-overlay" id="docs-overlay" aria-hidden="true">
     <div class="docs-modal" role="dialog" aria-labelledby="docs-title" aria-modal="true">
       <div class="docs-header">
-        <span class="docs-title" id="docs-title">📚 Project Docs</span>
+        <span class="docs-title" id="docs-title">📚 Project Documentation <span class="doc-count">16 docs</span></span>
         <button type="button" class="docs-close" id="docs-close" aria-label="Close docs">×</button>
       </div>
       <div class="docs-body">
-        <nav class="docs-sidebar" aria-label="Documentation navigation">
-          <button class="docs-nav-item active" data-doc="SUMMARY.md">Summary</button>
-          <button class="docs-nav-item" data-doc="ROADMAP.md">Roadmap</button>
-          <button class="docs-nav-item" data-doc="ARCHITECTURE.md">Architecture</button>
-          <button class="docs-nav-item" data-doc="COMPANIONS.md">Companions</button>
-          <button class="docs-nav-item" data-doc="CHANGELOG.md">Changelog</button>
-          <button class="docs-nav-item" data-doc="STYLE_GUIDE.md">Style Guide</button>
-          <button class="docs-nav-item" data-doc="THEMING.md">Theming</button>
-          <button class="docs-nav-item" data-doc="IMPROVEMENTS.md">Improvements</button>
-          <button class="docs-nav-item" data-doc="SCRATCHPAD.md">Scratchpad</button>
+        <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+          <input type="text" class="docs-search" id="docs-search" placeholder="Search docs…" autocomplete="off" />
+
+          <div class="docs-category" data-category="design">🎮 Game Design</div>
+          <button class="docs-nav-item active" data-doc="MASTER_DESIGN_DOC.md" data-category="design"><span
+              class="nav-emoji">📖</span> Master Design Doc</button>
+          <button class="docs-nav-item" data-doc="COMPANIONS.md" data-category="design"><span
+              class="nav-emoji">🤝</span> Companions</button>
+          <button class="docs-nav-item" data-doc="WORLD_EXPLORATION.md" data-category="design"><span
+              class="nav-emoji">🗺️</span> World Exploration</button>
+          <button class="docs-nav-item" data-doc="STORYLINE.md" data-category="design"><span class="nav-emoji">📜</span>
+            Storyline</button>
+          <button class="docs-nav-item" data-doc="TRUTH_DOCTRINE.md" data-category="design"><span
+              class="nav-emoji">⚖️</span> Truth Doctrine</button>
+          <button class="docs-nav-item" data-doc="IMPROVEMENTS.md" data-category="design"><span
+              class="nav-emoji">✨</span> Improvements</button>
+          <button class="docs-nav-item" data-doc="CURRENT_IMPROVEMENTS.md" data-category="design"><span
+              class="nav-emoji">🔧</span> Current Systems</button>
+
+          <div class="docs-category" data-category="technical">⚙️ Technical</div>
+          <button class="docs-nav-item" data-doc="ARCHITECTURE.md" data-category="technical"><span
+              class="nav-emoji">🏗️</span> Architecture</button>
+          <button class="docs-nav-item" data-doc="STACK_ASSESSMENT.md" data-category="technical"><span
+              class="nav-emoji">📊</span> Stack Assessment</button>
+          <button class="docs-nav-item" data-doc="THEMING.md" data-category="technical"><span
+              class="nav-emoji">🎨</span> Theming</button>
+          <button class="docs-nav-item" data-doc="STYLE_GUIDE.md" data-category="technical"><span
+              class="nav-emoji">📐</span> Style Guide</button>
+          <button class="docs-nav-item" data-doc="EXPO_GUIDE.md" data-category="technical"><span
+              class="nav-emoji">📘</span> Expo Guide</button>
+          <button class="docs-nav-item" data-doc="FUTURE_NOTES.md" data-category="technical"><span
+              class="nav-emoji">🔮</span> Future Notes</button>
+
+          <div class="docs-category" data-category="development">📋 Development</div>
+          <button class="docs-nav-item" data-doc="SUMMARY.md" data-category="development"><span
+              class="nav-emoji">📄</span> Summary</button>
+          <button class="docs-nav-item" data-doc="ROADMAP.md" data-category="development"><span
+              class="nav-emoji">🗺️</span> Roadmap</button>
+          <button class="docs-nav-item" data-doc="CHANGELOG.md" data-category="development"><span
+              class="nav-emoji">📝</span> Changelog</button>
+
           <div class="docs-github-link">
-            <a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" rel="noopener">View all on GitHub ↗</a>
+            <a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" rel="noopener">View all
+              16 docs on GitHub ↗</a>
           </div>
         </nav>
-        <div class="docs-content" id="docs-content">
+        <div class="docs-content" id="docs-content" style="position:relative;">
           <div class="docs-loading">Loading…</div>
+          <button type="button" class="docs-scroll-top" id="docs-scroll-top" title="Scroll to top">↑</button>
         </div>
       </div>
     </div>
@@ -1691,7 +1974,7 @@
   <section class="hero">
     <div class="wrapper">
       <div class="hero-content">
-        <div class="hero-badge">v0.4.1 — The Anchor Man · Cooking, Goblin, Bestiary stub</div>
+        <div class="hero-badge">v0.5.0 — Big Weeds Update · Harvesting, Herblore, Bank OSRS, World Map</div>
         <h1>Arteria</h1>
         <p class="hero-subtitle">
           A cosmic idle RPG inspired by Melvor &amp; RuneScape. Train skills, run 18 story quests across Act I &amp; II,
@@ -1751,9 +2034,15 @@
   <section class="section">
     <div class="wrapper">
       <div class="fade-in">
-        <div class="section-label">Latest — v0.4.1</div>
-        <h2>The Anchor Man</h2>
-        <p class="section-desc"><strong>Main character &amp; nickname:</strong> The Anchor (canonical). First-time name entry; Settings → Character to change. <strong>Goblin</strong> — first random enemy; Goblin Peek event + modal. <strong>Cooking:</strong> 10 recipes (raw fish → cooked food). Bank Food filter. Daily quests Cook Shrimp, Cook Trout. Stats: Food cooked. <strong>Bestiary stub:</strong> Combat tab "Enemies Spotted" section. Bank fix (ScrollView crash).</p>
+        <div class="section-label">Latest — v0.5.0</div>
+        <h2>Big Weeds Update</h2>
+        <p class="section-desc"><strong>Harvesting &amp; Scavenging:</strong> 7 harvest nodes (wheat → void cap), 5
+          scavenge nodes (ruins → void rupture). <strong>Herblore:</strong> 7 potion recipes (herb + vial). Buy vials
+          from Nick; Bank Potions filter; pet Fizz. <strong>Bank OSRS-style:</strong> Main + up to 6 custom tabs, tab
+          bar + type filters, long-press item to create tab, remember last tab. <strong>World Exploration:</strong>
+          Explore tab = World Map, 6 locations, tap to travel. <strong>Lumina Shop &amp; Mastery:</strong> Reroll Daily
+          (5✨), XP Boost 1h (15✨); yield/speed upgrades for all 8 skills. <strong>New NPCs:</strong> Bianca the
+          Herbalist, Kate the Traveler (Quests → NPCs in Town).</p>
       </div>
       <div class="systems-grid">
         <div class="system-card fade-in" style="--card-accent:#3498db; --card-bg:rgba(52,152,219,0.1);">
@@ -1775,7 +2064,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Smithing: smelt ore → bars (Bronze to Runite). Forging: bars → daggers, half helmets, full helmets. Metal-tier grouping.
+            Smithing: smelt ore → bars (Bronze to Runite). Forging: bars → daggers, half helmets, full helmets.
+            Metal-tier grouping.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#9b59b6; --card-bg:rgba(155,89,182,0.12);">
@@ -1797,7 +2087,8 @@
             </div>
           </div>
           <p class="system-desc">
-            10 recipes: raw fish → cooked food. Bank Food filter, daily quests (Cook Shrimp, Cook Trout), Stats tracking.
+            10 recipes: raw fish → cooked food. Bank Food filter, daily quests (Cook Shrimp, Cook Trout), Stats
+            tracking.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#e67e22; --card-bg:rgba(230,126,34,0.1);">
@@ -1819,7 +2110,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Act I &amp; II quests with requirements, steps, and difficulty. Available list gated by level, flags, and completed quests.
+            Act I &amp; II quests with requirements, steps, and difficulty. Available list gated by level, flags, and
+            completed quests.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#16a34a; --card-bg:rgba(22,163,74,0.1);">
@@ -1830,7 +2122,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Earn 1 point per level-up per skill. Spend in Settings → Mastery on permanent buffs (+5% XP per level, up to 5 levels per skill). Stacks with Patron.
+            Earn 1 point per level-up per skill. Spend in Settings → Mastery on permanent buffs (+5% XP per level, up to
+            5 levels per skill). Stacks with Patron.
           </p>
         </div>
         <div class="system-card fade-in" style="--card-accent:#f59e0b; --card-bg:rgba(245,158,11,0.1);">
@@ -1841,7 +2134,8 @@
             </div>
           </div>
           <p class="system-desc">
-            Theme, Gameplay (Confirm Task Switch, Battery Saver, Horizon HUD), Mastery, Audio, Idle Cap Reached, Idle Soundscapes. Easter egg: "Don't Push This" → title "The Stubborn".
+            Theme, Gameplay (Confirm Task Switch, Battery Saver, Horizon HUD), Mastery, Audio, Idle Cap Reached, Idle
+            Soundscapes. Easter egg: "Don't Push This" → title "The Stubborn".
           </p>
         </div>
       </div>
@@ -1856,7 +2150,9 @@
       <div class="fade-in">
         <div class="section-label">RuneScape-Inspired</div>
         <h2>Quests &amp; Expeditions</h2>
-        <p class="section-desc">18 story quests across Act I and Act II. Steps auto-complete when you meet requirements (e.g. have the items); hand in for gold, XP, and flags. Narrative gating, difficulty tiers, Cosmic Comedy tone.</p>
+        <p class="section-desc">18 story quests across Act I and Act II. Steps auto-complete when you meet requirements
+          (e.g. have the items); hand in for gold, XP, and flags. Narrative gating, difficulty tiers, Cosmic Comedy
+          tone.</p>
       </div>
       <div class="quests-hero fade-in">
         <div class="quests-hero-card">
@@ -1879,47 +2175,59 @@
       <div class="quest-showcase fade-in">
         <div class="quest-card" style="--quest-accent:#a78bfa;">
           <h3>The Cosmic Sneeze</h3>
-          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
-          <p class="quest-desc">Awaken in the Crownlands and find someone who knows what's going on. The start of the Cosmic Comedy.</p>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span>
+          </div>
+          <p class="quest-desc">Awaken in the Crownlands and find someone who knows what's going on. The start of the
+            Cosmic Comedy.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#f59e0b;">
           <h3>A Merchant's Trust</h3>
-          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
-          <p class="quest-desc">Bring Nick the merchant copper ore to earn his favour. Unlocks further trading quests.</p>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span>
+          </div>
+          <p class="quest-desc">Bring Nick the merchant copper ore to earn his favour. Unlocks further trading quests.
+          </p>
         </div>
         <div class="quest-card" style="--quest-accent:#22c55e;">
           <h3>First Catch</h3>
-          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span>
+          </div>
           <p class="quest-desc">Catch shrimp for a fisherman by the dock. Your first step into the Fishing skill.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#8b5cf6;">
           <h3>Rune Awakening</h3>
-          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span></div>
+          <div class="quest-meta"><span class="quest-diff novice">Novice</span><span class="quest-act">Act I</span>
+          </div>
           <p class="quest-desc">Mine essence and craft air runes at the Air Altar. The gateway to Runecrafting.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#ef4444;">
           <h3>The Cursed Sample</h3>
-          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act I</span></div>
+          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act
+              I</span></div>
           <p class="quest-desc">A scholar wants cursed ores for research. Requires knowing about the Sneeze Cult.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#06b6d4;">
           <h3>Blibbertooth's Blessing</h3>
-          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act I</span></div>
+          <div class="quest-meta"><span class="quest-diff intermediate">Intermediate</span><span class="quest-act">Act
+              I</span></div>
           <p class="quest-desc">Complete the Cult's initiation. Offer cosmic runes and receive their blessing.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#a855f7;">
           <h3>Voices in the Void</h3>
-          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act II</span></div>
+          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act
+              II</span></div>
           <p class="quest-desc">Strange whispers drift from the mines. A cosmic shard may reveal their meaning.</p>
         </div>
         <div class="quest-card" style="--quest-accent:#fbbf24;">
           <h3>Gold Rush</h3>
-          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act II</span></div>
+          <div class="quest-meta"><span class="quest-diff experienced">Experienced</span><span class="quest-act">Act
+              II</span></div>
           <p class="quest-desc">Nick pays premium for gold ore. Mine a sizable haul and cash in.</p>
         </div>
       </div>
       <p class="section-desc fade-in" style="margin-top: var(--space-xl); margin-bottom: 0; font-size: 0.9rem;">
-        In-app: Quests tab shows <strong>Available</strong> (gated by level, flags, completed quests), <strong>Active</strong> with step tracking, and <strong>Completed</strong> archives. More quests and radiant dailies planned.
+        In-app: Quests tab shows <strong>Available</strong> (gated by level, flags, completed quests),
+        <strong>Active</strong> with step tracking, and <strong>Completed</strong> archives. More quests and radiant
+        dailies planned.
       </p>
     </div>
   </section>
@@ -2052,7 +2360,9 @@
           </div>
           <p class="system-desc">
             Multi-project Jest at monorepo root. Unit tests for XPTable (RuneScape XP curve), TickSystem (partial tick
-            carryover, RNG, offline batching), and GameEngine (createNewPlayer, processOffline).             <code>npm run test:coverage</code> for engine coverage. Integration and E2E placeholders. Target: 80% on business logic.
+            carryover, RNG, offline batching), and GameEngine (createNewPlayer, processOffline).
+            <code>npm run test:coverage</code> for engine coverage. Integration and E2E placeholders. Target: 80% on
+            business logic.
           </p>
           <div class="system-tags">
             <span class="tag">Jest 29</span>
@@ -2114,7 +2424,8 @@
           <div class="feature-icon">📜</div>
           <div>
             <div class="feature-title">RuneScape-Style Quests</div>
-            <div class="feature-desc">18 story quests with narrative gating, difficulty tiers (novice → master), and rewards. Available / Active / Completed ledger in-app.</div>
+            <div class="feature-desc">18 story quests with narrative gating, difficulty tiers (novice → master), and
+              rewards. Available / Active / Completed ledger in-app.</div>
           </div>
         </div>
         <div class="feature-item">
@@ -2672,19 +2983,52 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.3.0</span>
-          <div class="roadmap-text"><strong>The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar). Quick-Switch Sidebar. Smithing, Forging. <strong>Quest step auto-complete</strong> (engine checks inventory/skills; steps complete when requirements met). <strong>Mastery</strong> (1 pt/level-up, spend for +% XP in Settings). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike). Fishing, Runecrafting, Activity Log, Feedback Toasts, Settings, Bank sort, Shop 25/50/Max. Easter egg "Don't Push This".</div>
+          <div class="roadmap-text"><strong>The Big Update</strong> — Theme Engine (picker, tab bar, StatusBar).
+            Quick-Switch Sidebar. Smithing, Forging. <strong>Quest step auto-complete</strong> (engine checks
+            inventory/skills; steps complete when requirements met). <strong>Mastery</strong> (1 pt/level-up, spend for
+            +% XP in Settings). Random Events (Blibbertooth, Cosmic Sneeze, Genie, Treasure Chest, Lucky Strike).
+            Fishing, Runecrafting, Activity Log, Feedback Toasts, Settings, Bank sort, Shop 25/50/Max. Easter egg "Don't
+            Push This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">Quest expansion</span>
-          <div class="roadmap-text"><strong>18 Story Quests</strong> — Act I &amp; II. Narrative gating, step auto-complete, hand-in for rewards (gold, XP, flags, items). Difficulty badges on cards.</div>
+          <div class="roadmap-text"><strong>18 Story Quests</strong> — Act I &amp; II. Narrative gating, step
+            auto-complete, hand-in for rewards (gold, XP, flags, items). Difficulty badges on cards.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.0</span>
-          <div class="roadmap-text"><strong>Daily, Stats &amp; Lumina</strong> — Daily quests (3/day, reset midnight, Claim gold/Lumina). Stats tab (gathered by type, play time). Custom bank tabs, Sell All Junk (configurable), Login bonus (7-day streak), Lumina currency UI (Bank/Shop/Settings).</div>
+          <div class="roadmap-text"><strong>Daily, Stats &amp; Lumina</strong> — Daily quests (3/day, reset midnight,
+            Claim gold/Lumina). Stats tab (gathered by type, play time). Custom bank tabs, Sell All Junk (configurable),
+            Login bonus (7-day streak), Lumina currency UI (Bank/Shop/Settings).</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">v0.4.1</span>
-          <div class="roadmap-text"><strong>The Anchor Man</strong> — Main character &amp; nickname (The Anchor). Goblin first enemy + Peek modal. Cooking skill (10 fish→cooked recipes). Bestiary stub (Enemies Spotted). Bank fix.</div>
+          <div class="roadmap-text"><strong>The Anchor Man</strong> — Main character &amp; nickname (The Anchor). Goblin
+            first enemy + Peek modal. Cooking skill (10 fish→cooked recipes). Bestiary stub (Enemies Spotted). Bank fix.
+          </div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.4.2</span>
+          <div class="roadmap-text"><strong>Skill Pets &amp; Polish</strong> — Rare pet drops from skilling, Pets
+            screen, active pet emoji. Tick SFX (tink/thump/splash). OTA pipeline hardened (runtimeVersion, ABI splits
+            plugin). Check for Updates in Settings. Dev server Wi‑Fi fix.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.4.3</span>
+          <div class="roadmap-text"><strong>Harvesting &amp; Scavenging</strong> — Harvesting: 7 nodes (wheat, cabbage,
+            tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom). Scavenging: 5 nodes (rusty_scrap,
+            discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal). Both in Quick-Switch Sidebar.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.4.4</span>
+          <div class="roadmap-text"><strong>Herblore</strong> — Brew herbs + empty vials into potions. 7 recipes (Minor
+            Healing → Void Resistance). Buy vials from Nick. Bank Potions filter. Pet Fizz.</div>
+        </div>
+        <div class="roadmap-item done">
+          <span class="roadmap-badge badge-done">v0.5.0</span>
+          <div class="roadmap-text"><strong>Big Weeds Update</strong> — Harvesting, Scavenging, Herblore. Bank
+            OSRS-style (Main + 6 custom tabs, long-press create tab, remember tab). World Exploration (6 locations, map,
+            travel). Lumina Shop (Reroll Daily, XP Boost). Mastery yield/speed + UI. Bianca &amp; Kate NPCs.</div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">Unreleased</span>
@@ -2738,23 +3082,30 @@
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.3.0: The Big Update</strong> — Theme Engine, Quick-Switch Sidebar. Smithing, Forging. Quest step auto-complete, Mastery (spend points for +% XP). Random Events. Fishing, Runecrafting, Activity Log, Bank sort, Shop 25/50/Max, Settings, Idle Soundscapes. Easter egg "Don't Push This".</div>
+          <div class="roadmap-text"><strong>v0.3.0: The Big Update</strong> — Theme Engine, Quick-Switch Sidebar.
+            Smithing, Forging. Quest step auto-complete, Mastery (spend points for +% XP). Random Events. Fishing,
+            Runecrafting, Activity Log, Bank sort, Shop 25/50/Max, Settings, Idle Soundscapes. Easter egg "Don't Push
+            This".</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>Quest expansion</strong> — 18 story quests (Act I &amp; II), step auto-complete, hand-in rewards.</div>
+          <div class="roadmap-text"><strong>Quest expansion</strong> — 18 story quests (Act I &amp; II), step
+            auto-complete, hand-in rewards.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.4.0: Daily, Stats &amp; Lumina</strong> — Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI.</div>
+          <div class="roadmap-text"><strong>v0.4.0: Daily, Stats &amp; Lumina</strong> — Daily quests, Stats tab, custom
+            bank tabs, Sell All Junk, login bonus, Lumina UI.</div>
         </div>
         <div class="roadmap-item done">
           <span class="roadmap-badge badge-done">✓ Mar 03</span>
-          <div class="roadmap-text"><strong>v0.4.1: The Anchor Man</strong> — Main character &amp; nickname. Goblin first enemy + Peek modal. Cooking skill. Bestiary stub. Bank fix.</div>
+          <div class="roadmap-text"><strong>v0.4.1: The Anchor Man</strong> — Main character &amp; nickname. Goblin
+            first enemy + Peek modal. Cooking skill. Bestiary stub. Bank fix.</div>
         </div>
         <div class="roadmap-item active">
           <span class="roadmap-badge badge-active">⚡ Next</span>
-          <div class="roadmap-text"><strong>More quests &amp; skills</strong> — Act III quests, radiant/repeatable quests. New skills: Cooking, Harvesting, Scavenging (data/UI). Crafting queue, Alchemy. Combat later.</div>
+          <div class="roadmap-text"><strong>More quests &amp; skills</strong> — Act III quests, radiant/repeatable
+            quests. New skills: Cooking, Harvesting, Scavenging (data/UI). Crafting queue, Alchemy. Combat later.</div>
         </div>
         <div class="roadmap-item future">
           <span class="roadmap-badge badge-future">Phase 3</span>
@@ -2813,12 +3164,15 @@
       const content = document.getElementById('docs-content');
       const closeBtn = document.getElementById('docs-close');
       const trigger = document.getElementById('docs-trigger');
+      const searchInput = document.getElementById('docs-search');
+      const scrollTopBtn = document.getElementById('docs-scroll-top');
+      let currentDoc = '';
 
       function openDocs() {
         overlay.classList.add('open');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        loadDoc('SUMMARY.md');
+        if (!currentDoc) loadDoc('MASTER_DESIGN_DOC.md');
       }
 
       function closeDocs() {
@@ -2844,8 +3198,12 @@
       }
 
       function loadDoc(filename) {
+        currentDoc = filename;
         setActiveNav(filename);
-        content.innerHTML = '<div class="docs-loading">Loading…</div>';
+        // Keep scroll-top button but update content
+        var contentArea = content.querySelector('.docs-inner') || content;
+        content.innerHTML = '<div class="docs-loading"><div style="font-size:1.4rem;margin-bottom:8px;">📖</div>Loading ' + filename.replace('.md', '') + '…</div>';
+        content.appendChild(scrollTopBtn);
         fetch(DOCS_BASE + filename)
           .then(function (r) {
             if (!r.ok) throw new Error('Not found');
@@ -2853,13 +3211,50 @@
           })
           .then(function (text) {
             content.innerHTML = renderMarkdown(text);
+            content.appendChild(scrollTopBtn);
+            content.scrollTop = 0;
           })
           .catch(function () {
             content.innerHTML = '<div class="docs-error">' +
-              '<p>Could not load this doc. Try viewing on GitHub.</p>' +
-              '<a href="https://github.com/Otterdays/GAME-Arteria/tree/main/DOCU" target="_blank" rel="noopener">Open DOCU on GitHub ↗</a>' +
+              '<p style="font-size:1.2rem;">😕</p>' +
+              '<p>Could not load <strong>' + filename + '</strong>. Try viewing on GitHub.</p>' +
+              '<a href="https://github.com/Otterdays/GAME-Arteria/blob/main/DOCU/' + filename + '" target="_blank" rel="noopener">Open ' + filename + ' on GitHub ↗</a>' +
               '</div>';
+            content.appendChild(scrollTopBtn);
           });
+      }
+
+      // Scroll-to-top button
+      if (content && scrollTopBtn) {
+        content.addEventListener('scroll', function () {
+          scrollTopBtn.classList.toggle('visible', content.scrollTop > 400);
+        });
+        scrollTopBtn.addEventListener('click', function () {
+          content.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Search/filter
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          var q = searchInput.value.toLowerCase().trim();
+          var sidebar = document.getElementById('docs-sidebar');
+          var navItems = sidebar.querySelectorAll('.docs-nav-item[data-doc]');
+          var categories = sidebar.querySelectorAll('.docs-category[data-category]');
+          var visibleCategories = {};
+          navItems.forEach(function (btn) {
+            var label = btn.textContent.toLowerCase();
+            var docName = (btn.dataset.doc || '').toLowerCase();
+            var match = !q || label.indexOf(q) !== -1 || docName.indexOf(q) !== -1;
+            btn.classList.toggle('hidden', !match);
+            if (match && btn.dataset.category) {
+              visibleCategories[btn.dataset.category] = true;
+            }
+          });
+          categories.forEach(function (cat) {
+            cat.classList.toggle('hidden', !visibleCategories[cat.dataset.category]);
+          });
+        });
       }
 
       if (trigger) trigger.addEventListener('click', function (e) { e.preventDefault(); openDocs(); });

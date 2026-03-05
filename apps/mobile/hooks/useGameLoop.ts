@@ -50,10 +50,13 @@ interface ActionDef {
 import { MINING_NODES } from '@/constants/mining';
 import { LOGGING_NODES } from '@/constants/logging';
 import { FISHING_SPOTS } from '@/constants/fishing';
+import { HARVESTING_NODES } from '@/constants/harvesting';
+import { SCAVENGING_NODES } from '@/constants/scavenging';
 import { RUNE_ALTARS } from '@/constants/runecrafting';
 import { SMELTING_RECIPES } from '@/constants/smithing';
 import { FORGING_RECIPES } from '@/constants/forging';
 import { COOKING_RECIPES } from '@/constants/cooking';
+import { HERBLORE_RECIPES } from '@/constants/herblore';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -65,11 +68,12 @@ import {
     RANDOM_EVENT_TYPES,
 } from '@/constants/randomEvents';
 import { SKILL_PETS } from '@/constants/pets';
+import { getMasteryYieldMultiplier, getMasterySpeedMultiplier } from '@/constants/mastery';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
 // Standard gathering nodes
-[...MINING_NODES, ...LOGGING_NODES, ...FISHING_SPOTS].forEach((node) => {
+[...MINING_NODES, ...LOGGING_NODES, ...FISHING_SPOTS, ...HARVESTING_NODES, ...SCAVENGING_NODES].forEach((node) => {
     ACTION_DEFS[node.id] = {
         xpPerTick: node.xpPerTick,
         items: node.items,
@@ -122,6 +126,17 @@ COOKING_RECIPES.forEach((recipe) => {
     };
 });
 
+// Herblore: consume herb + vial, produce potion
+HERBLORE_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
 export interface UseGameLoopOptions {
@@ -156,6 +171,8 @@ export function useGameLoop(options?: UseGameLoopOptions) {
     activeSkillLevelRef.current = activeSkillLevel;
     const skillsRef = useRef(skills);
     skillsRef.current = skills;
+    const playerRef = useRef(player);
+    playerRef.current = player;
     const onTickCompleteRef = useRef(options?.onTickComplete);
     onTickCompleteRef.current = options?.onTickComplete;
 
@@ -168,7 +185,11 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             const action = ACTION_DEFS[activeTask.actionId];
             if (!action) return;
 
-            const interval = activeTask.intervalMs;
+            const baseInterval = activeTask.intervalMs;
+            const speedMult = activeTask.skillId
+                ? getMasterySpeedMultiplier(playerRef.current, activeTask.skillId as SkillId)
+                : 1;
+            const interval = baseInterval / speedMult;
             const partialMs = (activeTask.partialTickMs || 0) + deltaMs;
             const fullTicks = Math.floor(partialMs / interval);
             const leftover = partialMs - fullTicks * interval;
@@ -335,9 +356,10 @@ export function useGameLoop(options?: UseGameLoopOptions) {
 
                 dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
 
+                const yieldMult = getMasteryYieldMultiplier(playerRef.current, skillId);
                 let items = action.items.map((item) => ({
                     id: item.id,
-                    quantity: item.quantity * successfulTicks,
+                    quantity: Math.floor(item.quantity * successfulTicks * yieldMult),
                 }));
                 if (pendingCosmicSneezeRef.current && items.length > 0) {
                     items = items.map((i) => ({ ...i, quantity: i.quantity * 2 }));

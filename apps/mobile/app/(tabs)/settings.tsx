@@ -1,9 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform, Modal, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Pressable, Alert, Platform, Modal, TextInput, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
-import * as Updates from 'expo-updates';
 import * as Haptics from 'expo-haptics';
+
+// expo-updates native module may be absent in Expo Go; guard to avoid crash
+let Updates: typeof import('expo-updates') | null = null;
+try {
+    Updates = require('expo-updates');
+} catch {
+    Updates = null;
+}
 import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -34,50 +42,69 @@ function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsSty
     );
 }
 
+const MASTERY_GATHERING: SkillId[] = ['mining', 'logging', 'fishing', 'harvesting', 'scavenging'];
+const MASTERY_CRAFTING: SkillId[] = ['runecrafting', 'smithing', 'forging', 'cooking', 'herblore'];
+
 function MasterySection() {
     const dispatch = useAppDispatch();
     const masteryPoints = useAppSelector((s) => s.game.player.masteryPoints ?? {});
     const masterySpent = useAppSelector((s) => s.game.player.masterySpent ?? {});
     const { palette } = useTheme();
     const styles = useMemo(() => createSettingsStyles(palette), [palette]);
-    return (
-        <>
-            {(Object.entries(MASTERY_UPGRADES) as [SkillId, NonNullable<typeof MASTERY_UPGRADES[SkillId]>][]).map(([skillId, upgrades]) => {
-                const points = masteryPoints[skillId] ?? 0;
-                const spent = masterySpent[skillId] ?? {};
-                const meta = SKILL_META[skillId];
-                return (
-                    <React.Fragment key={skillId}>
-                        <View style={[styles.row, { borderBottomWidth: 1, borderBottomColor: palette.divider }]}>
-                            <View style={styles.rowInfo}>
-                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>{meta?.emoji} {meta?.label}</Text>
-                                <Text style={styles.rowDesc}>{points} point{points !== 1 ? 's' : ''} to spend</Text>
+
+    const renderSkillBlock = (skillId: SkillId) => {
+        const upgrades = MASTERY_UPGRADES[skillId];
+        if (!upgrades) return null;
+        const points = masteryPoints[skillId] ?? 0;
+        const spent = masterySpent[skillId] ?? {};
+        const meta = SKILL_META[skillId];
+        return (
+            <View key={skillId} style={styles.masterySkillCard}>
+                <View style={styles.masterySkillHeader}>
+                    <Text style={styles.masterySkillEmoji}>{meta?.emoji}</Text>
+                    <Text style={styles.masterySkillName}>{meta?.label}</Text>
+                    <View style={[styles.masteryPointsBadge, points > 0 && styles.masteryPointsBadgeActive]}>
+                        <Text style={[styles.masteryPointsText, points > 0 && styles.masteryPointsBadgeActiveText]}>{points} pt{points !== 1 ? 's' : ''}</Text>
+                    </View>
+                </View>
+                {upgrades.map((u) => {
+                    const level = spent[u.id] ?? 0;
+                    const canSpend = points >= u.cost && level < u.maxLevel;
+                    const isMax = level >= u.maxLevel;
+                    return (
+                        <View key={u.id} style={styles.masteryUpgradeRow}>
+                            <View style={styles.masteryUpgradeInfo}>
+                                <Text style={styles.masteryUpgradeLabel}>{u.label}</Text>
+                                <Text style={styles.masteryLevelText}>{level}/{u.maxLevel}</Text>
                             </View>
+                            <TouchableOpacity
+                                style={[styles.masterySpendBtn, !canSpend && styles.masterySpendBtnDisabled, isMax && styles.masterySpendBtnMax]}
+                                onPress={() => canSpend && (Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), dispatch(gameActions.spendMastery({ skillId, upgradeId: u.id, cost: u.cost, maxLevel: u.maxLevel })))}
+                                disabled={!canSpend}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={[styles.masterySpendText, !canSpend && styles.masterySpendTextDisabled, isMax && styles.masterySpendTextMax]}>
+                                    {isMax ? 'Max' : canSpend ? `Spend ${u.cost}` : '—'}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
-                        {upgrades.map((u) => {
-                            const level = spent[u.id] ?? 0;
-                            const canSpend = points >= u.cost && level < u.maxLevel;
-                            return (
-                                <View key={u.id} style={[styles.row, { paddingLeft: Spacing.lg, backgroundColor: palette.bgApp }]}>
-                                    <View style={styles.rowInfo}>
-                                        <Text style={[styles.rowLabel, { fontSize: FontSize.sm }]}>{u.label}</Text>
-                                        <Text style={styles.rowDesc}>Level {level}/{u.maxLevel} · {u.cost} pt{u.cost !== 1 ? 's' : ''}</Text>
-                                    </View>
-                                    <TouchableOpacity
-                                        style={[styles.masterySpendBtn, !canSpend && styles.masterySpendBtnDisabled]}
-                                        onPress={() => canSpend && (Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), dispatch(gameActions.spendMastery({ skillId, upgradeId: u.id, cost: u.cost, maxLevel: u.maxLevel })))}
-                                        disabled={!canSpend}
-                                        activeOpacity={0.8}
-                                    >
-                                        <Text style={[styles.masterySpendText, !canSpend && styles.masterySpendTextDisabled]}>Spend</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        })}
-                    </React.Fragment>
-                );
-            })}
-        </>
+                    );
+                })}
+            </View>
+        );
+    };
+
+    return (
+        <View style={styles.masteryContainer}>
+            <View style={styles.masteryPillar}>
+                <Text style={styles.masteryPillarTitle}>Gathering</Text>
+                {MASTERY_GATHERING.map(renderSkillBlock)}
+            </View>
+            <View style={styles.masteryPillar}>
+                <Text style={styles.masteryPillarTitle}>Crafting</Text>
+                {MASTERY_CRAFTING.map(renderSkillBlock)}
+            </View>
+        </View>
     );
 }
 
@@ -136,9 +163,11 @@ function createSettingsStyles(palette: PaletteShape) {
     return StyleSheet.create({
         container: { flex: 1 },
         header: {
-            paddingHorizontal: Spacing.md,
-            paddingTop: Spacing.xl,
-            paddingBottom: Spacing.md,
+            padding: Spacing.md,
+            paddingBottom: Spacing.sm,
+            backgroundColor: palette.bgCard,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.border,
         },
         scroll: { flex: 1 },
         scrollContent: { paddingBottom: Spacing['2xl'] },
@@ -278,6 +307,11 @@ function createSettingsStyles(palette: PaletteShape) {
             borderColor: palette.border,
             opacity: 0.7,
         },
+        masterySpendBtnMax: {
+            backgroundColor: palette.green + '33',
+            borderColor: palette.green,
+            borderWidth: 1,
+        },
         masterySpendText: {
             fontSize: FontSize.sm,
             fontWeight: '700',
@@ -286,11 +320,101 @@ function createSettingsStyles(palette: PaletteShape) {
         masterySpendTextDisabled: {
             color: palette.textMuted,
         },
+        masterySpendTextMax: {
+            color: palette.green,
+        },
+        masteryContainer: {
+            padding: Spacing.sm,
+            gap: Spacing.lg,
+        },
+        masteryPillar: {
+            gap: Spacing.sm,
+        },
+        masteryPillarTitle: {
+            fontSize: FontSize.xs,
+            fontWeight: '700',
+            color: palette.textMuted,
+            textTransform: 'uppercase',
+            letterSpacing: 1.2,
+            marginBottom: Spacing.xs,
+            marginLeft: Spacing.xs,
+        },
+        masterySkillCard: {
+            backgroundColor: palette.bgApp,
+            borderRadius: Radius.sm,
+            padding: Spacing.sm,
+            marginBottom: Spacing.sm,
+            borderWidth: 1,
+            borderColor: palette.border,
+        },
+        masterySkillHeader: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: Spacing.sm,
+            paddingBottom: Spacing.xs,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.divider,
+        },
+        masterySkillEmoji: {
+            fontSize: 20,
+            marginRight: Spacing.sm,
+        },
+        masterySkillName: {
+            flex: 1,
+            fontSize: FontSize.base,
+            fontWeight: '600',
+            color: palette.textPrimary,
+        },
+        masteryPointsBadge: {
+            paddingHorizontal: Spacing.sm,
+            paddingVertical: 2,
+            borderRadius: Radius.sm,
+            backgroundColor: palette.bgInput,
+            borderWidth: 1,
+            borderColor: palette.border,
+        },
+        masteryPointsBadgeActive: {
+            borderColor: palette.gold,
+            backgroundColor: palette.gold + '22',
+        },
+        masteryPointsText: {
+            fontSize: FontSize.xs,
+            fontWeight: '700',
+            color: palette.textSecondary,
+        },
+        masteryPointsBadgeActiveText: {
+            color: palette.gold,
+        },
+        masteryUpgradeRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: Spacing.xs,
+            gap: Spacing.sm,
+        },
+        masteryUpgradeInfo: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            flex: 1,
+            gap: Spacing.sm,
+        },
+        masteryUpgradeLabel: {
+            fontSize: FontSize.sm,
+            color: palette.textSecondary,
+            flex: 1,
+        },
+        masteryLevelText: {
+            fontSize: FontSize.xs,
+            fontWeight: '700',
+            color: palette.textMuted,
+            minWidth: 28,
+        },
     });
 }
 
 export default function SettingsScreen() {
     const dispatch = useAppDispatch();
+    const insets = useSafeAreaInsets();
     const { palette, themeId, setThemeId } = useTheme();
     const styles = useMemo(() => createSettingsStyles(palette), [palette]);
     const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
@@ -334,7 +458,7 @@ export default function SettingsScreen() {
     const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'downloading' | 'ready' | 'upToDate' | 'error' | 'dev'>('idle');
     const [updateError, setUpdateError] = useState('');
     const handleCheckForUpdates = useCallback(async () => {
-        if (!Updates.isEnabled) {
+        if (!Updates || !Updates.isEnabled) {
             setUpdateStatus('dev');
             return;
         }
@@ -383,7 +507,7 @@ export default function SettingsScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: palette.bgApp }]}>
+        <View style={[styles.container, { backgroundColor: palette.bgApp, paddingTop: insets.top }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: palette.textPrimary }]}>Settings</Text>
             </View>
@@ -789,7 +913,7 @@ export default function SettingsScreen() {
                     </Pressable>
                 </Pressable>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 }
 

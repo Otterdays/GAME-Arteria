@@ -1,7 +1,7 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
  * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Current release: 0.4.1 "The Anchor Man".
+ * Current release: 0.5.0 "Big Weeds Update".
  */
 
 export interface PatchEntry {
@@ -13,6 +13,39 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.5.0',
+    date: '2026-03-05',
+    added: [
+      '🌿 Big Weeds Update: Harvesting, Scavenging, Herblore, Bank OSRS redesign, World Exploration, Lumina Shop, Mastery expansion.',
+      '🪴 Harvesting & Scavenging: 7 harvest nodes, 5 scavenge nodes. Quick-Switch, thump SFX.',
+      '🧪 Herblore: 7 potion recipes (herb + vial). Buy vials from Nick. Bank Potions filter. Pet Fizz.',
+      '🏦 Bank OSRS-style: Main tab + up to 6 custom tabs. Tab bar + type filters. Long-press item to create tab. Remember last tab.',
+      '🗺️ World Exploration: Explore tab = World Map. 6 locations, tap to travel. Location screen with NPCs, Shop, Quests.',
+      '✨ Lumina Shop: Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina).',
+      '📈 Mastery: Yield +3%/level, Speed +4%/level (max 3 each) for all 8 skills. Pillar UI in Settings.',
+      '💬 New NPCs: Bianca the Herbalist, Kate the Traveler. NPCs in Town on Quests tab.',
+    ],
+  },
+  {
+    version: '0.4.4',
+    date: '2026-03-05',
+    added: [
+      '🧪 Herblore skill: Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance. Uses wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom.',
+      '🧪 Empty vials: Buy from Nick\'s Shop (15 gp). Required for all herblore recipes.',
+      '🧪 Bank Potions filter: New filter for potion items. Stats track "Potions brewed".',
+      '🧪 Herblore pet Fizz: A tiny cauldron. Rare drop while brewing.',
+    ],
+  },
+  {
+    version: '0.4.3',
+    date: '2026-03-05',
+    added: [
+      '🪴 Harvesting skill: 7 nodes from Wheat Field to Void Caps. Gather wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom. Full XP bar, node cards, thump SFX on tick.',
+      '🏕️ Scavenging skill: 5 nodes from Surface Ruins to Void Rupture. Loot rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Same polished UI as other gathering skills.',
+      '⚡ Quick-Switch Sidebar: Harvesting and Scavenging added to the skill drawer.',
+    ],
+  },
   {
     version: '0.4.2',
     date: '2026-03-05',

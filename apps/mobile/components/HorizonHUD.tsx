@@ -22,6 +22,7 @@ const SKILL_EMOJIS: Record<string, string> = {
     smithing: '🔨',
     forging: '⚒️',
     cooking: '🍳',
+    herblore: '🧪',
     harvesting: '🪴',
     scavenging: '🏕️',
     attack: '⚔️',

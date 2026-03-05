@@ -11,6 +11,55 @@
 
 ---
 
+## [Unreleased]
+### Added
+- (Future content.)
+
+---
+
+## [0.5.0] - 2026-03-05 — "Big Weeds Update"
+
+> Consolidates 0.4.1–0.4.4 plus World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, design doc v2.0, and new NPCs.
+
+### Added
+- **Harvesting & Scavenging (0.4.3):** 7 harvest nodes (wheat → void cap), 5 scavenge nodes (surface ruins → void rupture). Quick-Switch, thump SFX.
+- **Herblore (0.4.4):** 7 potion recipes (herb + empty vial → potion). Buy vials from Nick. Bank Potions filter. Pet Fizz.
+- **Bank OSRS-style redesign:** Main tab + up to 6 custom tabs. Tab bar row, type-filter row. Tab icon = first item in tab. Long-press item → "Create new tab with this item". Remember last tab (`lastBankTab`). 50 F2P / 100 Patron slot cap. Migration: >6 tabs truncated to 6.
+- **World Exploration:** Explore tab = World Map. 6 locations (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen with NPCs, Shop, Quests. Unlock: always, quest, level, calendar (Frostvale December), event.
+- **Lumina Shop:** Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina, +25% XP). Shop Buy tab shows Lumina items.
+- **Mastery expansion:** Yield +3%/level (max 3) and Speed +4%/level (max 3) for all 8 skills. Settings → Mastery: Gathering/Crafting pillars, skill cards, Spend/Max.
+- **New NPCs:** Bianca the Herbalist, Kate the Traveler. Quests tab "NPCs in Town" with Talk. MASTER_DESIGN_DOC v2.0 (7 Parts, 20 Chapters) for design reference.
+
+### Changed
+- Bank: two-row layout (tabs then filters). Custom tabs capped at 6. `addCustomBankTab` / `addCustomBankTabWithItem` enforce limit; `setLastBankTab` persists selection.
+
+---
+
+## [0.4.4] - 2026-03-05 — "Herblore"
+### Added
+- **Herblore skill:** 7 potion recipes (herb + empty vial → potion). Minor Healing, Strength Elixir, Agility Tonic, Defence Brew, XP Boost, Nature's Blessing, Void Resistance. `constants/herblore.ts`, `app/skills/herblore.tsx`.
+- **Empty vials:** Buy from Nick's Shop (15 gp). Required for all herblore recipes.
+- **Potions:** New item type `potion`. Bank Potions filter. Stats "Potions brewed".
+- **Herblore pet:** Fizz — a tiny cauldron. Rare drop while brewing.
+
+### Changed
+- `IMPLEMENTED_CRAFTING_SKILLS` now includes herblore.
+- Quick-Switch Sidebar includes Herblore.
+
+---
+
+## [0.4.3] - 2026-03-05 — "Harvesting & Scavenging"
+### Added
+- **Harvesting skill:** 7 nodes (Wheat Field → Void Caps). Gather wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom. `constants/harvesting.ts`, `app/skills/harvesting.tsx`.
+- **Scavenging skill:** 5 nodes (Surface Ruins → Void Rupture). Loot rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. `constants/scavenging.ts`, `app/skills/scavenging.tsx`.
+- Both skills in Quick-Switch Sidebar. Thump SFX on tick. Idle soundscapes wired.
+
+### Changed
+- `IMPLEMENTED_GATHERING_SKILLS` now includes harvesting and scavenging.
+- GlobalActionTicker emoji aligned with SKILL_META (🪴 harvesting, 🏕️ scavenging).
+
+---
+
 ## [0.4.2] - 2026-03-05 — "Skill Pets & Polish"
 ### Added
 - **Skill Pets:** Rare companions found while skilling! Each skill has a unique pet (e.g. Rocky for Mining, Timber for Logging) with a low drop chance in `useGameLoop`. Triggers a "lucky" toast and adds to activity log.
@@ -18,7 +67,7 @@
 - **Special Message Modal:** Premium animated popup for special announcements (title, body, emoji, CTA). Features spring entry, bouncing emoji, and shimmer border glow. Used for the "🧪 OTA Update Works!" test.
 - **OTA Update Pipeline:** Integrated `expo-updates` into the native APK. Updated `Update_2_EAS_OTA_Update.bat` with `CI=1`, `ARTERIA_LEAN_PROD=1`, and `--platform android` to handle headless Metro bundling and correct package name resolution for prod APKs.
 - **OTA Hotfix Strategy:** Established a reliable "Wait-Close-Reopen" flow for delivering JS fixes to a crashing app via background `expo-updates` downloads while the error screen is active.
-- **OTA Pipeline Hardening:** Added `expo-updates` to plugins array (`checkAutomatically: ON_LAUNCH`). Switched `runtimeVersion` from static `"1.0.0"` to `appVersion` policy (tags OTA updates by version). Created `plugins/withAbiSplits.js` config plugin to auto-inject ABI splits into build.gradle (survives `expo prebuild --clean`). Added `fallbackToCacheTimeout: 0` to prevent launch blocking. Created `Rollback_OTA.bat` for emergency rollbacks.
+- **OTA Pipeline Hardening:** Added `expo-updates` to plugins array (`checkAutomatically: ON_LAUNCH`). Switched `runtimeVersion` from static `"1.0.0"` to version-matched `"0.4.2"` (EAS bare workflow requires static strings). Created `plugins/withAbiSplits.js` config plugin to auto-inject ABI splits into build.gradle (survives `expo prebuild --clean`). Added `fallbackToCacheTimeout: 0` to prevent launch blocking. Created `Rollback_OTA.bat` for emergency rollbacks.
 - **Check for Updates (Settings):** New "Check for Updates" row in Settings → About. Uses `expo-updates` API with full status feedback (checking, downloading, ready, up to date, error, dev mode) and a restart prompt when an update is downloaded.
 
 ### Fixed

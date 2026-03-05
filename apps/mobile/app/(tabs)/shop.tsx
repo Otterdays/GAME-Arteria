@@ -18,6 +18,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
+import { LUMINA_SHOP_ITEMS } from '@/constants/luminaShop';
+import { getNextMidnight, generateDailyQuests } from '@/constants/dailyQuests';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
@@ -38,6 +40,57 @@ const SELL_FILTERS: { key: ItemType | 'all'; label: string }[] = [
 ];
 
 const BUY_QUANTITIES = [1, 5, 10, 25, 50];
+
+// ─── Lumina Shop row ─────────────────────────────────────────────────────────
+function LuminaShopRow({
+    item,
+    lumina,
+    rerollsUsedToday,
+    rerollDate,
+    xpBoostExpiresAt,
+    onPurchase,
+    styles,
+}: {
+    item: (typeof LUMINA_SHOP_ITEMS)[0];
+    lumina: number;
+    rerollsUsedToday: number;
+    rerollDate?: string;
+    xpBoostExpiresAt?: number;
+    onPurchase: () => void;
+    styles: Record<string, any>;
+}) {
+    const canAfford = lumina >= item.cost;
+    const today = new Date().toISOString().slice(0, 10);
+    const rerollsReset = rerollDate !== today;
+    const usedToday = rerollsReset ? 0 : rerollsUsedToday;
+    const atRerollCap = item.maxPerDay != null && usedToday >= item.maxPerDay;
+    const xpBoostActive = item.effect === 'xp_boost_1h' && xpBoostExpiresAt != null && xpBoostExpiresAt > Date.now();
+    const canBuy = canAfford && !atRerollCap && !xpBoostActive;
+
+    return (
+        <View style={[styles.row, { marginBottom: Spacing.sm }]}>
+            <Text style={styles.rowEmoji}>{item.emoji}</Text>
+            <View style={styles.rowBody}>
+                <Text style={styles.rowLabel}>{item.label}</Text>
+                <Text style={styles.rowPrice}>
+                    ✨ {item.cost} Lumina
+                    {item.maxPerDay != null && ` · ${item.maxPerDay - usedToday}/${item.maxPerDay} left today`}
+                    {xpBoostActive && ' · Active!'}
+                </Text>
+            </View>
+            <TouchableOpacity
+                style={[styles.luminaBuyBtn, !canBuy && styles.buyButtonDisabled]}
+                onPress={() => canBuy && onPurchase()}
+                disabled={!canBuy}
+                activeOpacity={0.8}
+            >
+                <Text style={[styles.luminaBuyBtnText, !canBuy && styles.buyButtonDisabledText]}>
+                    {xpBoostActive ? 'Active' : atRerollCap ? 'Limit' : canAfford ? 'Buy' : '—'}
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
+}
 
 // ─── Buy row ─────────────────────────────────────────────────────────────────
 function BuyRow({
@@ -174,6 +227,9 @@ export default function ShopScreen() {
     const dispatch = useAppDispatch();
     const gold = useAppSelector((s) => s.game.player.gold);
     const lumina = useAppSelector((s) => s.game.player.lumina ?? 0);
+    const luminaShopRerollsUsedToday = useAppSelector((s) => s.game.player.luminaShopRerollsUsedToday ?? 0);
+    const luminaShopRerollDate = useAppSelector((s) => s.game.player.luminaShopRerollDate);
+    const xpBoostExpiresAt = useAppSelector((s) => s.game.player.xpBoostExpiresAt);
     const inventory = useAppSelector((s) => s.game.player.inventory);
     const [tab, setTab] = useState<TabMode>('buy');
     const [sellFilter, setSellFilter] = useState<ItemType | 'all'>('all');
@@ -201,18 +257,37 @@ export default function ShopScreen() {
         dispatch(gameActions.sellItem({ id, quantity: item.quantity, pricePer: shopSellValue }));
     };
 
+    const handlePurchaseLumina = (lumItem: (typeof LUMINA_SHOP_ITEMS)[0]) => {
+        if (lumina < lumItem.cost) return;
+        if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        dispatch(gameActions.spendLumina(lumItem.cost));
+        if (lumItem.effect === 'reroll_daily') {
+            dispatch(gameActions.setDailyQuests({
+                resetAt: getNextMidnight(),
+                quests: generateDailyQuests(3),
+            }));
+            dispatch(gameActions.incrementLuminaRerollsUsed());
+        } else if (lumItem.effect === 'xp_boost_1h') {
+            dispatch(gameActions.setXpBoostExpiresAt(Date.now() + 60 * 60 * 1000));
+        }
+    };
+
     const styles = useMemo(
         () =>
             StyleSheet.create({
                 container: { flex: 1, backgroundColor: palette.bgApp },
+                headerBox: {
+                    padding: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    backgroundColor: palette.bgCard,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                },
                 header: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.md,
-                    borderBottomWidth: 1,
-                    borderBottomColor: palette.border,
+                    marginBottom: Spacing.sm,
                 },
                 title: {
                     fontSize: FontSize.xl,
@@ -257,7 +332,6 @@ export default function ShopScreen() {
                 },
                 toggleRow: {
                     flexDirection: 'row',
-                    paddingHorizontal: Spacing.md,
                     paddingVertical: Spacing.sm,
                     gap: Spacing.sm,
                 },
@@ -283,8 +357,7 @@ export default function ShopScreen() {
                 filterRow: {
                     flexDirection: 'row',
                     flexWrap: 'wrap',
-                    paddingHorizontal: Spacing.md,
-                    paddingBottom: Spacing.sm,
+                    paddingTop: Spacing.sm,
                     gap: 6,
                 },
                 filterChip: {
@@ -374,6 +447,22 @@ export default function ShopScreen() {
                     borderColor: palette.border,
                     opacity: 0.7,
                 },
+                buyButtonDisabledText: { color: palette.textDisabled },
+                luminaBuyBtn: {
+                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    borderRadius: Radius.md,
+                    backgroundColor: palette.accentPrimary,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
+                luminaBuyBtnText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
+                    color: palette.white,
+                },
                 buyButtonText: {
                     fontSize: FontSize.sm,
                     fontWeight: '700',
@@ -413,6 +502,7 @@ export default function ShopScreen() {
 
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
+            <View style={styles.headerBox}>
             <View style={styles.header}>
                 <View style={{ flex: 1 }}>
                     <Text style={styles.title}>Shop</Text>
@@ -482,6 +572,7 @@ export default function ShopScreen() {
                     })}
                 </View>
             )}
+            </View>
 
             {tab === 'buy' && (
                 <FlatList
@@ -498,11 +589,28 @@ export default function ShopScreen() {
                     )}
                     contentContainerStyle={styles.listContent}
                     ListHeaderComponent={
-                        <View style={[styles.row, { marginBottom: Spacing.md, borderColor: palette.accentPrimary + '44', backgroundColor: palette.accentPrimary + '0c' }]}>
-                            <Text style={styles.rowEmoji}>✨</Text>
-                            <View style={styles.rowBody}>
-                                <Text style={styles.rowLabel}>Lumina Shop</Text>
-                                <Text style={styles.rowPrice}>Coming soon — rerolls, cosmetics, boosts</Text>
+                        <View style={{ marginBottom: Spacing.lg }}>
+                            <View style={[styles.row, { marginBottom: Spacing.sm, borderColor: palette.accentPrimary + '44', backgroundColor: palette.accentPrimary + '0c' }]}>
+                                <Text style={styles.rowEmoji}>✨</Text>
+                                <View style={styles.rowBody}>
+                                    <Text style={styles.rowLabel}>Lumina Shop</Text>
+                                    <Text style={styles.rowPrice}>Premium currency — rerolls, boosts</Text>
+                                </View>
+                            </View>
+                            {LUMINA_SHOP_ITEMS.map((lumItem) => (
+                                <LuminaShopRow
+                                    key={lumItem.id}
+                                    item={lumItem}
+                                    lumina={lumina}
+                                    rerollsUsedToday={luminaShopRerollsUsedToday}
+                                    rerollDate={luminaShopRerollDate}
+                                    xpBoostExpiresAt={xpBoostExpiresAt}
+                                    onPurchase={() => handlePurchaseLumina(lumItem)}
+                                    styles={styles}
+                                />
+                            ))}
+                            <View style={{ marginTop: Spacing.md, marginBottom: Spacing.sm }}>
+                                <Text style={[styles.rowPrice, { marginLeft: 0 }]}>Nick's catalog</Text>
                             </View>
                         </View>
                     }

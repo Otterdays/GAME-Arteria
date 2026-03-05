@@ -29,6 +29,9 @@
 | **MY_ADHD.md** | Quick Q&A for deployment and testing. |
 | **zhipu-ai.md** | Baseline feature sheet for Melvor-like core engine, skills, combat, economy. |
 | **IMPROVEMENTS.md** | Systems audit + prioritized UX/GUI/feature improvements (quick wins, polish, larger features). |
+| **CURRENT_IMPROVEMENTS.md** | Expansion opportunities using existing systems — what to add next without new architecture. |
+| **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
+| **MASTER_DESIGN_DOC.md** | **v2.0 — The Expanded Cosmos.** Comprehensive GDD organized in 7 Parts, 21 Chapters. **New Chapter 2: Skills Overview** — complete encyclopedia of 10 implemented + 7 coming soon + 8+ planned skills with detailed descriptions, crossover connections, and pets. New systems: Absurdity/Chaos Theory, World State/Corruption, Prestige/Transcendence, Housing/Sanctum, Chronicle System, Three Stomach consumption, Equipment Quirks.
 | **STYLE_GUIDE.md** | Project conventions: trace tags, limits, naming, touch targets, theming (useTheme + migration pattern). |
 | **THEMING.md** | Theme architecture: PaletteShape, THEMES registry, ThemeContext, migration path. |
 | **zhip-ai-styling.md** | UI/UX style guide (Melvor-like): layout, colors, components, screens. |
@@ -42,11 +45,25 @@
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.4.2** "Skill Pets & Polish" (Pets, OTA fixes, special modal, UI polish). Post-0.4.2: Bestiary expansion, companion unlocks, combat alpha groundwork.
+**Version scheme:** 0.x.x. Current **0.5.0** "Big Weeds Update" (Harvesting, Scavenging, Herblore, Bank OSRS, World Exploration, Lumina Shop, Mastery expansion, new NPCs). Post-0.5.0: Bestiary expansion, companion unlocks, combat alpha groundwork.
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
-**Post-0.4.2 (2026-03-05):** **OTA Pipeline Hardened:** `expo-updates` explicit plugin with `checkAutomatically: ON_LAUNCH`. `runtimeVersion` switched from static `"1.0.0"` to `appVersion` policy (aligned iOS/Android). ABI splits config plugin (`plugins/withAbiSplits.js`) survives `expo prebuild --clean`. `proguard-android-optimize.txt` for full R8. `versionName` synced to `0.4.2`. Settings → About: "Check for Updates" row with status/error/restart. `Rollback_OTA.bat` for emergency rollbacks. **⚠️ Rebuild APK required** to bake in new runtimeVersion + config plugin. **Skill Pets:** 7 pets with rare drops, Pets screen, active emoji. **SpecialMessageModal:** Premium animated modal; fixed `useNativeDriver` conflict (outer-native/inner-JS split). **UI Polish:** Resolved Cooking crash (missing Radius), Bank filter pill stretching, and missing tab icons.
+**Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
+
+**Post-0.5.0 (2026-03-05):** **v0.5.0 Big Weeds Update:** Harvesting, Scavenging, Herblore, Bank OSRS redesign (Main + 6 tabs, long-press create, remember tab), World Exploration (6 locations, map, travel), Lumina Shop (Reroll Daily, XP Boost), Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0.
+
+**Post-0.4.3 (2026-03-05):** **Lumina Shop & Mastery:** Lumina Shop in Shop Buy tab: Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (+25%, 15 Lumina). Mastery: yield_bonus (+3%/level, max 3) for all 8 skills. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max buttons.
+
+**Post-0.4.4 (2026-03-05):** **World Exploration:** Explore tab = World Map. 6 locations (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen with NPCs, Shop, Quests. "Coming soon" banners for unimplemented. `constants/locations.ts`, `app/location/[id].tsx`.
+
+**Post-0.4.4 (2026-03-05):** **Mastery Speed:** speed_bonus (+4%/level, max 3) for all 8 mastery skills. Faster ticks = more idle progress. Settings → Mastery.
+
+**Post-0.4.4 (2026-03-05):** **Herblore:** Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance. Buy empty vials from Nick. Bank Potions filter. Pet Fizz.
+
+**Post-0.4.3 (2026-03-05):** **Harvesting & Scavenging:** Two new gathering skills. Harvesting: wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom. Scavenging: rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Both in Quick-Switch Sidebar; thump SFX on tick.
+
+**Post-0.4.2 (2026-03-05):** **OTA Pipeline Hardened:** `expo-updates` explicit plugin with `checkAutomatically: ON_LAUNCH`. `runtimeVersion` switched from static `"1.0.0"` to version-matched `"0.4.2"` (static string required for EAS bare workflow). ABI splits config plugin (`plugins/withAbiSplits.js`) survives `expo prebuild --clean`. `proguard-android-optimize.txt` for full R8. `versionName` synced to `0.4.2`. Settings → About: "Check for Updates" row with status/error/restart. `Rollback_OTA.bat` for emergency rollbacks. **⚠️ Rebuild APK required** to bake in new runtimeVersion + config plugin. **Skill Pets:** 7 pets with rare drops, Pets screen, active emoji. **SpecialMessageModal:** Premium animated modal; fixed `useNativeDriver` conflict (outer-native/inner-JS split). **UI Polish:** Resolved Cooking crash (missing Radius), Bank filter pill stretching, and missing tab icons.
 
 **v0.4.1 (2026-03-03) — The Anchor Man:** Main character & nickname (The Anchor, NameEntryModal, Settings → Character). Goblin first random enemy + GoblinPeekModal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix (ScrollView).
 

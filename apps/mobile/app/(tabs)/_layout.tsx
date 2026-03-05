@@ -91,6 +91,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="explore"
+          options={{
+            title: 'Explore',
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={26} name="map.fill" color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="settings"
           options={{
             title: 'Settings',
@@ -108,8 +117,6 @@ export default function TabLayout() {
             ),
           }}
         />
-        {/* Hide legacy explore tab */}
-        <Tabs.Screen name="explore" options={{ href: null }} />
       </Tabs>
     </>
   );

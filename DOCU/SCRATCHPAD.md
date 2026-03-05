@@ -5,13 +5,81 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** OTA pipeline hardening complete. Ready for APK rebuild + redistribution.
+**Active Task:** MASTER_DESIGN_DOC v2.0 consolidated — 8 appendices (A-H) merged from satellite docs. Ready for APK rebuild.
+
+## [2026-03-05] v0.5.0 "Big Weeds Update" — Version bump
+- **Version:** app.json, build.gradle, runtimeVersion → 0.5.0.
+- **CHANGELOG:** New [0.5.0] entry consolidating 0.4.1–0.4.4 + Bank OSRS, World Exploration, Lumina Shop, Mastery expansion, new NPCs.
+- **Docs:** SUMMARY (version scheme, Post-0.5.0), patchHistory.ts (0.5.0 entry), UpdateBoard.tsx (0.5.0 subtitle + content), index.html (hero-badge, Latest section, changelog roadmap item).
+
+## [2026-03-05] MASTER_DESIGN_DOC v2.0 — Full Consolidation
+- **7 Parts, 20 Chapters:** Complete reorganization with clear structure.
+- **Part I:** Foundations — World Bible, Character System (Anchor, Seriousness Meter)
+- **Part II:** Progression — 25 Skills, Advanced Mastery (Specializations, Prestige, Transcendence), Absurdity System (Chaos Theory, Blibbertoth Blessings/Curses)
+- **Part III:** World — Location System, World State & Corruption (0-100%), Seasonal Calendar (4 events)
+- **Part IV:** Combat — Combat System, Equipment & Paper Doll (Quirks, Sets, Wardrobe)
+- **Part V:** Social — Housing & Sanctum (Vibes), Companions (Stories, Board Game), Chronicle System (Tome, Timekeepers)
+- **Part VI:** Economy — Consumption Economy (Three Stomachs, Restaurant), Monetization
+- **Part VII:** Narrative — 4-Act Story, Technical, Future Expansion
+- **8 Appendices (A-H) — Consolidated from satellite docs:**
+  - **A:** Current Implementation Status & Expansion Surface (from CURRENT_IMPROVEMENTS, IMPROVEMENTS, gemini_notes)
+  - **B:** Companion Deep Design — progression, roles, uncertainties (from COMPANIONS.md)
+  - **C:** UI/UX Design Language — color palette, typography, component library, screen layouts, touch targets (from zhip-ai-styling, zhipu-ai, STYLE_GUIDE)
+  - **D:** Bank OSRS-fication — UX analysis, tab/filter structure, checklist (from gemini_notes)
+  - **E:** Random Events Deep Design — RuneScape inspiration, phased implementation (from FUTURE_NOTES)
+  - **F:** Theming Architecture — semantic palette, ThemeContext, registry, usage pattern (from THEMING)
+  - **G:** Technical Stack & Future Dependencies — current versions, engine architecture, game loop, MMKV, build pipelines, OTA protocol (from STACK_ASSESSMENT, FUTURE_NOTES, TRUTH_DOCTRINE)
+  - **H:** Melvor Idle Reference Architecture — core engine patterns, stat/skill/combat/economy baselines (from zhipu-ai)
+- **Doc now 1400+ lines:** Single source of truth for all game design.
+
+## [2026-03-05] Bank OSRS-style Redesign
+- **Tab bar:** Main (📦) + up to 6 custom tabs + "+ Add". Tab icon = first item in tab (else custom emoji).
+- **Type filters:** Second row (All, Ores, Bars, …) filters within current tab.
+- **50 cap:** Slot cap unchanged (50 F2P, 100 Patron). Max 6 custom tabs enforced in addCustomBankTab/addCustomBankTabWithItem.
+- **Create tab:** "+ Add" modal for empty tab; long-press item → Alert "Create new tab with this item?" → addCustomBankTabWithItem. At 6 tabs, "+ Add" shows "Max" and is disabled.
+- **Remember tab:** lastBankTab in player state; setLastBankTab on tab switch; restore on open (useEffect).
+- **Migration:** customBankTabs.length > 6 → slice(0, 6). gemini_notes §9.
+
+## [2026-03-05] World Exploration Groundwork
+- **LOCATIONS:** `constants/locations.ts` — Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks. Unlock: always, quest, level, calendar, event.
+- **Explore tab:** World Map with location cards. Tap to travel (instant). Locked locations show lock icon + reason.
+- **Location screen:** `app/location/[id].tsx` — NPCs, Shop, Quests sections. Crownlands has real content; others show "Coming soon" banners.
+- **meetsLocationRequirement:** Quest flags, total level, December (Frostvale), event (stub).
+
+## [2026-03-05] New NPC + World Exploration Design
+- **Kate the Traveler:** New NPC in Quests "NPCs in Town". Dialogue teases Frostvale (Christmas town), Voidmas, world regions. `dt_kate_traveler` in dialogues.ts.
+- **WORLD_EXPLORATION.md:** New design doc for idle-friendly explorative world. Locations = instant travel (tap to go). Frostvale (Christmas), Fey Markets, Whispering Woods, etc. Explore tab = World Map. Phased implementation.
+
+## [2026-03-05] New NPC — Bianca the Herbalist
+- **Bianca:** Herbalist NPC with dialogue about potions, herbs, void caps. `dt_bianca_herbalist` in packages/engine/src/data/dialogues.ts.
+- **NPCs in Town:** New section on Quests tab (Lore & Quests) listing Guard, Nick, Bianca. Each has 💬 Talk button. Replaces dev-only Guard access for prod users.
+- **PEOPLE_TO_ADD:** Bianca assigned as Herbalist.
+
+## [2026-03-05] Mastery Speed Bonus
+- **speed_bonus:** +4% speed per level (max 3 = +12%) for Mining, Logging, Fishing, Runecrafting, Smithing, Forging, Cooking. `getMasterySpeedMultiplier` in mastery.ts; useGameLoop applies `interval = baseInterval / speedMult` in processDelta.
+- **Idle feel:** Faster ticks = more progress per real-time. Spend mastery points for permanent speed boost per skill.
+
+## [2026-03-05] Herblore (v0.4.4)
+- **Herblore:** 7 recipes (herb + empty_vial → potion). Minor Healing, Strength Elixir, Agility Tonic, Defence Brew, XP Boost, Nature's Blessing, Void Resistance. `constants/herblore.ts`, `app/skills/herblore.tsx`.
+- **Items:** empty_vial (shop), 7 potions. New ItemType `potion`. Bank Potions filter. Stats "Potions brewed".
+- **Engine:** Registered in useGameLoop. Tink SFX. Quick-Switch Sidebar. Pet "Fizz" (herblore).
+
+## [2026-03-05] Lumina Shop & Mastery
+- **Lumina Shop:** `constants/luminaShop.ts` — Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina). Shop Buy tab ListHeaderComponent shows purchasable items. Redux: spendLumina, incrementLuminaRerollsUsed, setXpBoostExpiresAt. applyXP applies +25% when xpBoostExpiresAt > now.
+- **More Masteries:** yield_bonus (+3% yield) for all 8 skills (logging, fishing, runecrafting, smithing, forging, cooking). getMasteryYieldMultiplier in mastery.ts; useGameLoop applies to item quantities.
+- **Mastery UI Polish:** Settings → Mastery: pillar grouping (Gathering / Crafting), skill cards with header (emoji, name, points badge), upgrade rows with level X/Y, Spend/Max button. masterySkillCard, masteryPointsBadge styles.
+
+## [2026-03-05] Harvesting & Scavenging (v0.4.3)
+- **Harvesting:** 7 nodes (wheat_field → void_caps). `constants/harvesting.ts`, `app/skills/harvesting.tsx`. Items: wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom.
+- **Scavenging:** 5 nodes (surface_ruins → void_rupture). `constants/scavenging.ts`, `app/skills/scavenging.tsx`. Items: rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal.
+- **Engine:** Registered in useGameLoop ACTION_DEFS. SFX (thump) for both. Quick-Switch Sidebar includes both via IMPLEMENTED_GATHERING_SKILLS.
+- **Docs:** SCRATCHPAD, SUMMARY, CHANGELOG, patchHistory, UpdateBoard updated.
 
 ## [2026-03-05] OTA Pipeline Hardening
 - **Review:** Full A-to-Z audit of OTA update pipeline. Identified 9 issues across critical/medium/low severity.
 - **build.gradle:** Synced `versionName` from `0.4.1` → `0.4.2` to match app.json. Switched `proguard-android.txt` → `proguard-android-optimize.txt` for full R8 optimizations (method inlining, class merging, smaller APKs).
 - **app.json (expo-updates plugin):** Added `expo-updates` to plugins array with `checkAutomatically: ON_LAUNCH`. Added `fallbackToCacheTimeout: 0` to updates config (don't block launch).
-- **app.json (runtimeVersion):** Changed Android `runtimeVersion` from static `"1.0.0"` to `{ "policy": "appVersion" }` — now matches iOS config. OTA updates tagged by app version (e.g. `0.4.2`). **⚠️ Breaking:** Existing users on `runtimeVersion "1.0.0"` need a new APK to receive future OTA updates.
+- **app.json (runtimeVersion):** Changed Android `runtimeVersion` from static `"1.0.0"` to `"0.4.2"` (static app version). EAS bare workflow doesn't support the `appVersion` policy, so we'll manually bump this string on native module changes to ensure OTA updates only reach devices running the same native code. **⚠️ Breaking:** Existing users on `runtimeVersion "1.0.0"` need a new APK to receive future OTA updates.
 - **Config plugin (ABI splits):** Created `plugins/withAbiSplits.js` — Expo config plugin that injects `splits { abi { ... } }` into build.gradle during prebuild. Survives `expo prebuild --clean`. No more manual re-adding of ABI splits block.
 - **Settings → Check for Updates:** New row in About section. Uses `expo-updates` API: `checkForUpdateAsync()` → `fetchUpdateAsync()` → `reloadAsync()`. Shows status (checking, downloading, up to date, error, dev mode). Full error handling. Spinner while loading.
 - **Rollback_OTA.bat:** New batch script for emergency OTA rollbacks via `eas-cli update:rollback`. Includes fallback instructions (re-publish old commit).

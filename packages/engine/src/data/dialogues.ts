@@ -101,6 +101,115 @@ export const ACT_1_DIALOGUES: Record<string, DialogueTree> = {
                 ]
             }
         }
+    },
+    'dt_bianca_herbalist': {
+        id: 'dt_bianca_herbalist',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Bianca the Herbalist',
+                text: 'Oh, a visitor! I\'m Bianca. I run the herb stall when the market isn\'t floating sideways. Wheat, cabbage, void caps — if it grows, I\'ve probably poked it.',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'What do you know about potions?',
+                        nextNodeId: 'node_2'
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'Void caps?',
+                        nextNodeId: 'node_3'
+                    },
+                    {
+                        id: 'opt_3',
+                        text: 'Good to meet you. Bye!',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Bianca the Herbalist',
+                text: 'Herbs and empty vials — that\'s the secret. Nick sells vials. Combine the right herb with a vial and you\'ll brew something useful. Minor healing, strength elixirs... the void-resistant stuff takes void caps. Don\'t ask how I know.',
+                options: [
+                    {
+                        id: 'opt_4',
+                        text: 'Thanks for the tip.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_3': {
+                id: 'node_3',
+                speaker: 'Bianca the Herbalist',
+                text: 'They grow near the ruptures. Spooky, but potent. Great for Void Resistance potions. Harvesting skill helps — the higher you are, the better your odds. Just... don\'t stare into the rupture too long.',
+                options: [
+                    {
+                        id: 'opt_5',
+                        text: 'I\'ll be careful.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            }
+        }
+    },
+    'dt_kate_traveler': {
+        id: 'dt_kate_traveler',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Kate the Traveler',
+                text: 'Hey! I\'m Kate. I\'ve been everywhere the roads still go — and a few places they don\'t. The world\'s bigger than this town, you know.',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'What other places are there?',
+                        nextNodeId: 'node_2'
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'Ever heard of somewhere... festive?',
+                        nextNodeId: 'node_3'
+                    },
+                    {
+                        id: 'opt_3',
+                        text: 'Safe travels.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Kate the Traveler',
+                text: 'Whispering Woods, the Scorched Reach, Skyward Peaks... Valdoria\'s full of weird pockets. Some open up when the stars align. There\'s even a place up north — Frostvale — snow and lights year-round. The Void-Touched throw a party there around the winter solstice. Voidmas, they call it.',
+                options: [
+                    {
+                        id: 'opt_4',
+                        text: 'Frostvale? How do I get there?',
+                        nextNodeId: 'node_3'
+                    },
+                    {
+                        id: 'opt_5',
+                        text: 'Sounds magical. Thanks!',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_3': {
+                id: 'node_3',
+                speaker: 'Kate the Traveler',
+                text: 'Frostvale\'s a bit... seasonal. The path opens when the Voidmire thins and the Luminar gets all nostalgic. Keep an eye on the horizon — when the northern lights show up, the way should clear. Till then, enjoy the Crownlands. Plenty to do here.',
+                options: [
+                    {
+                        id: 'opt_6',
+                        text: 'I\'ll watch for it.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            }
+        }
     }
 };
 

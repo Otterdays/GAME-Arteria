@@ -73,13 +73,7 @@ function AppShell() {
   useGameLoop({ onTickComplete: playForSkill });
   usePersistence();
 
-  // OTA announcement — "Fixed by Claude"
-  const [announcement, setAnnouncement] = useState<SpecialMessage | null>({
-    emoji: '🤖',
-    title: 'Fixed by Claude',
-    body: 'Your OTA pipeline just got hardened by an AI.\n\nNew: Check for Updates in Settings, smarter versioning, emergency rollbacks, and optimized builds.\n\nIf you\'re reading this, the update delivered itself. How meta.',
-    cta: 'Nice.',
-  });
+  const [announcement, setAnnouncement] = useState<SpecialMessage | null>(null);
 
   useEffect(() => {
     if (fontsLoaded || fontError) SplashScreen.hideAsync();
@@ -94,6 +88,7 @@ function AppShell() {
           <BatterySaver>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="location/[id]" options={{ headerShown: false }} />
               <Stack.Screen name="patches" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
             </Stack>

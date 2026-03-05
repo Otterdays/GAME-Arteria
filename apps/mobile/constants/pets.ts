@@ -67,6 +67,14 @@ export const SKILL_PETS: Record<string, PetMeta> = {
         dropChanceBase: 0.0001,
         emoji: '🔨',
     },
+    pet_brew: {
+        id: 'pet_brew',
+        name: 'Fizz',
+        description: 'A tiny cauldron that follows you around. (Herblore Pet)',
+        skillId: 'herblore',
+        dropChanceBase: 0.0001,
+        emoji: '🧪',
+    },
 };
 
 export const ALL_PET_IDS = Object.keys(SKILL_PETS);

@@ -81,13 +81,21 @@ export default function QuestsScreen() {
         dispatch(gameActions.startDialogue({ treeId: 'dt_guard_intro', startNodeId: 'node_1' }));
     };
 
+    const TOWN_NPCS: { id: string; name: string; emoji: string; treeId: string }[] = [
+        { id: 'guard', name: 'Confused Gate Guard', emoji: '🛡️', treeId: 'dt_guard_intro' },
+        { id: 'nick', name: 'Nick — Merchant', emoji: '🏪', treeId: 'dt_nick_shop' },
+        { id: 'bianca', name: 'Bianca the Herbalist', emoji: '🌿', treeId: 'dt_bianca_herbalist' },
+        { id: 'kate', name: 'Kate the Traveler', emoji: '🧭', treeId: 'dt_kate_traveler' },
+    ];
+
     const styles = useMemo(
         () =>
             StyleSheet.create({
                 container: { flex: 1, backgroundColor: palette.bgApp },
                 header: {
-                    paddingHorizontal: Spacing.md,
-                    paddingBottom: Spacing.md,
+                    padding: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    backgroundColor: palette.bgCard,
                     borderBottomWidth: 1,
                     borderBottomColor: palette.border,
                 },
@@ -243,6 +251,27 @@ export default function QuestsScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
+
+                {/* NPCs in Town */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>NPCs in Town</Text>
+                    <Text style={[styles.questDesc, { marginBottom: Spacing.sm }]}>
+                        Talk to locals for lore and tips.
+                    </Text>
+                    {TOWN_NPCS.map((npc) => (
+                        <View key={npc.id} style={styles.questCard}>
+                            <View style={styles.questHeader}>
+                                <Text style={styles.questTitle}>{npc.emoji} {npc.name}</Text>
+                            </View>
+                            <BouncyButton
+                                style={[styles.startButton, { alignSelf: 'flex-start' }]}
+                                onPress={() => dispatch(gameActions.startDialogue({ treeId: npc.treeId, startNodeId: 'node_1' }))}
+                            >
+                                <Text style={styles.startBtnText}>💬 Talk</Text>
+                            </BouncyButton>
+                        </View>
+                    ))}
+                </View>
 
                 {/* Daily Quests */}
                 {dailyQuests && dailyQuests.quests.length > 0 && (

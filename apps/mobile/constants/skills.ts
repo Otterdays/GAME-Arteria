@@ -56,6 +56,8 @@ export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
     'mining',
     'logging',
     'fishing',
+    'harvesting',
+    'scavenging',
 ];
 
 export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
@@ -63,6 +65,7 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
     'smithing',
     'forging',
     'cooking',
+    'herblore',
 ];
 
 /** All skills with implemented screens (sidebar + main grid). */

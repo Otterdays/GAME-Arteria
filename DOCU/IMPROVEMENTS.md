@@ -2,8 +2,9 @@
 
 > **Purpose:** Snapshot of current systems and prioritized UX/GUI/feature improvements. Use for sprint planning; append new ideas, do not delete existing entries.
 > **Last reviewed:** 2026-03-05
+> **See also:** `CURRENT_IMPROVEMENTS.md` — expansion opportunities that build on existing systems (no new architecture).
 
-**Implemented (2026-03-04–05):** **SFX:** expo-audio; generated tink/thump/splash WAVs (`scripts/generate-sounds.js`); `utils/sounds.ts` (`useSfx`, `playForSkill`); play on skill tick via `useGameLoop` `onTickComplete`; Settings → Audio "Test sound" row. — **Login bonus UX:** Banner shows reward in text ("Day 3 — Claim 300 gp!"); FeedbackToast (lucky) on claim. — **Post-0.4.1 polish:** index.html Cooking card; Docs viewer (in-page modal); COMPANIONS.md + Leadership unlocks; README modernization; Bank "Used in"; Combat teaser; idle cap notification fix; Haptics (skill pill, Bank/Shop); Soundscapes stub on all 7 skill screens. **Bestiary groundwork:** EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf; Combat "Found in". — **v0.4.1 The Anchor Man:** Cooking, Bestiary stub, main character & nickname, GoblinPeekModal, Bank fix. — **v0.4.0:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina. — Prior: Shop Sell filters, Bank sort/empty state/total value, Shop Buy Max, HorizonHUD Grind label, quest completion, Mastery, Idle Soundscapes "coming soon".
+**Implemented (2026-03-04–05):** **Lumina Shop:** Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina). Shop Buy tab shows purchasable Lumina items. applyXP applies +25% when xpBoostExpiresAt active. — **Mastery expansion:** yield_bonus (+3%/level, max 3) for all 8 skills. getMasteryYieldMultiplier in useGameLoop. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max. — **SFX:** expo-audio; tink/thump/splash on tick; Settings → Audio "Test sound". — **Login bonus UX:** Banner shows reward; FeedbackToast on claim. — **Post-0.4.1 polish:** Bank "Used in"; Combat teaser; idle cap notification fix; Haptics; Soundscapes stub. **Bestiary groundwork:** EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf. — **v0.4.1:** Cooking, Bestiary stub, GoblinPeekModal. — **v0.4.0:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina. — Prior: Shop Sell filters, Bank sort/empty state, Shop Buy Max, HorizonHUD Grind label, quest completion, Mastery, Idle Soundscapes "coming soon".
 
 ---
 
@@ -13,12 +14,12 @@
 |------|-------------|--------|
 | **Skills** | Index (pill grid), Mining, Logging, Fishing, Runecrafting, Smithing, Forging, **Cooking**. QuickSwitchSidebar, HorizonHUD, Activity Log, Confirm Task Switch, Feedback Toasts, Level Up / Train toasts. | Implemented skills share node-card pattern; Runite/narrative gating in place. Cooking: raw fish → cooked food. |
 | **Bank** | Search, filters (All, Ores, Bars, Logs, Fish, **Food**, Runes, Equipment, Other), **custom tabs** (+ Tabs, assign from item detail), **Sell All Junk** (configurable junk, button in header), gold + **Lumina** badge, slot cap warning, item detail (Sell 1/All, lock, **Mark as Junk**, Add to tab). FlatList grid. | 50 slot cap (F2P); Patron higher. |
-| **Shop** | Buy / Sell tabs. Buy: catalog + qty 1/5/10/25/50/Max; **Lumina** in header; **Lumina Shop** stub. Sell: filter list. 50% sell value. Nick chat button. | — |
+| **Shop** | Buy / Sell tabs. Buy: catalog + qty 1/5/10/25/50/Max; **Lumina** in header; **Lumina Shop** (Reroll Daily 5✨/2day, XP Boost 1h 15✨). Sell: filter list. 50% sell value. Nick chat button. | — |
 | **Stats** | New tab. Total gathered by type (ore, log, fish, rune, bar, equipment, other), first/last play, days since first play. | player.stats; addItems increments. |
 | **Combat** | Placeholder screen + **Bestiary stub** ("Enemies Spotted" section; seenEnemies from goblin_peek). "Found in" shown per enemy when locations defined. | Phase 4; no stats/loadout yet. Bestiary groundwork: EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf in constants/enemies.ts. |
 | **Quests** | **Daily** (3/day, reset midnight, progress, Claim gold/Lumina). Active / Completed / Available; difficulty badges; steps; Start quest; Complete (rewards when all steps done). Step auto-complete. | Dev button only in __DEV__. |
-| **Settings** | **Character** (Nickname — change what friends call you; you are The Anchor). Appearance, Gameplay, **Mastery**, Audio, Notifications, **Login bonus & Lumina** (streak, next reward), Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
-| **Explore** | Tab hidden (`href: null`). | — |
+| **Settings** | **Character** (Nickname). Appearance, Gameplay, **Mastery** (Gathering/Crafting pillars, skill cards, XP + yield upgrades), Audio, Notifications, **Login bonus & Lumina**, Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
+| **Explore** | World Map tab. Location cards (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen: NPCs, Shop, Quests. "Coming soon" for unimplemented. Corruption system 0-100%. | Frostvale content, world state events, seasonal calendar implementation. |
 | **Global** | Theme engine, tab bar theming, StatusBar, GlobalActionTicker, WhileYouWereAway, Update Board, Patch Notes (patches.tsx). | — |
 
 ---
@@ -51,7 +52,7 @@
 - **Idle Soundscapes** — Hook wired to all 7 skill screens; SFX (tink/thump/splash) now play on tick. Implement actual ambient loops per skill (or disable the toggle and show "Coming soon" in Settings) so the toggle isn’t misleading.
 - **Bank sort** — Optional sort by: Name, Quantity, Value (total), Type. Simple dropdown or segmented control above the grid.
 - **Offline queue / cap** — ROADMAP Phase 3: queue system and 8-hour offline queue; document here when scoped so UX (e.g. "Queued: 3h smithing") can be designed.
-- **Mastery system** — ✅ Done: 1 pt per level-up, Settings → Mastery, spend on +5% XP (and similar); applyXP uses getMasteryXpMultiplier. Spend mastery points for permanent buffs; needs design (where points come from, where they’re spent, UI).
+- **Mastery system** — ✅ Done: 1 pt per level-up, Settings → Mastery, spend on +5% XP, +3% yield, +4% speed (all 8 skills). applyXP uses getMasteryXpMultiplier; useGameLoop uses getMasteryYieldMultiplier and getMasterySpeedMultiplier. Pillar grouping, skill cards, Spend/Max UI.
 
 ---
 

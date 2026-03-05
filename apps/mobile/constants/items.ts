@@ -3,7 +3,7 @@
  * Add new entries when new drop sources are added.
  */
 
-export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'other';
+export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'other';
 
 export interface ItemMeta {
   emoji: string;
@@ -75,6 +75,32 @@ export const ITEM_META: Record<string, ItemMeta> = {
   cooked_shark: { emoji: '🦈', label: 'Cooked Shark', sellValue: 550, description: 'Cooked shark steak. Massive healing potential.', type: 'food' },
   cooked_cosmic_jellyfish: { emoji: '🪼', label: 'Cooked Cosmic Jellyfish', sellValue: 1200, description: 'Somehow cooked. Defies culinary logic. Restores the soul.', type: 'food' },
 
+  // ── Harvesting (plants, fibers) ──
+  wheat: { emoji: '🌾', label: 'Wheat', sellValue: 2, description: 'Basic grain. Used in cooking and brewing.', type: 'other' },
+  cabbage: { emoji: '🥬', label: 'Cabbage', sellValue: 5, description: 'A hearty vegetable. Good for stews.', type: 'other' },
+  tomato: { emoji: '🍅', label: 'Tomato', sellValue: 8, description: 'Ripe and red. Essential for sauces.', type: 'other' },
+  sweetcorn: { emoji: '🌽', label: 'Sweetcorn', sellValue: 15, description: 'Golden kernels. A staple crop.', type: 'other' },
+  strawberry: { emoji: '🍓', label: 'Strawberry', sellValue: 25, description: 'Sweet and fragrant. Used in potions.', type: 'other' },
+  snape_grass: { emoji: '🌿', label: 'Snape Grass', sellValue: 50, description: 'Magical herb. Key ingredient for high-tier alchemy.', type: 'other' },
+  void_cap_mushroom: { emoji: '🍄', label: 'Void Cap Mushroom', sellValue: 120, description: 'Grows near reality tears. Unsettling to hold.', type: 'other' },
+
+  // ── Scavenging (ruins, debris) ──
+  rusty_scrap: { emoji: '🔩', label: 'Rusty Scrap', sellValue: 3, description: 'Old metal from forgotten settlements.', type: 'other' },
+  discarded_tech: { emoji: '⚙️', label: 'Discarded Tech', sellValue: 20, description: 'Ancient machinery. Still hums faintly.', type: 'other' },
+  fey_trinket: { emoji: '✨', label: 'Fey Trinket', sellValue: 60, description: 'A small charm from the Fey Markets. Glimmers oddly.', type: 'other' },
+  celestial_fragment: { emoji: '☄️', label: 'Celestial Fragment', sellValue: 150, description: 'A shard from the Skyward Peaks. Warm to touch.', type: 'other' },
+  voidmire_crystal: { emoji: '🕳️', label: 'Voidmire Crystal', sellValue: 400, description: 'Condensed void energy. Pulses with dark power.', type: 'other' },
+
+  // ── Herblore (vials & potions) ──
+  empty_vial: { emoji: '🧪', label: 'Empty Vial', sellValue: 5, description: 'A glass vial for brewing potions. Buy from Nick or find in ruins.', type: 'other' },
+  minor_healing_potion: { emoji: '🧪', label: 'Minor Healing Potion', sellValue: 25, description: 'Restores a small amount of health. Brewed from wheat.', type: 'potion' },
+  strength_elixir: { emoji: '💪', label: 'Strength Elixir', sellValue: 45, description: 'Temporarily boosts strength. Brewed from cabbage.', type: 'potion' },
+  agility_tonic: { emoji: '🏃', label: 'Agility Tonic', sellValue: 80, description: 'Increases agility for a short time. Brewed from tomato.', type: 'potion' },
+  defence_brew: { emoji: '🛡️', label: 'Defence Brew', sellValue: 120, description: 'Hardens the skin. Brewed from sweetcorn.', type: 'potion' },
+  xp_boost_potion: { emoji: '✨', label: 'XP Boost Potion', sellValue: 200, description: 'Grants bonus XP for a period. Brewed from strawberry.', type: 'potion' },
+  natures_blessing: { emoji: '🌿', label: "Nature's Blessing", sellValue: 350, description: 'A powerful restorative. Brewed from snape grass.', type: 'potion' },
+  void_resistance_potion: { emoji: '🕳️', label: 'Void Resistance', sellValue: 600, description: 'Reduces void damage. Brewed from void cap mushroom.', type: 'potion' },
+
   // -- Rune Essences --
   rune_essence: { emoji: '💠', label: 'Rune Essence', sellValue: 1, description: 'Raw magical rock pulsing with dormant energy. Bind it at an altar.', type: 'ore' },
   pure_essence: { emoji: '🔮', label: 'Pure Essence', sellValue: 5, description: 'A refined essence stone, attuned to higher rune tiers.', type: 'ore' },
@@ -127,4 +153,5 @@ export const SHOP_CATALOG: { id: string; buyPrice: number }[] = [
   { id: 'iron_ore', buyPrice: 28 },
   { id: 'coal', buyPrice: 42 },
   { id: 'gold_ore', buyPrice: 110 },
+  { id: 'empty_vial', buyPrice: 15 },
 ];

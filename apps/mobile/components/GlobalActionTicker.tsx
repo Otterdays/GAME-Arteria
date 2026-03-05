@@ -13,8 +13,13 @@ const SKILL_EMOJIS: Record<string, string> = {
     mining: '⛏️',
     logging: '🪵',
     fishing: '🎣',
-    harvesting: '🌿',
-    scavenging: '🗺️',
+    harvesting: '🪴',
+    scavenging: '🏕️',
+    runecrafting: '✨',
+    smithing: '🔨',
+    forging: '⚒️',
+    cooking: '🍳',
+    herblore: '🧪',
     combat: '⚔️',
 };
 

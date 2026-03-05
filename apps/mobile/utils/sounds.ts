@@ -5,13 +5,24 @@
  * [TRACE: IMPROVEMENTS — Idle Soundscapes / SFX]
  */
 
-import { useAudioPlayer } from 'expo-audio';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAppSelector } from '@/store/hooks';
+
+// expo-audio native module may be absent in Expo Go; stub when unavailable
+let useAudioPlayerImpl: ((src: number) => { seekTo: (ms: number) => void; play: () => void }) | null = null;
+try {
+    useAudioPlayerImpl = require('expo-audio').useAudioPlayer;
+} catch {
+    useAudioPlayerImpl = null;
+}
 
 const tinkSource = require('../assets/sounds/tink.wav');
 const thumpSource = require('../assets/sounds/thump.wav');
 const splashSource = require('../assets/sounds/splash.wav');
+
+function useStubPlayer() {
+    return useMemo(() => ({ seekTo: () => {}, play: () => {} }), []);
+}
 
 export type SfxType = 'tink' | 'thump' | 'splash';
 
@@ -22,9 +33,12 @@ export function getSfxForSkill(skillId: string): SfxType {
     case 'smithing':
     case 'forging':
     case 'runecrafting':
+    case 'herblore':
       return 'tink';
     case 'logging':
     case 'cooking':
+    case 'harvesting':
+    case 'scavenging':
       return 'thump';
     case 'fishing':
       return 'splash';
@@ -35,9 +49,9 @@ export function getSfxForSkill(skillId: string): SfxType {
 
 export function useSfx() {
   const sfxEnabled = useAppSelector((s) => s.game.player.settings?.sfxEnabled ?? true);
-  const tinkPlayer = useAudioPlayer(tinkSource);
-  const thumpPlayer = useAudioPlayer(thumpSource);
-  const splashPlayer = useAudioPlayer(splashSource);
+  const tinkPlayer = useAudioPlayerImpl ? useAudioPlayerImpl(tinkSource) : useStubPlayer();
+  const thumpPlayer = useAudioPlayerImpl ? useAudioPlayerImpl(thumpSource) : useStubPlayer();
+  const splashPlayer = useAudioPlayerImpl ? useAudioPlayerImpl(splashSource) : useStubPlayer();
 
   const playTink = useCallback(() => {
     if (!sfxEnabled) return;

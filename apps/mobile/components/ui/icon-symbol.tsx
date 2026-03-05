@@ -17,6 +17,7 @@ const MAPPING = {
   'gearshape.fill': 'cog',
   'book.pages.fill': 'book-open-page-variant',
   'chart.bar.fill': 'chart-bar',
+  'map.fill': 'map',
 
   // RPG Specific Backlog
   'sword': 'sword',
@@ -36,6 +37,7 @@ const MAPPING = {
   'chevron.up': 'chevron-up',
   'lock.fill': 'lock',
   'bag.fill': 'bag-personal',
+  'clock': 'clock-outline',
 } as Record<string, ComponentProps<typeof MaterialCommunityIcons>['name']>;
 
 export type IconSymbolName = keyof typeof MAPPING;

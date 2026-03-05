@@ -149,14 +149,61 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                            : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                    : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion.startsWith('0.5.0') ? 'Big Weeds Update'
+                            : currentVersion.startsWith('0.4.4') ? 'Herblore'
+                                : currentVersion.startsWith('0.4.3') ? 'Harvesting & Scavenging'
+                                    : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                        : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                            : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                                : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.4.2') ? (
+                        {currentVersion.startsWith('0.5.0') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🌿 Big Weeds Update</Text>
+                                    <Text style={styles.changeText}>• Harvesting, Scavenging & Herblore: gather herbs, loot ruins, brew potions. Buy empty vials from Nick. Bank Potions filter. Pet Fizz.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏦 Bank OSRS-style</Text>
+                                    <Text style={styles.changeText}>• Main tab + up to 6 custom tabs. Tab bar and type filters. Long-press any item to create a new tab with it. Last tab remembered.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🗺️ World Exploration</Text>
+                                    <Text style={styles.changeText}>• Explore tab = World Map. 6 locations. Tap to travel. Location screens with NPCs, Shop, Quests. Frostvale, Fey Markets, and more.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✨ Lumina Shop & Mastery</Text>
+                                    <Text style={styles.changeText}>• Lumina Shop: Reroll Daily Quests (5✨, 2/day), XP Boost 1h (15✨). Mastery: +yield and +speed for all 8 skills. Settings → Mastery.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>💬 New NPCs</Text>
+                                    <Text style={styles.changeText}>• Bianca the Herbalist, Kate the Traveler. Find them in Quests → NPCs in Town. Talk to learn about the world.</Text>
+                                </View>
+                            </>
+                        ) : currentVersion.startsWith('0.4.4') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🧪 Herblore</Text>
+                                    <Text style={styles.changeText}>• New crafting skill! Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance.</Text>
+                                    <Text style={styles.changeText}>• Buy empty vials from Nick's Shop (15 gp). Harvest herbs from the Harvesting skill. Bank Potions filter. Pet Fizz.</Text>
+                                </View>
+                            </>
+                        ) : currentVersion.startsWith('0.4.3') ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🪴 Harvesting</Text>
+                                    <Text style={styles.changeText}>• New gathering skill! 7 nodes from Wheat Field to Void Caps. Gather wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom.</Text>
+                                    <Text style={styles.changeText}>• Same polished UI as Mining and Logging — XP bar, node cards, thump SFX on tick. Find it in the Quick-Switch Sidebar.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏕️ Scavenging</Text>
+                                    <Text style={styles.changeText}>• Loot ruins, battlefields, and cosmic debris. 5 nodes from Surface Ruins to Void Rupture.</Text>
+                                    <Text style={styles.changeText}>• Drops: rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Also in Quick-Switch Sidebar.</Text>
+                                </View>
+                            </>
+                        ) : currentVersion.startsWith('0.4.2') ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🐾 Skill Pets</Text>

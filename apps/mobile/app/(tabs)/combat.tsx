@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Spacing, FontSize, Radius, CardStyle } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector } from '@/store/hooks';
@@ -7,15 +8,18 @@ import { ENEMIES } from '@/constants/enemies';
 
 export default function CombatScreen() {
     const { palette } = useTheme();
+    const insets = useSafeAreaInsets();
     const seenEnemies = useAppSelector((s) => s.game.player.seenEnemies ?? []);
     const styles = useMemo(
         () =>
             StyleSheet.create({
                 container: { flex: 1, backgroundColor: palette.bgApp },
                 header: {
-                    paddingHorizontal: Spacing.md,
-                    paddingTop: Spacing.xl,
-                    paddingBottom: Spacing.md,
+                    padding: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    backgroundColor: palette.bgCard,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
                 },
                 title: {
                     fontSize: FontSize.xl,
@@ -99,7 +103,7 @@ export default function CombatScreen() {
         .filter(Boolean);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
                 <Text style={styles.title}>Combat</Text>
             </View>
@@ -145,7 +149,7 @@ export default function CombatScreen() {
                     </View>
                 )}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 

@@ -14,6 +14,7 @@ const STAT_LABELS: Record<string, string> = {
     log: 'Logs chopped',
     fish: 'Fish caught',
     food: 'Food cooked',
+    potion: 'Potions brewed',
     rune: 'Runes crafted',
     bar: 'Bars smelted',
     equipment: 'Equipment forged',
@@ -51,7 +52,9 @@ export default function StatsScreen() {
                 container: { flex: 1, backgroundColor: palette.bgApp },
                 scroll: { padding: Spacing.md, paddingBottom: Spacing['2xl'] },
                 header: {
-                    paddingBottom: Spacing.md,
+                    padding: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    backgroundColor: palette.bgCard,
                     borderBottomWidth: 1,
                     borderBottomColor: palette.border,
                 },
@@ -93,16 +96,17 @@ export default function StatsScreen() {
     );
 
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={[styles.scroll, { paddingTop: insets.top + Spacing.md }]}
-            showsVerticalScrollIndicator={false}
-        >
+        <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
                 <Text style={styles.title}>Statistics</Text>
                 <Text style={styles.subtitle}>Lifetime gathering and play time</Text>
             </View>
 
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scroll}
+                showsVerticalScrollIndicator={false}
+            >
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Play time</Text>
                 <View style={styles.row}>
@@ -132,6 +136,7 @@ export default function StatsScreen() {
                     </View>
                 ))}
             </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 }
