@@ -158,7 +158,7 @@ export default function LocationScreen() {
                     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     router.back();
                 }}
-                style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.7 }]}
+                style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.7 : 1 }]}
             >
                 <IconSymbol name="chevron.left" size={24} color={palette.accentPrimary} />
                 <Text style={{ color: palette.accentPrimary, fontSize: FontSize.sm }}>World Map</Text>

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Arteria-0.4.1-8b5cf6?style=flat-square&labelColor=0a0b0f" alt="Version" />
+  <img src="https://img.shields.io/badge/Arteria-0.5.0-8b5cf6?style=flat-square&labelColor=0a0b0f" alt="Version" />
   <img src="https://img.shields.io/badge/Expo-SDK_55-000020?style=flat-square&logo=expo&logoColor=fff" alt="Expo" />
   <img src="https://img.shields.io/badge/React_Native-0.83-61dafb?style=flat-square&logo=react&logoColor=fff" alt="React Native" />
   <img src="https://img.shields.io/badge/Tests-25_Passing-22c55e?style=flat-square" alt="Tests" />
@@ -26,21 +26,24 @@ A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for *
 
 | | |
 |:---:|:---|
-| **🌙 Offline** | 24h progression cap · Gains while you sleep |
-| **⛏️ Skills** | Mining, Logging, Fishing, Runecrafting, Cooking, Smithing, Forging · 25 planned |
+| **🌙 Offline** | 24h progression cap (F2P) · 7-day cap (Patron) |
+| **⛏️ Skills** | Mining, Logging, Fishing, Runecrafting, Cooking, Smithing, Forging, Harvesting, Scavenging, Herblore |
+| **🗺️ World** | 6 Explorable Locations · NPCs & Shops · Instant Travel |
 | **⚔️ Combat** | 12 factions · Auto or active · Goblin first enemy |
-| **📜 Quests** | 18 story quests · Act I & II · Daily quests |
+| **📜 Quests** | 18 story quests · Act I & II · 30 daily quest templates |
+| **🏦 Systems** | OSRS-Style Bank Tabs · Multi-pillar Mastery · Theme Engine |
 
 ---
 
-## Latest — v0.4.1 "The Anchor Man"
+## Latest — v0.5.0 "Big Weeds Update"
 
 | Feature | |
 |---------|---|
-| **The Anchor** | Main character + nickname. First-time name entry; Settings → Character to change. |
-| **Goblin** | First random enemy. Goblin Peek event + modal. Bestiary stub in Combat tab. |
-| **Cooking** | 10 recipes (fish → cooked food). Bank Food filter. Daily quests Cook Shrimp, Cook Trout. |
-| **Login bonus** | 7-day streak. Day 7: 500 gp + 10 Lumina. |
+| **New Skills** | Harvesting (flora), Scavenging (ruins), and Herblore (potions). |
+| **World Map** | Explore tab with 6 locations (Frostvale, Fey Markets, etc.). Tap to travel and visit local NPCs. |
+| **Bank Redesign** | Main tab + up to 6 custom tabs. Drag & drop items, type filters, remember last tab. |
+| **Mastery & Lumina**| Yield and Speed Mastery upgrades. Lumina Shop to reroll daily quests or buy XP boosts. |
+| **Weapons** | Massive Forging expansion with 5 weapon types across all 6 metal tiers (54 recipes). |
 
 ---
 

@@ -429,9 +429,6 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         [activeTask, dispatch, isPatron]
     );
 
-    const playerRef = useRef(player);
-    playerRef.current = player;
-
     // Independent polling interval for quest auto-completion (every 1s)
     useEffect(() => {
         if (!isLoaded) return;

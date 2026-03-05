@@ -5,7 +5,10 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** v0.5.0 shipped. Weapon expansion, Fletching/Tailoring skills, Runite forging, gems done. Ready for APK rebuild.
+**Active Task:** README modernization for v0.5.0.
+
+## [2026-03-05] README Modernization for v0.5.0
+- **README.md:** Updated version badge from v0.4.1 to v0.5.0. Rewrote the "What is Arteria?" features table to include all 10 implemented skills (Mining to Herblore), World Exploration, 30 daily quests, and new systems (Bank tabs, Mastery, Themes). Updated the "Latest" section to "v0.5.0 Big Weeds Update" with bullet points detailing new Skills, World Map, Bank Redesign, Mastery/Lumina, and Weapon Expansion.
 
 ## [2026-03-05] Weapon Expansion + Fletching & Tailoring
 - **Forging weapons:** Replaced generic sword with 5 types: dagger (1 bar), shortsword (2), longsword (2), scimitar (2), 2H Longblade (3). All tiers Bronze→Runite. 54 recipes total (9 equipment × 6 tiers). Migration: `*_sword` → `*_shortsword` in inventory.
