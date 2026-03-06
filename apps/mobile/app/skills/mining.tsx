@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
-import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { Spacing, FontSize, Radius, ButtonRaisedStyle, HeaderShadow, InsetStyle } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors, getStatPillInsetStyles } from '@/constants/skillPageStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -22,6 +22,7 @@ import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
+import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
@@ -80,6 +81,7 @@ export default function MiningScreen() {
                     borderBottomWidth: 1,
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
+                    ...HeaderShadow,
                 },
                 headerRow: {
                     flexDirection: 'row',
@@ -137,11 +139,14 @@ export default function MiningScreen() {
                 statPill: {
                     flex: 1,
                     backgroundColor: palette.bgApp,
-                    borderRadius: Radius.md,
                     padding: Spacing.sm,
                     alignItems: 'center',
-                    borderWidth: 1,
-                    borderColor: palette.border,
+                    ...InsetStyle,
+                    borderRadius: Radius.md,
+                    borderTopColor: `${palette.black}40`,
+                    borderLeftColor: `${palette.black}20`,
+                    borderRightColor: `${palette.white}06`,
+                    borderBottomColor: `${palette.white}08`,
                 },
                 statLabel: {
                     fontSize: 10,
@@ -157,8 +162,9 @@ export default function MiningScreen() {
                 trainButton: {
                     backgroundColor: palette.accentPrimary,
                     paddingVertical: Spacing.sm,
-                    borderRadius: Radius.md,
                     alignItems: 'center',
+                    ...ButtonRaisedStyle,
+                    borderRadius: Radius.md,
                 },
                 trainButtonActive: { backgroundColor: palette.redDim },
                 trainButtonLocked: {
@@ -262,6 +268,8 @@ export default function MiningScreen() {
                 >
                     <Text style={styles.backButtonText}>‹ Back</Text>
                 </TouchableOpacity>
+                <View style={{ flex: 1 }} />
+                <QuickSwitchToggle />
             </View>
 
             <View style={styles.infoSection}>

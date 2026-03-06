@@ -12,7 +12,7 @@ try {
 } catch {
     Updates = null;
 }
-import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, HeaderShadow, ShadowMedium, type PaletteShape } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -100,6 +100,7 @@ function createSettingsStyles(palette: PaletteShape) {
             backgroundColor: palette.bgCard,
             borderBottomWidth: 1,
             borderBottomColor: palette.border,
+            ...HeaderShadow,
         },
         scroll: { flex: 1 },
         scrollContent: { paddingBottom: Spacing['2xl'] },
@@ -122,11 +123,9 @@ function createSettingsStyles(palette: PaletteShape) {
             borderWidth: 1,
             borderColor: palette.border,
             borderRadius: Radius.md,
+            ...ShadowMedium,
             shadowColor: palette.accentWeb,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
-            elevation: 3,
+            shadowOpacity: 0.18,
             overflow: 'hidden',
             marginHorizontal: Spacing.md,
         },
@@ -443,6 +442,15 @@ export default function SettingsScreen() {
     const idleSoundscapesEnabled = useAppSelector(
         (s) => s.game.player.settings?.idleSoundscapesEnabled ?? false
     );
+    const vibrationEnabled = useAppSelector(
+        (s) => s.game.player.settings?.vibrationEnabled ?? true
+    );
+    const shakeEffectsEnabled = useAppSelector(
+        (s) => s.game.player.settings?.shakeEffectsEnabled ?? true
+    );
+    const floatingXpEnabled = useAppSelector(
+        (s) => s.game.player.settings?.floatingXpEnabled ?? true
+    );
     const { playTink, playThump, playSplash } = useSfx();
     const dontPushCount = useAppSelector((s) => s.game.player.dontPushCount ?? 0);
     const unlockedTitles = useAppSelector((s) => s.game.player.unlockedTitles ?? []);
@@ -632,6 +640,27 @@ export default function SettingsScreen() {
                             value={batterySaverEnabled}
                             onValueChange={(v) => dispatch(gameActions.setBatterySaverEnabled(v))}
                             description="Dim screen after 5 min idle (touch to wake)"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Haptics & Vibration"
+                            value={vibrationEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setVibrationEnabled(v))}
+                            description="Tactile feedback on actions"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Screen Shake"
+                            value={shakeEffectsEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setShakeEffectsEnabled(v))}
+                            description="Visual thud effect when gaining resources"
+                        />
+                        <SettingsRow
+                            styles={styles}
+                            label="Floating XP"
+                            value={floatingXpEnabled}
+                            onValueChange={(v) => dispatch(gameActions.setFloatingXpEnabled(v))}
+                            description="Show XP numbers popping from icons"
                         />
                     </View>
                 </View>

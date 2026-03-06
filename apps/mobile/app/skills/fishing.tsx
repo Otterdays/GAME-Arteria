@@ -22,6 +22,7 @@ import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
+import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
 
 const TOOL_LABEL: Record<FishingSpot['tool'], string> = {
     net: 'Small Net',
@@ -274,6 +275,8 @@ export default function FishingScreen() {
                 >
                     <Text style={styles.backButtonText}>‹ Back</Text>
                 </TouchableOpacity>
+                <View style={{ flex: 1 }} />
+                <QuickSwitchToggle />
             </View>
 
             {/* Skill header */}

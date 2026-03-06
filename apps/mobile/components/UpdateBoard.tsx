@@ -149,21 +149,39 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.5.0') ? 'Big Weeds + Combat Alpha'
-                            : currentVersion.startsWith('0.4.4') ? 'Herblore'
-                                : currentVersion.startsWith('0.4.3') ? 'Harvesting & Scavenging'
-                                    : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                                        : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                            : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                                : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion.startsWith('0.5.1') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                            : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                    : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                        : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.5.0') ? (
+                        {currentVersion.startsWith('0.5.1') ? (
                             <>
                                 <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📖 Architectural Tome</Text>
+                                    <Text style={styles.changeText}>• Formalized the "Technical User Manual" in DOCU/. Identified and named the 11 core subsystems (e.g., Arteria-game-engine, Arteria-tick-orchestrator) to build a more technical foundation.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🌌 Midnight Theme</Text>
+                                    <Text style={styles.changeText}>• A new deep-black (#050508) premium theme with purple accents and enhanced glassmorphism. Perfect for OLED and late-night sessions.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏅 Achievement Expansion</Text>
+                                    <Text style={styles.changeText}>• Added 6 new reactive achievements including Head Chef, Potion Master, Sneeze Cultist, and Void Walker. Reach 16 distinct milestones!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚙️ Gameplay Settings</Text>
+                                    <Text style={styles.changeText}>• New toggles for Haptics & Vibration, Screen Shake (thud/shake on success), and Floating XP numbers.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚡ Quick-Switch Animation</Text>
+                                    <Text style={styles.changeText}>• The Quick-Switch toggle now is more dynamic! It slides and pops when you change panels, and hides gracefully when the sidebar is open.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🛡️ Coming Soon Skills</Text>
-                                    <Text style={styles.changeText}>• Leadership, Adventure, Dungeon Dwelling, Construction added. Tap them to see the new stylized popup!</Text>
+                                    <Text style={styles.changeText}>• Construction, Leadership, Adventure, and Dungeon Dwelling added for the future! Tap them to see the new high-fidelity "In Works" glassmorphic popup.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🌿 Big Weeds Update</Text>
@@ -212,17 +230,6 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeHeader}>🏹 Fletching & Tailoring</Text>
                                     <Text style={styles.changeText}>• New planned skills on the Skills grid (red Coming Soon). Arrows/bows from logs; gloves/hats/shoes/boots from cloth.</Text>
                                 </View>
-                            </>
-                        ) : currentVersion.startsWith('0.4.4') ? (
-                            <>
-                                <View style={styles.changeBlock}>
-                                    <Text style={styles.changeHeader}>🧪 Herblore</Text>
-                                    <Text style={styles.changeText}>• New crafting skill! Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance.</Text>
-                                    <Text style={styles.changeText}>• Buy empty vials from Nick's Shop (15 gp). Harvest herbs from the Harvesting skill. Bank Potions filter. Pet Fizz.</Text>
-                                </View>
-                            </>
-                        ) : currentVersion.startsWith('0.4.3') ? (
-                            <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🪴 Harvesting</Text>
                                     <Text style={styles.changeText}>• New gathering skill! 7 nodes from Wheat Field to Void Caps. Gather wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom.</Text>
@@ -232,6 +239,11 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeHeader}>🏕️ Scavenging</Text>
                                     <Text style={styles.changeText}>• Loot ruins, battlefields, and cosmic debris. 5 nodes from Surface Ruins to Void Rupture.</Text>
                                     <Text style={styles.changeText}>• Drops: rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Also in Quick-Switch Sidebar.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🧪 Herblore</Text>
+                                    <Text style={styles.changeText}>• New crafting skill! Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance.</Text>
+                                    <Text style={styles.changeText}>• Buy empty vials from Nick's Shop (15 gp). Harvest herbs from the Harvesting skill. Bank Potions filter. Pet Fizz.</Text>
                                 </View>
                             </>
                         ) : currentVersion.startsWith('0.4.2') ? (

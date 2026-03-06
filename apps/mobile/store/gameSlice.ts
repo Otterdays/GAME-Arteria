@@ -157,6 +157,12 @@ export interface PlayerState {
         idleSoundscapesEnabled?: boolean;
         /** UI theme: system, dark, light, sepia. [TRACE: DOCU/THEMING.md] */
         themeId?: ThemeId;
+        /** Vibration/Haptics toggle */
+        vibrationEnabled?: boolean;
+        /** Screen shake effects during skilling */
+        shakeEffectsEnabled?: boolean;
+        /** Floating XP popups when gaining XP */
+        floatingXpEnabled?: boolean;
     };
     /** Easter egg: "Don't Push This" press count. At 1000 unlocks title "The Stubborn". */
     dontPushCount?: number;
@@ -196,6 +202,16 @@ export interface PlayerState {
         firstPlayedAt: number;
         lastPlayedAt: number;
     };
+    /** Lifetime combat and economy stats (v0.5.2+) */
+    lifetimeStats?: {
+        enemiesDefeated: number;     // total kill count across all sessions
+        totalGoldEarned: number;     // gold earned from ALL sources (combat, quests, sell, login)
+        totalDeaths: number;         // how many times player has died in combat
+        highestHit: number;          // highest single hit landed on an enemy
+        totalItemsProduced: number;  // total crafted/smelted/cooked/brewed items
+        /** Per-item produced count: { 'bronze_bar': 42, 'cooked_shrimp': 17, ... } */
+        byItem: Partial<Record<string, number>>;
+    };
     /** Daily (radiant) quests: reset at midnight; list of 3 with progress and rewards. */
     dailyQuests?: {
         resetAt: number;
@@ -216,12 +232,13 @@ export interface PlayerState {
     lastBankTab?: string;
     /** Item IDs the player has marked as junk (for "Sell All Junk"). */
     junkItemIds?: string[];
-    /** Login bonus: last claim date (YYYY-MM-DD), consecutive day count (1–7). */
+    /** Login bonus: last claim date (YYYY-MM-DD), consecutive_day_count (1–7). */
     loginBonus?: { lastClaimDate: string | null; consecutiveDays: number };
     /** Premium currency (Lumina). Earned from login bonus day 7, Lumina Shop. */
     lumina?: number;
     /** Lumina Shop: rerolls used today (resets at midnight). */
     luminaShopRerollsUsedToday?: number;
+    /** Lumina Shop: date of last reroll use. */
     luminaShopRerollDate?: string;
     /** XP boost from Lumina Shop: expires at timestamp. */
     xpBoostExpiresAt?: number;
@@ -318,6 +335,9 @@ function createFreshPlayer(): PlayerState {
             notifyIdleCapReached: true,
             idleSoundscapesEnabled: false,
             themeId: 'dark' as ThemeId,
+            vibrationEnabled: true,
+            shakeEffectsEnabled: true,
+            floatingXpEnabled: true,
         },
         dontPushCount: 0,
         unlockedTitles: [],
@@ -330,6 +350,14 @@ function createFreshPlayer(): PlayerState {
             byType: {},
             firstPlayedAt: Date.now(),
             lastPlayedAt: Date.now(),
+        },
+        lifetimeStats: {
+            enemiesDefeated: 0,
+            totalGoldEarned: 0,
+            totalDeaths: 0,
+            highestHit: 0,
+            totalItemsProduced: 0,
+            byItem: {},
         },
         customBankTabs: [],
         lastBankTab: 'main',
@@ -431,6 +459,9 @@ function migratePlayer(saved: PlayerState): PlayerState {
         notifyIdleCapReached: saved.settings?.notifyIdleCapReached ?? true,
         idleSoundscapesEnabled: saved.settings?.idleSoundscapesEnabled ?? false,
         themeId: (saved.settings?.themeId as ThemeId) ?? 'dark',
+        vibrationEnabled: saved.settings?.vibrationEnabled ?? true,
+        shakeEffectsEnabled: saved.settings?.shakeEffectsEnabled ?? true,
+        floatingXpEnabled: saved.settings?.floatingXpEnabled ?? true,
     };
 
     // Ensure narrative structure exists on older saves
@@ -462,6 +493,14 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const seenEnemies = saved.seenEnemies ?? [];
     const pets = saved.pets ?? { activePetId: null, unlocked: [] };
     const totalDailyQuestsCompleted = saved.totalDailyQuestsCompleted ?? 0;
+    const lifetimeStats = saved.lifetimeStats ?? {
+        enemiesDefeated: 0,
+        totalGoldEarned: 0,
+        totalDeaths: 0,
+        highestHit: 0,
+        totalItemsProduced: 0,
+        byItem: {},
+    };
 
     // Migrate legacy *_sword items to *_shortsword (weapon expansion: sword → shortsword, longsword, scimitar, 2h_longblade)
     const inventory = (saved.inventory ?? []).map((item) => {
@@ -471,7 +510,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
         return item;
     });
 
-    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
     recalculateCombatStats(migrated);
     return migrated;
 }
@@ -791,6 +830,18 @@ export const gameSlice = createSlice({
                 const meta = getItemMeta(item.id);
                 const t = meta.type;
                 state.player.stats.byType[t] = (state.player.stats.byType[t] ?? 0) + item.quantity;
+
+                // Lifetime Produced Tracking (Non-raw gathering items)
+                const isProduced = ['bar', 'food', 'potion', 'rune', 'equipment'].includes(t);
+                if (isProduced) {
+                    if (!state.player.lifetimeStats) {
+                        state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+                    }
+                    const ls = state.player.lifetimeStats;
+                    ls.totalItemsProduced += item.quantity;
+                    ls.byItem[item.id] = (ls.byItem[item.id] ?? 0) + item.quantity;
+                }
+
                 // Update daily quest progress for gather objectives
                 const dqList = state.player.dailyQuests?.quests;
                 if (dqList) {
@@ -836,6 +887,10 @@ export const gameSlice = createSlice({
         /** Add gold */
         addGold(state, action: PayloadAction<number>) {
             state.player.gold += action.payload;
+            if (!state.player.lifetimeStats) {
+                state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+            }
+            state.player.lifetimeStats.totalGoldEarned += action.payload;
         },
 
         /** Mark a version as seen by the user (dismisses Update Board until next bump) */
@@ -966,6 +1021,18 @@ export const gameSlice = createSlice({
             if (!state.player.settings) state.player.settings = {};
             state.player.settings.themeId = action.payload;
         },
+        setVibrationEnabled: (state, action: PayloadAction<boolean>) => {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.vibrationEnabled = action.payload;
+        },
+        setShakeEffectsEnabled: (state, action: PayloadAction<boolean>) => {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.shakeEffectsEnabled = action.payload;
+        },
+        setFloatingXpEnabled: (state, action: PayloadAction<boolean>) => {
+            if (!state.player.settings) state.player.settings = {};
+            state.player.settings.floatingXpEnabled = action.payload;
+        },
 
         /** Patron's Pack — mock purchase unlocks 7d offline, 100 slots, +20% XP. [TRACE: Patron's Pack] */
         setPatron(state, action: PayloadAction<boolean>) {
@@ -999,7 +1066,12 @@ export const gameSlice = createSlice({
             const { id, quantity, pricePer } = action.payload;
             const item = state.player.inventory.find(i => i.id === id);
             if (item && !item.isLocked && item.quantity >= quantity) {
-                state.player.gold += quantity * pricePer;
+                const earned = quantity * pricePer;
+                state.player.gold += earned;
+                if (!state.player.lifetimeStats) {
+                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+                }
+                state.player.lifetimeStats.totalGoldEarned += earned;
                 item.quantity -= quantity;
             }
             // Cleanup zero quantities
@@ -1108,6 +1180,10 @@ export const gameSlice = createSlice({
             if (!dq || dq.completed) return;
             dq.completed = true;
             state.player.gold += dq.rewardGold;
+            if (!state.player.lifetimeStats) {
+                state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+            }
+            state.player.lifetimeStats.totalGoldEarned += dq.rewardGold;
             if (dq.rewardLumina) {
                 state.player.lumina = (state.player.lumina ?? 0) + dq.rewardLumina;
             }
@@ -1178,7 +1254,12 @@ export const gameSlice = createSlice({
             for (const item of state.player.inventory) {
                 if (!junkIds.has(item.id) || item.isLocked) continue;
                 const meta = getItemMeta(item.id);
-                state.player.gold += item.quantity * meta.sellValue;
+                const earned = item.quantity * meta.sellValue;
+                state.player.gold += earned;
+                if (!state.player.lifetimeStats) {
+                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+                }
+                state.player.lifetimeStats.totalGoldEarned += earned;
                 item.quantity = 0;
             }
             state.player.inventory = state.player.inventory.filter((i) => i.quantity > 0);
@@ -1191,6 +1272,10 @@ export const gameSlice = createSlice({
             const day = action.payload.day ?? Math.min(7, bonus.consecutiveDays + 1);
             state.player.loginBonus = { lastClaimDate: today, consecutiveDays: day };
             state.player.gold += action.payload.gold;
+            if (!state.player.lifetimeStats) {
+                state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+            }
+            state.player.lifetimeStats.totalGoldEarned += action.payload.gold;
             if (action.payload.lumina) {
                 state.player.lumina = (state.player.lumina ?? 0) + action.payload.lumina;
             }
@@ -1414,7 +1499,19 @@ export const gameSlice = createSlice({
                 state.player.activePrayers.push(prayerId);
             }
         },
-
+        /** Helper to ensure lifetimeStats exists (internal use in reducers) */
+        _ensureLifetimeStats(state: any) {
+            if (!state.player.lifetimeStats) {
+                state.player.lifetimeStats = {
+                    enemiesDefeated: 0,
+                    totalGoldEarned: 0,
+                    totalDeaths: 0,
+                    highestHit: 0,
+                    totalItemsProduced: 0,
+                    byItem: {},
+                };
+            }
+        },
         /** Process combat tick: called with deltaMs from game loop. */
         processCombatTick(state, action: PayloadAction<{ deltaMs: number }>) {
             const combat = state.player.activeCombat;
@@ -1519,6 +1616,14 @@ export const gameSlice = createSlice({
                     const damage = Math.floor(Math.random() * boostedMaxHit) + 1;
                     combat.enemyCurrentHp -= damage;
 
+                    // Update highest hit
+                    if (!state.player.lifetimeStats) {
+                        state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+                    }
+                    if (damage > (state.player.lifetimeStats.highestHit ?? 0)) {
+                        state.player.lifetimeStats.highestHit = damage;
+                    }
+
                     state.combatLog.push({
                         id: combatLogIdCounter++,
                         message: `You hit ${combat.enemyName} for ${damage} damage.`,
@@ -1529,6 +1634,9 @@ export const gameSlice = createSlice({
                     // Enemy killed?
                     if (combat.enemyCurrentHp <= 0) {
                         combat.killCount += 1;
+                        // lifetime stats tracking
+                        state.player.lifetimeStats.enemiesDefeated = (state.player.lifetimeStats.enemiesDefeated ?? 0) + 1;
+
                         state.combatLog.push({
                             id: combatLogIdCounter++,
                             message: `${combat.enemyName} defeated! (Kill #${combat.killCount})`,
@@ -1592,6 +1700,9 @@ export const gameSlice = createSlice({
                         // Gold drop (enemy HP * 1-3)
                         const goldDrop = Math.floor(combat.enemyMaxHp * (1 + Math.random() * 2));
                         state.player.gold += goldDrop;
+                        if (state.player.lifetimeStats) {
+                            state.player.lifetimeStats.totalGoldEarned += goldDrop;
+                        }
                         state.combatLog.push({
                             id: combatLogIdCounter++,
                             message: `+${goldDrop} gold`,
@@ -1650,6 +1761,9 @@ export const gameSlice = createSlice({
                     // Player dies?
                     if (playerStats.currentHitpoints <= 0) {
                         playerStats.currentHitpoints = playerStats.maxHitpoints; // Respawn at full HP
+                        if (state.player.lifetimeStats) {
+                            state.player.lifetimeStats.totalDeaths += 1;
+                        }
                         state.combatLog.push({
                             id: combatLogIdCounter++,
                             message: 'You have been defeated! Respawning...',

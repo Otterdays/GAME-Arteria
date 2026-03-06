@@ -14,9 +14,14 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
-    version: '0.5.0',
-    date: '2026-03-05',
+    version: '0.5.1',
+    date: '2026-03-06',
     added: [
+      '📖 Architectural Tome: Formalized the DOCU/TECHNICAL_USER_MANUAL.md, providing a technical taxonomy for the 11 core subsystems (Arteria-game-engine, etc.).',
+      '🌌 Midnight Theme: A new premium, high-contrast dark theme optimized for OLED screens with deep purple accents.',
+      '🏅 Achievement Expansion: Added 6 new reactive achievements (Head Chef, Potion Master, Sneeze Cultist, Tome of Knowledge, Void Walker, Death Defier). Total: 16.',
+      '⚙️ Gameplay Settings: Added user toggles for Haptics & Vibration, Screen Shake, and Floating XP.',
+      '✨ Glassmorphism 2.0: Enhanced theme tokens (glassBg, glassBorder) applied to the Tome of Records (Stats screen).',
       '🛡️ Coming Soon Skills: Leadership, Adventure, Dungeon Dwelling, Construction added in Coming Soon mode.',
       '📝 Dynamic Update Board & Coming Soon UI implementation.',
       '🌿 Big Weeds Update & Combat Alpha: Harvesting, Scavenging, Herblore, Bank OSRS redesign, World Exploration, Auto-battler loop, Lumina Shop, Mastery expansion.',
@@ -39,24 +44,9 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '🏹 Fletching & Tailoring: New planned skills on Skills grid (red Coming Soon). Arrows/bows from logs; gloves/hats/shoes/boots from cloth.',
       '💎 Gems: Rare mining drops — Sapphire (Iron+), Emerald (Coal+), Ruby (Mithril+), Diamond (Adamant+). Bank → Other.',
     ],
-  },
-  {
-    version: '0.4.4',
-    date: '2026-03-05',
-    added: [
-      '🧪 Herblore skill: Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance. Uses wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom.',
-      '🧪 Empty vials: Buy from Nick\'s Shop (15 gp). Required for all herblore recipes.',
-      '🧪 Bank Potions filter: New filter for potion items. Stats track "Potions brewed".',
-      '🧪 Herblore pet Fizz: A tiny cauldron. Rare drop while brewing.',
-    ],
-  },
-  {
-    version: '0.4.3',
-    date: '2026-03-05',
-    added: [
-      '🪴 Harvesting skill: 7 nodes from Wheat Field to Void Caps. Gather wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom. Full XP bar, node cards, thump SFX on tick.',
-      '🏕️ Scavenging skill: 5 nodes from Surface Ruins to Void Rupture. Loot rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Same polished UI as other gathering skills.',
-      '⚡ Quick-Switch Sidebar: Harvesting and Scavenging added to the skill drawer.',
+    fixed: [
+      'Resolved multiple TypeScript lints in stats.tsx and applied nullish coalescing for lifetime stats.',
+      'Corrected THEME_OPTIONS to include the Midnight theme.',
     ],
   },
   {

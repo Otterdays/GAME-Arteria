@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
+import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold, HeaderShadow, ShadowSubtle } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
@@ -39,6 +39,7 @@ import { getLoginBonusStatus } from '@/constants/loginBonus';
 import { getDisplayName } from '@/constants/character';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
 import { SKILL_PETS } from '@/constants/pets';
+import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
 
 // ─── Skill metadata (from shared constants) ───────────────────────────────────
 
@@ -209,6 +210,7 @@ export default function SkillsScreen() {
           backgroundColor: palette.bgCard,
           borderBottomWidth: 1,
           borderBottomColor: palette.border,
+          ...HeaderShadow,
         },
         headerTop: {
           flexDirection: 'row',
@@ -465,23 +467,34 @@ export default function SkillsScreen() {
                 )}
               </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Pressable
+            <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
+              <QuickSwitchToggle />
+
+              <TouchableOpacity
                 onPress={() => setMasteryModalVisible(true)}
-                style={({ pressed }) => [{ padding: Spacing.sm, opacity: pressed ? 0.7 : 1 }]}
-                accessibilityLabel="Open mastery"
-                accessibilityRole="button"
+                style={{
+                  padding: 8,
+                  backgroundColor: palette.bgApp,
+                  borderRadius: Radius.full,
+                  borderWidth: 1,
+                  borderColor: palette.border,
+                }}
               >
-                <Text style={{ fontSize: 20 }}>📖</Text>
-              </Pressable>
-              <Pressable
+                <IconSymbol name="star.fill" size={18} color={palette.gold} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 onPress={() => setLogModalVisible(true)}
-                style={({ pressed }) => [{ padding: Spacing.sm, opacity: pressed ? 0.7 : 1 }]}
-                accessibilityLabel="Open activity log"
-                accessibilityRole="button"
+                style={{
+                  padding: 8,
+                  backgroundColor: palette.bgApp,
+                  borderRadius: Radius.full,
+                  borderWidth: 1,
+                  borderColor: palette.border,
+                }}
               >
-                <Text style={{ fontSize: 20 }}>📜</Text>
-              </Pressable>
+                <IconSymbol name="list.bullet" size={18} color={palette.textSecondary} />
+              </TouchableOpacity>
             </View>
           </View>
           {activeTask ? (

@@ -7,14 +7,15 @@
 import { Platform } from 'react-native';
 
 // ── Theme Architecture ─────────────────────────────────────
-export type ThemeId = 'system' | 'dark' | 'light' | 'sepia';
+export type ThemeId = 'system' | 'dark' | 'light' | 'sepia' | 'midnight';
 
 /** Theme options for Settings picker. [TRACE: DOCU/THEMING.md Phase 2] */
 export const THEME_OPTIONS: { id: ThemeId; label: string }[] = [
-    { id: 'system', label: 'System' },
-    { id: 'dark', label: 'Dark' },
-    { id: 'light', label: 'Light' },
-    { id: 'sepia', label: 'Sepia' },
+  { id: 'system', label: 'System' },
+  { id: 'dark', label: 'Dark' },
+  { id: 'light', label: 'Light' },
+  { id: 'sepia', label: 'Sepia' },
+  { id: 'midnight', label: 'Midnight' },
 ];
 
 export type PaletteShape = {
@@ -22,6 +23,8 @@ export type PaletteShape = {
   bgCard: string;
   bgCardHover: string;
   bgInput: string;
+  glassBg: string;
+  glassBorder: string;
   textPrimary: string;
   textSecondary: string;
   textDisabled: string;
@@ -71,6 +74,8 @@ const DARK_PALETTE: PaletteShape = {
   bgCard: '#1b1e29',
   bgCardHover: '#232636',
   bgInput: '#161825',
+  glassBg: 'rgba(27, 30, 41, 0.75)',
+  glassBorder: 'rgba(255, 255, 255, 0.1)',
 
   // Text
   textPrimary: '#e8e9ed',
@@ -138,6 +143,8 @@ export const THEMES: Record<Exclude<ThemeId, 'system'>, PaletteShape> = {
     bgCard: '#ffffff',
     bgCardHover: '#eef0f4',
     bgInput: '#e8e9ed',
+    glassBg: 'rgba(255, 255, 255, 0.7)',
+    glassBorder: 'rgba(0, 0, 0, 0.05)',
     textPrimary: '#11181c',
     textSecondary: '#5a5e6b',
     textDisabled: '#8b8fa3',
@@ -151,6 +158,8 @@ export const THEMES: Record<Exclude<ThemeId, 'system'>, PaletteShape> = {
     bgCard: '#252219',
     bgCardHover: '#2e2a22',
     bgInput: '#1f1c18',
+    glassBg: 'rgba(37, 34, 25, 0.8)',
+    glassBorder: 'rgba(196, 155, 26, 0.15)',
     textPrimary: '#e8e4dc',
     textSecondary: '#9a958a',
     textDisabled: '#6c685e',
@@ -162,6 +171,20 @@ export const THEMES: Record<Exclude<ThemeId, 'system'>, PaletteShape> = {
     borderGlow: 'rgba(184, 134, 11, 0.35)',
     border: '#3d382e',
     divider: '#322e26',
+  },
+  midnight: {
+    ...DARK_PALETTE,
+    bgApp: '#050508',
+    bgCard: '#0d0d12',
+    bgCardHover: '#14141d',
+    bgInput: '#08080b',
+    glassBg: 'rgba(13, 13, 18, 0.85)',
+    glassBorder: 'rgba(139, 92, 246, 0.2)',
+    accentPrimary: '#7c3aed', // Deeper purple
+    accentHover: '#8b5cf6',
+    accentDim: '#5b21b6',
+    border: '#1a1a24',
+    divider: '#12121a',
   },
 };
 
@@ -254,10 +277,97 @@ export const CardStyle = {
   borderRadius: Radius.md,
   // Subtle purple glow (website accent)
   shadowColor: DARK_PALETTE.accentWeb,
-  shadowOffset: { width: 0, height: 0 },
-  shadowOpacity: 0.15,
-  shadowRadius: 8,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.18,
+  shadowRadius: 10,
   elevation: 3,
+} as const;
+
+/**
+ * Arteria Depth System — Layered shadow and surface presets.
+ * Part of the Arteria-theme-engine (see TECHNICAL_USER_MANUAL.md).
+ *
+ * Usage:
+ *   Subtle  → Skill box, stat pill, idle badges (barely floating)
+ *   Medium  → Section cards, modals backs, settings rows (standard float)
+ *   Elevated → Node/action cards, active states (lifted, attention-grabbing)
+ *   Deep    → Modals, overlays, featured panels (dramatic lift)
+ */
+
+/** Subtle float — barely lifted off the surface. Good for pills and badges. */
+export const ShadowSubtle = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.12,
+  shadowRadius: 3,
+  elevation: 1,
+} as const;
+
+/** Standard card elevation — lifted enough to notice. */
+export const ShadowMedium = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.2,
+  shadowRadius: 8,
+  elevation: 4,
+} as const;
+
+/** Elevated card — draws the eye. Node cards, active task cards. */
+export const ShadowElevated = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.28,
+  shadowRadius: 14,
+  elevation: 8,
+} as const;
+
+/** Deep shadow — dramatic floating. Modals, feature panels. */
+export const ShadowDeep = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 10 },
+  shadowOpacity: 0.35,
+  shadowRadius: 24,
+  elevation: 12,
+} as const;
+
+/** Elevated card style with stronger presence than CardStyle. */
+export const CardStyleElevated = {
+  borderWidth: 1,
+  borderColor: DARK_PALETTE.border,
+  borderRadius: Radius.lg,
+  ...ShadowElevated,
+  shadowColor: DARK_PALETTE.accentWeb,
+  shadowOpacity: 0.22,
+} as const;
+
+/** Raised (3D) button style — lighter top edge, darker bottom, soft lift shadow. */
+export const ButtonRaisedStyle = {
+  borderRadius: Radius.md,
+  borderTopWidth: 1,
+  borderTopColor: 'rgba(255,255,255,0.12)',
+  borderBottomWidth: 2,
+  borderBottomColor: 'rgba(0,0,0,0.25)',
+  ...ShadowMedium,
+} as const;
+
+/** Inset (recessed) surface — simulates inner shadow via top border darkening. */
+export const InsetStyle = {
+  borderRadius: Radius.md,
+  borderWidth: 1,
+  borderTopColor: 'rgba(0,0,0,0.3)',
+  borderLeftColor: 'rgba(0,0,0,0.15)',
+  borderRightColor: 'rgba(255,255,255,0.04)',
+  borderBottomColor: 'rgba(255,255,255,0.06)',
+} as const;
+
+/** Header shadow — casts downward for section separation depth. */
+export const HeaderShadow = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  elevation: 4,
+  zIndex: 1,
 } as const;
 
 // ── Fonts ───────────────────────────────────────────────────

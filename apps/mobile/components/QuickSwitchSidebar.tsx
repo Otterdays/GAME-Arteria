@@ -3,7 +3,7 @@
  * [TRACE: ROADMAP U. Quick-Switch Sidebar]
  *
  * Beautiful glassmorphic panel with skill-specific colors, gold accent for active,
- * smooth Reanimated slide. Trigger: floating pill on left edge.
+ * smooth Reanimated slide.
  *
  * Fluidity: Backdrop always mounted (no conditional mount), opacity interpolated
  * from translateX. useLayoutEffect for animation before paint. Snappier timing.
@@ -67,8 +67,8 @@ const SkillRow = memo(function SkillRow({
                     backgroundColor: isActive
                         ? `${meta.color}18`
                         : pressed
-                          ? palette.bgCardHover
-                          : 'transparent',
+                            ? palette.bgCardHover
+                            : 'transparent',
                     borderColor: isActive ? palette.gold : 'transparent',
                     borderWidth: isActive ? 1 : 0,
                 },
@@ -92,19 +92,16 @@ const SkillRow = memo(function SkillRow({
 export function QuickSwitchSidebar() {
     const { palette } = useTheme();
     const insets = useSafeAreaInsets();
-    const segments = useSegments();
-    const { isOpen, close, toggle } = useQuickSwitch();
+    const { isOpen, close } = useQuickSwitch();
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
     const translateX = useSharedValue(-SIDEBAR_WIDTH);
-
-    const isInSkillScreen = segments[0] === 'skills';
-    const showTrigger = isInSkillScreen;
 
     useLayoutEffect(() => {
         translateX.value = withTiming(isOpen ? 0 : -SIDEBAR_WIDTH, {
             duration: ANIM_DURATION,
         });
     }, [isOpen, translateX]);
+
 
     const closeSidebar = useCallback(() => close(), [close]);
 
@@ -127,31 +124,6 @@ export function QuickSwitchSidebar() {
     const styles = useMemo(
         () =>
             StyleSheet.create({
-                trigger: {
-                    position: 'absolute',
-                    left: Spacing.sm,
-                    zIndex: 1100,
-                    ...Platform.select({
-                        ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 4 },
-                        android: { elevation: 6 },
-                    }),
-                },
-                triggerGradient: {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: Spacing.sm,
-                    paddingHorizontal: Spacing.md,
-                    borderRadius: Radius.full,
-                    borderWidth: 1,
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
-                    gap: Spacing.xs,
-                },
-                triggerIcon: {
-                    fontSize: 18,
-                    color: palette.textPrimary,
-                    fontWeight: '700',
-                },
-                triggerEmoji: { fontSize: 14 },
                 backdrop: {
                     backgroundColor: 'rgba(0,0,0,0.5)',
                     zIndex: 1050,
@@ -228,36 +200,6 @@ export function QuickSwitchSidebar() {
 
     return (
         <>
-            {/* Trigger — floating pill on left edge */}
-            {showTrigger && (
-                <Pressable
-                    onPress={() => {
-                        if (Platform.OS !== 'web') {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        }
-                        toggle();
-                    }}
-                    style={[styles.trigger, { top: insets.top + 56 }]}
-                    hitSlop={12}
-                >
-                    <LinearGradient
-                        colors={[
-                            palette.bgCard,
-                            palette.bgCardHover,
-                        ]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.triggerGradient}
-                    >
-                        <Text style={styles.triggerIcon}>≡</Text>
-                        {activeTask?.skillId && (
-                            <Text style={styles.triggerEmoji}>
-                                {SKILL_META[activeTask.skillId as SkillId]?.emoji ?? '⚙️'}
-                            </Text>
-                        )}
-                    </LinearGradient>
-                </Pressable>
-            )}
 
             {/* Backdrop — always mounted, opacity interpolated (avoids mount lag) */}
             <Animated.View

@@ -5,9 +5,12 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Added Leadership, Adventure, Dungeon Dwelling, and Construction as Coming Soon skills with dynamic UI modal. Version bumped to 0.5.1. Docs fully updated. Ready for the next feature request!
+**Active Task:** Formalized the **Technical User Manual** in `DOCU/`, providing a comprehensive taxonomy for the sequentially evolved program stack (Arteria-game-engine, Arteria-tick-orchestrator, etc.). Integrated the Midnight theme, Achievement expansion (16 total), and new gameplay toggles (Haptics, Shake, Floating XP).
 
-## [2026-03-05] Coming Soon Skills Expansion
+## [2026-03-06] THE 0.5.1 extended update directors cut remix - alpha
+- **Technical User Manual:** Created `DOCU/TECHNICAL_USER_MANUAL.md`. Identified and named 11 core subsystems (Engine Taxonomy) to improve developer clarity and documentation quality.
+- **Premium Theme & Achievement Expansion:** (Moved from 03-05 entry) Added 6 new reactive achievements, Mirror/Glassmorphism 2.0 stylings, Midnight theme, and Gameplay settings (Haptics/Shake/Floating XP).
+- **Versioning:** Unified versions 0.4.3 through 0.5.0 into the **v0.5.1** branch. Updated `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `index.html`, and `patchHistory.ts` to reflect this mega update.
 - **Data:** Added `'leadership'`, `'adventure'`, `'dungeoneering'`, `'construction'` to `SkillId` in engine and `ALL_SKILLS` / `SKILL_META` locally.
 - **UI:** The skills grid now shows Leadership, Adventure, Dungeon Dwelling, and Construction with their respective colors and emojis.
 - **Interaction:** Unimplemented skills trigger the stylized "Coming Soon" glassmorphism modal when tapped.
@@ -412,7 +415,14 @@
 
 **Active Task (previous):** Architecting the story and quest system (Phase 6 pre-planning), identifying style and narrative structures based on STORYLINE.md and MASTER_DESIGN_DOC.md.
 
-## [2026-03-02] Skills Screen Layout Refactor (RS Style)
+## [2026-03-06] Quick-Switch & Coming Soon Polish
+- **Quick-Switch Toggle Animation:** Extracted trigger to standalone `QuickSwitchToggle.tsx`. Added dynamic entrance animations (lateral shift + rotate + scale) on route changes so it feels move "alive" and moves with the UI. Added visibility logic: hides gracefully when sidebar is open or when navigating to non-skill screens.
+- **Coming Soon Skills:** Added/Revised `construction`, `leadership`, `adventure`, and `dungeoneering` (Dungeon Dwelling) in `SKILL_META`. All are correctly marked with "Coming Soon" badges and colors.
+- **Stylized Coming Soon Modal:** Completely overhauled `ComingSoonModal.tsx` with premium aesthetics: glassmorphic card, `LinearGradient` header glow, animated entrance/exit, and a "Building Phase" status badge. Tapping any locked skill now trigger this high-fidelity popup.
+- **Header Integration:** Integrated `QuickSwitchToggle` into every implemented skill header (Mining, Logging, Fishing, Forging, etc.) ensuring a consistent QoL experience across the gathering and crafting pillars.
+
+## [2026-03-05] Stats Screen Overhaul — The Tome of Records
+ (RS Style)
 - **Grid Layout:** Converted the `index.tsx` skills screen from a pillar-based list into a dense, 3-column grid layout inspired by RuneScape's skills interface.
 - **Skill Box Design:** Each skill now renders as a compact gold-bordered box showing its icon, current level, and the maximum level (99).
 - **Total Level Formatter:** Updated the "Total Lv." header to display as `current / max` (e.g., `120 / 1485`), calculating the `maxTotalLevel` by restricting each of the 15 skills to a maximum of 99.

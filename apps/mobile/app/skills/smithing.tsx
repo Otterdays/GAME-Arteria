@@ -28,6 +28,7 @@ import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { MasteryBadges } from '@/components/MasteryBadges';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
+import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
 
 // @ts-ignore
 import { meetsNarrativeRequirement } from '../../../../packages/engine/src/utils/narrative';
@@ -321,6 +322,8 @@ export default function SmithingScreen() {
                 >
                     <Text style={styles.backButtonText}>‹ Back</Text>
                 </TouchableOpacity>
+                <View style={{ flex: 1 }} />
+                <QuickSwitchToggle />
             </View>
 
             <View style={styles.infoSection}>

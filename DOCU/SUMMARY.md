@@ -30,7 +30,8 @@ These two documents are the authoritative references. All other docs supplement 
 | **MASTER_DESIGN_DOC.md** | Full game design (Aetheria: world, skills, combat, economy, narrative, monetization). |
 | **COMPANIONS.md** | Wandering Souls: roster, roles (Auto-Gather, Auto-Craft, Combat), traits, Leadership gates, companion leveling (levels like player for skilling/crafting/collecting). |
 | **SCRATCHPAD.md** | Active task, history, next steps, blockers. Compact at 500 lines. |
-| **CHANGELOG.md** | Version history (Keep a Changelog format). |
+| **TECHNICAL_USER_MANUAL.md** | Comprehensive engine taxonomy and technical subsystems guide. |
+| **CHANGELOG.md** | Running version history. (Keep a Changelog format). |
 | **FUTURE_NOTES.md** | Research & forward planning (SDK 55 migration, MMKV, game loop patterns). |
 | **PEOPLE_TO_ADD.md** | Names for future inclusion in the game (NPCs, credits, companions, etc.) — reference only. |
 | **My_Thoughts.md** | Decisions & rationale (e.g. EAS build times, Fast Refresh). |
@@ -59,24 +60,13 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.5.1** "Coming Soon Skills" (Leadership, Adventure, Dungeon Dwelling, Construction marked coming soon). Post-0.5.1: Bestiary expansion, companion unlocks, combat alpha groundwork.
+**Version scheme:** 0.x.x. Current **0.5.1** "Architectural Tome" (Technical User Manual, Engine Taxonomy). Post-0.5.1: Bestiary expansion, companion unlocks, combat alpha groundwork.
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
-**Post-0.5.1 (2026-03-05):** **Coming Soon Skills:** Added Leadership, Adventure, Dungeon Dwelling, and Construction to Skills grid and global state.
-**Post-0.5.0 (2026-03-05):** **Construction & Coming Soon:** Construction added to Skills grid. Unimplemented skills now show a stylized `ComingSoonModal` when tapped. **v0.5.0 Big Weeds Update:** Forging weapon expansion (dagger, shortsword, longsword, scimitar, 2H Longblade + armour). Fletching & Tailoring skills (planned). Runite forging, rare mining gems. Harvesting, Scavenging, Herblore, Bank OSRS redesign, World Exploration, Lumina Shop, Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0. **Prayer System:** 12 prayers, bone burying, combat drain. Combat skills clickable on Skills grid. **Mastery panel:** Opened from Skills tab header. Unimplemented skills show only Coming Soon badge. **Fonts:** Bank, Shop, Combat, Statistics use Cinzel Bold for main titles. **Fixes:** Android splash-screen boot loop; duplicate playerRef. **Combat UI Phase 1:** Loadout screen with stats, Bestiary stub moved. **OTA Note:** Firebase is NOT required for EAS OTA updates.
-
-**Post-0.4.3 (2026-03-05):** **Lumina Shop & Mastery:** Lumina Shop in Shop Buy tab: Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (+25%, 15 Lumina). Mastery: yield_bonus (+3%/level, max 3) for all 8 skills. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max buttons.
-
-**Post-0.4.4 (2026-03-05):** **World Exploration:** Explore tab = World Map. 6 locations (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen with NPCs, Shop, Quests. "Coming soon" banners for unimplemented. `constants/locations.ts`, `app/location/[id].tsx`.
-
-**Post-0.4.4 (2026-03-05):** **Mastery Speed:** speed_bonus (+4%/level, max 3) for all 8 mastery skills. Faster ticks = more idle progress. Settings → Mastery.
-
-**Post-0.4.4 (2026-03-05):** **Herblore:** Brew herbs + empty vials into potions. 7 recipes from Minor Healing to Void Resistance. Buy empty vials from Nick. Bank Potions filter. Pet Fizz.
-
-**Post-0.4.3 (2026-03-05):** **Harvesting & Scavenging:** Two new gathering skills. Harvesting: wheat, cabbage, tomato, sweetcorn, strawberry, snape_grass, void_cap_mushroom. Scavenging: rusty_scrap, discarded_tech, fey_trinket, celestial_fragment, voidmire_crystal. Both in Quick-Switch Sidebar; thump SFX on tick.
+**v0.5.1 (2026-03-06) — THE 0.5.1 extended update directors cut remix - alpha:** **Technical User Manual:** Formalized the documentation of the Arteria program stack. Defined the 11 core engines (Arteria-game-engine, Arteria-tick-orchestrator, etc.) and provided a technical taxonomy. **Premium Theme & Achievements:** Added Midnight theme, Achievement expansion (16 total), and new gameplay toggles (Haptics, Shake, Floating XP). **Stats Screen Overhaul:** Transformed the Stats tab into "The Tome of Records" with 6 premium sections featuring glassmorphism and lifetime tracking. **Quick-Switch & Coming Soon Polish:** Dynamic animations and "In Works" modal. **Skills Expanded:** Harvesting, Scavenging, Herblore (potions & vials), Forging weapon expansion, Runite forging, rare mining gems. Construction, Leadership, Adventure, Dungeon Dwelling added to grid. **World Exploration:** World Map with 6 locations. **Bank OSRS redesign:** Custom tabs and filters. **Lumina Shop & Mastery:** Reroll Quests, XP Boost; mastery yield/speed expansions. **Combat Alpha:** Fully playable loop, loadouts, active prayers (+12 unlocked), bestiary. **Fixes:** UI lints, Splash-screen loop, missing theme options.
 
 **Post-0.4.2 (2026-03-05):** **OTA Pipeline Hardened:** `expo-updates` explicit plugin with `checkAutomatically: ON_LAUNCH`. `runtimeVersion` switched from static `"1.0.0"` to version-matched `"0.4.2"` (static string required for EAS bare workflow). ABI splits config plugin (`plugins/withAbiSplits.js`) survives `expo prebuild --clean`. `proguard-android-optimize.txt` for full R8. `versionName` synced to `0.4.2`. Settings → About: "Check for Updates" row with status/error/restart. `Rollback_OTA.bat` for emergency rollbacks. **⚠️ Rebuild APK required** to bake in new runtimeVersion + config plugin. **Skill Pets:** 7 pets with rare drops, Pets screen, active emoji. **SpecialMessageModal:** Premium animated modal; fixed `useNativeDriver` conflict (outer-native/inner-JS split). **UI Polish:** Resolved Cooking crash (missing Radius), Bank filter pill stretching, and missing tab icons.
 
