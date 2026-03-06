@@ -51,7 +51,7 @@ REM Ensure local.properties exists ^(prebuild --clean removes it^)
 set "LOCAL_PROPS=%~dp0apps\mobile\android\local.properties"
 if not exist "%LOCAL_PROPS%" (
     if defined ANDROID_HOME (
-        echo sdk.dir=%ANDROID_HOME%> "%LOCAL_PROPS%"
+        echo sdk.dir=%ANDROID_HOME:\=/%> "%LOCAL_PROPS%"
     ) else (
         echo sdk.dir=C:/Users/home/AppData/Local/Android/Sdk> "%LOCAL_PROPS%"
     )
