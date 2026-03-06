@@ -5,12 +5,22 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Formalized the **Technical User Manual** in `DOCU/`, providing a comprehensive taxonomy for the sequentially evolved program stack (Arteria-game-engine, Arteria-tick-orchestrator, etc.). Integrated the Midnight theme, Achievement expansion (16 total), and new gameplay toggles (Haptics, Shake, Floating XP).
+**Active Task:** Implemented the **Arteria Depth System** in `theme.ts`. 6 new depth presets (ShadowSubtle, ShadowMedium, ShadowElevated, ShadowDeep, ButtonRaisedStyle, InsetStyle, HeaderShadow) for premium visual depth across all screens.
 
 ## [2026-03-06] THE 0.5.1 extended update directors cut remix - alpha
 - **Technical User Manual:** Created `DOCU/TECHNICAL_USER_MANUAL.md`. Identified and named 11 core subsystems (Engine Taxonomy) to improve developer clarity and documentation quality.
 - **Premium Theme & Achievement Expansion:** (Moved from 03-05 entry) Added 6 new reactive achievements, Mirror/Glassmorphism 2.0 stylings, Midnight theme, and Gameplay settings (Haptics/Shake/Floating XP).
 - **Versioning:** Unified versions 0.4.3 through 0.5.0 into the **v0.5.1** branch. Updated `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `index.html`, and `patchHistory.ts` to reflect this mega update.
+- **Arteria Depth System:** Added 7 depth presets to `theme.ts` — `ShadowSubtle`, `ShadowMedium`, `ShadowElevated`, `ShadowDeep`, `CardStyleElevated`, `ButtonRaisedStyle`, `InsetStyle`, `HeaderShadow`. Applied globally:
+  - **Headers:** All major headers (Skills, Settings, Skill pages) now cast a downward shadow for visual separation.
+  - **Node cards:** All skill node cards now have floating drop shadows (via `getNodeCardBaseStyles`). Locked cards collapse to flat.
+  - **Train buttons:** Raised 3D button style with lighter top edge and darker bottom for tactile depth.
+  - **Stat pills:** Recessed inset feel with simulated inner shadow.
+  - **BouncyButton:** Now dims opacity on press (0.85) for a "push into surface" depth feel alongside scale.
+  - **ActivePulseGlow:** Upgraded to dual-layer system (slow ambient drift + faster focused heartbeat) for a richer breathing effect.
+- **Skill Screen Header Compression & Progression Bar:**
+  - Collapsed the top floating large level badge into a compact inline tag next to the skill title to regain vertical real-estate viewing nodes.
+  - Introduced a sleek horizontal unlocking progression bar at the bottom of the Skill header. Displays node emojis; grays them out and shrinks them if locked, and illuminates them with colored glassmorphism rings when unlocked. Prototype implemented in `mining.tsx`.
 - **Data:** Added `'leadership'`, `'adventure'`, `'dungeoneering'`, `'construction'` to `SkillId` in engine and `ALL_SKILLS` / `SKILL_META` locally.
 - **UI:** The skills grid now shows Leadership, Adventure, Dungeon Dwelling, and Construction with their respective colors and emojis.
 - **Interaction:** Unimplemented skills trigger the stylized "Coming Soon" glassmorphism modal when tapped.

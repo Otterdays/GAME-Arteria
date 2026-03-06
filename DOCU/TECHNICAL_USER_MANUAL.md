@@ -24,6 +24,15 @@
 ### 5. Arteria-theme-engine
 *   **Location:** `apps/mobile/constants/theme.ts` & `apps/mobile/contexts/ThemeContext.tsx`
 *   **Role:** A semantic design token system. It manages the dynamic color palettes (Dark, Light, Sepia, Midnight) and the **Glassmorphism 2.0** glass tokens. It utilizes React Context to provide real-time theme switching with no-cost re-renders through memoized style objects.
+*   **Depth System:** Layered shadow and surface presets for premium visual depth:
+    *   `ShadowSubtle` — barely lifted (pills, badges)
+    *   `ShadowMedium` — standard float (section cards, rows)
+    *   `ShadowElevated` — draws the eye (node cards, active states)
+    *   `ShadowDeep` — dramatic lift (modals, featured panels)
+    *   `CardStyleElevated` — elevated card with accent glow
+    *   `ButtonRaisedStyle` — 3D raised button (lighter top, darker bottom)
+    *   `InsetStyle` — simulated inner shadow for recessed surfaces
+    *   `HeaderShadow` — downward shadow for header separation
 
 ### 6. Arteria-sound-engine
 *   **Location:** `apps/mobile/utils/sounds.ts`

@@ -96,14 +96,71 @@ export default function MiningScreen() {
                     fontSize: FontSize.md,
                     fontWeight: '600',
                 },
-                ...getLevelBadgeStyles(palette, palette.skillMining),
+                titleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: Spacing.sm,
+                    marginBottom: 4,
+                },
                 miningTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
                     color: palette.textPrimary,
-                    marginBottom: 4,
+                },
+                levelTag: {
+                    backgroundColor: `${palette.skillMining}25`,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: `${palette.skillMining}50`,
+                },
+                levelTagText: {
+                    color: palette.skillMining,
+                    fontSize: FontSize.xs,
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
                 },
                 miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
+                iconBarContainer: {
+                    marginTop: Spacing.md,
+                    borderTopWidth: 1,
+                    borderTopColor: palette.border,
+                    marginHorizontal: -Spacing.lg, // bleed to edge
+                },
+                iconBarScroll: {
+                    paddingHorizontal: Spacing.lg,
+                    paddingTop: Spacing.md,
+                    gap: Spacing.md,
+                    alignItems: 'center',
+                },
+                iconWrapper: {
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    backgroundColor: palette.bgApp,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    ...InsetStyle,
+                },
+                iconUnlocked: {
+                    borderColor: `${palette.skillMining}50`,
+                    backgroundColor: `${palette.skillMining}15`,
+                    shadowColor: palette.skillMining,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 6,
+                },
+                iconEmoji: {
+                    fontSize: 22,
+                },
+                iconLocked: {
+                    opacity: 0.25,
+                    transform: [{ scale: 0.9 }],
+                },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
                 ...getNodeCardBaseStyles(palette),
                 nodeCardActive: {
@@ -273,12 +330,16 @@ export default function MiningScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={styles.levelBadge}>
-                    <Text style={styles.levelBadgeText}>Lv. {miningSkill.level}</Text>
+                <View style={styles.titleRow}>
+                    <Text style={styles.miningTitle}>Mining</Text>
+                    <View style={styles.levelTag}>
+                        <Text style={styles.levelTagText}>Lv. {miningSkill.level}</Text>
+                    </View>
                 </View>
-                <Text style={styles.miningTitle}>Mining</Text>
                 <Text style={styles.miningSub}>Swing your pickaxe and gather ores.</Text>
+
                 <MasteryBadges skillId="mining" />
+
                 {/* XP progress [current/next] */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
@@ -302,6 +363,28 @@ export default function MiningScreen() {
                         emoji={activeNode?.emoji || '⛏️'}
                         triggerKey={popTrigger}
                     />
+                </View>
+
+                {/* Unlockable Icon Bar */}
+                <View style={styles.iconBarContainer}>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.iconBarScroll}
+                    >
+                        {MINING_NODES.map((node) => {
+                            const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+                            const isUnlocked = miningSkill.level >= node.levelReq && meetsReq;
+
+                            return (
+                                <View key={node.id} style={[styles.iconWrapper, isUnlocked && styles.iconUnlocked]}>
+                                    <Text style={[styles.iconEmoji, !isUnlocked && styles.iconLocked]}>
+                                        {node.emoji}
+                                    </Text>
+                                </View>
+                            );
+                        })}
+                    </ScrollView>
                 </View>
             </View>
 

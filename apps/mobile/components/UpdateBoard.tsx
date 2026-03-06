@@ -164,6 +164,10 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeText}>• Formalized the "Technical User Manual" in DOCU/. Identified and named the 11 core subsystems (e.g., Arteria-game-engine, Arteria-tick-orchestrator) to build a more technical foundation.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✨ Arteria Depth System</Text>
+                                    <Text style={styles.changeText}>• Multi-layered depth presets: ShadowSubtle, ShadowMedium, ShadowElevated, and ShadowDeep. Node cards now float, stat pills are recessed, and headers cast shadows for a premium tactile feel.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🌌 Midnight Theme</Text>
                                     <Text style={styles.changeText}>• A new deep-black (#050508) premium theme with purple accents and enhanced glassmorphism. Perfect for OLED and late-night sessions.</Text>
                                 </View>

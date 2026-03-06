@@ -10,7 +10,8 @@
 > Consolidates updates 0.4.3 through 0.5.x. A massive update introducing World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, and premium themes.
 
 ### Added
-- **Architectural Tome:** Created `DOCU/TECHNICAL_USER_MANUAL.md` with full engine taxonomy.
+- **Architectural Tome:** Created `DOCU/TECHNICAL_USER_MANUAL.md` with full engine taxonomy (identifying bits like Arteria-game-engine, Arteria-tick-orchestrator, etc.).
+- **Arteria Depth System:** Multi-layered shadow system (Subtle, Medium, Elevated, Deep), 3D raised buttons, inset stat pills, and header shadow casting for premium tactile depth.
 - **Midnight Theme:** Deep-black premium theme optimized for OLED screens with purple accents.
 - **Achievement Expansion:** Added 6 new reactive achievements (Head Chef, Potion Master, Sneeze Cultist, Tome of Knowledge, Void Walker, Death Defier). Total: 16.
 - **Gameplay Settings:** Added toggles for Haptics & Vibration, Screen Shake, and Floating XP.

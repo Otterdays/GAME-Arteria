@@ -1,9 +1,13 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Arteria-0.5.0-8b5cf6?style=flat-square&labelColor=0a0b0f" alt="Version" />
-  <img src="https://img.shields.io/badge/Expo-SDK_55-000020?style=flat-square&logo=expo&logoColor=fff" alt="Expo" />
-  <img src="https://img.shields.io/badge/React_Native-0.83-61dafb?style=flat-square&logo=react&logoColor=fff" alt="React Native" />
-  <img src="https://img.shields.io/badge/Tests-25_Passing-22c55e?style=flat-square" alt="Tests" />
-  <img src="https://img.shields.io/badge/License-MIT-64748b?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Arteria-0.5.1-8b5cf6?style=for-the-badge&labelColor=0a0b0f" alt="Version" />
+  <img src="https://img.shields.io/badge/Expo-SDK_55-000020?style=for-the-badge&logo=expo&logoColor=fff" alt="Expo" />
+  <img src="https://img.shields.io/badge/React_Native-0.83-61dafb?style=for-the-badge&logo=react&logoColor=fff" alt="React Native" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178c6?style=for-the-badge&logo=typescript&logoColor=fff" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Redux-Toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=fff" alt="Redux" />
+  <img src="https://img.shields.io/badge/MMKV-v4_C%2B%2B-f97316?style=for-the-badge" alt="MMKV" />
+  <img src="https://img.shields.io/badge/OTA-EAS_Updates-0ea5e9?style=for-the-badge&logo=expo&logoColor=fff" alt="OTA" />
+  <img src="https://img.shields.io/badge/Tests-25_Passing-22c55e?style=for-the-badge" alt="Tests" />
+  <img src="https://img.shields.io/badge/License-MIT-64748b?style=for-the-badge" alt="License" />
 </p>
 
 <h1 align="center">Arteria</h1>
@@ -38,46 +42,63 @@ A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for *
 | | |
 |:---:|:---|
 | **🌙 Offline** | 24h progression cap (F2P) · 7-day cap (Patron) |
-| **⛏️ Skills** | Mining, Logging, Fishing, Runecrafting, Cooking, Smithing, Forging, Harvesting, Scavenging, Herblore |
+| **⛏️ Skills** | 10 active: Mining, Logging, Fishing, Runecrafting, Cooking, Smithing, Forging, Harvesting, Scavenging, Herblore |
+| **🔮 Coming Soon Skills** | Leadership, Adventure, Dungeon Dwelling, Construction, Fletching, Tailoring, Thieving |
+| **🙏 Prayer** | 12 unlockable prayers (Lv.1–60) · Bone burying grants XP · Combat drain mechanic |
 | **🗺️ World** | 6 Explorable Locations · NPCs & Shops · Instant Travel |
-| **⚔️ Combat** | 12 factions · Auto or active · Goblin first enemy |
-| **📜 Quests** | 18 story quests · Act I & II · 30 daily quest templates |
-| **🏦 Systems** | OSRS-Style Bank Tabs · Multi-pillar Mastery · Theme Engine |
+| **⚔️ Combat** | Auto-battler · 4 zones · Equipment loadouts · Combat styles (Controlled/Aggressive/Defensive/Accurate) |
+| **📜 Quests** | 18 story quests across Act I & II · 30 daily quest templates · All-time completion tracker |
+| **🏦 Systems** | OSRS-Style Bank Tabs · Multi-pillar Mastery · Lumina Shop · Theme Engine (4 themes) |
+| **🏅 Achievements** | 16 reactive milestones (Head Chef, Void Walker, Death Defier, and more) |
+| **💬 NPCs** | Nick, Bianca the Herbalist, Kate the Traveler · Branching dialogue engine |
+| **🎲 Random Events** | Blibbertooth's Blessing, Cosmic Sneeze, Genie's Gift, Treasure Chest, Lucky Strike |
+| **🐾 Skill Pets** | Rare pet drops per skill · Equip in Settings → Pets |
+| **🔊 Audio** | Per-skill tick SFX (tink/thump/splash) · Idle Soundscapes |
 
 ---
 
-## Latest — v0.5.0 "Big Weeds Update"
+## 🚀 Latest — v0.5.1 "Director's Cut Remix - Alpha"
 
-| Feature | |
+| System | Details |
 |---------|---|
-| **New Skills** | Harvesting (flora), Scavenging (ruins), and Herblore (potions). |
-| **World Map** | Explore tab with 6 locations (Frostvale, Fey Markets, etc.). Tap to travel and visit local NPCs. |
-| **Bank Redesign** | Main tab + up to 6 custom tabs. Drag & drop items, type filters, remember last tab. |
-| **Mastery & Lumina**| Yield and Speed Mastery upgrades. Lumina Shop to reroll daily quests or buy XP boosts. |
-| **Weapons** | Massive Forging expansion with 5 weapon types across all 6 metal tiers (54 recipes). |
+| **⚔️ Combat Alpha** | Full auto-battler engine! 4 combat zones, loadouts, 12 unlockable Prayers, and active enemy bestiary drops. |
+| **🗺️ World Exploration** | Interactive World Map with 6 unique locations (Frostvale, etc.) enabling instant travel & NPC interactions. |
+| **🪴 Expanded Gathering** | Harvesting (flora), Scavenging (ruins), and Herblore (potions, vials). |
+| **🏦 OSRS Bank Redux** | Main tab + up to 6 custom tabs. Drag & drop, emoji mapping, type filters, and memory tracking. |
+| **✨ Arteria Depth System**| Multi-layered UI depth (Subtle, Medium, Elevated, Deep) applied across glassmorphism panels and nodes. |
 
 ---
 
-## Stack
+## ⚙️ The Arteria Program Stack
 
-| Layer | Tech |
+Arteria operates on a strictly decoupled architecture, isolating heavy progression math from the React Native view layer.
+
+| Subsystem | Tech / Role |
 |-------|------|
-| **Engine** | Pure TypeScript · Headless · Jest-tested |
-| **Runtime** | Expo SDK 55 · React Native 0.83 · New Architecture |
-| **State** | Redux Toolkit · Typed hooks |
-| **Storage** | MMKV v4 · Synchronous C++ |
-| **Nav** | Expo Router v6 · File-based |
+| **`arteria-game-engine`** | **Pure TypeScript** · Headless math. XP tables, loop logic, and deterministic rolls. 100% Jest-tested. |
+| **`arteria-tick-orchestrator`**| **Game Loop** · Delta-time tick processor running at 100ms for skilling and auto-battler loops. |
+| **`arteria-state`** | **Redux Toolkit 2.11** · Unified single source of truth for inventory, skills, and combat. Typed hooks. |
+| **`arteria-persist`** | **MMKV v4** · Lightning-fast synchronous C++ persistence syncing Redux snapshots to local storage. |
+| **`arteria-ui`** | **React Native 0.83 + Expo 55** · New Architecture, glassmorphism, Reanimated 4, and Expo Router. |
 
 ---
 
-## Repo Structure
+## 📁 Repo Structure
 
 | Path | Purpose |
 |------|---------|
-| `DOCU/` | Specs, roadmaps, architecture, companions |
-| `apps/mobile/` | React Native app · Screens, themes, UI |
-| `packages/engine/` | Game math · XP tables, tick system, actions |
+| `DOCU/` | All specs, design docs, architecture, and roadmaps |
+| `DOCU/TECHNICAL_USER_MANUAL.md` | Engine taxonomy — the 11 named Arteria subsystems |
+| `DOCU/MASTER_DESIGN_DOC.md` | Full GDD: 7 Parts, 21 Chapters, complete world & skills design |
+| `DOCU/CHANGELOG.md` | Version history (Keep a Changelog format) |
+| `DOCU/ROADMAP.md` | Phased development milestones (Phases 0–9+) |
+| `apps/mobile/` | React Native app · Screens, themes, components |
+| `apps/mobile/constants/` | Game data: skills, items, enemies, quests, patches, prayers |
+| `apps/mobile/store/` | Redux gameSlice · All reducers and selectors |
+| `apps/mobile/hooks/` | `useGameLoop`, `usePersistence`, `useAchievements` |
+| `packages/engine/` | Headless game math · XPTable, TickSystem, GameEngine |
 | `index.html` | Landing site · [GitHub Pages](https://otterdays.github.io/GAME-Arteria) |
+| `wiki.html` | Interactive skill wiki with node explorer |
 
 ---
 
@@ -106,6 +127,12 @@ npm install
 ```bash
 npm test
 npm run test:coverage
+```
+
+**OTA Update (push without rebuild):**
+```bash
+3_Send_OTA_Update.bat
+# Pushes JS bundle over-the-air via EAS — no APK rebuild needed
 ```
 
 ---

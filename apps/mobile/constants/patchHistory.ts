@@ -18,6 +18,7 @@ export const PATCH_HISTORY: PatchEntry[] = [
     date: '2026-03-06',
     added: [
       '📖 Architectural Tome: Formalized the DOCU/TECHNICAL_USER_MANUAL.md, providing a technical taxonomy for the 11 core subsystems (Arteria-game-engine, etc.).',
+      '✨ Arteria Depth System: Multi-layered shadow system (Subtle, Medium, Elevated, Deep), 3D raised buttons, inset stat pills, and header shadow casting for premium tactile depth.',
       '🌌 Midnight Theme: A new premium, high-contrast dark theme optimized for OLED screens with deep purple accents.',
       '🏅 Achievement Expansion: Added 6 new reactive achievements (Head Chef, Potion Master, Sneeze Cultist, Tome of Knowledge, Void Walker, Death Defier). Total: 16.',
       '⚙️ Gameplay Settings: Added user toggles for Haptics & Vibration, Screen Shake, and Floating XP.',
