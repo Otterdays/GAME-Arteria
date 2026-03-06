@@ -169,6 +169,7 @@ EAS has a feature called **EAS Update** that bypasses App Store reviews! When re
 
 **⚠️ OTA Runtime Version Workflow:**
 Because Arteria uses a "bare" workflow (the `android/` and `ios/` folders are generated locally to optimize ABI splits), we **cannot** use Expo's clever `{"policy": "appVersion"}` for `runtimeVersion`. We must use a static string like `"0.4.2"` in `app.json`.
+* **Note on Firebase Warning:** If you see a warning in Android logs stating `Default FirebaseApp failed to initialize because no default options were found`, **you can safely ignore it**. Firebase / `google-services.json` is **NOT** required for Expo OTA updates to function correctly. This is just a noisy warning from an underlying package.
 * **JS/UI Changes only:** Do **NOT** change the `runtimeVersion`. Just run the script. The update will go to everyone running the current version.
 * **Native Module/Library changes:** You MUST bump the `runtimeVersion` string manually in `app.json` (e.g. from `"0.4.2"` to `"0.4.3"`) **before** building a new APK. Then, when you push future OTAs, they will be tagged with `"0.4.3"` and only reach the new APK users, preventing crashes on the old ones.
 

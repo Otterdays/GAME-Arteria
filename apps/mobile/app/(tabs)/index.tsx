@@ -26,12 +26,14 @@ import { router } from 'expo-router';
 import { SKILL_META, IMPLEMENTED_SKILLS } from '@/constants/skills';
 import { isSkillInProgress } from '@/constants/comingSoon';
 import { ComingSoonBadge } from '@/components/ComingSoonBadge';
+import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
 import { BouncyButton } from '@/components/BouncyButton';
 import { ActivePulseGlow } from '@/components/ActivePulseGlow';
 import { ActivityLogModal } from '@/components/ActivityLogModal';
+import { MasteryModal } from '@/components/MasteryModal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLoginBonusStatus } from '@/constants/loginBonus';
 import { getDisplayName } from '@/constants/character';
@@ -45,10 +47,14 @@ const ALL_SKILLS: SkillId[] = [
   'attack', 'hitpoints', 'mining',
   'strength', 'agility', 'smithing', 'forging',
   'defence', 'herblore', 'fishing',
-  'scavenging', 'cooking', 'logging',
-  'harvesting', 'crafting', 'farming',
-  'runecrafting', 'thieving', 'fletching', 'tailoring',
+  'prayer', 'cooking', 'logging',
+  'scavenging', 'crafting', 'farming',
+  'harvesting', 'runecrafting', 'thieving', 'fletching', 'tailoring',
+  'construction', 'leadership', 'adventure', 'dungeoneering',
 ];
+
+/** Skills that navigate to the Combat tab when tapped. */
+const COMBAT_SKILLS = new Set<SkillId>(['attack', 'hitpoints', 'strength', 'defence', 'prayer']);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -76,31 +82,35 @@ function SkillBox({
   skillId,
   isActive,
   onNavigate,
+  onShowComingSoon,
   styles,
 }: {
   skillId: SkillId;
   isActive: boolean;
   onNavigate: (id: SkillId) => void;
+  onShowComingSoon: (id: SkillId) => void;
   styles: ReturnType<typeof StyleSheet.create>;
 }) {
   const skill = useAppSelector((s) => s.game.player.skills[skillId]);
   const meta = SKILL_META[skillId];
   const isImplemented = IMPLEMENTED_SKILLS.has(skillId);
+  const isCombatSkill = COMBAT_SKILLS.has(skillId);
+  const isClickable = isImplemented || isCombatSkill;
 
   const currentLevel = Math.min(skill.level, 99);
 
   return (
     <BouncyButton
       scaleTo={0.92}
-      hapticFeedback={isImplemented}
-      onPress={() => isImplemented && onNavigate(skillId)}
-      disabled={!isImplemented}
+      hapticFeedback={true}
+      onPress={() => isClickable ? onNavigate(skillId) : onShowComingSoon(skillId)}
+      disabled={false}
       accessibilityRole="button"
-      accessibilityLabel={`${meta.label}, level ${currentLevel} of 99. ${!isImplemented ? 'Coming soon' : ''}`}
+      accessibilityLabel={`${meta.label}, level ${currentLevel} of 99. ${!isClickable ? 'Coming soon' : ''}`}
       style={[
         styles.skillBox,
         isActive && styles.skillBoxActive,
-        !isImplemented && styles.skillBoxLocked,
+        !isClickable && styles.skillBoxLocked,
         { overflow: 'hidden' }
       ]}
     >
@@ -111,12 +121,15 @@ function SkillBox({
         <Text style={[styles.skillBoxEmoji, !isImplemented && styles.lockedEmoji]}>{meta.emoji}</Text>
       </View>
 
-      {/* Levels side */}
+      {/* Levels side: for implemented skills show level/99; for unimplemented show only Coming Soon */}
       <View style={styles.skillBoxRight}>
-        <Text style={styles.skillBoxLevelTop}>{currentLevel}</Text>
-        <Text style={styles.skillBoxLevelBottom}>99</Text>
-        {!isImplemented && (
-          <View style={{ marginTop: 4 }}>
+        {(isImplemented || isCombatSkill) ? (
+          <>
+            <Text style={styles.skillBoxLevelTop}>{currentLevel}</Text>
+            <Text style={styles.skillBoxLevelBottom}>99</Text>
+          </>
+        ) : (
+          <View style={styles.comingSoonWrap}>
             <ComingSoonBadge inProgress={isSkillInProgress(skillId)} size="sm" />
           </View>
         )}
@@ -135,6 +148,9 @@ export default function SkillsScreen() {
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const [logModalVisible, setLogModalVisible] = useState(false);
+  const [masteryModalVisible, setMasteryModalVisible] = useState(false);
+  const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
+  const [selectedComingSoonSkill, setSelectedComingSoonSkill] = useState<SkillId | null>(null);
   const isNarrow = width < NARROW_WIDTH;
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
   const skills = useAppSelector((s) => s.game.player.skills);
@@ -159,10 +175,19 @@ export default function SkillsScreen() {
 
   const handleNavigate = useCallback(
     (skillId: SkillId) => {
-      router.push(`/skills/${skillId}` as any);
+      if (COMBAT_SKILLS.has(skillId)) {
+        router.push('/(tabs)/combat' as any);
+      } else {
+        router.push(`/skills/${skillId}` as any);
+      }
     },
     []
   );
+
+  const handleShowComingSoon = useCallback((skillId: SkillId) => {
+    setSelectedComingSoonSkill(skillId);
+    setComingSoonModalVisible(true);
+  }, []);
 
   // Calculate active skill progress for the header
   const activeSkill = activeTask ? skills[activeTask.skillId as SkillId] : null;
@@ -318,6 +343,10 @@ export default function SkillsScreen() {
           justifyContent: 'center',
           gap: 2,
         },
+        comingSoonWrap: {
+          marginTop: 6,
+          alignSelf: 'center',
+        },
         skillBoxEmoji: { fontSize: 24 },
         lockedEmoji: { opacity: 0.4 },
         skillBoxLevelTop: {
@@ -436,14 +465,24 @@ export default function SkillsScreen() {
                 )}
               </View>
             </View>
-            <Pressable
-              onPress={() => setLogModalVisible(true)}
-              style={{ padding: Spacing.xs }}
-              accessibilityLabel="Open activity log"
-              accessibilityRole="button"
-            >
-              <Text style={{ fontSize: 18 }}>📜</Text>
-            </Pressable>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Pressable
+                onPress={() => setMasteryModalVisible(true)}
+                style={({ pressed }) => [{ padding: Spacing.sm, opacity: pressed ? 0.7 : 1 }]}
+                accessibilityLabel="Open mastery"
+                accessibilityRole="button"
+              >
+                <Text style={{ fontSize: 20 }}>📖</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setLogModalVisible(true)}
+                style={({ pressed }) => [{ padding: Spacing.sm, opacity: pressed ? 0.7 : 1 }]}
+                accessibilityLabel="Open activity log"
+                accessibilityRole="button"
+              >
+                <Text style={{ fontSize: 20 }}>📜</Text>
+              </Pressable>
+            </View>
           </View>
           {activeTask ? (
             <View style={styles.activeSkillBadge}>
@@ -503,6 +542,12 @@ export default function SkillsScreen() {
       </View>
 
       <ActivityLogModal visible={logModalVisible} onClose={() => setLogModalVisible(false)} />
+      <MasteryModal visible={masteryModalVisible} onClose={() => setMasteryModalVisible(false)} />
+      <ComingSoonModal
+        visible={comingSoonModalVisible}
+        skillId={selectedComingSoonSkill}
+        onClose={() => setComingSoonModalVisible(false)}
+      />
 
       {/* A. Skill grid */}
       <ScrollView
@@ -517,6 +562,7 @@ export default function SkillsScreen() {
                 skillId={skillId}
                 isActive={activeSkillId === skillId}
                 onNavigate={handleNavigate}
+                onShowComingSoon={handleShowComingSoon}
                 styles={styles}
               />
             </View>

@@ -20,6 +20,17 @@
 
 ---
 
+## 📚 Source of Truth
+
+For the definitive game design, philosophy, and architecture, refer to:
+
+- **[TRUTH_DOCTRINE.md](DOCU/TRUTH_DOCTRINE.md)** — The ultimate source of truth. Core philosophy, behavioral protocols, and developer mandates.
+- **[MASTER_DESIGN_DOC.md](DOCU/MASTER_DESIGN_DOC.md)** — Complete game design document. All skills, systems, mechanics, lore, and monetization strategy.
+
+All other documentation derives from these two primary sources.
+
+---
+
 ## What is Arteria?
 
 A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for **React Native (Expo)** with a headless TypeScript engine — zero UI coupling, 100% testable game logic.

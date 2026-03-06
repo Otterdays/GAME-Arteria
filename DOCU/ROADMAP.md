@@ -217,11 +217,12 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Combat Styles Selector:** Toggle between The Stalwart (Shield), The Blademaster (Dual), Spellweaver, Harbinger, Warden, Trickster (affects stat weighting).
 
 ### 4.2 — Encounter Flow (Instances) 🔴
-- [ ] 🟡 **Scout & Prepare UI:** Screen to select zone, equip loadout, and slot consumables (potions/food).
-- [ ] 🔴 **Auto-Combat Engine:** Headless math cruncher for offline. Resolves fights at 70% efficiency, auto-uses pots (based on HP threshold setting), auto-flees at 20% HP.
+- [x] � **Scout & Prepare UI:** Screen to select zone (e.g. Farm, Goblin House, Forest, Mountain), equip loadout, and slot consumables built into Battle tab. (v0.5.0)
+- [x] � **Auto-Combat Engine (2026-03-05):** `processCombatTick` reducer. Timer-accumulator model (100ms loop). Accuracy roll → damage roll → HP update. On kill: XP split (hp/atk/str/def), loot drops, gold, enemy respawn. Player death: respawn full HP, combat stops.
 - [ ] 🟡 **The "While You Were Away" Combat Report:** Detailed summary of kills, deaths, loot drops, gold earned, and combat skill XP.
 
-### 4.3 — Active Combat Interface 🔴
+### 4.3 — Active Combat Interface �
+- [x] 🟢 **Combat UI (2026-03-05):** HP bars (player green→amber→red, enemy red), attack speed progress bars, kill counter, gold display, FLEE button, scrolling combat log (max 40 entries, color-coded).
 - [ ] 🟡 **Action Bar UI:** Buttons for Basic attacks, Heavy strikes (MP), Shield bashes, Items. Fixed cooldowns.
 - [ ] 🟢 **Enemy UI:** Large HP Bar, Status Effects icons (Enraged, Stunned).
 - [ ] 🔴 **Combo System:** Code manual timing logic (e.g., tracking a Stun state to apply +50% dmg modifier from next hit if specific skill used).
@@ -233,7 +234,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Dungeon Modes:** Logic for Delves (5-10 min active / 1h idle clear), Expeditions (30 min / 4h idle max).
 - [ ] 🔴 **Dungeon Modifiers Engine:** Random weekly rules applied to combat math (e.g., "Gravity's Suggestion" reverses fall damage, "Blibbertooth's Blessing" causes confetti visual effects).
 - [x] 🟢 **Enemy bestiary stub:** Combat tab "Enemies Spotted" section; player.seenEnemies; recordEnemySeen when goblin_peek fires. (v0.4.1)
-- [ ] 🟢 **Combat log scroll:** Last N messages (damage, flee, loot) with optional "clear" or max lines.
+- [x] 🟢 **Combat log scroll (2026-03-05):** `CombatLogEntry` type, `combatLog` in GameState (max 40). Color-coded messages: player_hit (green), enemy_hit (red), miss (muted), kill (gold), loot (accent), died (red), info (secondary).
 - [ ] 🟢 **Loot popup/toast:** On kill or dungeon clear, brief summary of gold + items gained.
 - [ ] 🟡 **Auto-combat settings UI:** HP threshold for potion use, flee-at-HP%, enable/disable auto-flee.
 

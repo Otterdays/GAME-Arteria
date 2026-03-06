@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
@@ -88,14 +90,7 @@ export default function LoggingScreen() {
                     fontSize: FontSize.md,
                     fontWeight: '600',
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, palette.skillLogging),
                 miningTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -104,24 +99,20 @@ export default function LoggingScreen() {
                 },
                 miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
-                nodeCard: {
-                    backgroundColor: palette.bgCard,
-                    borderRadius: Radius.lg,
-                    padding: Spacing.md,
-                    borderWidth: 1,
-                    borderColor: palette.border,
-                },
-                nodeCardLocked: {
-                    backgroundColor: palette.bgApp,
-                    borderColor: 'transparent',
-                },
-                nodeCardActive: {},
+                ...getNodeCardBaseStyles(palette),
+                nodeCardActive: { borderColor: palette.skillLogging, borderWidth: 1 },
                 nodeHeader: {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: palette.skillLogging,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -253,8 +244,8 @@ export default function LoggingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: palette.skillLogging + '33', borderColor: palette.skillLogging }]}>
-                    <Text style={[styles.levelBadgeText, { color: palette.skillLogging }]}>Lv. {loggingSkill.level}</Text>
+                <View style={styles.levelBadge}>
+                    <Text style={styles.levelBadgeText}>Lv. {loggingSkill.level}</Text>
                 </View>
                 <Text style={styles.miningTitle}>Logging</Text>
                 <Text style={styles.miningSub}>Chop down trees to collect wood.</Text>
@@ -296,7 +287,7 @@ export default function LoggingScreen() {
                             style={[
                                 styles.nodeCard,
                                 isLocked && styles.nodeCardLocked,
-                                isActive && [styles.nodeCardActive, { borderColor: palette.skillLogging, backgroundColor: palette.skillLogging + '11' }],
+                                isActive && styles.nodeCardActive,
                             ]}
                             scaleTo={0.98}
                             onPress={() => handleNodePress(node)}
@@ -304,6 +295,14 @@ export default function LoggingScreen() {
                             accessibilityState={{ disabled: isLocked, selected: isActive }}
                             accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Chop for ${node.xpPerTick} XP`}`}
                         >
+                            {!isLocked && (
+                                <LinearGradient
+                                    colors={getGlassCardGradientColors(palette)}
+                                    style={StyleSheet.absoluteFill}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                />
+                            )}
                             {isActive && <ActivePulseGlow color={palette.skillLogging} />}
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>

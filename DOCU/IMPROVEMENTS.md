@@ -18,7 +18,7 @@
 | **Stats** | New tab. Total gathered by type (ore, log, fish, rune, bar, equipment, other), first/last play, days since first play. | player.stats; addItems increments. |
 | **Combat** | Placeholder screen + **Bestiary stub** ("Enemies Spotted" section; seenEnemies from goblin_peek). "Found in" shown per enemy when locations defined. | Phase 4; no stats/loadout yet. Bestiary groundwork: EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf in constants/enemies.ts. |
 | **Quests** | **Daily** (3/day, reset midnight, progress, Claim gold/Lumina). Active / Completed / Available; difficulty badges; steps; Start quest; Complete (rewards when all steps done). Step auto-complete. | Dev button only in __DEV__. |
-| **Settings** | **Character** (Nickname). Appearance, Gameplay, **Mastery** (Gathering/Crafting pillars, skill cards, XP + yield upgrades), Audio, Notifications, **Login bonus & Lumina**, Premium, About, Easter Egg, Danger. | Idle Soundscapes = stub. |
+| **Settings** | **Character** (Nickname). Appearance, Gameplay, Audio, Notifications, **Login bonus & Lumina**, Premium, About, Easter Egg, Danger. **Mastery** opened from **Skills** header (📖 next to 📜), not Settings. | Idle Soundscapes = stub. |
 | **Explore** | World Map tab. Location cards (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). Tap to travel. Location screen: NPCs, Shop, Quests. "Coming soon" for unimplemented. Corruption system 0-100%. | Frostvale content, world state events, seasonal calendar implementation. |
 | **Global** | Theme engine, tab bar theming, StatusBar, GlobalActionTicker, WhileYouWereAway, Update Board, Patch Notes (patches.tsx). | — |
 

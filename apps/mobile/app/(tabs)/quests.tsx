@@ -227,6 +227,43 @@ export default function QuestsScreen() {
                     fontWeight: '700',
                     fontSize: FontSize.xs,
                 },
+                npcCard: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: palette.bgCard,
+                    ...CardStyle,
+                    borderColor: palette.border,
+                    padding: Spacing.md,
+                    marginBottom: Spacing.sm,
+                },
+                npcInfo: {
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                },
+                npcEmoji: { fontSize: 24 },
+                npcName: {
+                    fontSize: FontSize.base,
+                    fontWeight: '600',
+                    color: palette.textPrimary,
+                    flex: 1,
+                },
+                talkButton: {
+                    backgroundColor: palette.accentPrimary,
+                    paddingVertical: 12,
+                    paddingHorizontal: Spacing.lg,
+                    borderRadius: Radius.sm,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 88,
+                },
+                talkBtnText: {
+                    color: palette.white,
+                    fontWeight: '700',
+                    fontSize: FontSize.base,
+                },
             }),
         [palette]
     );
@@ -259,15 +296,16 @@ export default function QuestsScreen() {
                         Talk to locals for lore and tips.
                     </Text>
                     {TOWN_NPCS.map((npc) => (
-                        <View key={npc.id} style={styles.questCard}>
-                            <View style={styles.questHeader}>
-                                <Text style={styles.questTitle}>{npc.emoji} {npc.name}</Text>
+                        <View key={npc.id} style={styles.npcCard}>
+                            <View style={styles.npcInfo}>
+                                <Text style={styles.npcEmoji}>{npc.emoji}</Text>
+                                <Text style={styles.npcName} numberOfLines={1}>{npc.name}</Text>
                             </View>
                             <BouncyButton
-                                style={[styles.startButton, { alignSelf: 'flex-start' }]}
+                                style={styles.talkButton}
                                 onPress={() => dispatch(gameActions.startDialogue({ treeId: npc.treeId, startNodeId: 'node_1' }))}
                             >
-                                <Text style={styles.startBtnText}>💬 Talk</Text>
+                                <Text style={styles.talkBtnText}>💬 Talk</Text>
                             </BouncyButton>
                         </View>
                     ))}

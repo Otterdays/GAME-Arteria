@@ -8,6 +8,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -111,30 +113,23 @@ export default function CookingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, cookColor),
                 screenTitle: { fontSize: FontSize.xl, fontWeight: 'bold', color: palette.textPrimary, marginBottom: 4 },
                 screenSub: { fontSize: FontSize.sm, color: palette.textSecondary, marginBottom: Spacing.md },
                 xpRow: { width: '100%', gap: 4 },
                 xpBarBg: { height: 6, backgroundColor: palette.bgApp, borderRadius: 999, overflow: 'hidden', width: '100%' },
                 xpText: { fontSize: FontSize.xs, color: palette.textSecondary, textAlign: 'center' },
                 listContent: { padding: Spacing.md, gap: Spacing.sm },
+                ...getNodeCardBaseStyles(palette),
                 nodeCard: {
-                    backgroundColor: palette.bgCard,
-                    borderRadius: Radius.lg,
-                    padding: Spacing.md,
-                    borderWidth: 1,
-                    borderColor: palette.border,
+                    ...getNodeCardBaseStyles(palette).nodeCard,
                     marginBottom: Spacing.md,
                 },
-                nodeCardLocked: { backgroundColor: palette.bgApp, borderColor: 'transparent', opacity: 0.7 },
-                nodeCardActive: {},
+                nodeCardLocked: {
+                    ...getNodeCardBaseStyles(palette).nodeCardLocked,
+                    opacity: 0.7,
+                },
+                nodeCardActive: { borderColor: cookColor, borderWidth: 1 },
                 nodeCardEmpty: { borderColor: palette.redDim },
                 nodeHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md },
                 nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
@@ -229,8 +224,8 @@ export default function CookingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: cookColor + '33', borderColor: cookColor }]}>
-                    <Text style={[styles.levelBadgeText, { color: cookColor }]}>Lv. {cookSkill.level}</Text>
+                <View style={styles.levelBadge}>
+                    <Text style={styles.levelBadgeText}>Lv. {cookSkill.level}</Text>
                 </View>
                 <Text style={styles.screenTitle}>Cooking</Text>
                 <Text style={styles.screenSub}>Turn raw fish into nourishing food for the road.</Text>
@@ -272,8 +267,16 @@ export default function CookingScreen() {
                             accessibilityRole="button"
                             accessibilityState={{ disabled: isLevelLocked || outOfMaterials, selected: isActive }}
                             accessibilityLabel={`${recipe.name}. ${isLevelLocked ? `Unlocks at level ${recipe.levelReq}` : `Cook for ${recipe.xpPerTick} XP`}`}
-                        >
-                            {isActive && <ActivePulseGlow color={cookColor} />}
+                            >
+                                {!isLevelLocked && (
+                                    <LinearGradient
+                                        colors={getGlassCardGradientColors(palette)}
+                                        style={StyleSheet.absoluteFill}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    />
+                                )}
+                                {isActive && <ActivePulseGlow color={cookColor} />}
 
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLevelLocked && { opacity: 0.4 }]}>{recipe.emoji}</Text>

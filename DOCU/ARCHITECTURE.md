@@ -3,10 +3,21 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`. Current: **0.4.2**.
+> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`. Current: **0.5.0**.
 
 > **⚠️ SDK 55 Note:** Expo SDK 54 is the last version supporting the Legacy Architecture.
 > SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
+
+## 📚 Source of Truth
+
+All architectural decisions must align with:
+
+- **[TRUTH_DOCTRINE.md](TRUTH_DOCTRINE.md)** — The ultimate source of truth. Core philosophy, behavioral protocols, and developer mandates (Triad of Code: KISS, DOTI, YAGNI).
+- **[MASTER_DESIGN_DOC.md](MASTER_DESIGN_DOC.md)** — Complete game design document. The source of all system requirements and feature specifications.
+
+These documents provide the design truth; this document describes the technical implementation.
+
+---
 
 ## Tech Stack (as of Feb 2026)
 - **Framework:** Expo SDK 55 (React Native 0.83.2, New Architecture mandatory)
@@ -86,6 +97,14 @@ Arteria/
 - **Tick wiring:** Root `_layout.tsx` calls `useGameLoop({ onTickComplete: playForSkill })`. When a skill tick completes, `useGameLoop` invokes the callback with `skillId`; `playForSkill` maps skill to tink/thump/splash and plays. Ref-stable callback via `onTickCompleteRef` in useGameLoop.
 - **Test:** Settings → Audio → "Test sound" plays all three in sequence.
 
+## Combat System (Phase 4, v0.5.0+)
+- **State:** `ActiveCombat` interface on `PlayerState.activeCombat` (enemyId, enemyName, HP max/current, attack/defense/accuracy, player/enemy attack timers, killCount, zoneId). `CombatLogEntry[]` on `GameState.combatLog` (max 40). `CombatLogEntry` types: player_hit, enemy_hit, player_miss, enemy_miss, kill, loot, died, info.
+- **Reducers:** `startCombat` (init from `ENEMIES` data, stop skilling, clear log), `fleeCombat`, `processCombatTick` (timer accumulation, accuracy/damage rolls, kill cycle, XP split, loot drops, gold, enemy respawn, player death), `pushCombatLog`.
+- **Game Loop:** `useGameLoop.ts` dispatches `processCombatTick({ deltaMs })` on every 100ms interval when `activeCombat` is truthy, alongside skilling ticks.
+- **Combat Math:** Player hit chance = `0.5 + (accuracy - enemyDefense) * 0.02` (clamped 5%–95%). Damage = `1..maxHit`. Enemy hit chance = `enemyAccuracy - meleeDefence * 0.015` (clamped 5%–95%). On kill: XP = enemyMaxHp split to hitpoints/attack/strength/defence. Gold = `enemyMaxHp * (1–3)`. Enemy respawns for continuous AFK farming.
+- **Zones:** 4 zones defined in `combat.tsx` — Sunny Meadows Farm (Tier 1), Goblin House (Tier 1), Whispering Woods Forest (Tier 1), Frostfall Mountain (Tier 2).
+- **Enemies:** 7 enemies in `constants/enemies.ts` with combat stats + drop tables. Equipment system (8 slots, Bronze–Runite) feeds into `recalculateCombatStats`.
+
 ## Production Action Logic (v0.2.7)
 - **Consumed Inputs:** The `ActionDef` interface was extended with `consumedItems?: { id: string; quantity: number }[]`.
 - **Transactional Ticks:** In `useGameLoop.ts`, the `processDelta` function now:
@@ -118,6 +137,7 @@ Arteria/
 - **Settings UI:** Settings → About → "Check for Updates" — manual OTA check via `Updates.checkForUpdateAsync()` / `fetchUpdateAsync()` / `reloadAsync()`. Shows status (checking, downloading, ready, up to date, error, dev mode). Disabled in dev builds.
 
 ## Global Components & Modals
+- **Mastery:** Opened from the Skills screen header (📖 button next to activity log 📜) via `MasteryModal` in `components/MasteryModal.tsx`. Two-column Gathering/Crafting layout. Mastery row was removed from Settings.
 - **Update Board:** In-app modal (`UpdateBoard.tsx`) that pops when `lastSeenVersion !== currentVersion` (from `app.json`). Shows changelog for the new version.
 - **Special Message Modal:** A premium animated modal (`SpecialMessageModal.tsx`) for global announcements or milestone celebrations. Triggered via `testMessage` state in `AppShell` (root layout). Supports spring entry, bouncing emojis, and shimmering border glows.
 - **GlobalActionTicker:** Located in root `_layout.tsx`. Uses `useSegments()` to detect navigation state and adjust its bottom offset (Above Tab Bar vs. Absolute Bottom).

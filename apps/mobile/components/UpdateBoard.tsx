@@ -149,7 +149,7 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{currentVersion}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.5.0') ? 'Big Weeds Update'
+                        {currentVersion.startsWith('0.5.0') ? 'Big Weeds + Combat Alpha'
                             : currentVersion.startsWith('0.4.4') ? 'Herblore'
                                 : currentVersion.startsWith('0.4.3') ? 'Harvesting & Scavenging'
                                     : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
@@ -161,6 +161,10 @@ export default function UpdateBoard() {
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
                         {currentVersion.startsWith('0.5.0') ? (
                             <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🛡️ Coming Soon Skills</Text>
+                                    <Text style={styles.changeText}>• Leadership, Adventure, Dungeon Dwelling, Construction added. Tap them to see the new stylized popup!</Text>
+                                </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🌿 Big Weeds Update</Text>
                                     <Text style={styles.changeText}>• Harvesting, Scavenging & Herblore: gather herbs, loot ruins, brew potions. Buy empty vials from Nick. Bank Potions filter. Pet Fizz.</Text>
@@ -178,7 +182,17 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeText}>• Lumina Shop: Reroll Daily Quests (5✨, 2/day), XP Boost 1h (15✨). Mastery: +yield and +speed for all 10 skills. Settings → Mastery.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
-                                    <Text style={styles.changeHeader}>🏅 Mastery Badges & Daily Quests</Text>
+                                    <Text style={styles.changeHeader}>⚔️ Combat System Alpha</Text>
+                                    <Text style={styles.changeText}>• Fully playable auto-battler! Equip weapons and armour to boost stats. 4 combat zones with unique enemies (Goblin, Wolves, Farm animals). Kills grant gold and loot drops.</Text>
+                                    <Text style={styles.changeText}>• Combat styles: Choose Controlled, Aggressive, Defensive, or Accurate to funnel XP where you want it. Eat food mid-combat. Passive HP regen.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✨ Prayer Skill & Bestiary Drops</Text>
+                                    <Text style={styles.changeText}>• Gain Prayer XP by burying bones. 12 unlockable prayers (Lv.1-60). Activate in combat to boost Accuracy, Strength, Defense, or reduce incoming damage. Drains prayer points per tick.</Text>
+                                    <Text style={styles.changeText}>• New bestiary drops: Raw Chicken, Feathers, Raw Beef, Leather Hide, Raw Pork, and Bad Meat.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏅 Mastery Badges & Quests</Text>
                                     <Text style={styles.changeText}>• Gold badges on skill screens show active mastery bonuses (📖 XP, 📦 yield, ⚡ speed). 30 daily quest templates across all 10 skills. All-time quest counter on Quests screen.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>

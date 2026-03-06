@@ -17,11 +17,12 @@
 
 ---
 
-## [0.5.0] - 2026-03-05 — "Big Weeds Update"
+## [0.5.0] - 2026-03-05 — "Big Weeds Update (Extended)"
 
-> Consolidates 0.4.1–0.4.4 plus World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, design doc v2.0, and new NPCs.
+> Consolidates 0.4.1–0.4.4 plus World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, design doc v2.0, and new NPCs. Included extensions for Leadership, Adventure, Dungeon Dwelling.
 
 ### Added
+- 🛡️ **Coming Soon Skills**: Leadership, Adventure, Dungeon Dwelling, Construction added to the game as "Coming Soon" skills with dedicated UI popups. Modified the logic for the "Coming Soon" modes.
 - **Harvesting & Scavenging (0.4.3):** 7 harvest nodes (wheat → void cap), 5 scavenge nodes (surface ruins → void rupture). Quick-Switch, thump SFX.
 - **Herblore (0.4.4):** 7 potion recipes (herb + empty vial → potion). Buy vials from Nick. Bank Potions filter. Pet Fizz.
 - **Bank OSRS-style redesign:** Main tab + up to 6 custom tabs. Tab bar row, type-filter row. Tab icon = first item in tab. Long-press item → "Create new tab with this item". Remember last tab (`lastBankTab`). 50 F2P / 100 Patron slot cap. Migration: >6 tabs truncated to 6.
@@ -39,10 +40,24 @@
 - **Forging weapon expansion:** 5 weapon types per tier (dagger 1 bar, shortsword/longsword/scimitar 2 bars, 2H Longblade 3 bars). 54 recipes total. Migration: legacy `*_sword` inventory items → `*_shortsword`.
 - **Fletching & Tailoring skills:** Added to SkillId, SKILL_META (🏹 Fletching, 🧵 Tailoring). Skills grid shows both with red ComingSoonBadge. `DOCU/FLETCHING_TAILORING.md` — design for arrows/bows (logs) and gloves/hats/shoes/boots (cloth).
 - **Gems (mining rare drops):** Sapphire (Iron+ 2%), Emerald (Coal+ 1.5%), Ruby (Mithril+ 1%), Diamond (Adamant+ 0.5%). Per successful mining tick on ore nodes only. Bank → Other filter. Per ORE_CHAIN_EXPANSION.md §2.3.
+- **Combat Zone Selection (2026-03-05):** Battle tab now shows 4 combat zones (Sunny Meadows Farm, Goblin House, Whispering Woods Forest, Frostfall Mountain). Tap a zone to see enemies within it with stats and Engage button.
+- **New Enemies (2026-03-05):** Cow, Chicken, Sheep, Pig (farm), Woodland Wolf (forest), Arctic Wolf (mountain). Each with HP, attack, defense, accuracy stats and drop tables. Goblin moved to Goblin House zone.
+- **Auto-Battler Engine (2026-03-05):** Full `processCombatTick` reducer in gameSlice. Timer-accumulator model on 100ms game loop. Accuracy rolls, damage ranges (1–maxHit), kill/XP/loot/gold/respawn cycle. Player death respawns at full HP and stops combat.
+- **Combat UI (2026-03-05):** Active fight screen with player & enemy HP bars (color-coded), attack speed progress bars, kill counter, gold counter, FLEE button, and scrolling color-coded combat log (max 40 entries). `CombatLogEntry` type, `combatLog` in GameState, `ActiveCombat` interface on PlayerState.
+- **Mastery Expansion (2026-03-05):** 20 new unique skill-specific mastery upgrades (2 per skill). Double-drop upgrades (e.g. +5% double ore, +4% extra rune, +5% double bar) and resource-preservation upgrades (e.g. +5% save essence, +4% save ore, +6% burn guard). New `doubleDropPerLevel` and `preservePerLevel` fields on `MasteryUpgradeDef`. Helper functions `getMasteryDoubleDropChance()` and `getMasteryPreserveChance()`. Both mechanics wired into `useGameLoop.ts` processDelta.
+- **Prayer System (2026-03-05):** Fully implemented Prayer skill. 12 prayers (Lv.1-60) from Thick Skin to Aegis. Toggleable in combat to boost stats (attack/strength/defense) and damage reduction. Drains prayer points per tick. Points recovered by burying bones. New Prayer tab in combat UI. Combat skills now clickable on Skills screen.
+
+### Fixed
+- **Android boot loop (splash screen):** Resolved `performTraversals: cancelAndRedraw` loop from `expo.modules.splashscreen.SplashScreenManager` that left the app stuck on a blank/loading screen. Root layout now renders a full-screen placeholder View (instead of `null`) while fonts load, and defers `SplashScreen.hideAsync()` via `InteractionManager.runAfterInteractions()` with a one-time ref guard so the native predraw handoff completes without retriggering.
+- **APK build (Metro):** Location screen Pressable `style` ternary completed (`opacity: pressed ? 0.7 : 1`). Removed duplicate `playerRef` declaration in `useGameLoop.ts` that caused "Identifier 'playerRef' has already been declared" bundle error.
 
 ### Changed
 - Bank: two-row layout (tabs then filters). Custom tabs capped at 6. `addCustomBankTab` / `addCustomBankTabWithItem` enforce limit; `setLastBankTab` persists selection.
 - Daily quest rotation: 30 templates across all 10 skills (was 14 across 5).
+- **Mastery entry point:** Moved from Settings to the **Skills panel header** (📖 button next to 📜 activity log). Mastery section removed from Settings. Modal content unchanged: two-column layout (Gathering/Crafting pillars, two skill cards per row), Done button, backdrop tap closes. `MasteryModal` in `components/MasteryModal.tsx`.
+- **Skill grid (unimplemented skills):** Level/99 is no longer shown on unimplemented skill cards; only the Coming Soon badge is shown to avoid layout overflow and the badge pushing level above the box.
+- **Tab headers (Bank, Shop, Combat, Statistics):** Main titles and Statistics section titles use `fontFamily: FontCinzelBold`; redundant `fontWeight` removed so the custom font applies consistently.
+- **Coming Soon badge:** Position and styling improved (centered on skill cards, padding/dot/shadow, no level on locked skills).
 
 ---
 

@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -126,14 +128,7 @@ export default function RunecraftingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, rcColor),
                 screenTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -211,7 +206,13 @@ export default function RunecraftingScreen() {
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: rcColor,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -392,8 +393,8 @@ export default function RunecraftingScreen() {
 
             {/* Skill Header */}
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: palette.skillCrafting + '33', borderColor: palette.skillCrafting }]}>
-                    <Text style={[styles.levelBadgeText, { color: palette.skillCrafting }]}>Lv. {rcSkill.level}</Text>
+                <View style={styles.levelBadge}>
+                    <Text style={styles.levelBadgeText}>Lv. {rcSkill.level}</Text>
                 </View>
                 <Text style={styles.screenTitle}>Runecrafting</Text>
                 <Text style={styles.screenSub}>Bind essence at the altars to forge powerful runes.</Text>
@@ -462,6 +463,14 @@ export default function RunecraftingScreen() {
                                     accessibilityState={{ disabled: isLocked || outOfEssence, selected: isActive }}
                                     accessibilityLabel={`${altar.name}. ${isLocked ? `Unlocks at level ${altar.levelReq}` : `Craft for ${altar.xpPerEssence} XP per essence`}`}
                                 >
+                                    {!isLocked && (
+                                        <LinearGradient
+                                            colors={getGlassCardGradientColors(palette)}
+                                            style={StyleSheet.absoluteFill}
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 1 }}
+                                        />
+                                    )}
                                     {isActive && <ActivePulseGlow color={palette.skillCrafting} />}
 
                                     <View style={styles.nodeHeader}>

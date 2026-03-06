@@ -35,38 +35,44 @@ export function ComingSoonBadge({
 }
 
 function createStyles(palette: PaletteShape, inProgress: boolean, size: 'sm' | 'md') {
-  const bg = inProgress ? palette.green + '22' : palette.red + '22';
-  const border = inProgress ? palette.green + '66' : palette.red + '66';
+  const bg = inProgress ? palette.green + '28' : palette.red + '28';
+  const border = inProgress ? palette.green + '88' : palette.red + '88';
   const dotColor = inProgress ? palette.green : palette.red;
   const textColor = inProgress ? palette.green : palette.red;
-  const padH = size === 'sm' ? Spacing.xs : Spacing.sm;
-  const padV = size === 'sm' ? 2 : 4;
+  const padH = size === 'sm' ? Spacing.sm : Spacing.md;
+  const padV = size === 'sm' ? 3 : 5;
   const fontSize = size === 'sm' ? FontSize.xs : FontSize.sm;
+  const dotSize = size === 'sm' ? 6 : 7;
 
   return StyleSheet.create({
     badge: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
-      alignSelf: 'flex-start',
+      gap: 5,
+      alignSelf: 'center',
       backgroundColor: bg,
       paddingHorizontal: padH,
       paddingVertical: padV,
       borderRadius: Radius.full,
       borderWidth: 1,
       borderColor: border,
+      shadowColor: palette.black,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.15,
+      shadowRadius: 2,
+      elevation: 2,
     },
     dot: {
-      width: 5,
-      height: 5,
-      borderRadius: 2.5,
+      width: dotSize,
+      height: dotSize,
+      borderRadius: dotSize / 2,
       backgroundColor: dotColor,
     },
     text: {
       fontSize,
-      fontWeight: '600',
+      fontWeight: '700',
       color: textColor,
-      letterSpacing: 0.3,
+      letterSpacing: 0.4,
     },
   });
 }

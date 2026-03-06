@@ -1,9 +1,26 @@
 /**
  * Item registry — shared across Bank, LootVacuum, and future screens.
  * Add new entries when new drop sources are added.
+ * 
+ * MASTERY_EXPANSION_GROUNDWORK:
+ * - TODO: Add inventoryItems tracking to PlayerState for item mastery
+ * - ItemStats: { totalCrafted, masteryTier, isPerfect }
+ * - Craft 100→speed I, 500→yield II, 1000→extra III, 5000→perfect IV
+ * - See DOCU/MASTER_DESIGN_DOC.md Chapter 6.6 for full design
  */
 
 export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'other';
+
+export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet';
+
+export interface EquipmentStats {
+  accuracy?: number;
+  maxHit?: number;
+  meleeDefence?: number;
+  rangedDefence?: number;
+  magicDefence?: number;
+  attackSpeed?: number; // ms
+}
 
 export interface ItemMeta {
   emoji: string;
@@ -11,6 +28,9 @@ export interface ItemMeta {
   sellValue: number;
   description: string;
   type: ItemType;
+  equipSlot?: EquipSlot;
+  equipmentStats?: EquipmentStats;
+  healAmount?: number;
 }
 
 export const ITEM_META: Record<string, ItemMeta> = {
@@ -64,16 +84,16 @@ export const ITEM_META: Record<string, ItemMeta> = {
   raw_cosmic_jellyfish: { emoji: '🪼', label: 'Raw Cosmic Jellyfish', sellValue: 600, description: 'A translucent creature from the Void Tide. Its meat defies physics.', type: 'fish' },
 
   // ── Food (Cooking) ──
-  cooked_shrimp: { emoji: '🍤', label: 'Cooked Shrimp', sellValue: 5, description: 'Perfectly grilled shrimp. Restores a little health.', type: 'food' },
-  cooked_sardine: { emoji: '🐟', label: 'Cooked Sardine', sellValue: 12, description: 'Flaky and delicious. A staple of Valdorian cuisine.', type: 'food' },
-  cooked_herring: { emoji: '🐟', label: 'Cooked Herring', sellValue: 22, description: 'Smoked herring. Rich and nourishing.', type: 'food' },
-  cooked_trout: { emoji: '🎣', label: 'Cooked Trout', sellValue: 45, description: 'Grilled trout with a crispy skin. A favourite.', type: 'food' },
-  cooked_salmon: { emoji: '🐠', label: 'Cooked Salmon', sellValue: 80, description: 'Perfectly cooked salmon. Premium healing.', type: 'food' },
-  cooked_tuna: { emoji: '🐡', label: 'Cooked Tuna', sellValue: 140, description: 'Seared tuna steak. Substantial nourishment.', type: 'food' },
-  cooked_lobster: { emoji: '🦞', label: 'Cooked Lobster', sellValue: 210, description: 'Buttered lobster tail. A luxury meal.', type: 'food' },
-  cooked_swordfish: { emoji: '🐬', label: 'Cooked Swordfish', sellValue: 300, description: 'Grilled swordfish. Fills you right up.', type: 'food' },
-  cooked_shark: { emoji: '🦈', label: 'Cooked Shark', sellValue: 550, description: 'Cooked shark steak. Massive healing potential.', type: 'food' },
-  cooked_cosmic_jellyfish: { emoji: '🪼', label: 'Cooked Cosmic Jellyfish', sellValue: 1200, description: 'Somehow cooked. Defies culinary logic. Restores the soul.', type: 'food' },
+  cooked_shrimp: { emoji: '🍤', label: 'Cooked Shrimp', sellValue: 5, description: 'Perfectly grilled shrimp. Restores a little health.', type: 'food', healAmount: 30 },
+  cooked_sardine: { emoji: '🐟', label: 'Cooked Sardine', sellValue: 12, description: 'Flaky and delicious. A staple of Valdorian cuisine.', type: 'food', healAmount: 40 },
+  cooked_herring: { emoji: '🐟', label: 'Cooked Herring', sellValue: 22, description: 'Smoked herring. Rich and nourishing.', type: 'food', healAmount: 50 },
+  cooked_trout: { emoji: '🎣', label: 'Cooked Trout', sellValue: 45, description: 'Grilled trout with a crispy skin. A favourite.', type: 'food', healAmount: 70 },
+  cooked_salmon: { emoji: '🐠', label: 'Cooked Salmon', sellValue: 80, description: 'Perfectly cooked salmon. Premium healing.', type: 'food', healAmount: 90 },
+  cooked_tuna: { emoji: '🐡', label: 'Cooked Tuna', sellValue: 140, description: 'Seared tuna steak. Substantial nourishment.', type: 'food', healAmount: 100 },
+  cooked_lobster: { emoji: '🦞', label: 'Cooked Lobster', sellValue: 210, description: 'Buttered lobster tail. A luxury meal.', type: 'food', healAmount: 120 },
+  cooked_swordfish: { emoji: '🐬', label: 'Cooked Swordfish', sellValue: 300, description: 'Grilled swordfish. Fills you right up.', type: 'food', healAmount: 140 },
+  cooked_shark: { emoji: '🦈', label: 'Cooked Shark', sellValue: 550, description: 'Cooked shark steak. Massive healing potential.', type: 'food', healAmount: 200 },
+  cooked_cosmic_jellyfish: { emoji: '🪼', label: 'Cooked Cosmic Jellyfish', sellValue: 1200, description: 'Somehow cooked. Defies culinary logic. Restores the soul.', type: 'food', healAmount: 300 },
 
   // ── Harvesting (plants, fibers) ──
   wheat: { emoji: '🌾', label: 'Wheat', sellValue: 2, description: 'Basic grain. Used in cooking and brewing.', type: 'other' },
@@ -101,6 +121,15 @@ export const ITEM_META: Record<string, ItemMeta> = {
   natures_blessing: { emoji: '🌿', label: "Nature's Blessing", sellValue: 350, description: 'A powerful restorative. Brewed from snape grass.', type: 'potion' },
   void_resistance_potion: { emoji: '🕳️', label: 'Void Resistance', sellValue: 600, description: 'Reduces void damage. Brewed from void cap mushroom.', type: 'potion' },
 
+  // ── Monster Drops ──
+  bones: { emoji: '🦴', label: 'Bones', sellValue: 1, description: 'Burying gives prayer experience.', type: 'other' },
+  raw_chicken: { emoji: '🍗', label: 'Raw Chicken', sellValue: 5, description: 'Plucked poultry.', type: 'food' },
+  feathers: { emoji: '🪶', label: 'Feathers', sellValue: 1, description: 'Useful for fletching.', type: 'other' },
+  leather_hide: { emoji: '🐄', label: 'Leather Hide', sellValue: 10, description: 'Can be crafted into leather.', type: 'other' },
+  raw_beef: { emoji: '🥩', label: 'Raw Beef', sellValue: 8, description: 'Uncooked cow meat.', type: 'food' },
+  raw_pork: { emoji: '🥓', label: 'Raw Pork', sellValue: 12, description: 'Uncooked pig meat.', type: 'food' },
+  bad_meat: { emoji: '🍖', label: 'Bad Meat', sellValue: 2, description: 'Meat from a wild beast. Tastes terrible.', type: 'other' },
+
   // -- Rune Essences --
   rune_essence: { emoji: '💠', label: 'Rune Essence', sellValue: 1, description: 'Raw magical rock pulsing with dormant energy. Bind it at an altar.', type: 'ore' },
   pure_essence: { emoji: '🔮', label: 'Pure Essence', sellValue: 5, description: 'A refined essence stone, attuned to higher rune tiers.', type: 'ore' },
@@ -123,60 +152,60 @@ export const ITEM_META: Record<string, ItemMeta> = {
   void_rune: { emoji: '🕳️', label: 'Void Rune', sellValue: 400, description: 'The absence of everything, compressed into magical potential.', type: 'rune' },
 
   // ── Equipment (Forging: bars → weapons & armour) ──
-  bronze_dagger: { emoji: '🗡️', label: 'Bronze Dagger', sellValue: 25, description: 'A simple bronze blade. Good for beginners.', type: 'equipment' },
-  bronze_shortsword: { emoji: '⚔️', label: 'Bronze Shortsword', sellValue: 45, description: 'A compact bronze blade. Quick and light.', type: 'equipment' },
-  bronze_longsword: { emoji: '⚔️', label: 'Bronze Longsword', sellValue: 50, description: 'A longer bronze blade. Reach and power.', type: 'equipment' },
-  bronze_scimitar: { emoji: '⚔️', label: 'Bronze Scimitar', sellValue: 48, description: 'A curved bronze blade. Favoured by desert warriors.', type: 'equipment' },
-  bronze_2h_longblade: { emoji: '🗡️', label: 'Bronze 2H Longblade', sellValue: 70, description: 'A two-handed bronze greatsword. Devastating swings.', type: 'equipment' },
-  bronze_half_helmet: { emoji: '⛑️', label: 'Bronze Half Helmet', sellValue: 30, description: 'Light bronze head protection.', type: 'equipment' },
-  bronze_full_helmet: { emoji: '🪖', label: 'Bronze Full Helmet', sellValue: 55, description: 'Full bronze helm. Sturdy for its tier.', type: 'equipment' },
-  bronze_platebody: { emoji: '🛡️', label: 'Bronze Platebody', sellValue: 80, description: 'Bronze chest armour. Covers the torso.', type: 'equipment' },
-  bronze_shield: { emoji: '🛡️', label: 'Bronze Shield', sellValue: 50, description: 'A small bronze shield. Blocks incoming blows.', type: 'equipment' },
-  iron_dagger: { emoji: '🗡️', label: 'Iron Dagger', sellValue: 60, description: 'A reliable iron blade.', type: 'equipment' },
-  iron_shortsword: { emoji: '⚔️', label: 'Iron Shortsword', sellValue: 110, description: 'A compact iron blade. Quick and reliable.', type: 'equipment' },
-  iron_longsword: { emoji: '⚔️', label: 'Iron Longsword', sellValue: 120, description: 'A longer iron blade. Solid reach.', type: 'equipment' },
-  iron_scimitar: { emoji: '⚔️', label: 'Iron Scimitar', sellValue: 115, description: 'A curved iron blade. Slashing edge.', type: 'equipment' },
-  iron_2h_longblade: { emoji: '🗡️', label: 'Iron 2H Longblade', sellValue: 165, description: 'A two-handed iron greatsword. Heavy but effective.', type: 'equipment' },
-  iron_half_helmet: { emoji: '⛑️', label: 'Iron Half Helmet', sellValue: 70, description: 'Iron skullcap. Better protection.', type: 'equipment' },
-  iron_full_helmet: { emoji: '🪖', label: 'Iron Full Helmet', sellValue: 130, description: 'Full iron helm. Solid mid-tier armour.', type: 'equipment' },
-  iron_platebody: { emoji: '🛡️', label: 'Iron Platebody', sellValue: 200, description: 'Iron chest armour. Solid protection.', type: 'equipment' },
-  iron_shield: { emoji: '🛡️', label: 'Iron Shield', sellValue: 130, description: 'An iron shield. Reliable defence.', type: 'equipment' },
-  steel_dagger: { emoji: '🗡️', label: 'Steel Dagger', sellValue: 120, description: 'A sharp steel blade.', type: 'equipment' },
-  steel_shortsword: { emoji: '⚔️', label: 'Steel Shortsword', sellValue: 220, description: 'A compact steel blade. Keen edge.', type: 'equipment' },
-  steel_longsword: { emoji: '⚔️', label: 'Steel Longsword', sellValue: 240, description: 'A longer steel blade. Excellent balance.', type: 'equipment' },
-  steel_scimitar: { emoji: '⚔️', label: 'Steel Scimitar', sellValue: 230, description: 'A curved steel blade. Swift slashes.', type: 'equipment' },
-  steel_2h_longblade: { emoji: '🗡️', label: 'Steel 2H Longblade', sellValue: 330, description: 'A two-handed steel greatsword. Formidable.', type: 'equipment' },
-  steel_half_helmet: { emoji: '⛑️', label: 'Steel Half Helmet', sellValue: 140, description: 'Steel skullcap. Strong and light.', type: 'equipment' },
-  steel_full_helmet: { emoji: '🪖', label: 'Steel Full Helmet', sellValue: 260, description: 'Full steel helm. Excellent protection.', type: 'equipment' },
-  steel_platebody: { emoji: '🛡️', label: 'Steel Platebody', sellValue: 400, description: 'Steel chest armour. Heavy but strong.', type: 'equipment' },
-  steel_shield: { emoji: '🛡️', label: 'Steel Shield', sellValue: 260, description: 'A steel shield. Solid mid-tier defence.', type: 'equipment' },
-  mithril_dagger: { emoji: '🗡️', label: 'Mithril Dagger', sellValue: 350, description: 'A blade with a faint blue shimmer.', type: 'equipment' },
-  mithril_shortsword: { emoji: '⚔️', label: 'Mithril Shortsword', sellValue: 650, description: 'A mithril shortsword. Light and deadly.', type: 'equipment' },
-  mithril_longsword: { emoji: '⚔️', label: 'Mithril Longsword', sellValue: 700, description: 'A mithril longsword. Surprisingly light.', type: 'equipment' },
-  mithril_scimitar: { emoji: '⚔️', label: 'Mithril Scimitar', sellValue: 680, description: 'A curved mithril blade. Swift and elegant.', type: 'equipment' },
-  mithril_2h_longblade: { emoji: '🗡️', label: 'Mithril 2H Longblade', sellValue: 950, description: 'A two-handed mithril greatsword. Devastating.', type: 'equipment' },
-  mithril_half_helmet: { emoji: '⛑️', label: 'Mithril Half Helmet', sellValue: 400, description: 'Mithril skullcap. Light yet strong.', type: 'equipment' },
-  mithril_full_helmet: { emoji: '🪖', label: 'Mithril Full Helmet', sellValue: 750, description: 'Full mithril helm. Rare and prized.', type: 'equipment' },
-  mithril_platebody: { emoji: '🛡️', label: 'Mithril Platebody', sellValue: 1200, description: 'Mithril chest armour. Light and strong.', type: 'equipment' },
-  mithril_shield: { emoji: '🛡️', label: 'Mithril Shield', sellValue: 750, description: 'A mithril shield. Surprisingly light.', type: 'equipment' },
-  adamant_dagger: { emoji: '🗡️', label: 'Adamant Dagger', sellValue: 700, description: 'An extremely hard blade.', type: 'equipment' },
-  adamant_shortsword: { emoji: '⚔️', label: 'Adamant Shortsword', sellValue: 1300, description: 'An adamant shortsword. Devastating.', type: 'equipment' },
-  adamant_longsword: { emoji: '⚔️', label: 'Adamant Longsword', sellValue: 1400, description: 'An adamant longsword. Nearly unbreakable.', type: 'equipment' },
-  adamant_scimitar: { emoji: '⚔️', label: 'Adamant Scimitar', sellValue: 1350, description: 'A curved adamant blade. Razor edge.', type: 'equipment' },
-  adamant_2h_longblade: { emoji: '🗡️', label: 'Adamant 2H Longblade', sellValue: 1900, description: 'A two-handed adamant greatsword. The pinnacle of metalwork.', type: 'equipment' },
-  adamant_half_helmet: { emoji: '⛑️', label: 'Adamant Half Helmet', sellValue: 800, description: 'Adamant skullcap. Top-tier protection.', type: 'equipment' },
-  adamant_full_helmet: { emoji: '🪖', label: 'Adamant Full Helmet', sellValue: 1500, description: 'Full adamant helm. The pinnacle of metalwork.', type: 'equipment' },
-  adamant_platebody: { emoji: '🛡️', label: 'Adamant Platebody', sellValue: 2400, description: 'Adamant chest armour. Nearly impenetrable.', type: 'equipment' },
-  adamant_shield: { emoji: '🛡️', label: 'Adamant Shield', sellValue: 1500, description: 'An adamant shield. Top-tier defence.', type: 'equipment' },
-  runite_dagger: { emoji: '🗡️', label: 'Runite Dagger', sellValue: 2500, description: 'A blade humming with latent energy.', type: 'equipment' },
-  runite_shortsword: { emoji: '⚔️', label: 'Runite Shortsword', sellValue: 5000, description: 'A runite shortsword. The finest blade.', type: 'equipment' },
-  runite_longsword: { emoji: '⚔️', label: 'Runite Longsword', sellValue: 5500, description: 'A runite longsword. Humming with power.', type: 'equipment' },
-  runite_scimitar: { emoji: '⚔️', label: 'Runite Scimitar', sellValue: 5200, description: 'A curved runite blade. Cosmic edge.', type: 'equipment' },
-  runite_2h_longblade: { emoji: '🗡️', label: 'Runite 2H Longblade', sellValue: 7500, description: 'A two-handed runite greatsword. Endgame devastation.', type: 'equipment' },
-  runite_half_helmet: { emoji: '⛑️', label: 'Runite Half Helmet', sellValue: 2800, description: 'Runite skullcap. Endgame protection.', type: 'equipment' },
-  runite_full_helmet: { emoji: '🪖', label: 'Runite Full Helmet', sellValue: 5500, description: 'Full runite helm. The apex of metalwork.', type: 'equipment' },
-  runite_platebody: { emoji: '🛡️', label: 'Runite Platebody', sellValue: 9000, description: 'Runite chest armour. Humming with power.', type: 'equipment' },
-  runite_shield: { emoji: '🛡️', label: 'Runite Shield', sellValue: 5500, description: 'A runite shield. Endgame defence.', type: 'equipment' },
+  bronze_dagger: { emoji: '🗡️', label: 'Bronze Dagger', sellValue: 25, description: 'A simple bronze blade. Good for beginners.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 2, maxHit: 1 } },
+  bronze_shortsword: { emoji: '⚔️', label: 'Bronze Shortsword', sellValue: 45, description: 'A compact bronze blade. Quick and light.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 3, maxHit: 2 } },
+  bronze_longsword: { emoji: '⚔️', label: 'Bronze Longsword', sellValue: 50, description: 'A longer bronze blade. Reach and power.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 4, maxHit: 3 } },
+  bronze_scimitar: { emoji: '⚔️', label: 'Bronze Scimitar', sellValue: 48, description: 'A curved bronze blade. Favoured by desert warriors.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 4, maxHit: 2 } },
+  bronze_2h_longblade: { emoji: '🗡️', label: 'Bronze 2H Longblade', sellValue: 70, description: 'A two-handed bronze greatsword. Devastating swings.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 5, maxHit: 5 } },
+  bronze_half_helmet: { emoji: '⛑️', label: 'Bronze Half Helmet', sellValue: 30, description: 'Light bronze head protection.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 2, rangedDefence: 1, magicDefence: 0 } },
+  bronze_full_helmet: { emoji: '🪖', label: 'Bronze Full Helmet', sellValue: 55, description: 'Full bronze helm. Sturdy for its tier.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 3, rangedDefence: 2, magicDefence: -1 } },
+  bronze_platebody: { emoji: '🛡️', label: 'Bronze Platebody', sellValue: 80, description: 'Bronze chest armour. Covers the torso.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 8, rangedDefence: 6, magicDefence: -4 } },
+  bronze_shield: { emoji: '🛡️', label: 'Bronze Shield', sellValue: 50, description: 'A small bronze shield. Blocks incoming blows.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 6, rangedDefence: 5, magicDefence: -3 } },
+  iron_dagger: { emoji: '🗡️', label: 'Iron Dagger', sellValue: 60, description: 'A reliable iron blade.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 4, maxHit: 2 } },
+  iron_shortsword: { emoji: '⚔️', label: 'Iron Shortsword', sellValue: 110, description: 'A compact iron blade. Quick and reliable.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 6, maxHit: 4 } },
+  iron_longsword: { emoji: '⚔️', label: 'Iron Longsword', sellValue: 120, description: 'A longer iron blade. Solid reach.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 8, maxHit: 6 } },
+  iron_scimitar: { emoji: '⚔️', label: 'Iron Scimitar', sellValue: 115, description: 'A curved iron blade. Slashing edge.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 8, maxHit: 4 } },
+  iron_2h_longblade: { emoji: '🗡️', label: 'Iron 2H Longblade', sellValue: 165, description: 'A two-handed iron greatsword. Heavy but effective.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 10, maxHit: 10 } },
+  iron_half_helmet: { emoji: '⛑️', label: 'Iron Half Helmet', sellValue: 70, description: 'Iron skullcap. Better protection.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 4, rangedDefence: 2, magicDefence: 0 } },
+  iron_full_helmet: { emoji: '🪖', label: 'Iron Full Helmet', sellValue: 130, description: 'Full iron helm. Solid mid-tier armour.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 6, rangedDefence: 4, magicDefence: -2 } },
+  iron_platebody: { emoji: '🛡️', label: 'Iron Platebody', sellValue: 200, description: 'Iron chest armour. Solid protection.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 16, rangedDefence: 12, magicDefence: -8 } },
+  iron_shield: { emoji: '🛡️', label: 'Iron Shield', sellValue: 130, description: 'An iron shield. Reliable defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 12, rangedDefence: 10, magicDefence: -6 } },
+  steel_dagger: { emoji: '🗡️', label: 'Steel Dagger', sellValue: 120, description: 'A sharp steel blade.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 6, maxHit: 3 } },
+  steel_shortsword: { emoji: '⚔️', label: 'Steel Shortsword', sellValue: 220, description: 'A compact steel blade. Keen edge.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 9, maxHit: 6 } },
+  steel_longsword: { emoji: '⚔️', label: 'Steel Longsword', sellValue: 240, description: 'A longer steel blade. Excellent balance.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 12, maxHit: 9 } },
+  steel_scimitar: { emoji: '⚔️', label: 'Steel Scimitar', sellValue: 230, description: 'A curved steel blade. Swift slashes.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 12, maxHit: 6 } },
+  steel_2h_longblade: { emoji: '🗡️', label: 'Steel 2H Longblade', sellValue: 330, description: 'A two-handed steel greatsword. Formidable.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 15, maxHit: 15 } },
+  steel_half_helmet: { emoji: '⛑️', label: 'Steel Half Helmet', sellValue: 140, description: 'Steel skullcap. Strong and light.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 6, rangedDefence: 3, magicDefence: 0 } },
+  steel_full_helmet: { emoji: '🪖', label: 'Steel Full Helmet', sellValue: 260, description: 'Full steel helm. Excellent protection.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 9, rangedDefence: 6, magicDefence: -3 } },
+  steel_platebody: { emoji: '🛡️', label: 'Steel Platebody', sellValue: 400, description: 'Steel chest armour. Heavy but strong.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 24, rangedDefence: 18, magicDefence: -12 } },
+  steel_shield: { emoji: '🛡️', label: 'Steel Shield', sellValue: 260, description: 'A steel shield. Solid mid-tier defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 18, rangedDefence: 15, magicDefence: -9 } },
+  mithril_dagger: { emoji: '🗡️', label: 'Mithril Dagger', sellValue: 350, description: 'A blade with a faint blue shimmer.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 10, maxHit: 5 } },
+  mithril_shortsword: { emoji: '⚔️', label: 'Mithril Shortsword', sellValue: 650, description: 'A mithril shortsword. Light and deadly.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 15, maxHit: 10 } },
+  mithril_longsword: { emoji: '⚔️', label: 'Mithril Longsword', sellValue: 700, description: 'A mithril longsword. Surprisingly light.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 20, maxHit: 15 } },
+  mithril_scimitar: { emoji: '⚔️', label: 'Mithril Scimitar', sellValue: 680, description: 'A curved mithril blade. Swift and elegant.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 20, maxHit: 10 } },
+  mithril_2h_longblade: { emoji: '🗡️', label: 'Mithril 2H Longblade', sellValue: 950, description: 'A two-handed mithril greatsword. Devastating.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 25, maxHit: 25 } },
+  mithril_half_helmet: { emoji: '⛑️', label: 'Mithril Half Helmet', sellValue: 400, description: 'Mithril skullcap. Light yet strong.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 10, rangedDefence: 5, magicDefence: 0 } },
+  mithril_full_helmet: { emoji: '🪖', label: 'Mithril Full Helmet', sellValue: 750, description: 'Full mithril helm. Rare and prized.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 15, rangedDefence: 10, magicDefence: -5 } },
+  mithril_platebody: { emoji: '🛡️', label: 'Mithril Platebody', sellValue: 1200, description: 'Mithril chest armour. Light and strong.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 40, rangedDefence: 30, magicDefence: -20 } },
+  mithril_shield: { emoji: '🛡️', label: 'Mithril Shield', sellValue: 750, description: 'A mithril shield. Surprisingly light.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 30, rangedDefence: 25, magicDefence: -15 } },
+  adamant_dagger: { emoji: '🗡️', label: 'Adamant Dagger', sellValue: 700, description: 'An extremely hard blade.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 16, maxHit: 8 } },
+  adamant_shortsword: { emoji: '⚔️', label: 'Adamant Shortsword', sellValue: 1300, description: 'An adamant shortsword. Devastating.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 24, maxHit: 16 } },
+  adamant_longsword: { emoji: '⚔️', label: 'Adamant Longsword', sellValue: 1400, description: 'An adamant longsword. Nearly unbreakable.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 32, maxHit: 24 } },
+  adamant_scimitar: { emoji: '⚔️', label: 'Adamant Scimitar', sellValue: 1350, description: 'A curved adamant blade. Razor edge.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 32, maxHit: 16 } },
+  adamant_2h_longblade: { emoji: '🗡️', label: 'Adamant 2H Longblade', sellValue: 1900, description: 'A two-handed adamant greatsword. The pinnacle of metalwork.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 40, maxHit: 40 } },
+  adamant_half_helmet: { emoji: '⛑️', label: 'Adamant Half Helmet', sellValue: 800, description: 'Adamant skullcap. Top-tier protection.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 16, rangedDefence: 8, magicDefence: 0 } },
+  adamant_full_helmet: { emoji: '🪖', label: 'Adamant Full Helmet', sellValue: 1500, description: 'Full adamant helm. The pinnacle of metalwork.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 24, rangedDefence: 16, magicDefence: -8 } },
+  adamant_platebody: { emoji: '🛡️', label: 'Adamant Platebody', sellValue: 2400, description: 'Adamant chest armour. Nearly impenetrable.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 64, rangedDefence: 48, magicDefence: -32 } },
+  adamant_shield: { emoji: '🛡️', label: 'Adamant Shield', sellValue: 1500, description: 'An adamant shield. Top-tier defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 48, rangedDefence: 40, magicDefence: -24 } },
+  runite_dagger: { emoji: '🗡️', label: 'Runite Dagger', sellValue: 2500, description: 'A blade humming with latent energy.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 1800, accuracy: 28, maxHit: 14 } },
+  runite_shortsword: { emoji: '⚔️', label: 'Runite Shortsword', sellValue: 5000, description: 'A runite shortsword. The finest blade.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 42, maxHit: 28 } },
+  runite_longsword: { emoji: '⚔️', label: 'Runite Longsword', sellValue: 5500, description: 'A runite longsword. Humming with power.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 56, maxHit: 42 } },
+  runite_scimitar: { emoji: '⚔️', label: 'Runite Scimitar', sellValue: 5200, description: 'A curved runite blade. Cosmic edge.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 56, maxHit: 28 } },
+  runite_2h_longblade: { emoji: '🗡️', label: 'Runite 2H Longblade', sellValue: 7500, description: 'A two-handed runite greatsword. Endgame devastation.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3600, accuracy: 70, maxHit: 70 } },
+  runite_half_helmet: { emoji: '⛑️', label: 'Runite Half Helmet', sellValue: 2800, description: 'Runite skullcap. Endgame protection.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 28, rangedDefence: 14, magicDefence: 0 } },
+  runite_full_helmet: { emoji: '🪖', label: 'Runite Full Helmet', sellValue: 5500, description: 'Full runite helm. The apex of metalwork.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 42, rangedDefence: 28, magicDefence: -14 } },
+  runite_platebody: { emoji: '🛡️', label: 'Runite Platebody', sellValue: 9000, description: 'Runite chest armour. Humming with power.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 112, rangedDefence: 84, magicDefence: -56 } },
+  runite_shield: { emoji: '🛡️', label: 'Runite Shield', sellValue: 5500, description: 'A runite shield. Endgame defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 84, rangedDefence: 70, magicDefence: -42 } },
 
   // ── Gems (Mining rare drops) ──
   sapphire: { emoji: '💎', label: 'Sapphire', sellValue: 50, description: 'A blue gem. Found while mining iron and above.', type: 'other' },

@@ -8,6 +8,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -118,14 +120,7 @@ export default function SmithingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, smithColor),
                 screenTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -151,27 +146,29 @@ export default function SmithingScreen() {
                     textAlign: 'center',
                 },
                 listContent: { padding: Spacing.md, gap: Spacing.sm },
+                ...getNodeCardBaseStyles(palette),
                 nodeCard: {
-                    backgroundColor: palette.bgCard,
-                    borderRadius: Radius.lg,
-                    padding: Spacing.md,
-                    borderWidth: 1,
-                    borderColor: palette.border,
+                    ...getNodeCardBaseStyles(palette).nodeCard,
                     marginBottom: Spacing.md,
                 },
                 nodeCardLocked: {
-                    backgroundColor: palette.bgApp,
-                    borderColor: 'transparent',
+                    ...getNodeCardBaseStyles(palette).nodeCardLocked,
                     opacity: 0.7,
                 },
-                nodeCardActive: {},
+                nodeCardActive: { borderColor: smithColor, borderWidth: 1 },
                 nodeCardEmpty: { borderColor: palette.redDim },
                 nodeHeader: {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: smithColor,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -327,8 +324,8 @@ export default function SmithingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: smithColor + '33', borderColor: smithColor }]}>
-                    <Text style={[styles.levelBadgeText, { color: smithColor }]}>Lv. {smithSkill.level}</Text>
+                <View style={styles.levelBadge}>
+                    <Text style={styles.levelBadgeText}>Lv. {smithSkill.level}</Text>
                 </View>
                 <Text style={styles.screenTitle}>Smithing</Text>
                 <Text style={styles.screenSub}>Smelt ore into bars at the furnace.</Text>
@@ -382,6 +379,14 @@ export default function SmithingScreen() {
                             accessibilityState={{ disabled: isLocked || outOfMaterials, selected: isActive }}
                             accessibilityLabel={`${recipe.name}. ${isLocked ? `Unlocks at level ${recipe.levelReq}` : `Smelt for ${recipe.xpPerTick} XP`}`}
                         >
+                            {!isLocked && (
+                                <LinearGradient
+                                    colors={getGlassCardGradientColors(palette)}
+                                    style={StyleSheet.absoluteFill}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                />
+                            )}
                             {isActive && <ActivePulseGlow color={smithColor} />}
 
                             <View style={styles.nodeHeader}>

@@ -11,7 +11,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { getQuestStepsToComplete } from '../../../packages/engine/src/utils/narrative';
 import { ALL_QUESTS } from '../../../packages/engine/src/data/quests';
-import { gameActions, SkillId, OfflineReport } from '@/store/gameSlice';
+import { gameActions, SkillId, OfflineReport, ActiveCombat } from '@/store/gameSlice';
 import { logger } from '@/utils/logger';
 import { OFFLINE_CAP_F2P_MS, OFFLINE_CAP_PATRON_MS, XP_BONUS_PATRON } from '@/constants/game';
 
@@ -68,7 +68,7 @@ import {
     RANDOM_EVENT_TYPES,
 } from '@/constants/randomEvents';
 import { SKILL_PETS } from '@/constants/pets';
-import { getMasteryYieldMultiplier, getMasterySpeedMultiplier } from '@/constants/mastery';
+import { getMasteryYieldMultiplier, getMasterySpeedMultiplier, getMasteryDoubleDropChance, getMasteryPreserveChance } from '@/constants/mastery';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
@@ -157,6 +157,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
     });
     const skills = useAppSelector((s) => s.game.player.skills);
     const player = useAppSelector((s) => s.game.player);
+    const activeCombat = useAppSelector((s) => s.game.player.activeCombat);
 
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
@@ -213,12 +214,20 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     dispatch(gameActions.stopTask());
                     return;
                 }
-                // Consume the essence
-                dispatch(
-                    gameActions.removeItems(
-                        action.consumedItems.map((c) => ({ id: c.id, quantity: c.quantity * cappedTicks }))
-                    )
-                );
+                // Consume the essence (mastery preserve chance can save some)
+                const preserveChance = activeTask.skillId
+                    ? getMasteryPreserveChance(playerRef.current, activeTask.skillId as SkillId)
+                    : 0;
+                const actualConsumed = action.consumedItems.map((c) => {
+                    let saved = 0;
+                    if (preserveChance > 0) {
+                        for (let t = 0; t < cappedTicks; t++) {
+                            if (Math.random() < preserveChance) saved++;
+                        }
+                    }
+                    return { id: c.id, quantity: c.quantity * (cappedTicks - saved) };
+                });
+                dispatch(gameActions.removeItems(actualConsumed));
             }
 
             // Roll for success on each tick
@@ -361,6 +370,22 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     id: item.id,
                     quantity: Math.floor(item.quantity * successfulTicks * yieldMult),
                 }));
+
+                // Mastery double-drop: roll per successful tick for bonus items
+                const doubleChance = getMasteryDoubleDropChance(playerRef.current, skillId);
+                if (doubleChance > 0) {
+                    let doubleCount = 0;
+                    for (let t = 0; t < successfulTicks; t++) {
+                        if (Math.random() < doubleChance) doubleCount++;
+                    }
+                    if (doubleCount > 0) {
+                        items = items.map((item) => ({
+                            ...item,
+                            quantity: item.quantity + Math.floor((item.quantity / successfulTicks) * doubleCount),
+                        }));
+                    }
+                }
+
                 if (pendingCosmicSneezeRef.current && items.length > 0) {
                     items = items.map((i) => ({ ...i, quantity: i.quantity * 2 }));
                     pendingCosmicSneezeRef.current = false;
@@ -443,7 +468,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
 
     // Main game loop interval
     useEffect(() => {
-        if (!activeTask || !isLoaded) return;
+        if ((!activeTask && !activeCombat) || !isLoaded) return;
 
         lastTickRef.current = Date.now();
 
@@ -451,11 +476,15 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             const now = Date.now();
             const delta = now - lastTickRef.current;
             lastTickRef.current = now;
-            processDelta(delta);
+            if (activeTask) processDelta(delta);
+            // Combat ticks run independently of skilling
+            if (playerRef.current.activeCombat) {
+                dispatch(gameActions.processCombatTick({ deltaMs: delta }));
+            }
         }, TICK_INTERVAL_MS);
 
         return () => clearInterval(intervalId);
-    }, [activeTask, isLoaded, processDelta]);
+    }, [activeTask, activeCombat, isLoaded, processDelta, dispatch]);
 
     // Handle initial offline catch-up when app loads
     useEffect(() => {

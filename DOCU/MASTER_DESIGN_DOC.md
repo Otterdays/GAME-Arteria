@@ -474,39 +474,122 @@ A hidden stat tracking how "sensible" the player behaves:
 
 ## **Chapter 6: Advanced Mastery & Prestige**
 
-### 5.1 Current Mastery System (Implemented)
+### 5.1 Mastery Point Economy (Soft-Capped System)
 
-- 1 point per level-up per skill
-- Spend on: +5% XP, +3% yield, +4% speed
+- **Earning:** 1 mastery point per skill level-up (infinite earning)
+- **Spend Types:** +5% XP, +3% yield, +4% speed (max 10 points each)
+- **Soft Cap:** After 6 points, diminishing returns (15% → 8% bonus per point)
+- **Hybrid Point Cap:** Infinite growth with meaningful but bounded bonuses
+- **> TODO: Future: Global Mastery Points (spend points across all skills)**
 
-### 5.2 Specialization Branches (Level 50)
+### 5.2 Mini-Specializations (Level 25)
 
-At skill level 50, choose a permanent path:
+> **Unlock:** Choose one of three mini-specs when skill reaches level 25 (permanent choice, precedes specialization at 50)
+> **Purpose:** Early flexibility and build variety before major specialization
 
-**Mining Specializations:**
-- **Deep Delver:** Slower, but find gems/rare ore
-- **Strip Miner:** Faster, lower quality
-- **Geomancer:** Chance for magical ore (Runecrafting synergy)
+| Skill | Mini-Spec 1 | Mini-Spec 2 | Mini-Spec 3 |
+|-------|-----------|-----------|----------|
+| **Mining** | Gem Seeker (+gem chance) | Vein Hunter (rich vein glow) | Rat Operative (deplete slower) |
+| **Logging** | Diplomat (yield) | Speed Chopper (speed) | Seasonal Forecaster (event boost) |
+| **Fishing** | Patient Angler (rare chance) | Quick Catcher (speed) | River Sage (quality) |
+| **Smithing** | Efficient Smelter (fuel save) | Purist (bar quality) | Experimentalist (quirk chance) |
+| **Forging** | Weapon Master (weapon stats) | Armorer (defensive focus) | Quirksmith (quirk frequency) |
+| **Runecrafting** | Essence Saver (reduce waste) | Rune Weaver (multi-rune) | Cosmic Aligned (time bonus) |
+| **Cooking** | Quick Chef (speed) | Gourmet (buff duration) | Experimental (discovery chance) |
+| **Herblore** | Herbalist (yield) | Alchemist (potency) | Bard (effect flavor) |
+| **Harvesting** | Seasonal Sense (rotation boost) | Yield Farmer (quantity) | Botanist (quality) |
+| **Scavenging** | Curse finder (curse chance) | Rare Hunter (rare loot) | Scrap saver (yield) |
 
-**Smithing Specializations:**
-- **Weaponsmith:** Better weapons, can add quirks
-- **Armorsmith:** Better armor, defensive quirks
-- **Artificer:** Make magical equipment (endgame)
+**> TODO: Future: Full Mastery Trees (3 tiers, 9 nodes per skill)**
 
-### 5.3 Mastery Synergies
+### 5.3 Full Specializations (Level 50) - Keep as above, maintain compatibility
 
-Combining skill specializations unlocks bonuses:
-- Mining 50 + Smithing 50 = **"Ore Sense"** — auto-smelt ore while mining
-- Cooking 50 + Herblore 50 = **"Gourmet Alchemy"** — food buffs last longer
-- All Gathering 50 = **"Nature's Whisper"** — pets find items faster
+| Skill | Spec 1 | Spec 2 | Spec 3 |
+|-------|-------|-------|-------|
+| **Mining** | Deep Delver | Strip Miner | Geomancer |
+| **Smithing** | Weaponsmith | Armorsmith | Artificer |
+| **Forging** | Blade Master | Armor Forger | Quirk Artificer |
+| **Runecrafting** | Essence Master | Rune Weaver | Cosmic Smith |
+| **Cooking** | Speed Chef | Gourmet Master | Experimentalist |
+| **Herblore** | Potion Master | Alchemist Sage | Brew Pioneer |
+| **Harvesting** | Botanist | Farmer | Seasonalist |
+| **Scavenging** | Relic Hunter | Curse Breaker | Artifact Smuggler |
 
-### 5.4 The Prestige System (Post-99)
+### 5.4 Mastery Synergies (Expanding Opportunities)
 
-When you hit 99 in a skill, you can **Transcend** it back to 1:
-- Gain permanent account-wide bonus (e.g., +1% all XP)
-- Visual prestige number: 99★1, 99★2, etc.
-- Total prestige across all skills = your **"Cosmic Weight"** (endgame ranking)
-- Each transcendence resets skill but keeps specializations
+**Current (3) → Expanded (5) combos:**
+
+1. Mining 25+ + Smithing 25+ = **"Ore Insight"** — Rich veins glow, higher veinerate chance
+2. Logging 25+ + Construction 25+ = **"Forest Father"** — 10% faster construction projects
+3. Cooking 25+ + Herblore 25+ = **"Gourmet Brew"** — Potions restore HP when consumed
+4. Fishing 25+ + Cooking 25+ = **"Fresh Catch"** — 15% longer food buff duration
+5. Scavenging 25+ + Forging 25+ = **"Scrap Knight"** — Forging uses recycled materials halved
+
+**> TODO: Future: 15+ synergy combos, skill chain bonuses, cross-pillar synergies**
+
+### 5.5 Hybrid Prestige System (Post-99)
+
+> **Unlock:** When skill reaches 99, player can choose to "Transcend" (reset level to 1)
+> **Philosophy:** Soft reset that keeps meaningful progress while encouraging replay
+
+**What Keeps:**
+- Specialization choice (mini-spec at 25, full spec at 50)
+- All mastery unlocks (soft-capped points, spent upgrades)
+- Item mastery tiers for all crafted items
+- Synergy unlocks and bonuses
+
+**What Resets:**
+- Skill level (99 → 1)
+- XP curve: Flattened replay (50% of original XP for levels 1-50)
+- Temporary rune/essence counts, etc.
+
+**What Gains:**
+- Account-wide **Cosmic Weight**: +0.25% XP per transcendence (diminishing)
+- Visual prestige indicator: 99★1, 99★2, 99★3 (shows total transcends)
+- Each transcendence unlocks 1 random "Cosmic Quirk" slot (endgame cosmetic bonuses)
+- Achievement ranking: Total prestige across all skills = endgame leaderboard
+
+**XP Curve Adjustment:**
+- Original: Level 1-99 standard Runescape curve
+- Transcended: Level 1-50 at 50% original XP (fast catch-up)
+- Level 51-99: Standard curve resumes (slow to cap again)
+- This rewards sticking with a transcend rather than switching skills
+
+### 5.6 Item Mastery (The Grind)
+
+> **Unlock:** Craft 100+ of one item unlocks mastery tiers
+> **Purpose:** Endgame content sink, rewarding mass production of base materials
+
+**Trigger Thresholds:**
+- Tier I: Craft 100 → +5% craft speed (same item only)
+- Tier II: Craft 500 → +10% yield (2 outputs for 1 input)
+- Tier III: Craft 1000 → 15% chance for +1 extra output
+- Tier IV: Craft 5000 → 25% chance for "Perfect" version (quirk effects stat+)
+
+**Visual Indicators:**
+- Tier I items: Simple glow effect
+- Tier II items: Subtle border color shift
+- Tier III items: Particle scatter on craft
+- Tier IV "Perfect" items: "Iron Sword (Perfect)" with special border
+
+**Stored per item:**
+```ts
+interface ItemStats {
+  totalCrafted: number;
+  masteryTier: number; // 0-4
+  isPerfect: boolean; // Tier IV+ flag
+}
+```
+- Stored in `PlayerState.inventoryItems: Map<itemId, ItemStats>`
+- Tracked across character lifetime (survives transcendences)
+
+**Examples:**
+- Iron Sword mastery I: Crafted 150, +5% speed
+- Bronze Bar mastery II: Crafted 600, +10% yield
+- Copper Ore mastery IV: Crafted 5200, Perfect version chance
+
+**> TODO: Future: Legendary Essence (combine 10+ perfect items for salvage)**
+**> TODO: Future: Mastery Items as Currency (spend crafted items for global mastery points)**
 
 ---
 

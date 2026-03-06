@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, SkillId } from '@/store/gameSlice';
@@ -92,20 +94,7 @@ export default function MiningScreen() {
                     fontSize: FontSize.md,
                     fontWeight: '600',
                 },
-                levelBadge: {
-                    backgroundColor: palette.skillMining + '33',
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                    borderColor: palette.skillMining,
-                },
-                levelBadgeText: {
-                    color: palette.skillMining,
-                    fontWeight: 'bold',
-                    fontSize: FontSize.sm,
-                },
+                ...getLevelBadgeStyles(palette, palette.skillMining),
                 miningTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -114,27 +103,23 @@ export default function MiningScreen() {
                 },
                 miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
-                nodeCard: {
-                    backgroundColor: palette.bgCard,
-                    borderRadius: Radius.lg,
-                    padding: Spacing.md,
-                    borderWidth: 1,
-                    borderColor: palette.border,
-                },
-                nodeCardLocked: {
-                    backgroundColor: palette.bgApp,
-                    borderColor: 'transparent',
-                },
+                ...getNodeCardBaseStyles(palette),
                 nodeCardActive: {
                     borderColor: palette.skillMining,
-                    backgroundColor: palette.skillMining + '11',
+                    borderWidth: 1,
                 },
                 nodeHeader: {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: palette.skillMining,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -332,6 +317,14 @@ export default function MiningScreen() {
                             accessibilityState={{ disabled: isLocked, selected: isActive }}
                             accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Mine for ${node.xpPerTick} XP`}`}
                         >
+                            {!isLocked && (
+                                <LinearGradient
+                                    colors={getGlassCardGradientColors(palette)}
+                                    style={StyleSheet.absoluteFill}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                />
+                            )}
                             {isActive && <ActivePulseGlow color={palette.skillMining} />}
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>

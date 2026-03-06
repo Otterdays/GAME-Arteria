@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { View, InteractionManager } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -74,12 +75,22 @@ function AppShell() {
   usePersistence();
 
   const [announcement, setAnnouncement] = useState<SpecialMessage | null>(null);
+  const hasHiddenSplash = useRef(false);
 
   useEffect(() => {
-    if (fontsLoaded || fontError) SplashScreen.hideAsync();
+    if (!fontsLoaded && !fontError) return;
+    if (hasHiddenSplash.current) return;
+    hasHiddenSplash.current = true;
+    // Defer hide until after first layout/paint to avoid Android SplashScreenManager
+    // predraw cancelAndRedraw loop (performTraversals boot loop).
+    InteractionManager.runAfterInteractions(() => {
+      SplashScreen.hideAsync();
+    });
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) return null;
+  if (!fontsLoaded && !fontError) {
+    return <View style={{ flex: 1, backgroundColor: '#000000' }} />;
+  }
 
   return (
     <AppThemeProvider>

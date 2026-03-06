@@ -9,6 +9,17 @@
 
 ---
 
+## 📚 Source of Truth
+
+All design, philosophy, and architectural decisions flow from two primary documents:
+
+- **[TRUTH_DOCTRINE.md](TRUTH_DOCTRINE.md)** — The ultimate source of truth. Core philosophy, behavioral protocols, and developer mandates for both humans and AI.
+- **[MASTER_DESIGN_DOC.md](MASTER_DESIGN_DOC.md)** — Complete game design document. Full skills, systems, mechanics, lore, and monetization strategy.
+
+These two documents are the authoritative references. All other docs supplement them.
+
+---
+
 ## 📚 Documentation Index (All Docs)
 
 | Doc | Purpose |
@@ -48,13 +59,14 @@
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.5.0** "Big Weeds Update" (Harvesting, Scavenging, Herblore, Bank OSRS, World Exploration, Lumina Shop, Mastery expansion, new NPCs). Post-0.5.0: Bestiary expansion, companion unlocks, combat alpha groundwork.
+**Version scheme:** 0.x.x. Current **0.5.1** "Coming Soon Skills" (Leadership, Adventure, Dungeon Dwelling, Construction marked coming soon). Post-0.5.1: Bestiary expansion, companion unlocks, combat alpha groundwork.
 
 **Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
-**Post-0.5.0 (2026-03-05):** **v0.5.0 Big Weeds Update:** Forging weapon expansion (dagger, shortsword, longsword, scimitar, 2H Longblade + armour; 54 recipes). Fletching & Tailoring skills (planned, red ComingSoonBadge). Runite forging, rare mining gems (Sapphire→Diamond). Harvesting, Scavenging, Herblore, Bank OSRS redesign (Main + 6 tabs, long-press create, remember tab), World Exploration (6 locations, map, travel), Lumina Shop (Reroll Daily, XP Boost), Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0.
+**Post-0.5.1 (2026-03-05):** **Coming Soon Skills:** Added Leadership, Adventure, Dungeon Dwelling, and Construction to Skills grid and global state.
+**Post-0.5.0 (2026-03-05):** **Construction & Coming Soon:** Construction added to Skills grid. Unimplemented skills now show a stylized `ComingSoonModal` when tapped. **v0.5.0 Big Weeds Update:** Forging weapon expansion (dagger, shortsword, longsword, scimitar, 2H Longblade + armour). Fletching & Tailoring skills (planned). Runite forging, rare mining gems. Harvesting, Scavenging, Herblore, Bank OSRS redesign, World Exploration, Lumina Shop, Mastery yield/speed + UI, Bianca & Kate NPCs, MASTER_DESIGN_DOC v2.0. **Prayer System:** 12 prayers, bone burying, combat drain. Combat skills clickable on Skills grid. **Mastery panel:** Opened from Skills tab header. Unimplemented skills show only Coming Soon badge. **Fonts:** Bank, Shop, Combat, Statistics use Cinzel Bold for main titles. **Fixes:** Android splash-screen boot loop; duplicate playerRef. **Combat UI Phase 1:** Loadout screen with stats, Bestiary stub moved. **OTA Note:** Firebase is NOT required for EAS OTA updates.
 
 **Post-0.4.3 (2026-03-05):** **Lumina Shop & Mastery:** Lumina Shop in Shop Buy tab: Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (+25%, 15 Lumina). Mastery: yield_bonus (+3%/level, max 3) for all 8 skills. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max buttons.
 
@@ -118,7 +130,8 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **v0.2.1 (Immersion):** Global Action Ticker, Header XP dashboard, MaterialCommunityIcons, edge-to-edge.
 - **v0.2.0 (Pipeline & Gathering):** Gradle, prebuild, Melvor palette, core loop, Mining, Skill Pillars, Total Level, XP tracking.
 
-**Next Steps (Phase 3–4):**
-- Finalize gathering pillar balancing and drop tables.
-- Combat system alpha: loadouts, weapon stats, health/damage infrastructure (see ROADMAP Phase 4). Combat deferred to later.
-
+**Next Steps (Phase 4+):**
+- **Combat System Alpha (Live ✅):** Auto-battler tick loop, combat UI (HP bars, attack timers, combat log, flee), zone selection, 7 enemies, equipment system verified. Working end-to-end.
+- **Polish:** Food eating during combat (potion/food hotbar), auto-flee at HP threshold, "While You Were Away" combat report, loot popup/toast.
+- **Enemy Scaling:** Ensure enemies calculate attack/defense equivalent to player logic. Add enemy attack speed variation.
+- **Dungeons & Factions:** Dungeon modes (Delves, Expeditions), enemy factions, boss encounters.

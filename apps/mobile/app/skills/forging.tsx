@@ -10,6 +10,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -127,14 +129,7 @@ export default function ForgingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, forgeColor),
                 screenTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -200,7 +195,13 @@ export default function ForgingScreen() {
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: forgeColor,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -418,10 +419,7 @@ export default function ForgingScreen() {
                                         style={[
                                             styles.nodeCard,
                                             isLocked && styles.nodeCardLocked,
-                                            isActive && [
-                                                styles.nodeCardActive,
-                                                { borderColor: forgeColor, backgroundColor: forgeColor + '11' },
-                                            ],
+                                            isActive && styles.nodeCardActive,
                                             outOfMaterials && styles.nodeCardEmpty,
                                         ]}
                                         scaleTo={0.98}
@@ -430,6 +428,14 @@ export default function ForgingScreen() {
                                         accessibilityState={{ disabled: isLocked || outOfMaterials, selected: isActive }}
                                         accessibilityLabel={`${recipe.name}. ${isLocked ? `Unlocks at level ${recipe.levelReq}` : `Forge for ${recipe.xpPerTick} XP`}`}
                                     >
+                                        {!isLocked && (
+                                            <LinearGradient
+                                                colors={getGlassCardGradientColors(palette)}
+                                                style={StyleSheet.absoluteFill}
+                                                start={{ x: 0, y: 0 }}
+                                                end={{ x: 1, y: 1 }}
+                                            />
+                                        )}
                                         {isActive && <ActivePulseGlow color={forgeColor} />}
 
                                         <View style={styles.nodeHeader}>

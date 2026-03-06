@@ -5,7 +5,68 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** README modernization for v0.5.0.
+**Active Task:** Added Leadership, Adventure, Dungeon Dwelling, and Construction as Coming Soon skills with dynamic UI modal. Version bumped to 0.5.1. Docs fully updated. Ready for the next feature request!
+
+## [2026-03-05] Coming Soon Skills Expansion
+- **Data:** Added `'leadership'`, `'adventure'`, `'dungeoneering'`, `'construction'` to `SkillId` in engine and `ALL_SKILLS` / `SKILL_META` locally.
+- **UI:** The skills grid now shows Leadership, Adventure, Dungeon Dwelling, and Construction with their respective colors and emojis.
+- **Interaction:** Unimplemented skills trigger the stylized "Coming Soon" glassmorphism modal when tapped.
+- **Documentation:** Up-to-date documentation globally across the app including `index.html`, `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `SCRATCHPAD.md`, `app.json`, and `patchHistory.ts`. Bumped version to `0.5.1`.
+
+## [2026-03-05] Prayer System — Full Implementation
+- **Prayers constant (`constants/prayers.ts`):** 12 prayers defined: Thick Skin, Burst of Strength, Clarity of Thought, Rock Skin, Superhuman Strength, Improved Reflexes, Steel Skin, Ultimate Strength, Incredible Reflexes, Divine Shield, Wrath of Ancients, Aegis. Each has level requirement (1-60), drain rate per tick, and combat bonuses (attackPercent, strengthPercent, defencePercent, damageReductionPercent).
+- **State additions (`gameSlice.ts`):** `prayerPoints`, `maxPrayerPoints`, `activePrayers[]` added to `PlayerState`. Fresh player starts with 10/10 PP.
+- **togglePrayer reducer:** Validates prayer level requirement, checks prayer points > 0, toggles prayer on/off.
+- **processCombatTick integration:** Prayer points drain per tick (scaled to deltaMs). When exhausted, all prayers auto-deactivate + combat log message. Active prayers boost accuracy (attackPercent), maxHit (strengthPercent), and reduce incoming damage (damageReductionPercent).
+- **buryBone update:** Burying bones now restores +1 prayer point (capped at max). Max PP recalculated on prayer level-up (level × 10).
+- **Combat UI (`combat.tsx`):** New Prayer tab added to combat tab bar. Prayer section added in active battle view with PP bar + toggle buttons for unlocked prayers. Full Prayer tab shows all 12 prayers with lock state, level requirements, drain rates, and ON/OFF indicators.
+- **Skills screen (`index.tsx`):** `prayer` added to ALL_SKILLS grid. `COMBAT_SKILLS` set (attack, hitpoints, strength, defence, prayer) makes these skills clickable → navigates to Combat tab. Level/99 shown for combat skills instead of "Coming Soon".
+
+## [2026-03-05] Phase 4 Combat System — Auto-Battler, Zone Hub, Equipment
+- **Zone Selection screen:** Added `COMBAT_ZONES` array to `combat.tsx` (Sunny Meadows Farm, Goblin House, Whispering Woods Forest, Frostfall Mountain). Selecting a zone populates enemies assigned to it.
+- **Enemies:** Updated `enemies.ts` to include initial enemies: Cow, Chicken, Sheep, Pig (Sunny Meadows Farm), Goblin (Goblin House), Woodland Wolf (Whispering Woods Forest), and Arctic Wolf (Frostfall Mountain). Each has combat stats (HP, ATK, DEF, accuracy) and drop tables.
+- **ActiveCombat state:** New `ActiveCombat` interface in `gameSlice.ts`. Tracks: enemyId, enemyName, HP (max/current), attack/defense/accuracy, player/enemy attack timer accumulators, killCount, zoneId. Stored on `PlayerState.activeCombat`.
+- **CombatLogEntry:** New type for scrolling combat messages. Stored on `GameState.combatLog` (max 40 entries). Types: player_hit, enemy_hit, player_miss, enemy_miss, kill, loot, died, info.
+- **Reducers added:** `startCombat` (init fight, stop skilling, clear log), `fleeCombat` (stop fight), `processCombatTick` (timer accumulation, accuracy rolls, damage calc, kill/respawn loop, XP to hitpoints/attack/strength/defence, loot drops, gold drops), `pushCombatLog`.
+- **Game loop (useGameLoop.ts):** Combat ticks dispatched alongside skilling ticks on every 100ms interval. `activeCombat` selector added. Loop runs when either `activeTask` or `activeCombat` is truthy.
+- **Combat UI (combat.tsx):** Active fight screen renders when `activeCombat` is set: player HP bar (green→amber→red), enemy HP bar (red), attack speed progress bars, kill counter, gold counter, FLEE button, scrolling combat log with color-coded messages. Engage button now dispatches `startCombat` instead of placeholder alert.
+- **Equipment system (pre-existing, verified):** 8 slots (head, amulet, body, weapon, shield, legs, feet, ring). `equipItem`/`unequipItem` reducers. `recalculateCombatStats` sums equipment stats (accuracy, maxHit, meleeDefence, rangedDefence, magicDefence, attackSpeed). 2H weapons auto-unequip shields and vice versa. Full tier coverage: Bronze → Iron → Steel → Mithril → Adamant → Runite.
+- **Combat math:** Hit chance = 0.5 + (player accuracy - enemy defense) × 0.02 (clamped 5%–95%). Damage = 1 to maxHit. Enemy hit chance = enemy accuracy - player meleeDefence × 0.015 (clamped 5%–95%). On kill: XP split to hitpoints/attack/strength/defence, loot table rolled, gold = enemyMaxHp × (1–3). Enemy respawns for continuous fighting. Player death = respawn at full HP + combat stops.
+
+## [2026-03-05] Mastery System Expansion — Unique Skill Upgrades
+- **20 new mastery upgrades** across all 10 skills (2 unique per skill). Each skill now has 5 upgrades total (XP, yield, speed + 2 unique).
+- **Double-drop upgrades:** Mining (double ore, gem finder), Logging (double log, bird nest), Fishing (double fish, rare catch), Runecrafting (extra rune), Smithing (double bar), Forging (double craft), Cooking (double cook), Harvesting (double harvest, seed finder), Scavenging (double loot, rare find), Herblore (double brew).
+- **Resource preservation upgrades:** Runecrafting (essence saver), Smithing (ore saver), Forging (bar saver), Cooking (burn guard), Herblore (herb saver).
+- **New MasteryUpgradeDef fields:** `doubleDropPerLevel`, `preservePerLevel`, `desc` (for future tooltip display).
+- **New helper functions in mastery.ts:** `getMasteryDoubleDropChance()`, `getMasteryPreserveChance()`, `getMasteryBonusLevel()`.
+- **Game loop integration:** `useGameLoop.ts` now rolls for double drops per successful tick (bonus items) and applies preserve chance to reduce consumed resources (essence, ore, bars, herbs). Both effects are live and functional.
+
+## [2026-03-05] Mastery Modal Touch Sensitivity Fix
+- **Touch Issue:** `ScrollView` was nested inside two `Pressable` components. React Native's gesture responder system gives priority to parent `Pressable`s over inner `ScrollView`s resulting in scroll lock/extreme stiffness tracking vertical pans.
+- **Fix:** Swapped the nested `Pressable` wrappers out for `View`s, and implemented a sister `Pressable` with `StyleSheet.absoluteFill` for the backdrop click-to-close handler. The `ScrollView` is no longer a child of a `Pressable` so it regains full smooth scrolling natively.
+
+## [2026-03-05] Android Build Warnings (Firebase & Predictive Back)
+- **Predictive Back Navigation:** Enabled in `app.json` (`predictiveBackGestureEnabled: true`) to support Android 13+ native back gestures and clear manifest warnings.
+- **Firebase Warning:** Documented in `EXPO_GUIDE.md` that Firebase / `google-services.json` is **not** required for OTA updates. The "Default FirebaseApp failed to initialize" log is a harmless noisy warning and has no impact on EAS Update.
+## [2026-03-05] Skill Page Styling — Level Badge + Glass Cards
+- **Level badge:** Cinzel Bold font, gold color, soft glow (textShadow), depth shadow. Shared in `constants/skillPageStyles.ts` via `getLevelBadgeStyles(palette, skillColor)`.
+- **Node/recipe cards:** Thinner borders (0.5px), glass-style gradient background (LinearGradient bgCard→bgCardHover). `getNodeCardBaseStyles`, `getGlassCardGradientColors`. Applied to all 10 skill screens (mining, logging, fishing, harvesting, scavenging, runecrafting, smithing, forging, cooking, herblore).
+- **Node emoji:** Soft glow via `textShadowColor` (skill color), `textShadowRadius: 8`.
+- **Skills grid:** Styling deferred (user prioritized skill pages first).
+
+## [2026-03-05] Skill Box + Fonts + Coming Soon
+- **Unimplemented skill cards:** Level indicators (e.g. "1 / 99") removed for unimplemented skills. Right column now shows only the Coming Soon badge so the badge no longer pushes level numbers above the box or overflows. Implemented skills still show level/99.
+- **Custom font (Cinzel Bold):** Bank (`screenTitle`), Shop (`title`), Combat (`title`), Statistics (`title`, `sectionTitle`) use `fontFamily: FontCinzelBold`. Removed redundant `fontWeight` so the custom font applies correctly on all targets.
+- **Coming Soon badge:** Styling improved (padding, dot size, shadow, alignSelf center). Position on skill cards: centered in right column via `comingSoonWrap`; no level shown for locked skills.
+
+## [2026-03-05] Mastery Panel Redesign (Modal + Two-Column)
+- **Mastery opener:** Moved to **Skills header** (📖 icon next to 📜 activity log). Settings no longer has a Mastery row. Modal lives in `components/MasteryModal.tsx`.
+- **Modal layout:** Mastery content in `MasteryModalContent`: header "Mastery" + Done, scrollable body. Gathering and Crafting pillars unchanged; skill cards shown **two per row** (side-by-side). Each row uses `masteryRow` (flexDirection row) with two `masterySkillCardWrapper` (flex: 1); single card on last row gets empty half for alignment. Cards use `masterySkillCardHalf` (compact, alignSelf stretch).
+- **Styles:** `masteryModalBackdrop`, `masteryModalContent`, `masteryModalHeader`, `masteryModalTitle`, `masteryModalCloseBtn`/`CloseText`, `masteryModalBody`/`ScrollContent`, `masteryRow`, `masterySkillCardWrapper`, `masterySkillCardHalf`. Version remains 0.5.0.
+
+## [2026-03-05] Android Boot Loop Fix + Build Fixes
+- **Boot loop (Logcat):** `performTraversals: cancelAndRedraw` from `expo.modules.splashscreen.SplashScreenManager` — app stuck on splash/blank. Cause: returning `null` until fonts loaded left content view unstable; native predraw handoff kept re-triggering. **Fix (_layout.tsx):** (1) Render placeholder `<View style={{ flex: 1, backgroundColor: '#000000' }} />` instead of `null` while fonts load. (2) Defer `SplashScreen.hideAsync()` with `InteractionManager.runAfterInteractions()` and guard with `hasHiddenSplash` ref so hide runs once after first layout. Stops cancelAndRedraw loop.
+- **Build fixes (APK):** `app/location/[id].tsx` — fixed incomplete ternary in Pressable `style` (`pressed ? 0.7` → `pressed ? 0.7 : 1`). `useGameLoop.ts` — removed duplicate `playerRef` declaration (was declared at line 174 and again at 432); kept single ref + sync.
 
 ## [2026-03-05] README Modernization for v0.5.0
 - **README.md:** Updated version badge from v0.4.1 to v0.5.0. Rewrote the "What is Arteria?" features table to include all 10 implemented skills (Mining to Herblore), World Exploration, 30 daily quests, and new systems (Bank tabs, Mastery, Themes). Updated the "Latest" section to "v0.5.0 Big Weeds Update" with bullet points detailing new Skills, World Map, Bank Redesign, Mastery/Lumina, and Weapon Expansion.

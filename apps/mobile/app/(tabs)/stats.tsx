@@ -5,7 +5,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector } from '@/store/hooks';
 
@@ -60,8 +60,8 @@ export default function StatsScreen() {
                 },
                 title: {
                     fontSize: FontSize.xl,
-                    fontWeight: '800',
                     color: palette.textPrimary,
+                    fontFamily: FontCinzelBold,
                 },
                 subtitle: {
                     fontSize: FontSize.sm,
@@ -71,11 +71,11 @@ export default function StatsScreen() {
                 section: { marginTop: Spacing.xl },
                 sectionTitle: {
                     fontSize: FontSize.sm,
-                    fontWeight: '700',
                     color: palette.accentPrimary,
                     textTransform: 'uppercase',
                     letterSpacing: 1,
                     marginBottom: Spacing.sm,
+                    fontFamily: FontCinzelBold,
                 },
                 row: {
                     flexDirection: 'row',

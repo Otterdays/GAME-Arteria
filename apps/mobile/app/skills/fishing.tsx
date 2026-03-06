@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
@@ -114,14 +116,7 @@ export default function FishingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                levelBadge: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.full,
-                    marginBottom: Spacing.sm,
-                    borderWidth: 1,
-                },
-                levelBadgeText: { fontWeight: 'bold', fontSize: FontSize.sm },
+                ...getLevelBadgeStyles(palette, palette.skillFishing),
                 screenTitle: {
                     fontSize: FontSize.xl,
                     fontWeight: 'bold',
@@ -171,7 +166,13 @@ export default function FishingScreen() {
                     alignItems: 'center',
                     marginBottom: Spacing.md,
                 },
-                nodeEmoji: { fontSize: 32, marginRight: Spacing.md },
+                nodeEmoji: {
+                    fontSize: 32,
+                    marginRight: Spacing.md,
+                    textShadowColor: palette.skillFishing,
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
                     fontSize: FontSize.lg,
@@ -277,8 +278,8 @@ export default function FishingScreen() {
 
             {/* Skill header */}
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: palette.skillFishing + '33', borderColor: palette.skillFishing }]}>
-                    <Text style={[styles.levelBadgeText, { color: palette.skillFishing }]}>Lv. {fishingSkill.level}</Text>
+                <View style={styles.levelBadge}>
+                    <Text style={styles.levelBadgeText}>Lv. {fishingSkill.level}</Text>
                 </View>
                 <Text style={styles.screenTitle}>Fishing</Text>
                 <Text style={styles.screenSub}>Cast your line and reel in the catch of the day.</Text>
@@ -333,6 +334,14 @@ export default function FishingScreen() {
                                     accessibilityState={{ disabled: isLocked, selected: isActive }}
                                     accessibilityLabel={`${spot.name}. ${isLocked ? `Unlocks at level ${spot.levelReq}` : `Fish for ${spot.xpPerTick} XP`}`}
                                 >
+                                    {!isLocked && (
+                                        <LinearGradient
+                                            colors={getGlassCardGradientColors(palette)}
+                                            style={StyleSheet.absoluteFill}
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 1 }}
+                                        />
+                                    )}
                                     {isActive && <ActivePulseGlow color={palette.skillFishing} />}
                                     <View style={styles.nodeHeader}>
                                         <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{spot.emoji}</Text>

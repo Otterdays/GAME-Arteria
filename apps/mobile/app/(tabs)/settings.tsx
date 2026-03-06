@@ -15,10 +15,8 @@ try {
 import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, type PaletteShape } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { gameActions, type SkillId } from '@/store/gameSlice';
+import { gameActions } from '@/store/gameSlice';
 import { deleteSave } from '@/store/persistence';
-import { MASTERY_UPGRADES } from '@/constants/mastery';
-import { SKILL_META } from '@/constants/skills';
 import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
 import { getDisplayName, PROTAGONIST_CANONICAL_NAME } from '@/constants/character';
 import { useSfx } from '@/utils/sounds';
@@ -37,72 +35,6 @@ function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsSty
                         ? `Day ${status.day} ready to claim!`
                         : `Streak: Day ${loginBonus.consecutiveDays}/7 · Next: Day ${nextDay} — ${nextReward.gold} gp${nextReward.lumina ? ` + ${nextReward.lumina} Lumina` : ''}`}
                 </Text>
-            </View>
-        </View>
-    );
-}
-
-const MASTERY_GATHERING: SkillId[] = ['mining', 'logging', 'fishing', 'harvesting', 'scavenging'];
-const MASTERY_CRAFTING: SkillId[] = ['runecrafting', 'smithing', 'forging', 'cooking', 'herblore'];
-
-function MasterySection() {
-    const dispatch = useAppDispatch();
-    const masteryPoints = useAppSelector((s) => s.game.player.masteryPoints ?? {});
-    const masterySpent = useAppSelector((s) => s.game.player.masterySpent ?? {});
-    const { palette } = useTheme();
-    const styles = useMemo(() => createSettingsStyles(palette), [palette]);
-
-    const renderSkillBlock = (skillId: SkillId) => {
-        const upgrades = MASTERY_UPGRADES[skillId];
-        if (!upgrades) return null;
-        const points = masteryPoints[skillId] ?? 0;
-        const spent = masterySpent[skillId] ?? {};
-        const meta = SKILL_META[skillId];
-        return (
-            <View key={skillId} style={styles.masterySkillCard}>
-                <View style={styles.masterySkillHeader}>
-                    <Text style={styles.masterySkillEmoji}>{meta?.emoji}</Text>
-                    <Text style={styles.masterySkillName}>{meta?.label}</Text>
-                    <View style={[styles.masteryPointsBadge, points > 0 && styles.masteryPointsBadgeActive]}>
-                        <Text style={[styles.masteryPointsText, points > 0 && styles.masteryPointsBadgeActiveText]}>{points} pt{points !== 1 ? 's' : ''}</Text>
-                    </View>
-                </View>
-                {upgrades.map((u) => {
-                    const level = spent[u.id] ?? 0;
-                    const canSpend = points >= u.cost && level < u.maxLevel;
-                    const isMax = level >= u.maxLevel;
-                    return (
-                        <View key={u.id} style={styles.masteryUpgradeRow}>
-                            <View style={styles.masteryUpgradeInfo}>
-                                <Text style={styles.masteryUpgradeLabel}>{u.label}</Text>
-                                <Text style={styles.masteryLevelText}>{level}/{u.maxLevel}</Text>
-                            </View>
-                            <TouchableOpacity
-                                style={[styles.masterySpendBtn, !canSpend && styles.masterySpendBtnDisabled, isMax && styles.masterySpendBtnMax]}
-                                onPress={() => canSpend && (Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light), dispatch(gameActions.spendMastery({ skillId, upgradeId: u.id, cost: u.cost, maxLevel: u.maxLevel })))}
-                                disabled={!canSpend}
-                                activeOpacity={0.8}
-                            >
-                                <Text style={[styles.masterySpendText, !canSpend && styles.masterySpendTextDisabled, isMax && styles.masterySpendTextMax]}>
-                                    {isMax ? 'Max' : canSpend ? `Spend ${u.cost}` : '—'}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    );
-                })}
-            </View>
-        );
-    };
-
-    return (
-        <View style={styles.masteryContainer}>
-            <View style={styles.masteryPillar}>
-                <Text style={styles.masteryPillarTitle}>Gathering</Text>
-                {MASTERY_GATHERING.map(renderSkillBlock)}
-            </View>
-            <View style={styles.masteryPillar}>
-                <Text style={styles.masteryPillarTitle}>Crafting</Text>
-                {MASTERY_CRAFTING.map(renderSkillBlock)}
             </View>
         </View>
     );
@@ -409,6 +341,72 @@ function createSettingsStyles(palette: PaletteShape) {
             color: palette.textMuted,
             minWidth: 28,
         },
+        masteryModalBackdrop: {
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: Spacing.lg,
+        },
+        masteryModalContent: {
+            width: '100%',
+            maxWidth: 480,
+            maxHeight: '85%',
+            backgroundColor: palette.bgCard,
+            borderRadius: Radius.lg,
+            borderWidth: 1,
+            borderColor: palette.border,
+            overflow: 'hidden',
+        },
+        masteryModalHeader: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.md,
+            borderBottomWidth: 1,
+            borderBottomColor: palette.divider,
+        },
+        masteryModalTitle: {
+            fontSize: FontSize.lg,
+            fontWeight: '700',
+            color: palette.textPrimary,
+            fontFamily: FontCinzelBold,
+        },
+        masteryModalCloseBtn: {
+            paddingVertical: Spacing.xs,
+            paddingHorizontal: Spacing.sm,
+        },
+        masteryModalCloseText: {
+            fontSize: FontSize.sm,
+            fontWeight: '600',
+            color: palette.accentPrimary,
+        },
+        masteryModalBody: {
+            maxHeight: 420,
+        },
+        masteryModalScrollContent: {
+            padding: Spacing.sm,
+            paddingBottom: Spacing.lg,
+            gap: Spacing.lg,
+        },
+        masteryRow: {
+            flexDirection: 'row',
+            gap: Spacing.sm,
+            marginBottom: Spacing.sm,
+        },
+        masterySkillCardWrapper: {
+            flex: 1,
+            minWidth: 0,
+        },
+        masterySkillCardHalf: {
+            backgroundColor: palette.bgApp,
+            borderRadius: Radius.sm,
+            padding: Spacing.sm,
+            borderWidth: 1,
+            borderColor: palette.border,
+            alignSelf: 'stretch',
+        },
     });
 }
 
@@ -453,7 +451,6 @@ export default function SettingsScreen() {
     const displayName = getDisplayName(playerName);
     const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
     const [nicknameEdit, setNicknameEdit] = useState('');
-
     // OTA update check state
     const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'downloading' | 'ready' | 'upToDate' | 'error' | 'dev'>('idle');
     const [updateError, setUpdateError] = useState('');
@@ -678,16 +675,6 @@ export default function SettingsScreen() {
                             </View>
                             <Text style={styles.arrow}>›</Text>
                         </Pressable>
-                    </View>
-                </View>
-
-                <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>Mastery</Text>
-                    <Text style={[styles.rowDesc, { marginLeft: Spacing.md, marginBottom: Spacing.sm }]}>
-                        Earn 1 point per level-up per skill. Spend on permanent buffs.
-                    </Text>
-                    <View style={styles.sectionCard}>
-                        <MasterySection />
                     </View>
                 </View>
 

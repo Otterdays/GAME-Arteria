@@ -16,6 +16,7 @@ import type { ThemeId } from '@/constants/theme';
 import { getMasteryXpMultiplier } from '@/constants/mastery';
 import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
+import { PRAYER_MAP } from '@/constants/prayers';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
 // We inline these so the mobile app doesn't need to resolve
@@ -39,6 +40,11 @@ export type SkillId =
     | 'thieving'
     | 'fletching'
     | 'tailoring'
+    | 'prayer'
+    | 'construction'
+    | 'leadership'
+    | 'adventure'
+    | 'dungeoneering'
     | 'attack'
     | 'strength'
     | 'defence'
@@ -57,7 +63,7 @@ export interface InventoryItem {
     isLocked?: boolean;
 }
 
-type EquipSlot =
+export type EquipSlot =
     | 'head' | 'body' | 'legs' | 'feet'
     | 'weapon' | 'shield' | 'ring' | 'amulet';
 
@@ -78,6 +84,38 @@ export interface ActiveTask {
     actionId: string;
     intervalMs: number;
     partialTickMs: number;
+}
+
+/** Tracks an active auto-combat encounter. */
+export interface ActiveCombat {
+    enemyId: string;
+    enemyName: string;
+    enemyMaxHp: number;
+    enemyCurrentHp: number;
+    enemyAttack: number;
+    enemyDefense: number;
+    enemyAccuracy: number;
+    enemyAttackSpeed: number;
+    /** ms elapsed toward the player's next attack */
+    playerAttackTimerMs: number;
+    /** ms elapsed toward the enemy's next attack */
+    enemyAttackTimerMs: number;
+    /** Kills this session (for this enemy type) */
+    killCount: number;
+    /** Zone the player is fighting in */
+    zoneId: string;
+    /** Combat style determines XP distribution */
+    combatStyle: CombatStyle;
+}
+
+/** Combat style determines how combat XP is distributed. */
+export type CombatStyle = 'controlled' | 'aggressive' | 'defensive' | 'accurate';
+
+export interface CombatLogEntry {
+    id: number;
+    message: string;
+    type: 'player_hit' | 'enemy_hit' | 'player_miss' | 'enemy_miss' | 'kill' | 'loot' | 'died' | 'info';
+    timestamp: number;
 }
 
 export interface PlayerState {
@@ -134,6 +172,24 @@ export interface PlayerState {
     masteryPoints?: Partial<Record<SkillId, number>>;
     /** Mastery: purchased upgrade levels per skill (e.g. mining: { xp_bonus: 2 }). */
     masterySpent?: Partial<Record<SkillId, Record<string, number>>>;
+    /** Mini-spec at level 25: 1 of 3 chosen per skill. */
+    miniSpecs?: Partial<Record<SkillId, string>>;
+    /** Full specialization at level 50: 1 of 3 chosen per skill. */
+    specializations?: Partial<Record<SkillId, string>>;
+    /** Unlocked synergy combos (5 combos, tracked by ID). */
+    unlockedSynergies?: string[];
+    /** Transcendence count per skill (visual 99★N). */
+    transcendences?: Partial<Record<SkillId, number>>;
+    /** Is skill transcended (XP curve flattened for this skill)? */
+    isTranscended?: Partial<Record<SkillId, boolean>>;
+    /** Item mastery: track totalCrafted, masteryTier, isPerfect per item. */
+    itemMastery?: Partial<Record<string, {
+        totalCrafted: number;
+        masteryTier: number; // 0-4
+        isPerfect: boolean;
+    }>>;
+    /** Account-wide Cosmic Weight: +0.25% XP per transcendence (global buff). */
+    cosmicWeightXPBonus?: number;
     /** Detailed stats: by item type (ore, log, fish, rune, bar, equipment, other), first/last play. */
     stats?: {
         byType: Partial<Record<string, number>>;
@@ -178,13 +234,21 @@ export interface PlayerState {
     };
     /** All-time count of daily quests claimed (for display on Quests screen). */
     totalDailyQuestsCompleted?: number;
+    /** Active auto-combat encounter state. null = not fighting. */
+    activeCombat?: ActiveCombat | null;
+    /** Prayer points: drained while prayers are active in combat. */
+    prayerPoints?: number;
+    /** Maximum prayer points based on Prayer level. */
+    maxPrayerPoints?: number;
+    /** Currently active prayer IDs. */
+    activePrayers?: string[];
 }
 
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
     'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing', 'forging',
-    'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring',
+    'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring', 'prayer', 'construction', 'leadership', 'adventure', 'dungeoneering',
     'attack', 'strength', 'defence', 'hitpoints',
 ];
 
@@ -275,7 +339,56 @@ function createFreshPlayer(): PlayerState {
         seenEnemies: [],
         pets: { activePetId: null, unlocked: [] },
         totalDailyQuestsCompleted: 0,
+        prayerPoints: 10,
+        maxPrayerPoints: 10,
+        activePrayers: [],
     };
+}
+
+export function recalculateCombatStats(player: PlayerState): void {
+    const hpLevel = player.skills['hitpoints']?.level ?? 10;
+    const strLevel = player.skills['strength']?.level ?? 1;
+    const attLevel = player.skills['attack']?.level ?? 1;
+    const defLevel = player.skills['defence']?.level ?? 1;
+
+    let maxHit = Math.floor(strLevel / 10) + 1;
+    let accuracy = attLevel;
+    let meleeDefence = defLevel;
+    let rangedDefence = defLevel;
+    let magicDefence = defLevel;
+    let attackSpeed = 2400; // Unarmed speed
+
+    // Sum equipment stats
+    for (const slotKey in player.equipment) {
+        const slot = slotKey as EquipSlot;
+        const itemId = player.equipment[slot];
+        if (!itemId) continue;
+        const meta = getItemMeta(itemId);
+        if (meta && meta.equipmentStats) {
+            const stats = meta.equipmentStats;
+            if (stats.maxHit) maxHit += stats.maxHit;
+            if (stats.accuracy) accuracy += stats.accuracy;
+            if (stats.meleeDefence) meleeDefence += stats.meleeDefence;
+            if (stats.rangedDefence) rangedDefence += stats.rangedDefence;
+            if (stats.magicDefence) magicDefence += stats.magicDefence;
+            if (slot === 'weapon' && stats.attackSpeed) {
+                attackSpeed = stats.attackSpeed;
+            }
+        }
+    }
+
+    const maxHp = hpLevel * 10;
+
+    player.combatStats.maxHitpoints = maxHp;
+    if (player.combatStats.currentHitpoints > maxHp) {
+        player.combatStats.currentHitpoints = maxHp;
+    }
+    player.combatStats.maxHit = maxHit;
+    player.combatStats.accuracy = accuracy;
+    player.combatStats.meleeDefence = meleeDefence;
+    player.combatStats.rangedDefence = rangedDefence;
+    player.combatStats.magicDefence = magicDefence;
+    player.combatStats.attackSpeed = attackSpeed;
 }
 
 /**
@@ -338,6 +451,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const masterySpent = saved.masterySpent ?? {};
     const stats = saved.stats ?? { byType: {}, firstPlayedAt: saved.lastSaveTimestamp ?? Date.now(), lastPlayedAt: Date.now() };
     const customBankTabs = saved.customBankTabs ?? [];
+    const lastBankTab = saved.lastBankTab ?? 'main';
     const junkItemIds = saved.junkItemIds ?? [];
     const loginBonus = saved.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 };
     const lumina = saved.lumina ?? 0;
@@ -357,7 +471,9 @@ function migratePlayer(saved: PlayerState): PlayerState {
         return item;
     });
 
-    return { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
+    recalculateCombatStats(migrated);
+    return migrated;
 }
 
 // ─── Slice ───
@@ -423,9 +539,13 @@ interface GameState {
     showGoblinPeek: boolean;
     /** First-time: show nickname entry before starting (no save exists) */
     awaitingNameEntry: boolean;
+    /** Combat log — scrolling messages from auto-battler */
+    combatLog: CombatLogEntry[];
 }
 
 const ACTIVITY_LOG_MAX = 50;
+const COMBAT_LOG_MAX = 40;
+let combatLogIdCounter = 0;
 
 const initialState: GameState = {
     player: createFreshPlayer(),
@@ -439,6 +559,7 @@ const initialState: GameState = {
     activityLog: [],
     showGoblinPeek: false,
     awaitingNameEntry: false,
+    combatLog: [],
 };
 
 export const gameSlice = createSlice({
@@ -453,6 +574,85 @@ export const gameSlice = createSlice({
             state.lootVacuumQueue = [];
             state.showGoblinPeek = false;
             state.awaitingNameEntry = false;
+        },
+
+        /** Equip an item into its designated slot. */
+        equipItem(state, action: PayloadAction<{ itemId: string }>) {
+            const meta = getItemMeta(action.payload.itemId);
+            if (!meta || meta.type !== 'equipment' || !meta.equipSlot) return;
+
+            const slot = meta.equipSlot as EquipSlot;
+
+            const inventoryIndex = state.player.inventory.findIndex(i => i.id === action.payload.itemId);
+            if (inventoryIndex === -1) return;
+            const inventoryItem = state.player.inventory[inventoryIndex];
+
+            // Remove from inventory
+            inventoryItem.quantity -= 1;
+            if (inventoryItem.quantity <= 0) {
+                state.player.inventory.splice(inventoryIndex, 1);
+            }
+
+            // If something is already equipped in this slot, return it
+            const currentlyEquipped = state.player.equipment[slot];
+            if (currentlyEquipped) {
+                const existing = state.player.inventory.find(i => i.id === currentlyEquipped);
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    state.player.inventory.push({ id: currentlyEquipped, quantity: 1 });
+                }
+            }
+
+            // Handle 2H weapons -> unequip shield
+            if (slot === 'weapon' && meta.label.includes('2H')) {
+                const shield = state.player.equipment['shield'];
+                if (shield) {
+                    const existingShield = state.player.inventory.find(i => i.id === shield);
+                    if (existingShield) {
+                        existingShield.quantity += 1;
+                    } else {
+                        state.player.inventory.push({ id: shield, quantity: 1 });
+                    }
+                    delete state.player.equipment['shield'];
+                }
+            }
+
+            // Handle shield -> unequip 2H weapon
+            if (slot === 'shield') {
+                const weapon = state.player.equipment['weapon'];
+                if (weapon) {
+                    const wepMeta = getItemMeta(weapon);
+                    if (wepMeta.label.includes('2H')) {
+                        const existingWeapon = state.player.inventory.find(i => i.id === weapon);
+                        if (existingWeapon) {
+                            existingWeapon.quantity += 1;
+                        } else {
+                            state.player.inventory.push({ id: weapon, quantity: 1 });
+                        }
+                        delete state.player.equipment['weapon'];
+                    }
+                }
+            }
+
+            state.player.equipment[slot] = action.payload.itemId;
+            recalculateCombatStats(state.player);
+        },
+
+        /** Unequip an item from a specific slot. */
+        unequipItem(state, action: PayloadAction<{ slot: EquipSlot }>) {
+            const itemId = state.player.equipment[action.payload.slot];
+            if (!itemId) return;
+
+            const existing = state.player.inventory.find(i => i.id === itemId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                state.player.inventory.push({ id: itemId, quantity: 1 });
+            }
+
+            delete state.player.equipment[action.payload.slot];
+            recalculateCombatStats(state.player);
         },
 
         /** Start a new game (with optional nickname). Clears awaitingNameEntry. */
@@ -547,6 +747,9 @@ export const gameSlice = createSlice({
                     });
                     if (state.activityLog.length > ACTIVITY_LOG_MAX) {
                         state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+                    }
+                    if (['hitpoints', 'attack', 'strength', 'defence'].includes(skillId)) {
+                        recalculateCombatStats(state.player);
                     }
                 }
             }
@@ -1022,6 +1225,469 @@ export const gameSlice = createSlice({
         /** Set XP boost expiry (Lumina Shop). */
         setXpBoostExpiresAt(state, action: PayloadAction<number>) {
             state.player.xpBoostExpiresAt = action.payload;
+        },
+
+        // ─── Combat System ───
+
+        /** Start fighting an enemy. */
+        startCombat(state, action: PayloadAction<{ enemyId: string; zoneId: string }>) {
+            const { ENEMIES } = require('@/constants/enemies');
+            const enemy = ENEMIES[action.payload.enemyId];
+            if (!enemy || !enemy.combat) return;
+
+            // Stop any active skilling task
+            state.player.activeTask = null;
+
+            state.player.activeCombat = {
+                enemyId: enemy.id,
+                enemyName: enemy.name,
+                enemyMaxHp: enemy.combat.hp,
+                enemyCurrentHp: enemy.combat.hp,
+                enemyAttack: enemy.combat.attack,
+                enemyDefense: enemy.combat.defense,
+                enemyAccuracy: enemy.combat.accuracy ?? 0.8,
+                enemyAttackSpeed: enemy.combat.attackSpeed ?? 2400,
+                playerAttackTimerMs: 0,
+                enemyAttackTimerMs: 0,
+                killCount: 0,
+                zoneId: action.payload.zoneId,
+                combatStyle: 'controlled',
+            };
+
+            // Record enemy as seen
+            const ids = state.player.seenEnemies ?? [];
+            if (!ids.includes(enemy.id)) {
+                state.player.seenEnemies = [...ids, enemy.id];
+            }
+
+            // Clear combat log for fresh fight
+            state.combatLog = [];
+            combatLogIdCounter = 0;
+
+            // Push initial log entry
+            state.combatLog.push({
+                id: combatLogIdCounter++,
+                message: `You engage ${enemy.name} (Lv. ${enemy.level ?? 1})!`,
+                type: 'info',
+                timestamp: Date.now(),
+            });
+        },
+
+        /** Stop combat (flee or manual stop). */
+        fleeCombat(state) {
+            if (!state.player.activeCombat) return;
+            const name = state.player.activeCombat.enemyName;
+            state.combatLog.push({
+                id: combatLogIdCounter++,
+                message: `You fled from ${name}!`,
+                type: 'info',
+                timestamp: Date.now(),
+            });
+            state.player.activeCombat = null;
+        },
+
+        /** Change combat style (determines XP distribution). */
+        setCombatStyle(state, action: PayloadAction<CombatStyle>) {
+            if (state.player.activeCombat) {
+                state.player.activeCombat.combatStyle = action.payload;
+            }
+        },
+
+        /** Eat food during combat to heal. Consumes 1 of the given item. */
+        eatFood(state, action: PayloadAction<{ itemId: string; healAmount: number }>) {
+            const { itemId, healAmount } = action.payload;
+            const playerStats = state.player.combatStats;
+            if (playerStats.currentHitpoints >= playerStats.maxHitpoints) return; // Already full
+
+            const item = state.player.inventory.find(i => i.id === itemId);
+            if (!item || item.quantity <= 0) return;
+
+            // Consume 1
+            item.quantity -= 1;
+            if (item.quantity <= 0) {
+                state.player.inventory = state.player.inventory.filter(i => i.id !== itemId);
+            }
+
+            // Heal
+            const oldHp = playerStats.currentHitpoints;
+            playerStats.currentHitpoints = Math.min(
+                playerStats.maxHitpoints,
+                playerStats.currentHitpoints + healAmount
+            );
+            const healed = playerStats.currentHitpoints - oldHp;
+
+            state.combatLog.push({
+                id: combatLogIdCounter++,
+                message: `You eat ${itemId.replace(/_/g, ' ')} and heal ${healed} HP.`,
+                type: 'info',
+                timestamp: Date.now(),
+            });
+        },
+
+        /** Bury a bone to gain prayer experience. */
+        buryBone(state, action: PayloadAction<{ itemId: string }>) {
+            const { itemId } = action.payload;
+            const item = state.player.inventory.find(i => i.id === itemId);
+            if (!item || item.quantity <= 0) return;
+
+            // Consume 1 bone
+            item.quantity -= 1;
+            if (item.quantity <= 0) {
+                state.player.inventory = state.player.inventory.filter(i => i.id !== itemId);
+            }
+
+            // Grant 15 base prayer XP
+            const masteryMult = getMasteryXpMultiplier(state.player, 'prayer');
+            const xpMultiplier = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
+            const luminaXpBoost = (state.player.xpBoostExpiresAt && state.player.xpBoostExpiresAt > Date.now()) ? 1.25 : 1;
+            const effectiveXp = Math.floor(15 * masteryMult * xpMultiplier * luminaXpBoost);
+            const skill = state.player.skills['prayer'];
+            if (skill) {
+                const oldLevel = skill.level;
+                skill.xp += effectiveXp;
+                skill.level = levelForXP(skill.xp);
+
+                if (skill.level > oldLevel) {
+                    const levelsGained = skill.level - oldLevel;
+                    state.player.masteryPoints = state.player.masteryPoints ?? {};
+                    state.player.masteryPoints['prayer'] = (state.player.masteryPoints['prayer'] ?? 0) + levelsGained;
+                    state.levelUpQueue.push({ id: Math.random().toString(36).substring(7), skillId: 'prayer', level: skill.level });
+                    state.pulseTab = 'skills';
+                    // Recalculate max prayer points (level * 10)
+                    state.player.maxPrayerPoints = skill.level * 10;
+                    state.player.prayerPoints = Math.min(
+                        state.player.prayerPoints ?? 0,
+                        state.player.maxPrayerPoints
+                    );
+
+                    state.activityLog = state.activityLog ?? [];
+                    state.activityLog.unshift({
+                        id: Math.random().toString(36).substring(7),
+                        timestamp: Date.now(),
+                        type: 'level_up',
+                        message: `Level ${skill.level} prayer`,
+                        data: { skillId: 'prayer', level: skill.level },
+                    });
+                }
+            }
+
+            // Restore 1 prayer point per bone buried (capped at max)
+            const prayerLvl = state.player.skills['prayer']?.level ?? 1;
+            state.player.maxPrayerPoints = prayerLvl * 10;
+            state.player.prayerPoints = Math.min(
+                (state.player.prayerPoints ?? 0) + 1,
+                state.player.maxPrayerPoints
+            );
+
+            // Log activity
+            state.activityLog = state.activityLog ?? [];
+            state.activityLog.unshift({
+                id: Math.random().toString(36).substring(7),
+                timestamp: Date.now(),
+                type: 'skill_start',
+                message: `You bury the bones and feel a divine presence... (+1 prayer point)`,
+            });
+            if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+            }
+        },
+
+        /** Toggle a prayer on/off during combat. */
+        togglePrayer(state, action: PayloadAction<{ prayerId: string }>) {
+            const { prayerId } = action.payload;
+            const pDef = PRAYER_MAP[prayerId];
+            if (!pDef) return;
+
+            const prayerLevel = state.player.skills['prayer']?.level ?? 1;
+            if (prayerLevel < pDef.levelRequired) return;
+
+            state.player.activePrayers = state.player.activePrayers ?? [];
+
+            const idx = state.player.activePrayers.indexOf(prayerId);
+            if (idx >= 0) {
+                // Deactivate
+                state.player.activePrayers.splice(idx, 1);
+            } else {
+                // Activate — check prayer points
+                const pp = state.player.prayerPoints ?? 0;
+                if (pp <= 0) return;
+                state.player.activePrayers.push(prayerId);
+            }
+        },
+
+        /** Process combat tick: called with deltaMs from game loop. */
+        processCombatTick(state, action: PayloadAction<{ deltaMs: number }>) {
+            const combat = state.player.activeCombat;
+            if (!combat) return;
+
+            const { deltaMs } = action.payload;
+            const playerStats = state.player.combatStats;
+            const playerAttackSpeed = playerStats.attackSpeed || 2400;
+
+            // ── Prayer point drain ──
+            const activePrayers = state.player.activePrayers ?? [];
+            if (activePrayers.length > 0) {
+                let totalDrain = 0;
+                for (const pid of activePrayers) {
+                    const def = PRAYER_MAP[pid];
+                    if (def) totalDrain += def.drainPerTick;
+                }
+                // drainPerTick is calibrated for 100ms ticks; scale to actual delta
+                const scaledDrain = totalDrain * (deltaMs / 100);
+                state.player.prayerPoints = Math.max(0, (state.player.prayerPoints ?? 0) - scaledDrain);
+                if (state.player.prayerPoints <= 0) {
+                    state.player.prayerPoints = 0;
+                    state.player.activePrayers = [];
+                    state.combatLog.push({
+                        id: combatLogIdCounter++,
+                        message: 'Your prayer points have been exhausted.',
+                        type: 'info',
+                        timestamp: Date.now(),
+                    });
+                }
+            }
+
+            // ── Compute prayer bonuses ──
+            let prayerAtkBonus = 0;
+            let prayerStrBonus = 0;
+            let prayerDefBonus = 0;
+            let prayerDmgReduction = 0;
+            for (const pid of (state.player.activePrayers ?? [])) {
+                const def = PRAYER_MAP[pid];
+                if (!def) continue;
+                prayerAtkBonus += def.bonuses.attackPercent ?? 0;
+                prayerStrBonus += def.bonuses.strengthPercent ?? 0;
+                prayerDefBonus += def.bonuses.defencePercent ?? 0;
+                prayerDmgReduction += def.bonuses.damageReductionPercent ?? 0;
+            }
+            const enemyAttackSpeed = combat.enemyAttackSpeed || 2400;
+
+            // Accumulate timers
+            combat.playerAttackTimerMs += deltaMs;
+            combat.enemyAttackTimerMs += deltaMs;
+
+            // --- Helper: apply combat XP properly (mirrors applyXP reducer logic) ---
+            const applyCombatXP = (skillId: SkillId, xp: number) => {
+                const masteryMult = getMasteryXpMultiplier(state.player, skillId);
+                const xpMult = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
+                const luminaBoost = (state.player.xpBoostExpiresAt && state.player.xpBoostExpiresAt > Date.now()) ? 1.25 : 1;
+                const effectiveXp = Math.floor(xp * masteryMult * xpMult * luminaBoost);
+                const skill = state.player.skills[skillId];
+                if (!skill) return;
+                const oldLevel = skill.level;
+                skill.xp += effectiveXp;
+                skill.level = levelForXP(skill.xp);
+                if (skill.level > oldLevel) {
+                    const levelsGained = skill.level - oldLevel;
+                    state.player.masteryPoints = state.player.masteryPoints ?? {};
+                    state.player.masteryPoints[skillId] = (state.player.masteryPoints[skillId] ?? 0) + levelsGained;
+                    state.levelUpQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        skillId,
+                        level: skill.level,
+                    });
+                    state.pulseTab = 'skills';
+                    state.activityLog = state.activityLog ?? [];
+                    state.activityLog.unshift({
+                        id: Math.random().toString(36).substring(7),
+                        timestamp: Date.now(),
+                        type: 'level_up',
+                        message: `Level ${skill.level} ${skillId}`,
+                        data: { skillId, level: skill.level },
+                    });
+                    if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                        state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+                    }
+                    recalculateCombatStats(state.player);
+                }
+            };
+
+            // --- Player attacks ---
+            while (combat.playerAttackTimerMs >= playerAttackSpeed) {
+                combat.playerAttackTimerMs -= playerAttackSpeed;
+
+                // Accuracy roll: player accuracy (+ prayer bonus) vs enemy defense
+                const boostedAccuracy = playerStats.accuracy * (1 + prayerAtkBonus);
+                const hitChance = Math.min(0.95, Math.max(0.05,
+                    0.5 + (boostedAccuracy - combat.enemyDefense) * 0.02
+                ));
+                const hits = Math.random() < hitChance;
+
+                if (hits) {
+                    // Damage: 1 to maxHit (+ prayer strength bonus)
+                    const boostedMaxHit = Math.max(1, Math.floor(playerStats.maxHit * (1 + prayerStrBonus)));
+                    const damage = Math.floor(Math.random() * boostedMaxHit) + 1;
+                    combat.enemyCurrentHp -= damage;
+
+                    state.combatLog.push({
+                        id: combatLogIdCounter++,
+                        message: `You hit ${combat.enemyName} for ${damage} damage.`,
+                        type: 'player_hit',
+                        timestamp: Date.now(),
+                    });
+
+                    // Enemy killed?
+                    if (combat.enemyCurrentHp <= 0) {
+                        combat.killCount += 1;
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `${combat.enemyName} defeated! (Kill #${combat.killCount})`,
+                            type: 'kill',
+                            timestamp: Date.now(),
+                        });
+
+                        // ── Combat XP — style determines distribution ──
+                        // Hitpoints always gets 33% of base XP (like OSRS)
+                        // The remaining style-specific XP goes to the chosen skill(s)
+                        const baseXp = combat.enemyMaxHp;
+                        const hpXp = Math.floor(baseXp * 0.33);
+                        applyCombatXP('hitpoints', hpXp);
+
+                        switch (combat.combatStyle) {
+                            case 'aggressive':
+                                // All combat XP → Strength
+                                applyCombatXP('strength', baseXp);
+                                break;
+                            case 'defensive':
+                                // All combat XP → Defence
+                                applyCombatXP('defence', baseXp);
+                                break;
+                            case 'accurate':
+                                // All combat XP → Attack
+                                applyCombatXP('attack', baseXp);
+                                break;
+                            case 'controlled':
+                            default:
+                                // Split evenly: attack, strength, defence
+                                const third = Math.floor(baseXp / 3);
+                                applyCombatXP('attack', third);
+                                applyCombatXP('strength', third);
+                                applyCombatXP('defence', third);
+                                break;
+                        }
+
+                        // Loot drops
+                        const { ENEMIES } = require('@/constants/enemies');
+                        const enemyMeta = ENEMIES[combat.enemyId];
+                        if (enemyMeta?.drops) {
+                            for (const drop of enemyMeta.drops) {
+                                if (Math.random() < drop.chance) {
+                                    const qty = drop.minQty + Math.floor(Math.random() * (drop.maxQty - drop.minQty + 1));
+                                    const existing = state.player.inventory.find(i => i.id === drop.itemId);
+                                    if (existing) {
+                                        existing.quantity += qty;
+                                    } else {
+                                        state.player.inventory.push({ id: drop.itemId, quantity: qty });
+                                    }
+                                    state.combatLog.push({
+                                        id: combatLogIdCounter++,
+                                        message: `Loot: ${drop.itemId} x${qty}`,
+                                        type: 'loot',
+                                        timestamp: Date.now(),
+                                    });
+                                }
+                            }
+                        }
+
+                        // Gold drop (enemy HP * 1-3)
+                        const goldDrop = Math.floor(combat.enemyMaxHp * (1 + Math.random() * 2));
+                        state.player.gold += goldDrop;
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `+${goldDrop} gold`,
+                            type: 'loot',
+                            timestamp: Date.now(),
+                        });
+
+                        // HP regen on kill (10% of max)
+                        const healAmount = Math.floor(playerStats.maxHitpoints * 0.1);
+                        playerStats.currentHitpoints = Math.min(
+                            playerStats.maxHitpoints,
+                            playerStats.currentHitpoints + healAmount
+                        );
+
+                        // Respawn enemy (auto-battler: continuous fighting)
+                        combat.enemyCurrentHp = combat.enemyMaxHp;
+                        combat.playerAttackTimerMs = 0;
+                        combat.enemyAttackTimerMs = 0;
+                    }
+                } else {
+                    state.combatLog.push({
+                        id: combatLogIdCounter++,
+                        message: `You miss ${combat.enemyName}.`,
+                        type: 'player_miss',
+                        timestamp: Date.now(),
+                    });
+                }
+            }
+
+            // --- Enemy attacks ---
+            while (combat.enemyAttackTimerMs >= enemyAttackSpeed) {
+                combat.enemyAttackTimerMs -= enemyAttackSpeed;
+
+                const enemyHitChance = Math.min(0.95, Math.max(0.05,
+                    combat.enemyAccuracy - playerStats.meleeDefence * 0.015
+                ));
+                const enemyHits = Math.random() < enemyHitChance;
+
+                if (enemyHits) {
+                    const maxDmg = Math.max(1, combat.enemyAttack);
+                    let damage = Math.floor(Math.random() * maxDmg) + 1;
+                    // Prayer damage reduction
+                    if (prayerDmgReduction > 0) {
+                        damage = Math.max(1, Math.floor(damage * (1 - prayerDmgReduction)));
+                    }
+                    // Prayer defence bonus applies to melee defence check above
+                    playerStats.currentHitpoints -= damage;
+
+                    state.combatLog.push({
+                        id: combatLogIdCounter++,
+                        message: `${combat.enemyName} hits you for ${damage} damage.`,
+                        type: 'enemy_hit',
+                        timestamp: Date.now(),
+                    });
+
+                    // Player dies?
+                    if (playerStats.currentHitpoints <= 0) {
+                        playerStats.currentHitpoints = playerStats.maxHitpoints; // Respawn at full HP
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: 'You have been defeated! Respawning...',
+                            type: 'died',
+                            timestamp: Date.now(),
+                        });
+                        // Stop combat on death — deactivate prayers
+                        state.player.activeCombat = null;
+                        state.player.activePrayers = [];
+                        return;
+                    }
+                } else {
+                    state.combatLog.push({
+                        id: combatLogIdCounter++,
+                        message: `${combat.enemyName} misses you.`,
+                        type: 'enemy_miss',
+                        timestamp: Date.now(),
+                    });
+                }
+            }
+
+            // Trim combat log
+            if (state.combatLog.length > COMBAT_LOG_MAX) {
+                state.combatLog = state.combatLog.slice(-COMBAT_LOG_MAX);
+            }
+        },
+
+        /** Push a manual combat log entry. */
+        pushCombatLog(state, action: PayloadAction<{ message: string; type: CombatLogEntry['type'] }>) {
+            state.combatLog.push({
+                id: combatLogIdCounter++,
+                message: action.payload.message,
+                type: action.payload.type,
+                timestamp: Date.now(),
+            });
+            if (state.combatLog.length > COMBAT_LOG_MAX) {
+                state.combatLog = state.combatLog.slice(-COMBAT_LOG_MAX);
+            }
         },
 
         // ─── Dialogue Modals ───

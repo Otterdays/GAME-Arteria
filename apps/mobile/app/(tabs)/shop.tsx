@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { LUMINA_SHOP_ITEMS } from '@/constants/luminaShop';
@@ -291,8 +291,8 @@ export default function ShopScreen() {
                 },
                 title: {
                     fontSize: FontSize.xl,
-                    fontWeight: '700',
                     color: palette.textPrimary,
+                    fontFamily: FontCinzelBold,
                 },
                 subtitleRow: {
                     flexDirection: 'row',

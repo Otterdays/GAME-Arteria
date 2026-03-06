@@ -19,7 +19,7 @@ import {
     Alert,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { INVENTORY_SLOT_CAP_F2P, INVENTORY_SLOT_CAP_PATRON } from '@/constants/game';
 import { getItemMeta, type ItemType } from '@/constants/items';
@@ -156,6 +156,34 @@ function ItemDetailModal({
                             <Text style={styles.detailSellText}>Sell All</Text>
                         </TouchableOpacity>
                     </View>
+
+                    {meta.type === 'equipment' && (
+                        <TouchableOpacity
+                            style={[styles.detailSellButton, { marginTop: Spacing.sm, borderColor: '#3b82f6', backgroundColor: '#3b82f6' + '11' }]} // we don't have palette in scope here easily, or we can use palette if let's check. Wait, palette is not available directly in ItemDetailModal unless we pass it. I will use standard styles.
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                dispatch(gameActions.equipItem({ itemId: item.id }));
+                                onClose();
+                            }}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={[styles.detailSellText, { color: '#3b82f6' }]}>Equip</Text>
+                        </TouchableOpacity>
+                    )}
+
+                    {item.id === 'bones' && (
+                        <TouchableOpacity
+                            style={[styles.detailSellButton, { marginTop: Spacing.sm, borderColor: '#eab308', backgroundColor: '#eab308' + '11' }]}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                dispatch(gameActions.buryBone({ itemId: item.id }));
+                                onClose();
+                            }}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={[styles.detailSellText, { color: '#eab308' }]}>Bury</Text>
+                        </TouchableOpacity>
+                    )}
 
                     <TouchableOpacity
                         style={[styles.detailLockButton, item.isLocked && styles.detailLockButtonActive]}
@@ -381,8 +409,8 @@ export default function BankScreen() {
                 },
                 screenTitle: {
                     fontSize: FontSize.xl,
-                    fontWeight: '800',
                     color: palette.textPrimary,
+                    fontFamily: FontCinzelBold,
                 },
                 screenSub: {
                     fontSize: FontSize.sm,
@@ -683,143 +711,143 @@ export default function BankScreen() {
             {/* Header */}
             <View style={styles.headerBox}>
                 <View style={styles.header}>
-                <View>
-                    <Text style={styles.screenTitle}>Bank</Text>
-                    <Text style={[styles.screenSub, inventory.length >= slotCap && styles.screenSubWarning]}>
-                        {inventory.length} / {slotCap} slots
-                        {inventory.length >= slotCap && ' — Full!'}
-                    </Text>
-                </View>
-                <View style={styles.headerRight}>
-                    {hasJunkToSell && (
-                        <TouchableOpacity
-                            style={[styles.goldBadge, { borderColor: palette.red, marginBottom: 4 }]}
-                            onPress={() => {
-                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                                dispatch(gameActions.sellAllJunk());
-                            }}
-                            activeOpacity={0.8}
-                        >
-                            <Text style={[styles.goldText, { color: palette.red }]}>Sell All Junk</Text>
-                        </TouchableOpacity>
-                    )}
-                    <View style={styles.goldBadge}>
-                        <Text style={styles.goldEmoji}>💰</Text>
-                        <AnimatedNumber
-                            value={gold}
-                            style={styles.goldText}
-                            formatValue={(v) => v.toLocaleString()}
-                        />
-                    </View>
-                    <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
-                        <Text style={styles.goldEmoji}>✨</Text>
-                        <AnimatedNumber
-                            value={lumina}
-                            style={[styles.goldText, { color: palette.accentPrimary }]}
-                            formatValue={(v) => v.toLocaleString()}
-                        />
-                    </View>
-                    {inventory.length > 0 && (
-                        <Text style={styles.worthText}>
-                            Worth ~<AnimatedNumber
-                                value={totalWorth}
-                                formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toLocaleString()}
-                            /> gp
+                    <View>
+                        <Text style={styles.screenTitle}>Bank</Text>
+                        <Text style={[styles.screenSub, inventory.length >= slotCap && styles.screenSubWarning]}>
+                            {inventory.length} / {slotCap} slots
+                            {inventory.length >= slotCap && ' — Full!'}
                         </Text>
-                    )}
-                </View>
-                </View>
-
-            {/* Tab bar (OSRS-style: Main + up to 6 custom + Add) */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
-                <View style={styles.tabBarRow}>
-                    <TouchableOpacity
-                        style={[styles.tabChip, selectedTabId === 'main' && styles.tabChipActive]}
-                        onPress={() => handleTabSelect('main')}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={[styles.tabChipEmoji, selectedTabId === 'main' && styles.tabChipTextActive]}>📦</Text>
-                        <Text style={[styles.tabChipText, selectedTabId === 'main' && styles.tabChipTextActive]}>Main</Text>
-                    </TouchableOpacity>
-                    {customBankTabs.map((tab) => {
-                        const isActive = selectedTabId === tab.id;
-                        const tabIcon = tab.itemIds.length > 0 ? getItemMeta(tab.itemIds[0]).emoji : tab.emoji;
-                        return (
+                    </View>
+                    <View style={styles.headerRight}>
+                        {hasJunkToSell && (
                             <TouchableOpacity
-                                key={tab.id}
-                                style={[styles.tabChip, isActive && styles.tabChipActive]}
-                                onPress={() => handleTabSelect(tab.id)}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={[styles.tabChipEmoji, isActive && styles.tabChipTextActive]}>{tabIcon}</Text>
-                                <Text style={[styles.tabChipText, isActive && styles.tabChipTextActive]} numberOfLines={1}>{tab.name}</Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                    <TouchableOpacity
-                        style={[styles.tabChip, styles.tabChipAdd, !canAddTab && styles.tabChipDisabled]}
-                        onPress={() => canAddTab && setManageTabsOpen(true)}
-                        activeOpacity={0.7}
-                        disabled={!canAddTab}
-                    >
-                        <Text style={[styles.tabChipText, !canAddTab && { color: palette.textDisabled }]}>
-                            {canAddTab ? '+ Add' : 'Max'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-
-            {/* Type filters (within current tab) */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
-                <View style={styles.filterRow}>
-                    {FILTER_OPTIONS.map((opt) => {
-                        const isActive = typeFilter === (opt.key === 'all' ? 'all' : opt.key);
-                        return (
-                            <TouchableOpacity
-                                key={opt.key}
-                                style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                style={[styles.goldBadge, { borderColor: palette.red, marginBottom: 4 }]}
                                 onPress={() => {
-                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                                    setTypeFilter(opt.key === 'all' ? 'all' : opt.key as ItemType);
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                    dispatch(gameActions.sellAllJunk());
                                 }}
-                                activeOpacity={0.7}
+                                activeOpacity={0.8}
                             >
-                                <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
-                                    {opt.label}
-                                </Text>
+                                <Text style={[styles.goldText, { color: palette.red }]}>Sell All Junk</Text>
                             </TouchableOpacity>
-                        );
-                    })}
+                        )}
+                        <View style={styles.goldBadge}>
+                            <Text style={styles.goldEmoji}>💰</Text>
+                            <AnimatedNumber
+                                value={gold}
+                                style={styles.goldText}
+                                formatValue={(v) => v.toLocaleString()}
+                            />
+                        </View>
+                        <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
+                            <Text style={styles.goldEmoji}>✨</Text>
+                            <AnimatedNumber
+                                value={lumina}
+                                style={[styles.goldText, { color: palette.accentPrimary }]}
+                                formatValue={(v) => v.toLocaleString()}
+                            />
+                        </View>
+                        {inventory.length > 0 && (
+                            <Text style={styles.worthText}>
+                                Worth ~<AnimatedNumber
+                                    value={totalWorth}
+                                    formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toLocaleString()}
+                                /> gp
+                            </Text>
+                        )}
+                    </View>
                 </View>
-            </ScrollView>
 
-            <View style={styles.searchRow}>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search items..."
-                    placeholderTextColor={palette.textMuted}
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                />
-            </View>
-
-            <View style={styles.sortRow}>
-                <Text style={styles.sortLabel}>Sort:</Text>
-                {(['name', 'qty', 'value'] as const).map((key) => {
-                    const isActive = sortBy === key;
-                    const label = key === 'name' ? 'Name' : key === 'qty' ? 'Qty' : 'Value';
-                    return (
+                {/* Tab bar (OSRS-style: Main + up to 6 custom + Add) */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
+                    <View style={styles.tabBarRow}>
                         <TouchableOpacity
-                            key={key}
-                            style={[styles.sortChip, isActive && styles.sortChipActive]}
-                            onPress={() => setSortBy(key)}
+                            style={[styles.tabChip, selectedTabId === 'main' && styles.tabChipActive]}
+                            onPress={() => handleTabSelect('main')}
                             activeOpacity={0.7}
                         >
-                            <Text style={[styles.sortChipText, isActive && styles.sortChipTextActive]}>{label}</Text>
+                            <Text style={[styles.tabChipEmoji, selectedTabId === 'main' && styles.tabChipTextActive]}>📦</Text>
+                            <Text style={[styles.tabChipText, selectedTabId === 'main' && styles.tabChipTextActive]}>Main</Text>
                         </TouchableOpacity>
-                    );
-                })}
-            </View>
+                        {customBankTabs.map((tab) => {
+                            const isActive = selectedTabId === tab.id;
+                            const tabIcon = tab.itemIds.length > 0 ? getItemMeta(tab.itemIds[0]).emoji : tab.emoji;
+                            return (
+                                <TouchableOpacity
+                                    key={tab.id}
+                                    style={[styles.tabChip, isActive && styles.tabChipActive]}
+                                    onPress={() => handleTabSelect(tab.id)}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[styles.tabChipEmoji, isActive && styles.tabChipTextActive]}>{tabIcon}</Text>
+                                    <Text style={[styles.tabChipText, isActive && styles.tabChipTextActive]} numberOfLines={1}>{tab.name}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                        <TouchableOpacity
+                            style={[styles.tabChip, styles.tabChipAdd, !canAddTab && styles.tabChipDisabled]}
+                            onPress={() => canAddTab && setManageTabsOpen(true)}
+                            activeOpacity={0.7}
+                            disabled={!canAddTab}
+                        >
+                            <Text style={[styles.tabChipText, !canAddTab && { color: palette.textDisabled }]}>
+                                {canAddTab ? '+ Add' : 'Max'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+
+                {/* Type filters (within current tab) */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
+                    <View style={styles.filterRow}>
+                        {FILTER_OPTIONS.map((opt) => {
+                            const isActive = typeFilter === (opt.key === 'all' ? 'all' : opt.key);
+                            return (
+                                <TouchableOpacity
+                                    key={opt.key}
+                                    style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                    onPress={() => {
+                                        if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                        setTypeFilter(opt.key === 'all' ? 'all' : opt.key as ItemType);
+                                    }}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                                        {opt.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </ScrollView>
+
+                <View style={styles.searchRow}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search items..."
+                        placeholderTextColor={palette.textMuted}
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
+                </View>
+
+                <View style={styles.sortRow}>
+                    <Text style={styles.sortLabel}>Sort:</Text>
+                    {(['name', 'qty', 'value'] as const).map((key) => {
+                        const isActive = sortBy === key;
+                        const label = key === 'name' ? 'Name' : key === 'qty' ? 'Qty' : 'Value';
+                        return (
+                            <TouchableOpacity
+                                key={key}
+                                style={[styles.sortChip, isActive && styles.sortChipActive]}
+                                onPress={() => setSortBy(key)}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={[styles.sortChipText, isActive && styles.sortChipTextActive]}>{label}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
             </View>
 
             {/* Grid */}
