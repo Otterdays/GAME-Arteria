@@ -5,7 +5,21 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Implemented **Skill-to-Skill Navigation Arrows** across all 10 skill headers and **"Enhanced!" Badges** for Mining/Logging. Fixed a missing import bug in `cooking.tsx` that broke the navigation.
+**Active Task:** Successfully launched **The Celestial Expansion (v0.5.2)**. Fully implemented **Astrology** as the 11th active skill. Next steps: Begin groundwork for **Summoning** (Familiar binding) and **Slayer** (Combat tasks). Monitor the new unified skill navigation for edge cases.
+
+**Completed Task:** Implemented **Astrology** skill! Built the custom star-chart UI with 4 constellations (Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree). Added `Stardust`, `Golden Stardust`, and `Meteorite` items. Integrated with the core game loop, navigation arrows, and the skill header progression bar. Resolved critical TypeScript lints and bumped version to `v0.5.2`.
+
+## [2026-03-06] v0.5.2 "The Celestial Expansion"
+- **New Skill: Astrology:** Fully implemented the Astrology skill screen (`astrology.tsx`). Includes 4 constellations each with unique drops and level requirements. Study stars to gather cosmic materials while idle.
+- **Celestial Items:** Created `stardust`, `golden_stardust`, and `meteorite` items in `constants/items.ts` and `astrology.ts`. These items are now obtainable as drops from the Astrology skill.
+- **UI & Navigation:**
+  - **Skill Navigation:** Integrated Astrology into the alphabetical cycling system (`SkillId` and `SKILL_NAV_ORDER`).
+  - **Progression Bar:** Added Astrology to the skill header icon strip with unique celestial emojis.
+  - **Coming Soon Promoted:** Astrology is now a fully active skill; "Coming Soon" styling removed.
+- **Technical Fixes:**
+  - **Type Safety:** Resolved recurring TypeScript linting issues in `apps/mobile/app/(tabs)/index.tsx` (style prop types) and `apps/mobile/hooks/useIdleSoundscape.ts` (SoundscapeId saturation).
+  - **Navigation Bounds:** Hardened the skill navigation logic to prevent index out-of-bounds errors when cycling past the first/last skills.
+- **Documentation:** Updated `app.json`, `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `ROADMAP.md`, `patchHistory.ts`, and `SCRATCHPAD.md`.
 
 ## [2026-03-06] THE 0.5.1 extended update directors cut remix - alpha
 - **Technical User Manual:** Created `DOCU/TECHNICAL_USER_MANUAL.md`. Identified and named 11 core subsystems (Engine Taxonomy) to improve developer clarity and documentation quality.

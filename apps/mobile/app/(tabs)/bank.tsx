@@ -56,8 +56,8 @@ function ItemCell({
 }: {
     item: InventoryItem;
     onPress: (itemId: string) => void;
-    onLongPress?: (itemId: string) => void;
-    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    onLongPress?: (id: string) => void;
+    styles: Record<string, any>;
 }) {
     const meta = getItemMeta(item.id);
     return (
@@ -87,7 +87,7 @@ function ItemDetailModal({
 }: {
     itemId: string | null;
     onClose: () => void;
-    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    styles: Record<string, any>;
 }) {
     const dispatch = useAppDispatch();
     const item = useAppSelector((s) => s.game.player.inventory.find((i) => i.id === itemId));
@@ -158,17 +158,34 @@ function ItemDetailModal({
                     </View>
 
                     {meta.type === 'equipment' && (
-                        <TouchableOpacity
-                            style={[styles.detailSellButton, { marginTop: Spacing.sm, borderColor: '#3b82f6', backgroundColor: '#3b82f6' + '11' }]} // we don't have palette in scope here easily, or we can use palette if let's check. Wait, palette is not available directly in ItemDetailModal unless we pass it. I will use standard styles.
-                            onPress={() => {
-                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                                dispatch(gameActions.equipItem({ itemId: item.id }));
-                                onClose();
-                            }}
-                            activeOpacity={0.8}
-                        >
-                            <Text style={[styles.detailSellText, { color: '#3b82f6' }]}>Equip</Text>
-                        </TouchableOpacity>
+                        <>
+                            <TouchableOpacity
+                                style={[styles.detailSellButton, { marginTop: Spacing.sm, borderColor: '#3b82f6', backgroundColor: '#3b82f6' + '11' }]}
+                                onPress={() => {
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                    dispatch(gameActions.equipItem({ itemId: item.id }));
+                                    onClose();
+                                }}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={[styles.detailSellText, { color: '#3b82f6' }]}>Equip</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.detailSellButton, item.quantity < 10 && styles.detailSellButtonDisabled, { marginTop: Spacing.sm, borderColor: '#a855f7', backgroundColor: '#a855f7' + '11' }]}
+                                onPress={() => {
+                                    if (item.quantity < 10) return;
+                                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                    dispatch(gameActions.refineEquipment({ itemId: item.id }));
+                                    if (item.quantity < 11) onClose(); // Auto-close if we just used the last 10
+                                }}
+                                disabled={item.quantity < 10}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={[styles.detailSellText, { color: '#a855f7' }]}>
+                                    {item.quantity >= 10 ? '✨ Refine (Cost: 10)' : `✨ Refine (Need 10, Have ${item.quantity})`}
+                                </Text>
+                            </TouchableOpacity>
+                        </>
                     )}
 
                     {item.id === 'bones' && (
@@ -244,7 +261,7 @@ function ManageTabForm({
     palette,
 }: {
     onAdd: (name: string, emoji: string) => void;
-    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    styles: Record<string, any>;
     palette: Record<string, string>;
 }) {
     const [name, setName] = useState('');

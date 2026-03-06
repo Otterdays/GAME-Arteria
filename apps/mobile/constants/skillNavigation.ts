@@ -1,4 +1,5 @@
 export type SkillId =
+    | 'astrology'
     | 'cooking'
     | 'fishing'
     | 'forging'
@@ -11,6 +12,7 @@ export type SkillId =
     | 'smithing';
 
 export const SKILL_NAV_ORDER: SkillId[] = [
+    'astrology',
     'cooking',
     'fishing',
     'forging',

@@ -1,0 +1,48 @@
+import type { ActionDefinition } from '../TickSystem';
+
+export const ASTROLOGY_ACTIONS: ActionDefinition[] = [
+    {
+        id: 'deedree_constellation',
+        skillId: 'astrology',
+        intervalMs: 4000,
+        xpPerTick: 20,
+        itemsPerTick: [{ id: 'stardust', quantity: 1 }],
+        levelRequired: 1,
+        masteryXpPerTick: 2,
+        rareChance: 0.05,
+        rareItems: [{ id: 'golden_stardust', quantity: 1 }],
+    },
+    {
+        id: 'the_anchor_eternal',
+        skillId: 'astrology',
+        intervalMs: 5000,
+        xpPerTick: 40,
+        itemsPerTick: [{ id: 'stardust', quantity: 1 }],
+        levelRequired: 20,
+        masteryXpPerTick: 3,
+        rareChance: 0.1,
+        rareItems: [{ id: 'golden_stardust', quantity: 1 }],
+    },
+    {
+        id: 'the_void_fish',
+        skillId: 'astrology',
+        intervalMs: 6500,
+        xpPerTick: 65,
+        itemsPerTick: [{ id: 'stardust', quantity: 2 }],
+        levelRequired: 45,
+        masteryXpPerTick: 4,
+        rareChance: 0.15,
+        rareItems: [{ id: 'golden_stardust', quantity: 1 }],
+    },
+    {
+        id: 'the_lumina_tree',
+        skillId: 'astrology',
+        intervalMs: 8000,
+        xpPerTick: 110,
+        itemsPerTick: [{ id: 'stardust', quantity: 2 }],
+        levelRequired: 70,
+        masteryXpPerTick: 6,
+        rareChance: 0.02,
+        rareItems: [{ id: 'meteorite', quantity: 1 }],
+    },
+];

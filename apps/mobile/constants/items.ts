@@ -111,6 +111,11 @@ export const ITEM_META: Record<string, ItemMeta> = {
   celestial_fragment: { emoji: '☄️', label: 'Celestial Fragment', sellValue: 150, description: 'A shard from the Skyward Peaks. Warm to touch.', type: 'other' },
   voidmire_crystal: { emoji: '🕳️', label: 'Voidmire Crystal', sellValue: 400, description: 'Condensed void energy. Pulses with dark power.', type: 'other' },
 
+  // ── Astrology (Stardust) ──
+  stardust: { emoji: '✨', label: 'Stardust', sellValue: 10, description: 'Glimmering dust from the cosmos. Used to uncover celestial mysteries.', type: 'other' },
+  golden_stardust: { emoji: '🌟', label: 'Golden Stardust', sellValue: 50, description: 'Rare stardust that hums with ancient power.', type: 'other' },
+  meteorite: { emoji: '☄️', label: 'Meteorite', sellValue: 200, description: 'A chunk of fallen star. Extremely dense.', type: 'other' },
+
   // ── Herblore (vials & potions) ──
   empty_vial: { emoji: '🧪', label: 'Empty Vial', sellValue: 5, description: 'A glass vial for brewing potions. Buy from Nick or find in ruins.', type: 'other' },
   minor_healing_potion: { emoji: '🧪', label: 'Minor Healing Potion', sellValue: 25, description: 'Restores a small amount of health. Brewed from wheat.', type: 'potion' },
@@ -217,7 +222,42 @@ export const ITEM_META: Record<string, ItemMeta> = {
 const UNKNOWN: ItemMeta = { emoji: '❓', label: 'Unknown Item', sellValue: 1, description: 'An unregistered item.', type: 'other' };
 
 export function getItemMeta(id: string): ItemMeta {
-  return ITEM_META[id] ?? { ...UNKNOWN, label: id.replace(/_/g, ' ') };
+  const meta = ITEM_META[id];
+  if (meta) return meta;
+
+  // Handle dynamic equipment refining (e.g., "iron_dagger+2")
+  const refineMatch = id.match(/^(.+)\+(\d+)$/);
+  if (refineMatch) {
+    const baseId = refineMatch[1];
+    const refineLevel = parseInt(refineMatch[2], 10);
+    const baseMeta = ITEM_META[baseId];
+
+    if (baseMeta && baseMeta.type === 'equipment' && baseMeta.equipmentStats) {
+      const stats = { ...baseMeta.equipmentStats };
+
+      // Scale stats based on refine level (+10% or +1 flat per level)
+      if (stats.accuracy !== undefined) stats.accuracy += Math.ceil((stats.accuracy * 0.1) * refineLevel) + refineLevel;
+      if (stats.maxHit !== undefined) stats.maxHit += Math.ceil((stats.maxHit * 0.1) * refineLevel) + Math.floor(refineLevel / 2);
+      if (stats.meleeDefence !== undefined) stats.meleeDefence += Math.ceil((stats.meleeDefence * 0.1) * refineLevel) + refineLevel;
+      if (stats.rangedDefence !== undefined) stats.rangedDefence += Math.ceil((stats.rangedDefence * 0.1) * refineLevel) + refineLevel;
+      if (stats.magicDefence !== undefined && stats.magicDefence !== 0) {
+        // Negative magic def shouldn't get better (more negative?), but positive should scale. 
+        // For simplicity, just increase the magnitude.
+        stats.magicDefence += Math.sign(stats.magicDefence) * (Math.ceil(Math.abs(stats.magicDefence) * 0.1) * refineLevel + refineLevel);
+      }
+
+      return {
+        ...baseMeta,
+        label: `${baseMeta.label} +${refineLevel}`,
+        // Sell value scales infinitely: +50% of base per level
+        sellValue: Math.floor(baseMeta.sellValue * (1 + 0.5 * refineLevel)),
+        description: `A refined ${baseMeta.label.toLowerCase()}, elevated to +${refineLevel} via the forge.`,
+        equipmentStats: stats,
+      };
+    }
+  }
+
+  return { ...UNKNOWN, label: id.replace(/_/g, ' ') };
 }
 
 /** Nick's Shop — items the merchant sells and their buy price (gold per unit). [TRACE: ROADMAP 2.3] */

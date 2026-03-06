@@ -93,6 +93,9 @@ export type SkillId =
     | 'leadership'
     | 'adventure'
     | 'dungeoneering'
+    | 'astrology'
+    | 'summoning'
+    | 'slayer'
     | 'prayer'
     | 'attack'
     | 'strength'
@@ -126,6 +129,9 @@ export const SKILL_META: Record<SkillId, SkillMeta> = {
     leadership: { label: 'Leadership', color: '#f59e0b', emoji: '👑' },
     adventure: { label: 'Adventure', color: '#22c55e', emoji: '🧭' },
     dungeoneering: { label: 'Dungeon Dwelling', color: '#64748b', emoji: '🗝️' },
+    astrology: { label: 'Astrology', color: '#6366f1', emoji: '🔭' },
+    summoning: { label: 'Summoning', color: '#0ea5e9', emoji: '🔮' },
+    slayer: { label: 'Slayer', color: '#dc2626', emoji: '💀' },
     prayer: { label: 'Prayer', color: '#eab308', emoji: '✨' },
     attack: { label: 'Attack', color: palette.skillAttack, emoji: '⚔️' },
     strength: { label: 'Strength', color: palette.skillStrength, emoji: '💪' },
@@ -139,6 +145,7 @@ export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
     'fishing',
     'harvesting',
     'scavenging',
+    'astrology',
 ];
 
 export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [

@@ -18,7 +18,7 @@ export type {
     OfflineReport,
     ActiveTask,
 } from './types';
-export { MINING_ACTIONS, LOGGING_ACTIONS, HARVESTING_ACTIONS, FISHING_ACTIONS, SCAVENGING_ACTIONS, createNewPlayer } from './data';
+export { MINING_ACTIONS, LOGGING_ACTIONS, HARVESTING_ACTIONS, FISHING_ACTIONS, SCAVENGING_ACTIONS, ASTROLOGY_ACTIONS, createNewPlayer } from './data';
 export type { ActionDefinition } from './TickSystem';
 export { meetsNarrativeRequirement, getQuestStepsToComplete } from './utils/narrative';
 export type { Quest, QuestType, NarrativeRequirement, NarrativeReward } from './data/story';

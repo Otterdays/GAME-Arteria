@@ -45,6 +45,9 @@ export type SkillId =
     | 'leadership'
     | 'adventure'
     | 'dungeoneering'
+    | 'astrology'
+    | 'summoning'
+    | 'slayer'
     | 'attack'
     | 'strength'
     | 'defence'
@@ -266,6 +269,7 @@ export interface PlayerState {
 const ALL_SKILLS: SkillId[] = [
     'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing', 'forging',
     'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring', 'prayer', 'construction', 'leadership', 'adventure', 'dungeoneering',
+    'astrology', 'summoning', 'slayer',
     'attack', 'strength', 'defence', 'hitpoints',
 ];
 
@@ -885,6 +889,52 @@ export const gameSlice = createSlice({
             }
             // Cleanup zeroed-out entries
             state.player.inventory = state.player.inventory.filter((i) => i.quantity > 0);
+        },
+
+        /** Atomically refines 10 of an equipment item into 1 of the next tier (+1, +2, etc). */
+        refineEquipment(state, action: PayloadAction<{ itemId: string }>) {
+            const { itemId } = action.payload;
+            const item = state.player.inventory.find(i => i.id === itemId);
+            if (!item || item.quantity < 10) return;
+
+            item.quantity -= 10;
+            state.player.inventory = state.player.inventory.filter(i => i.quantity > 0);
+
+            // Determine next ID
+            const match = itemId.match(/^(.+)\+(\d+)$/);
+            let nextId = '';
+            if (match) {
+                nextId = `${match[1]}+${parseInt(match[2], 10) + 1}`;
+            } else {
+                nextId = `${itemId}+1`;
+            }
+
+            const existing = state.player.inventory.find(i => i.id === nextId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                const slotCap = state.player.settings?.isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
+                if (state.player.inventory.length < slotCap) {
+                    state.player.inventory.push({ id: nextId, quantity: 1 });
+                } else {
+                    // Refinements technically fail to give item if bank is completely full and doesn't exist.
+                    // But we just removed a slot if it was the last 10 stack, so it should be fine.
+                    // Just in case, grant anyway or fail loudly. Granting anyway to avoid item deletion.
+                    state.player.inventory.push({ id: nextId, quantity: 1 });
+                }
+            }
+
+            // Also push a feedback toast for success
+            const meta = getItemMeta(nextId);
+            state.feedbackToastQueue.push({
+                id: Math.random().toString(36).substring(7),
+                type: 'lucky',
+                title: 'Refined Successfully!',
+                message: `You crafted a ${meta.label}.`
+            });
+            if (state.player.settings?.bankPulseEnabled !== false) {
+                state.pulseTab = 'bank';
+            }
         },
 
         /** Add gold */

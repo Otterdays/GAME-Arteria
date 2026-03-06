@@ -58,7 +58,6 @@ export default function UpdateBoard() {
                     width: '100%',
                     maxWidth: 400,
                     backgroundColor: palette.bgCard,
-                    borderRadius: Radius.lg,
                     padding: Spacing.lg,
                     ...CardStyle,
                     borderColor: palette.border,
@@ -165,16 +164,42 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
-                            : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                                : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                    : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                        : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion === '0.5.2' ? 'The Celestial Expansion'
+                            : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                                : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                    : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                        : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                            : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
                         {currentVersion.startsWith('0.5') ? (
                             <>
+                                {currentVersion === '0.5.2' && (
+                                    <>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🔭 New Skill: Astrology</Text>
+                                            <Text style={styles.changeText}>• Fully implemented Astrology! Study the constellations of Deedree, The Anchor Eternal, The Void Fish, and The Lumina Tree to gather Stardust and Meteorites.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>✨ Celestial Items</Text>
+                                            <Text style={styles.changeText}>• Added Stardust, Golden Stardust, and Meteorite items. These rare cosmic materials will be vital for future high-level progression.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>⛏️ Skill Progression Icons</Text>
+                                            <Text style={styles.changeText}>• Astrology is now fully integrated into the skill header progression bar with its own unique celestial icons.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>➡️ Unified Navigation</Text>
+                                            <Text style={styles.changeText}>• Included Astrology in the alphabetical skill cycling system. Navigation arrows now handle the full list of 11 implemented skills.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🛠️ Critical Fixes</Text>
+                                            <Text style={styles.changeText}>• Resolved TypeScript linting errors in the SkillBox component and idle soundscape registration.</Text>
+                                        </View>
+                                        <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                                    </>
+                                )}
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>📖 Architectural Tome</Text>
                                     <Text style={styles.changeText}>• Formalized the "Technical User Manual" in DOCU/. Identified and named the 11 core subsystems (e.g., Arteria-game-engine, Arteria-tick-orchestrator) to build a more technical foundation.</Text>
@@ -206,6 +231,14 @@ export default function UpdateBoard() {
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🏷️ "Enhanced!" UI Badges</Text>
                                     <Text style={styles.changeText}>• Mining and Logging now proudly display an "Enhanced!" badge, marking them as the premier icon-based gameplay experiences.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚒️ Infinite Equipment Refining</Text>
+                                    <Text style={styles.changeText}>• Merge 10 identical pieces of equipment in your Bank into a +1 variant! +1 variants have dynamically scaled stats and exponentially higher sell values. Refining can go on infinitely!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🔮 Future Skills Added</Text>
+                                    <Text style={styles.changeText}>• Summoning, Astrology, and Slayer have been added to the skill roster and now show on the grid with beautiful "Coming Soon" badges.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>⚡ Quick-Switch Animation</Text>

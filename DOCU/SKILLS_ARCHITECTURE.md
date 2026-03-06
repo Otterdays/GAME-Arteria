@@ -227,3 +227,63 @@ Use the shared `ComingSoonBadge` component:
 - **`inProgress={false}`** → Red badge: "Coming soon"
 
 Wire to: Skills grid (unimplemented skills), Location screens (NPCs/Shop/Quests stubs), Explore (locked locations), Combat (Phase 4 teaser).
+
+---
+
+## 7. Astrology (High Priority)
+
+### 7.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Support (Global Passive Buffs) |
+| **Core loop** | Study constellations → gather Stardust → unlock passive buffs for all other skills |
+| **Outputs** | XP, Stardust, Golden Stardust, Meteorites |
+
+### 7.2 Constellations
+- **Nodes/Constellations**: Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree. 
+- Higher levels unlock constellations that buff specific skill categories (e.g. Deedree buffs Gathering, Anchor Eternal buffs Global modifiers).
+
+### 7.3 Data Structures (draft)
+```ts
+interface AstrologyConstellation {
+  id: string;
+  name: string;
+  levelReq: number;
+  xpPerTick: number;
+  baseTickMs: number;
+  buffs: { targetSkillId: string; effect: string; maxPercentage: number }[];
+  emoji: string;
+}
+```
+
+---
+
+## 8. Summoning
+
+### 8.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Advanced / Support |
+| **Core loop** | Use collected items/charms → create Familiar pouches → equip for passive synergies |
+| **Synergy** | Combines combat drops (charms) with gathered resources (ores, logs, fish) |
+
+### 8.2 Familiars
+- **Anchor Spirit**: Increases gem yield when mining.
+- **Void Drake**: Fights alongside player, increasing max hit.
+- **Lumina Wisp**: Intercepts failed cooking rolls to guarantee success.
+
+---
+
+## 9. Slayer
+
+### 9.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Combat / Advanced |
+| **Core loop** | Receive specific monster bounty → kill X amount in combat → earn Slayer XP and Slayer Coins (for unique shops/upgrades) |
+| **Requirement** | Integrates directly into the Phase 4 combat loop. Needs monster zones to be robust. |
+
+### 9.2 Mechanics
+- **Slayer Master**: NPC assigns tasks (e.g. "Kill 20 Woodland Wolves").
+- **Task Streaks**: Bonus XP and coins for chaining tasks.
+- **Unlocks**: High Slayer levels unlock exclusive gathering nodes or elite combat instances.

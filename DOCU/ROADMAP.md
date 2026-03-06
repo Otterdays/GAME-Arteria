@@ -154,6 +154,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Expand gathering options and implement the core retention UI hooks.
 
 ### 2.1 — Remaining Gathering Skills 🟡
+- [x] 🟢 **Astrology:** Define constellations and stardust drops. (v0.5.2)
+- [ ] 🟡 **Summoning (Soon):** Familiar binding.
+- [ ] 🟡 **Slayer (Soon):** Combat tasks and specific drops.
 - [x] 🟢 **Harvesting (Plants/Fibers):** Define nodes.
   - [x] *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
 - [x] 🟢 **Logging (Woodcutting):** Define trees.
@@ -437,7 +440,9 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 ---
 
 ## 🎯 Current Target
-**We are here → Phase 3 (Crafting Engine) + Phase 7 (retention done in v0.4.0)**
+**We are here → Phase 2.1 (Gathering Expanded) ✅ + Phase 4 Combat Alpha Groundwork ✅**
+
+v0.5.2 (2026-03-06): **The Celestial Expansion.** Added **Astrology** skill with constellations, Stardust, and Meteorite items. Integrated with game loop and progression UI. Unified skill navigation. Fixed critical style and type linting issues.
 
 v0.4.1 (2026-03-03): **The Anchor Man.** Main character & nickname (The Anchor). Goblin first enemy + Peek modal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix. Next: **Crafting queue** (Smithing/Alchemy 8-hour queue), more quests/skills (Act III, Harvesting), Phase 4 combat.
 

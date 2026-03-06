@@ -2,7 +2,7 @@
  * Patch History — Full changelog from CHANGELOG.md.
  * Hardcoded patch history for Arteria.
  * Displayed in the in-game Settings -> Patch Notes screen.
- * Current release: 0.5.1 "Directors Cut Remix"
+ * Current release: 0.5.2 "Celestial Expansion"
  */
 
 export interface PatchEntry {
@@ -14,6 +14,24 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.5.2',
+    date: '2026-03-06',
+    added: [
+      '🔭 New Skill: Astrology. Study the constellations of Deedree, The Anchor Eternal, The Void Fish, and The Lumina Tree to gather cosmic materials.',
+      '✨ Celestial Items: Added Stardust, Golden Stardust, and Meteorite to the game economy. These will later be used for powerful permanent buffs.',
+      '⛏️ Skill Progression Icons: Astrology is now fully integrated into the skill header icon strip with unique celestial emojis.',
+      '➡️ Unified Navigation: You can now cycle to and from Astrology using the alphabetical navigation arrows on any skill screen.',
+      '🔊 Astrology Soundscape: Registered the Astrology soundscape for future ambient audio additions.',
+    ],
+    fixed: [
+      '🛠️ Type Safety: Resolved critical TypeScript linting errors in the SkillBox component and idle soundscape hook.',
+      '🛠️ Navigation Bounds: Fixed a bug where jumping from the first/last skills in alphabetical order could cause navigation instability.',
+    ],
+    changed: [
+      '🏷️ Skill Metadata: Promoted Astrology from "Coming Soon" to "Fully Implemented".',
+    ],
+  },
   {
     version: '0.5.1',
     date: '2026-03-06',
@@ -48,6 +66,8 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '💎 Gems: Rare mining drops — Sapphire (Iron+), Emerald (Coal+), Ruby (Mithril+), Diamond (Adamant+). Bank → Other.',
       '➡️ Skill-to-Skill Navigation: Added stylized chevron arrows to all 10 skill titles for premium alphabetical cycling.',
       '🏷️ "Enhanced!" Badges: Pinned to Mining and Logging titles to showcase their iconic UI.',
+      '⚒️ Infinite Equipment Refining: Merge 10 identical pieces of equipment in the Bank into a `+1` variant with dynamically scaling combat stats and sell values.',
+      '🔮 Future Skills Added: Summoning, Astrology, and Slayer now appear on the skill grid with "Coming Soon" styling.',
     ],
     fixed: [
       'Cooking screen: Resolved ReferenceError: getNextSkill is not defined when clicking navigation arrows.',

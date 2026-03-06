@@ -52,6 +52,7 @@ const ALL_SKILLS: SkillId[] = [
   'scavenging', 'crafting', 'farming',
   'harvesting', 'runecrafting', 'thieving', 'fletching', 'tailoring',
   'construction', 'leadership', 'adventure', 'dungeoneering',
+  'astrology', 'summoning', 'slayer'
 ];
 
 /** Skills that navigate to the Combat tab when tapped. */
@@ -90,7 +91,7 @@ function SkillBox({
   isActive: boolean;
   onNavigate: (id: SkillId) => void;
   onShowComingSoon: (id: SkillId) => void;
-  styles: ReturnType<typeof StyleSheet.create>;
+  styles: any;
 }) {
   const skill = useAppSelector((s) => s.game.player.skills[skillId]);
   const meta = SKILL_META[skillId];

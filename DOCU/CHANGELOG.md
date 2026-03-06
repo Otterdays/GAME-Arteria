@@ -5,6 +5,19 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+## [0.5.2] - 2026-03-06 — "The Celestial Expansion"
+### Added
+- **New Skill: Astrology:** Fully implemented Astrology skill screen with 4 constellations (Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree).
+- **Celestial Items:** Added `Stardust`, `Golden Stardust`, and `Meteorite` items with unique descriptions, values, and sprites.
+- **Skill Progression Icons:** Integrated Astrology into the skill header progression bar with its own unique emoji icons.
+- **Unified Navigation:** Included Astrology in the alphabetical skill cycling system.
+- **Idle Soundscapes:** Registered 'astrology' soundscape for future audio implementation.
+### Fixed
+- **Type Safety:** Resolved critical TypeScript linting errors in `SkillBox` component and `useIdleSoundscape` hook.
+- **Navigation Bounds:** Fixed out-of-bounds error in skill navigation when cycling from the first/last skills.
+### Changed
+- **Skill Metadata:** Updated all skill registries to promote Astrology from "Coming Soon" to "Active".
+
 ## [0.5.1] - 2026-03-06 — "THE 0.5.1 extended update directors cut remix - alpha"
 
 > Consolidates updates 0.4.3 through 0.5.1. A massive update introducing World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, and premium themes.
@@ -35,6 +48,8 @@
 - **Forging weapon expansion:** 5 weapon types per tier. 54 recipes total. Runite story-gated.
 - **Combat Alpha Engine:** Full auto-battler loop, zones, enemies, and combat log. 
 - **Prayer System:** 12 prayers, bone burying, combat drain.
+- **Infinite Equipment Refining:** Players can now merge 10 identical equipment items into a `+1` variant directly from the Bank. Continually refine weapons and armor to infinite ranks, with dynamically scaling stats (+1 per rank) and exponentially increasing sell values.
+- **Future Skills Added:** `Summoning`, `Astrology`, and `Slayer` have been added to the game's skill roster as "Coming Soon" with unique icons and colors.
 
 ### Fixed
 - **Cooking Screen Bug:** Fixed `ReferenceError: Property 'getNextSkill' doesn't exist` when using navigation arrows.

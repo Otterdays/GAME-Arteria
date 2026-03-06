@@ -57,6 +57,7 @@ import { SMELTING_RECIPES } from '@/constants/smithing';
 import { FORGING_RECIPES } from '@/constants/forging';
 import { COOKING_RECIPES } from '@/constants/cooking';
 import { HERBLORE_RECIPES } from '@/constants/herblore';
+import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -73,7 +74,7 @@ import { getMasteryYieldMultiplier, getMasterySpeedMultiplier, getMasteryDoubleD
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
 // Standard gathering nodes
-[...MINING_NODES, ...LOGGING_NODES, ...FISHING_SPOTS, ...HARVESTING_NODES, ...SCAVENGING_NODES].forEach((node) => {
+[...MINING_NODES, ...LOGGING_NODES, ...FISHING_SPOTS, ...HARVESTING_NODES, ...SCAVENGING_NODES, ...ASTROLOGY_CONSTELLATIONS].forEach((node) => {
     ACTION_DEFS[node.id] = {
         xpPerTick: node.xpPerTick,
         items: node.items,
