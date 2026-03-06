@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -85,8 +86,38 @@ export default function ScavengingScreen() {
                 },
                 backButton: { paddingHorizontal: Spacing.sm, paddingVertical: 6 },
                 backButtonText: { color: palette.accentPrimary, fontSize: FontSize.md, fontWeight: '600' },
-                ...getLevelBadgeStyles(palette, palette.skillScavenging),
-                scavengingTitle: { fontSize: FontSize.xl, fontWeight: 'bold', color: palette.textPrimary, marginBottom: 4 },
+                titleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: Spacing.sm,
+                    marginBottom: 4,
+                },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContent: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                },
+                levelTag: {
+                    backgroundColor: `${palette.skillScavenging}25`,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: `${palette.skillScavenging}50`,
+                },
+                levelTagText: {
+                    color: palette.skillScavenging,
+                    fontSize: FontSize.xs,
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                },
+                scavengingTitle: { fontFamily: FontCinzelBold, fontSize: FontSize.xl, color: palette.textPrimary },
                 scavengingSub: { fontSize: FontSize.sm, color: palette.textSecondary },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
                 nodeCard: {
@@ -107,7 +138,7 @@ export default function ScavengingScreen() {
                     textShadowRadius: 8,
                 },
                 nodeTitleContainer: { flex: 1 },
-                nodeName: { fontSize: FontSize.lg, fontWeight: 'bold', color: palette.textPrimary, marginBottom: 2 },
+                nodeName: { fontFamily: FontCinzelBold, fontSize: FontSize.lg, color: palette.textPrimary, marginBottom: 2 },
                 textLocked: { color: palette.textDisabled },
                 nodeReq: { fontSize: FontSize.xs, color: palette.textSecondary },
                 nodeStats: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.md },
@@ -189,10 +220,34 @@ export default function ScavengingScreen() {
                 <QuickSwitchToggle />
             </View>
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: palette.skillScavenging + '33', borderColor: palette.skillScavenging }]}>
-                    <Text style={[styles.levelBadgeText, { color: palette.skillScavenging }]}>Lv. {scavengingSkill.level}</Text>
+                <View style={styles.titleRow}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('scavenging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContent}>
+                        <Text style={styles.scavengingTitle}>Scavenging</Text>
+                        <View style={styles.levelTag}>
+                            <Text style={styles.levelTagText}>Lv. {scavengingSkill.level}</Text>
+                        </View>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('scavenging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.scavengingTitle}>Scavenging</Text>
                 <Text style={styles.scavengingSub}>Loot ruins, battlefields, and cosmic debris.</Text>
                 <MasteryBadges skillId="scavenging" />
                 <View style={styles.xpRow}>

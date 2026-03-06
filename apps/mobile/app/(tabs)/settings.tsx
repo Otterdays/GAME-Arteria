@@ -20,6 +20,7 @@ import { deleteSave } from '@/store/persistence';
 import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
 import { getDisplayName, PROTAGONIST_CANONICAL_NAME } from '@/constants/character';
 import { useSfx } from '@/utils/sounds';
+import { PATCH_HISTORY } from '@/constants/patchHistory';
 
 function LoginBonusRow({ styles }: { styles: ReturnType<typeof createSettingsStyles> }) {
     const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
@@ -772,10 +773,17 @@ export default function SettingsScreen() {
                 <View style={styles.section}>
                     <Text style={[styles.sectionTitle, { color: palette.accentWeb }]}>About</Text>
                     <View style={styles.sectionCard}>
-                        <View style={styles.row}>
-                            <Text style={styles.rowLabel}>Version</Text>
-                            <Text style={styles.versionText}>{Constants.expoConfig?.version ?? '0.1.0'}</Text>
-                        </View>
+                        <Pressable
+                            style={styles.row}
+                            onPress={() => dispatch(gameActions.setForceShowUpdateBoard(true))}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={styles.rowLabel}>Version</Text>
+                                <Text style={styles.rowDesc}>Tap to see what's new</Text>
+                            </View>
+                            <Text style={styles.versionText}>v{PATCH_HISTORY[0].version}</Text>
+                        </Pressable>
                         <Pressable
                             style={styles.row}
                             onPress={handleCheckForUpdates}

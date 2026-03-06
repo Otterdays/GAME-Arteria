@@ -7,13 +7,17 @@
 
 ## [0.5.1] - 2026-03-06 — "THE 0.5.1 extended update directors cut remix - alpha"
 
-> Consolidates updates 0.4.3 through 0.5.x. A massive update introducing World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, and premium themes.
+> Consolidates updates 0.4.3 through 0.5.1. A massive update introducing World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, and premium themes.
 
 ### Added
 - **Architectural Tome:** Created `DOCU/TECHNICAL_USER_MANUAL.md` with full engine taxonomy (identifying bits like Arteria-game-engine, Arteria-tick-orchestrator, etc.).
 - **Arteria Depth System:** Multi-layered shadow system (Subtle, Medium, Elevated, Deep), 3D raised buttons, inset stat pills, and header shadow casting for premium tactile depth.
+- **Skill Progression Bar:** Each skill screen header now features a sleek horizontal icon strip. Node emojis glow with their skill colour when unlocked; locked nodes are dimmed and scaled down. Level indicator compressed inline with the title.
 - **Midnight Theme:** Deep-black premium theme optimized for OLED screens with purple accents.
 - **Achievement Expansion:** Added 6 new reactive achievements (Head Chef, Potion Master, Sneeze Cultist, Tome of Knowledge, Void Walker, Death Defier). Total: 16.
+- **UI Enhancements:**
+  - **Skill-to-Skill Navigation:** Added premium stylized chevron arrows to all 10 skill titles for alphabetical cycling between skills.
+  - **"Enhanced!" Badges:** Absolute-positioned gold badges for Mining and Logging to highlight the icon-based UI.
 - **Gameplay Settings:** Added toggles for Haptics & Vibration, Screen Shake, and Floating XP.
 - **Glassmorphism 2.0:** Improved theme tokens (`glassBg`, `glassBorder`) for glossy UI effects, applied to the Stats screen.
 - 🛡️ **Coming Soon Skills**: Leadership, Adventure, Dungeon Dwelling, Construction added in Coming Soon mode with high-fidelity modals.
@@ -33,6 +37,7 @@
 - **Prayer System:** 12 prayers, bone burying, combat drain.
 
 ### Fixed
+- **Cooking Screen Bug:** Fixed `ReferenceError: Property 'getNextSkill' doesn't exist` when using navigation arrows.
 - UI lints in `stats.tsx` and missing theme selectable options for Midnight.
 - **Android boot loop (splash screen):** Resolved splash screen predrawing handoff loop.
 - **APK build (Metro):** Identifier duplicate fixes and style ternary fixes.

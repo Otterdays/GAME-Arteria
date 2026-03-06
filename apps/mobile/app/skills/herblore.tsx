@@ -7,8 +7,9 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -114,8 +115,39 @@ export default function HerbloreScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
+                levelTag: {
+                    backgroundColor: `${palette.skillHerblore || herbColor}25`,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: `${palette.skillHerblore || herbColor}50`,
+                },
+                levelTagText: {
+                    color: palette.skillHerblore || herbColor,
+                    fontSize: FontSize.xs,
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                },
                 ...getLevelBadgeStyles(palette, herbColor),
-                screenTitle: { fontSize: FontSize.xl, fontWeight: 'bold', color: palette.textPrimary, marginBottom: 4 },
+                titleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: Spacing.sm,
+                    marginBottom: 4,
+                },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContent: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                },
+                screenTitle: { fontFamily: FontCinzelBold, fontSize: FontSize.xl, color: palette.textPrimary },
                 screenSub: { fontSize: FontSize.sm, color: palette.textSecondary, marginBottom: Spacing.md },
                 xpRow: { width: '100%', gap: 4 },
                 xpBarBg: { height: 6, backgroundColor: palette.bgApp, borderRadius: 999, overflow: 'hidden', width: '100%' },
@@ -141,7 +173,7 @@ export default function HerbloreScreen() {
                     textShadowRadius: 8,
                 },
                 nodeTitleContainer: { flex: 1 },
-                nodeName: { fontSize: FontSize.lg, fontWeight: 'bold', color: palette.textPrimary, marginBottom: 2 },
+                nodeName: { fontFamily: FontCinzelBold, fontSize: FontSize.lg, color: palette.textPrimary, marginBottom: 2 },
                 textLocked: { color: palette.textDisabled },
                 nodeReq: { fontSize: FontSize.xs, color: palette.textSecondary },
                 reqBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
@@ -233,10 +265,34 @@ export default function HerbloreScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={styles.levelBadge}>
-                    <Text style={styles.levelBadgeText}>Lv. {herbSkill.level}</Text>
+                <View style={styles.titleRow}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('herblore')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContent}>
+                        <Text style={styles.screenTitle}>Herblore</Text>
+                        <View style={styles.levelTag}>
+                            <Text style={styles.levelTagText}>Lv. {herbSkill.level}</Text>
+                        </View>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('herblore')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.screenTitle}>Herblore</Text>
                 <Text style={styles.screenSub}>Brew herbs and vials into potions. Buy empty vials from Nick.</Text>
                 <MasteryBadges skillId="herblore" />
 

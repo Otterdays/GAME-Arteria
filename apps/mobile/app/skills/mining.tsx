@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius, ButtonRaisedStyle, HeaderShadow, InsetStyle } from '@/constants/theme';
+import { Spacing, FontSize, Radius, ButtonRaisedStyle, HeaderShadow, InsetStyle, FontCinzelBold, ShadowSubtle } from '@/constants/theme';
 import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors, getStatPillInsetStyles } from '@/constants/skillPageStyles';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -99,13 +100,43 @@ export default function MiningScreen() {
                 titleRow: {
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: Spacing.sm,
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: Spacing.sm,
                     marginBottom: 4,
                 },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContent: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                    position: 'relative',
+                },
+                enhancedBadge: {
+                    position: 'absolute',
+                    top: -10,
+                    left: 0,
+                    backgroundColor: palette.gold,
+                    paddingHorizontal: 6,
+                    paddingVertical: 1,
+                    borderRadius: 4,
+                    zIndex: 10,
+                    transform: [{ rotate: '-5deg' }],
+                    ...ShadowSubtle,
+                },
+                enhancedBadgeText: {
+                    color: palette.bgApp,
+                    fontSize: 8,
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                },
                 miningTitle: {
+                    fontFamily: FontCinzelBold,
                     fontSize: FontSize.xl,
-                    fontWeight: 'bold',
                     color: palette.textPrimary,
                 },
                 levelTag: {
@@ -124,27 +155,29 @@ export default function MiningScreen() {
                 },
                 miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
                 iconBarContainer: {
+                    width: '100%',
                     marginTop: Spacing.md,
                     borderTopWidth: 1,
                     borderTopColor: palette.border,
-                    marginHorizontal: -Spacing.lg, // bleed to edge
+                    paddingTop: Spacing.sm,
                 },
                 iconBarScroll: {
-                    paddingHorizontal: Spacing.lg,
-                    paddingTop: Spacing.md,
-                    gap: Spacing.md,
+                    paddingHorizontal: Spacing.sm,
+                    paddingBottom: Spacing.sm,
+                    gap: Spacing.sm,
+                    flexDirection: 'row',
                     alignItems: 'center',
                 },
                 iconWrapper: {
                     width: 44,
                     height: 44,
-                    borderRadius: 22,
                     backgroundColor: palette.bgApp,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderWidth: 1,
                     borderColor: palette.border,
                     ...InsetStyle,
+                    borderRadius: 22,
+                    borderWidth: 1,
                 },
                 iconUnlocked: {
                     borderColor: `${palette.skillMining}50`,
@@ -181,8 +214,8 @@ export default function MiningScreen() {
                 },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
+                    fontFamily: FontCinzelBold,
                     fontSize: FontSize.lg,
-                    fontWeight: 'bold',
                     color: palette.textPrimary,
                     marginBottom: 2,
                 },
@@ -331,10 +364,35 @@ export default function MiningScreen() {
 
             <View style={styles.infoSection}>
                 <View style={styles.titleRow}>
-                    <Text style={styles.miningTitle}>Mining</Text>
-                    <View style={styles.levelTag}>
-                        <Text style={styles.levelTagText}>Lv. {miningSkill.level}</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('mining')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContent}>
+                        <View style={styles.enhancedBadge}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
+                        <Text style={styles.miningTitle}>Mining</Text>
+                        <View style={styles.levelTag}>
+                            <Text style={styles.levelTagText}>Lv. {miningSkill.level}</Text>
+                        </View>
                     </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('mining')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
                 <Text style={styles.miningSub}>Swing your pickaxe and gather ores.</Text>
 

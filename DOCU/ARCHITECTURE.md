@@ -3,7 +3,7 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`. Current: **0.5.0**.
+> **🤖 AI: When implementing new features, update versioning:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json`. Current: **0.5.1**.
 
 > **⚠️ SDK 55 Note:** Expo SDK 54 is the last version supporting the Legacy Architecture.
 > SDK 55 makes New Architecture **mandatory**. See `DOCS/FUTURE_NOTES.md` for full migration steps.
@@ -97,7 +97,7 @@ Arteria/
 - **Tick wiring:** Root `_layout.tsx` calls `useGameLoop({ onTickComplete: playForSkill })`. When a skill tick completes, `useGameLoop` invokes the callback with `skillId`; `playForSkill` maps skill to tink/thump/splash and plays. Ref-stable callback via `onTickCompleteRef` in useGameLoop.
 - **Test:** Settings → Audio → "Test sound" plays all three in sequence.
 
-## Combat System (Phase 4, v0.5.0+)
+## Combat System (Phase 4, v0.5.1+)
 - **State:** `ActiveCombat` interface on `PlayerState.activeCombat` (enemyId, enemyName, HP max/current, attack/defense/accuracy, player/enemy attack timers, killCount, zoneId). `CombatLogEntry[]` on `GameState.combatLog` (max 40). `CombatLogEntry` types: player_hit, enemy_hit, player_miss, enemy_miss, kill, loot, died, info.
 - **Reducers:** `startCombat` (init from `ENEMIES` data, stop skilling, clear log), `fleeCombat`, `processCombatTick` (timer accumulation, accuracy/damage rolls, kill cycle, XP split, loot drops, gold, enemy respawn, player death), `pushCombatLog`.
 - **Game Loop:** `useGameLoop.ts` dispatches `processCombatTick({ deltaMs })` on every 100ms interval when `activeCombat` is truthy, alongside skilling ticks.

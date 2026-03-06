@@ -5,7 +5,7 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Implemented the **Arteria Depth System** in `theme.ts`. 6 new depth presets (ShadowSubtle, ShadowMedium, ShadowElevated, ShadowDeep, ButtonRaisedStyle, InsetStyle, HeaderShadow) for premium visual depth across all screens.
+**Active Task:** Implemented **Skill-to-Skill Navigation Arrows** across all 10 skill headers and **"Enhanced!" Badges** for Mining/Logging. Fixed a missing import bug in `cooking.tsx` that broke the navigation.
 
 ## [2026-03-06] THE 0.5.1 extended update directors cut remix - alpha
 - **Technical User Manual:** Created `DOCU/TECHNICAL_USER_MANUAL.md`. Identified and named 11 core subsystems (Engine Taxonomy) to improve developer clarity and documentation quality.
@@ -24,7 +24,16 @@
 - **Data:** Added `'leadership'`, `'adventure'`, `'dungeoneering'`, `'construction'` to `SkillId` in engine and `ALL_SKILLS` / `SKILL_META` locally.
 - **UI:** The skills grid now shows Leadership, Adventure, Dungeon Dwelling, and Construction with their respective colors and emojis.
 - **Interaction:** Unimplemented skills trigger the stylized "Coming Soon" glassmorphism modal when tapped.
-- **Documentation:** Up-to-date documentation globally across the app including `index.html`, `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `SCRATCHPAD.md`, `app.json`, and `patchHistory.ts`. Bumped version to `0.5.1`.
+- **UI Enhancements:**
+  - **Skill-to-Skill Navigation Arrows:** Added stylized left/right chevrons to the top corners of all 10 skill titles (`mining`, `logging`, `fishing`, `harvesting`, `scavenging`, `runecrafting`, `smithing`, `forging`, `cooking`, `herblore`). Uses alphabetical order from `skillNavigation.ts`.
+  - **"Enhanced!" Badges:** Absolute-positioned gold badges with `ShadowSubtle` for Mining and Logging titles to highlight unique icon-based gameplay.
+  - **Fix:** Resolved `ReferenceError: Property 'getNextSkill' doesn't exist` in `cooking.tsx` by adding missing imports.
+- **Update Board Redux & Settings Integration:**
+  - Renamed internal visibility logic to "Update Board" system.
+  - Added `game.forceShowUpdateBoard` Redux state to allow manual display triggers.
+  - Updated `UpdateBoard.tsx` to handle both natural version bumps and manual force-show requests.
+  - Modified **Settings** screen Version row: Added "Tap to see what's new" description; clicking version number now dispatches the force-show action to open the board on demand.
+- **Documentation:** Up-to-date documentation globally across the app including `index.html`, `UpdateBoard.tsx`, `CHANGELOG.md`, `SUMMARY.md`, `SCRATCHPAD.md`, `app.json`, `patchHistory.ts`, and `ROADMAP.md` (Phase 10: Arteria Refined). Bumped version to `0.5.1`.
 
 ## [2026-03-05] Prayer System — Full Implementation
 - **Prayers constant (`constants/prayers.ts`):** 12 prayers defined: Thick Skin, Burst of Strength, Clarity of Thought, Rock Skin, Superhuman Strength, Improved Reflexes, Steel Skin, Ultimate Strength, Incredible Reflexes, Divine Shield, Wrath of Ancients, Aegis. Each has level requirement (1-60), drain rate per tick, and combat bonuses (attackPercent, strengthPercent, defencePercent, damageReductionPercent).

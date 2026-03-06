@@ -1,7 +1,8 @@
 /**
  * Patch History — Full changelog from CHANGELOG.md.
- * [TRACE: DOCU/CHANGELOG.md] Keep in sync when shipping new versions.
- * Current release: 0.5.0 "Big Weeds Update".
+ * Hardcoded patch history for Arteria.
+ * Displayed in the in-game Settings -> Patch Notes screen.
+ * Current release: 0.5.1 "Directors Cut Remix"
  */
 
 export interface PatchEntry {
@@ -19,6 +20,7 @@ export const PATCH_HISTORY: PatchEntry[] = [
     added: [
       '📖 Architectural Tome: Formalized the DOCU/TECHNICAL_USER_MANUAL.md, providing a technical taxonomy for the 11 core subsystems (Arteria-game-engine, etc.).',
       '✨ Arteria Depth System: Multi-layered shadow system (Subtle, Medium, Elevated, Deep), 3D raised buttons, inset stat pills, and header shadow casting for premium tactile depth.',
+      '⛏️ Skill Progression Bar: Sleek horizontal icon strip in each skill header. Node emojis glow with their skill colour when unlocked, and fade/shrink when locked. Level indicator compressed inline with the title for more node space.',
       '🌌 Midnight Theme: A new premium, high-contrast dark theme optimized for OLED screens with deep purple accents.',
       '🏅 Achievement Expansion: Added 6 new reactive achievements (Head Chef, Potion Master, Sneeze Cultist, Tome of Knowledge, Void Walker, Death Defier). Total: 16.',
       '⚙️ Gameplay Settings: Added user toggles for Haptics & Vibration, Screen Shake, and Floating XP.',
@@ -44,8 +46,11 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '⚒️ Forging weapons: Dagger, shortsword, longsword, scimitar, 2H Longblade + armour. 54 recipes across 6 tiers. Runite story-gated.',
       '🏹 Fletching & Tailoring: New planned skills on Skills grid (red Coming Soon). Arrows/bows from logs; gloves/hats/shoes/boots from cloth.',
       '💎 Gems: Rare mining drops — Sapphire (Iron+), Emerald (Coal+), Ruby (Mithril+), Diamond (Adamant+). Bank → Other.',
+      '➡️ Skill-to-Skill Navigation: Added stylized chevron arrows to all 10 skill titles for premium alphabetical cycling.',
+      '🏷️ "Enhanced!" Badges: Pinned to Mining and Logging titles to showcase their iconic UI.',
     ],
     fixed: [
+      'Cooking screen: Resolved ReferenceError: getNextSkill is not defined when clicking navigation arrows.',
       'Resolved multiple TypeScript lints in stats.tsx and applied nullish coalescing for lifetime stats.',
       'Corrected THEME_OPTIONS to include the Midnight theme.',
     ],

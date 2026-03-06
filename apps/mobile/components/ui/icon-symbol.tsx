@@ -33,6 +33,7 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code-tags',
   'chevron.right': 'chevron-right',
+  'chevron.left': 'chevron-left',
   'chevron.down': 'chevron-down',
   'chevron.up': 'chevron-up',
   'lock.fill': 'lock',

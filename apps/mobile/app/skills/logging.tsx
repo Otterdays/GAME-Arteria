@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
-import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { Spacing, FontSize, Radius, FontCinzelBold, ButtonRaisedStyle, HeaderShadow, InsetStyle, ShadowSubtle } from '@/constants/theme';
+import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors, getStatPillInsetStyles } from '@/constants/skillPageStyles';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -77,6 +78,7 @@ export default function LoggingScreen() {
                     borderBottomWidth: 1,
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
+                    ...HeaderShadow,
                 },
                 headerRow: {
                     flexDirection: 'row',
@@ -91,14 +93,105 @@ export default function LoggingScreen() {
                     fontSize: FontSize.md,
                     fontWeight: '600',
                 },
-                ...getLevelBadgeStyles(palette, palette.skillLogging),
-                miningTitle: {
-                    fontSize: FontSize.xl,
-                    fontWeight: 'bold',
-                    color: palette.textPrimary,
+                titleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: Spacing.sm,
                     marginBottom: 4,
                 },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContent: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                    position: 'relative',
+                },
+                enhancedBadge: {
+                    position: 'absolute',
+                    top: -10,
+                    left: 0,
+                    backgroundColor: palette.gold,
+                    paddingHorizontal: 6,
+                    paddingVertical: 1,
+                    borderRadius: 4,
+                    zIndex: 10,
+                    transform: [{ rotate: '-5deg' }],
+                    ...ShadowSubtle,
+                },
+                enhancedBadgeText: {
+                    color: palette.bgApp,
+                    fontSize: 8,
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                },
+                miningTitle: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.xl,
+                    color: palette.textPrimary,
+                },
+                levelTag: {
+                    backgroundColor: `${palette.skillLogging}25`,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: `${palette.skillLogging}50`,
+                },
+                levelTagText: {
+                    color: palette.skillLogging,
+                    fontSize: FontSize.xs,
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                },
                 miningSub: { fontSize: FontSize.sm, color: palette.textSecondary },
+                iconBarContainer: {
+                    width: '100%',
+                    marginTop: Spacing.md,
+                    borderTopWidth: 1,
+                    borderTopColor: palette.border,
+                    paddingTop: Spacing.sm,
+                },
+                iconBarScroll: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingBottom: Spacing.sm,
+                    gap: Spacing.sm,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                },
+                iconWrapper: {
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    backgroundColor: palette.bgApp,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderWidth: 1,
+                    borderTopColor: 'rgba(0,0,0,0.3)',
+                    borderLeftColor: 'rgba(0,0,0,0.15)',
+                    borderRightColor: 'rgba(255,255,255,0.04)',
+                    borderBottomColor: 'rgba(255,255,255,0.06)',
+                },
+                iconUnlocked: {
+                    borderColor: `${palette.skillLogging}50`,
+                    backgroundColor: `${palette.skillLogging}15`,
+                    shadowColor: palette.skillLogging,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 6,
+                },
+                iconEmoji: {
+                    fontSize: 22,
+                },
+                iconLocked: {
+                    opacity: 0.25,
+                    transform: [{ scale: 0.9 }],
+                },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
                 ...getNodeCardBaseStyles(palette),
                 nodeCardActive: { borderColor: palette.skillLogging, borderWidth: 1 },
@@ -116,8 +209,8 @@ export default function LoggingScreen() {
                 },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
+                    fontFamily: FontCinzelBold,
                     fontSize: FontSize.lg,
-                    fontWeight: 'bold',
                     color: palette.textPrimary,
                     marginBottom: 2,
                 },
@@ -129,13 +222,10 @@ export default function LoggingScreen() {
                     marginBottom: Spacing.md,
                 },
                 statPill: {
+                    ...getStatPillInsetStyles(palette),
                     flex: 1,
-                    backgroundColor: palette.bgApp,
-                    borderRadius: Radius.md,
                     padding: Spacing.sm,
                     alignItems: 'center',
-                    borderWidth: 1,
-                    borderColor: palette.border,
                 },
                 statLabel: {
                     fontSize: 10,
@@ -151,8 +241,9 @@ export default function LoggingScreen() {
                 trainButton: {
                     backgroundColor: palette.accentPrimary,
                     paddingVertical: Spacing.sm,
-                    borderRadius: Radius.md,
                     alignItems: 'center',
+                    ...ButtonRaisedStyle,
+                    borderRadius: Radius.md,
                 },
                 trainButtonActive: { backgroundColor: palette.redDim },
                 trainButtonLocked: {
@@ -247,12 +338,41 @@ export default function LoggingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={styles.levelBadge}>
-                    <Text style={styles.levelBadgeText}>Lv. {loggingSkill.level}</Text>
+                <View style={styles.titleRow}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('logging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContent}>
+                        <View style={styles.enhancedBadge}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
+                        <Text style={styles.miningTitle}>Logging</Text>
+                        <View style={styles.levelTag}>
+                            <Text style={styles.levelTagText}>Lv. {loggingSkill.level}</Text>
+                        </View>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('logging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.miningTitle}>Logging</Text>
                 <Text style={styles.miningSub}>Chop down trees to collect wood.</Text>
+
                 <MasteryBadges skillId="logging" />
+
                 {/* XP progress [current/next] */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
@@ -276,6 +396,27 @@ export default function LoggingScreen() {
                         emoji={activeNode?.emoji || '🪓'}
                         triggerKey={popTrigger}
                     />
+                </View>
+
+                {/* Unlockable Icon Bar */}
+                <View style={styles.iconBarContainer}>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.iconBarScroll}
+                    >
+                        {LOGGING_NODES.map((node) => {
+                            const isUnlocked = loggingSkill.level >= node.levelReq;
+
+                            return (
+                                <View key={node.id} style={[styles.iconWrapper, isUnlocked && styles.iconUnlocked]}>
+                                    <Text style={[styles.iconEmoji, !isUnlocked && styles.iconLocked]}>
+                                        {node.emoji}
+                                    </Text>
+                                </View>
+                            );
+                        })}
+                    </ScrollView>
                 </View>
             </View>
 

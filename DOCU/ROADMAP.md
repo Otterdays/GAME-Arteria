@@ -106,6 +106,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [x] 🟢 **C. Coming Soon Tags** — Replace Alert popup with an inline locked-card style + "Phase 2 ›" tag for unimplemented skills.
 - [x] 🟡 **D. XP/hr Estimate** — Show "~1,200 XP/hr" under each active node. Math: `xpPerTick * (1000 / intervalMs) * 3600`. Uses `formatNumber` utility.
 - [x] 🟢 **E. Ticks-to-level** — Under the active node, show "~14 more actions to level up". Math: `Math.ceil((nextLevelXp - currentXp) / xpPerAction)`.
+- [ ] 🟡 **F. Skill Progression Icon Bar** — Sleek horizontal icon strip at the bottom of the skill header to show node progression (locked/unlocked emojis). *Partially implemented in Mining/Logging.*
 
 ### Persistence
 - [x] 🟡 **F. Restore Active Task on Relaunch** — Verified: `usePersistence` saves full `player` (incl. `activeTask`) on background/30s auto-save. Works by design.
@@ -217,11 +218,11 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Combat Styles Selector:** Toggle between The Stalwart (Shield), The Blademaster (Dual), Spellweaver, Harbinger, Warden, Trickster (affects stat weighting).
 
 ### 4.2 — Encounter Flow (Instances) 🔴
-- [x] � **Scout & Prepare UI:** Screen to select zone (e.g. Farm, Goblin House, Forest, Mountain), equip loadout, and slot consumables built into Battle tab. (v0.5.0)
-- [x] � **Auto-Combat Engine (2026-03-05):** `processCombatTick` reducer. Timer-accumulator model (100ms loop). Accuracy roll → damage roll → HP update. On kill: XP split (hp/atk/str/def), loot drops, gold, enemy respawn. Player death: respawn full HP, combat stops.
+- [x] 🟢 **Scout & Prepare UI:** Screen to select zone (e.g. Farm, Goblin House, Forest, Mountain), equip loadout, and slot consumables built into Battle tab. (v0.5.1)
+- [x] 🟢 **Auto-Combat Engine (2026-03-05):** `processCombatTick` reducer. Timer-accumulator model (100ms loop). Accuracy roll → damage roll → HP update. On kill: XP split (hp/atk/str/def), loot drops, gold, enemy respawn. Player death: respawn full HP, combat stops.
 - [ ] 🟡 **The "While You Were Away" Combat Report:** Detailed summary of kills, deaths, loot drops, gold earned, and combat skill XP.
 
-### 4.3 — Active Combat Interface �
+### 4.3 — Active Combat Interface 🟢
 - [x] 🟢 **Combat UI (2026-03-05):** HP bars (player green→amber→red, enemy red), attack speed progress bars, kill counter, gold display, FLEE button, scrolling combat log (max 40 entries, color-coded).
 - [ ] 🟡 **Action Bar UI:** Buttons for Basic attacks, Heavy strikes (MP), Shield bashes, Items. Fixed cooldowns.
 - [ ] 🟢 **Enemy UI:** Large HP Bar, Status Effects icons (Enraged, Stunned).
@@ -410,6 +411,28 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🔴 **Idle Boss Takedowns:** Bosses with 10 Billion HP. You assign your character to "Auto-Attack" it. Takes 3 real-world days to chip away to 0, granting a massive chest.
 - [ ] 🔴 **The Gambit System (Auto-Combat Programming):** Program offline combat logic. "IF HP < 30% -> USE Health Potion." "IF Enemy Stunned -> USE Heavy Attack."
 - [ ] 🔴 **Offline Raiding Parties:** Assemble a "B-Team" of Companions and send them on a 12-hour real-time Expedition. Return with a report and loot.
+
+---
+
+## 🎨 Phase 10 — "Arteria Refined" (UX & Tactical UI)
+> **Goal:** Elevate the visual identity and tactical feedback of every screen.
+> **Philosophy:** Depth, Micro-interactions, and Information Density.
+
+### 10.1 — The Arteria Depth System 🟡
+- [x] 🟢 **Dynamic Shadows:** Multi-layered shadow system (`ShadowSubtle` to `ShadowDeep`) for premium card depth.
+- [x] 🟢 **Inset Surfaces:** `InsetStyle` tokens for stat pills and recessed UI elements.
+- [x] 🟢 **Header Elevation:** Casting downward shadows from skill headers to separate "Player Context" from "Action Content".
+
+### 10.2 — Tactical Progression UI 🔴
+- [x] 🟡 **Skill Progression Bar:** Horizontal icon strip in skill headers showing unlocked/locked nodes (Mining/Logging MVP).
+- [ ] 🟡 **Rolling Rollout:** Implement the Progression Bar across ALL skills (Harvesting, Fishing, Smithing, etc.).
+- [ ] 🔴 **Visual Rarity:** Unique glow/particle effects on the Progression Bar icons for Rare or Mythic node unlocks.
+- [x] 🟢 **Compact Headers:** Compressed level indicators ("Lv. X") integrated into titles to reclaim vertical screen space.
+
+### 10.3 — Feedback & Communication 🟡
+- [x] 🟢 **Update Board Redux:** Renamed and accessible via Settings version tap for on-demand changelog viewing.
+- [ ] 🟡 **Interactive Changelog:** Searchable patch history with "Compare Versions" UI.
+- [ ] 🟢 **Tactical Haptics:** Rhythmic haptic pulses tied to completion and milestone unlocks.
 
 ---
 

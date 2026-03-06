@@ -264,7 +264,7 @@ export default function CombatScreen() {
 
                 zoneHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.lg },
                 zoneHeaderIcon: { fontSize: 28, marginRight: Spacing.sm },
-                zoneHeaderTitle: { fontSize: FontSize.lg, fontWeight: '700', color: palette.textPrimary, fontFamily: FontCinzelBold },
+                zoneHeaderTitle: { fontSize: FontSize.lg, color: palette.textPrimary, fontFamily: FontCinzelBold },
 
                 enemyCardContent: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md },
                 enemyName: { fontSize: FontSize.base, fontWeight: '700', color: palette.textPrimary },

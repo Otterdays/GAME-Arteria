@@ -9,8 +9,9 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
 import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -130,12 +131,42 @@ export default function ForgingScreen() {
                     borderBottomColor: palette.border,
                     backgroundColor: palette.bgCard,
                 },
-                ...getLevelBadgeStyles(palette, forgeColor),
-                screenTitle: {
-                    fontSize: FontSize.xl,
+                levelTag: {
+                    backgroundColor: `${palette.skillForging || forgeColor}25`,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: Radius.full,
+                    borderWidth: 1,
+                    borderColor: `${palette.skillForging || forgeColor}50`,
+                },
+                levelTagText: {
+                    color: palette.skillForging || forgeColor,
+                    fontSize: FontSize.xs,
                     fontWeight: 'bold',
-                    color: palette.textPrimary,
+                    textTransform: 'uppercase',
+                },
+                ...getLevelBadgeStyles(palette, forgeColor),
+                titleRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: Spacing.sm,
                     marginBottom: 4,
+                },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContent: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: Spacing.sm,
+                },
+                screenTitle: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.xl,
+                    color: palette.textPrimary,
                 },
                 screenSub: {
                     fontSize: FontSize.sm,
@@ -205,8 +236,8 @@ export default function ForgingScreen() {
                 },
                 nodeTitleContainer: { flex: 1 },
                 nodeName: {
+                    fontFamily: FontCinzelBold,
                     fontSize: FontSize.lg,
-                    fontWeight: 'bold',
                     color: palette.textPrimary,
                     marginBottom: 2,
                 },
@@ -368,10 +399,34 @@ export default function ForgingScreen() {
             </View>
 
             <View style={styles.infoSection}>
-                <View style={[styles.levelBadge, { backgroundColor: forgeColor + '33', borderColor: forgeColor }]}>
-                    <Text style={[styles.levelBadgeText, { color: forgeColor }]}>Lv. {forgeSkill.level}</Text>
+                <View style={styles.titleRow}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('forging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContent}>
+                        <Text style={styles.screenTitle}>Forging</Text>
+                        <View style={styles.levelTag}>
+                            <Text style={styles.levelTagText}>Lv. {forgeSkill.level}</Text>
+                        </View>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('forging')}`);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.screenTitle}>Forging</Text>
                 <Text style={styles.screenSub}>Forge bars into weapons and armour at the anvil.</Text>
                 <MasteryBadges skillId="forging" />
 

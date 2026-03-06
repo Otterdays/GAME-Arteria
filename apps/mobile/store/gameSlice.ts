@@ -580,6 +580,8 @@ interface GameState {
     awaitingNameEntry: boolean;
     /** Combat log — scrolling messages from auto-battler */
     combatLog: CombatLogEntry[];
+    /** Manual trigger to show the Update Board (e.g. from version click in Settings) */
+    forceShowUpdateBoard: boolean;
 }
 
 const ACTIVITY_LOG_MAX = 50;
@@ -599,6 +601,7 @@ const initialState: GameState = {
     showGoblinPeek: false,
     awaitingNameEntry: false,
     combatLog: [],
+    forceShowUpdateBoard: false,
 };
 
 export const gameSlice = createSlice({
@@ -1049,6 +1052,11 @@ export const gameSlice = createSlice({
             re.lastTriggeredAt = Date.now();
             re.ticksSinceLastEvent = 0;
             re.completedCount += 1;
+        },
+
+        /** Force show the Update Board (dismissed manually) */
+        setForceShowUpdateBoard(state, action: PayloadAction<boolean>) {
+            state.forceShowUpdateBoard = action.payload;
         },
 
         /** Show Goblin Peek modal (goblin_peek random event). */

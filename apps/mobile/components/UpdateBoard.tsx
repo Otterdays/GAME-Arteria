@@ -20,23 +20,29 @@ import { gameActions } from '@/store/gameSlice';
 import { Spacing, Radius, FontSize, CardStyle, FontCinzel, FontCinzelBold } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { logger } from '@/utils/logger';
+import { PATCH_HISTORY } from '@/constants/patchHistory';
 
 export default function UpdateBoard() {
     const { palette } = useTheme();
     const dispatch = useAppDispatch();
     const lastSeenVersion = useAppSelector((s) => s.game.player.lastSeenVersion);
     const isLoaded = useAppSelector((s) => s.game.isLoaded);
+    const forceShow = useAppSelector((s) => s.game.forceShowUpdateBoard);
 
     const currentVersion = Constants.expoConfig?.version || '0.1.0';
 
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        if (isLoaded && lastSeenVersion !== currentVersion) {
-            logger.info('UI', `Version bump detected: ${lastSeenVersion ?? 'New User'} -> ${currentVersion}. Opening Update Board.`);
+        if (isLoaded && (lastSeenVersion !== currentVersion || forceShow)) {
+            if (forceShow) {
+                logger.debug('UI', 'Update Board opened via manual trigger');
+            } else {
+                logger.info('UI', `Version bump detected: ${lastSeenVersion ?? 'New User'} -> ${currentVersion}. Opening Update Board.`);
+            }
             setVisible(true);
         }
-    }, [isLoaded, lastSeenVersion, currentVersion]);
+    }, [isLoaded, lastSeenVersion, currentVersion, forceShow]);
 
     const styles = useMemo(
         () =>
@@ -132,7 +138,17 @@ export default function UpdateBoard() {
 
     const handleDismiss = () => {
         logger.debug('UI', 'Update Board dismissed', { version: currentVersion });
-        dispatch(gameActions.updateSeenVersion(currentVersion));
+
+        // If it was a natural bump, mark this version as seen
+        if (lastSeenVersion !== currentVersion) {
+            dispatch(gameActions.updateSeenVersion(currentVersion));
+        }
+
+        // If it was a manual trigger, reset the flag
+        if (forceShow) {
+            dispatch(gameActions.setForceShowUpdateBoard(false));
+        }
+
         setVisible(false);
     };
 
@@ -147,9 +163,9 @@ export default function UpdateBoard() {
             <View style={styles.overlay}>
                 <View style={styles.card}>
                     <Text style={styles.boardLabel}>Update Board</Text>
-                    <Text style={styles.title}>Arteria v{currentVersion}</Text>
+                    <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion.startsWith('0.5.1') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                        {currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
                             : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
                                 : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
                                     : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
@@ -157,7 +173,7 @@ export default function UpdateBoard() {
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.5.1') ? (
+                        {currentVersion.startsWith('0.5') ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>📖 Architectural Tome</Text>
@@ -166,6 +182,10 @@ export default function UpdateBoard() {
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>✨ Arteria Depth System</Text>
                                     <Text style={styles.changeText}>• Multi-layered depth presets: ShadowSubtle, ShadowMedium, ShadowElevated, and ShadowDeep. Node cards now float, stat pills are recessed, and headers cast shadows for a premium tactile feel.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⛏️ Skill Progression Bar</Text>
+                                    <Text style={styles.changeText}>• Each skill screen now shows a sleek horizontal icon strip at the bottom of its header. Node icons are greyed out and dimmed when locked, and glow with their skill colour once unlocked. The level badge has also been compressed inline with the skill title to free up vertical screen space.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🌌 Midnight Theme</Text>
@@ -178,6 +198,14 @@ export default function UpdateBoard() {
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>⚙️ Gameplay Settings</Text>
                                     <Text style={styles.changeText}>• New toggles for Haptics & Vibration, Screen Shake (thud/shake on success), and Floating XP numbers.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>➡️ Skill Navigation Arrows</Text>
+                                    <Text style={styles.changeText}>• Added premium stylized arrows to the top left and right of all 10 skill titles. Instantly cycle through your available skills in alphabetical order!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏷️ "Enhanced!" UI Badges</Text>
+                                    <Text style={styles.changeText}>• Mining and Logging now proudly display an "Enhanced!" badge, marking them as the premier icon-based gameplay experiences.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>⚡ Quick-Switch Animation</Text>
