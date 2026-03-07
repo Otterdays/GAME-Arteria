@@ -17,10 +17,12 @@
 - [v0.5.3] Added **Slayer**, **Summoning**, and **Companions** core loops.
 - **Cooking Expansion:** Added 10 "Perfect" cooked food variants requiring Item Mastery and high cooking chance.
 - **Summoning Expansion:** Familiars decay over 1 hour. Honey Badger boosts mining yield (+1), Spirit Spider grants +5% loot drops.
+- **New Skill: Crafting:** Full implementation of the Crafting skill. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful rings and amulets.
 - **Dynamic Coming Soon UI:** Added an interactive "Coming Soon" skill lock screen for unimplemented skills.
 ### Fixed
 - [v0.5.3] Fixed stuck Level Up Toast.
 - [v0.5.3] Detailed documentation update in MDD and Skills Architecture.
+- **Quick Switch Scroll:** Fixed a major bug where the quick switch panel would not scroll due to Flex conflicts.
 
 ## [0.5.2] - 2026-03-06 — "The Celestial Expansion"
 ### Added

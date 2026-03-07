@@ -35,6 +35,7 @@ import {
     SKILL_META,
     IMPLEMENTED_GATHERING_SKILLS,
     IMPLEMENTED_CRAFTING_SKILLS,
+    IMPLEMENTED_SUPPORT_SKILLS,
     type SkillId,
 } from '@/constants/skills';
 import { useQuickSwitch } from '@/contexts/QuickSwitchContext';
@@ -181,7 +182,7 @@ export function QuickSwitchSidebar() {
                 },
                 skillLabelActive: { color: palette.gold },
                 footer: {
-                    marginTop: 'auto',
+                    marginTop: Spacing.xl,
                     paddingTop: Spacing.lg,
                     alignItems: 'center',
                 },
@@ -233,7 +234,7 @@ export function QuickSwitchSidebar() {
                 <ScrollView style={styles.sidebarContent} contentContainerStyle={styles.skillList} showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Quick Switch</Text>
                     <Text style={styles.subtitle}>Jump between skills</Text>
-                    {[...IMPLEMENTED_GATHERING_SKILLS, ...IMPLEMENTED_CRAFTING_SKILLS].map((skillId) => (
+                    {[...IMPLEMENTED_GATHERING_SKILLS, ...IMPLEMENTED_CRAFTING_SKILLS, ...IMPLEMENTED_SUPPORT_SKILLS].map((skillId) => (
                         <SkillRow
                             key={skillId}
                             skillId={skillId}

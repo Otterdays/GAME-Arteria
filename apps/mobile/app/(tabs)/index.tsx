@@ -26,7 +26,6 @@ import { router } from 'expo-router';
 import { SKILL_META, IMPLEMENTED_SKILLS } from '@/constants/skills';
 import { isSkillInProgress } from '@/constants/comingSoon';
 import { ComingSoonBadge } from '@/components/ComingSoonBadge';
-import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { formatNumber } from '@/utils/formatNumber';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { HorizonHUD } from '@/components/HorizonHUD';
@@ -45,21 +44,25 @@ import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
 
 // A. All skills array
 const ALL_SKILLS: SkillId[] = [
-  'attack', 'hitpoints', 'mining',
-  'strength', 'agility', 'smithing', 'forging',
-  'defence', 'herblore', 'fishing',
-  'prayer', 'cooking', 'logging',
-  'scavenging', 'crafting', 'farming',
-  'harvesting', 'runecrafting', 'thieving', 'fletching', 'tailoring',
-  'construction', 'leadership', 'adventure', 'dungeoneering',
-  'astrology', 'summoning', 'slayer',
+  'attack', 'defence', 'strength',
+  'magic', 'hitpoints', 'ranged',
+  'prayer', 'mining', 'smithing',
+  'forging', 'fishing', 'cooking',
+  'logging', 'scavenging', 'herblore',
+  'crafting', 'farming', 'harvesting',
+  'runecrafting', 'thieving', 'fletching',
+  'tailoring', 'construction', 'leadership',
+  'adventure', 'dungeoneering', 'astrology',
+  'summoning', 'slayer', 'agility',
   'woodworking', 'sorcery', 'wizardry',
-  'ranged', 'alchemy', 'exploration', 'cleansing', 'barter', 'research', 'chaostheory',
-  'aetherweaving', 'voidwalking', 'celestialbinding', 'chronomancy', 'constitution', 'firemaking', 'magic'
+  'alchemy', 'exploration', 'cleansing',
+  'barter', 'research', 'chaostheory',
+  'aetherweaving', 'voidwalking', 'celestialbinding',
+  'chronomancy', 'constitution', 'firemaking'
 ];
 
 /** Skills that navigate to the Combat tab when tapped. */
-const COMBAT_SKILLS = new Set<SkillId>(['attack', 'hitpoints', 'strength', 'defence', 'prayer']);
+const COMBAT_SKILLS = new Set<SkillId>(['attack', 'hitpoints', 'strength', 'defence', 'prayer', 'magic', 'ranged']);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -123,7 +126,7 @@ function SkillBox({
 
       {/* Icon side */}
       <View style={styles.skillBoxLeft}>
-        <Text style={[styles.skillBoxEmoji, !isImplemented && styles.lockedEmoji]}>{meta.emoji}</Text>
+        <Text style={[styles.skillBoxEmoji, !isClickable && styles.lockedEmoji]}>{meta.emoji}</Text>
       </View>
 
       {/* Levels side: for implemented skills show level/99; for unimplemented show only Coming Soon */}
@@ -154,8 +157,6 @@ export default function SkillsScreen() {
   const insets = useSafeAreaInsets();
   const [logModalVisible, setLogModalVisible] = useState(false);
   const [masteryModalVisible, setMasteryModalVisible] = useState(false);
-  const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
-  const [selectedComingSoonSkill, setSelectedComingSoonSkill] = useState<SkillId | null>(null);
   const isNarrow = width < NARROW_WIDTH;
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
   const skills = useAppSelector((s) => s.game.player.skills);
@@ -190,8 +191,7 @@ export default function SkillsScreen() {
   );
 
   const handleShowComingSoon = useCallback((skillId: SkillId) => {
-    setSelectedComingSoonSkill(skillId);
-    setComingSoonModalVisible(true);
+    router.push({ pathname: '/skills/coming-soon', params: { skill: skillId } } as any);
   }, []);
 
   // Calculate active skill progress for the header
@@ -560,11 +560,6 @@ export default function SkillsScreen() {
 
       <ActivityLogModal visible={logModalVisible} onClose={() => setLogModalVisible(false)} />
       <MasteryModal visible={masteryModalVisible} onClose={() => setMasteryModalVisible(false)} />
-      <ComingSoonModal
-        visible={comingSoonModalVisible}
-        skillId={selectedComingSoonSkill}
-        onClose={() => setComingSoonModalVisible(false)}
-      />
 
       {/* A. Skill grid */}
       <ScrollView

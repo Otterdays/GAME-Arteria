@@ -361,3 +361,38 @@ The following skills are registered in the engine and UI as "Coming Soon" or "Pl
 | **Constitution** | Combat | Advanced health regeneration and status resistance. |
 | **Firemaking** | Crafting/Support | Consuming logs for utility buffs and heat. |
 | **Magic** | Combat/Support | Generic mastery over Sorcery and Wizardry. |
+
+---
+
+## 14. Skill Cape System (Level 99 Mastery)
+
+### 14.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Requirement** | Reach Level 99 (Max Level) in any given skill. |
+| **Pillar** | Endgame / Prestige / Equipment |
+| **Core Loop** | Max a skill → Visit the "Master of Masters" NPC (or specialized NPCs) → Purchase Skill Cape for 99,000 Gold. |
+| **Benefit** | Equippable item (requires adding a `cape` or `back` EquipSlot) that provides best-in-slot defensive stats and a unique passive modifier tied to that specific skill. |
+
+### 14.2 Vendor Details
+- **NPC Name:** The Ascended Master (or "Master Lin").
+- **Location:** A high-level hub area, e.g., The Skyward Peaks or a hidden guild in the Crownlands.
+- **Shop Mechanic:** The shop's inventory dynamically populates with the skill capes the player is eligible for (checking `player.skills[skillId].level >= 99`).
+- **Cost:** 99,000 Gold per cape.
+
+### 14.3 Equipment Mechanics
+- **New Equip Slot:** Expand `EquipSlot` in `constants/items.ts` to include `'cape'`.
+- **Base Stats (All Capes):** Excellent all-around defenses (e.g., `meleeDefence: 15, rangedDefence: 15, magicDefence: 15`).
+- **Passive Perks:** Equipping a cape grants a specialized mastery buff. 
+
+### 14.4 Example Capes & Perks (Draft)
+| Cape Name | Skill | Unique Passive Perk |
+|-----------|-------|---------------------|
+| Cape of the Depths | Mining | +5% double-ore chance (stacks with Mastery). |
+| Cape of the Canopy | Logging | +10% chance to not deplete a tree upon a successful chop. |
+| Cape of the Anvil | Forging | +15% chance to forge an item without consuming bars. |
+| Cape of the Void | Runecrafting | 10% chance to craft a Void Rune alongside any standard rune combination. |
+| Cape of the Harvest | Harvesting | Auto-replants seeds for free if you own them in inventory. |
+
+### 14.5 Emote System (Phase 2 Add-on)
+- Clicking a dedicated "Emote" button while a Skill Cape is equipped plays a unique visual animation/effect on the UI (e.g., Anvil hammering spark for Forging, swirling stars for Astrology) and pushes a server-wide or local activity log message: *"The player flexes their mastery of [Skill]!"*

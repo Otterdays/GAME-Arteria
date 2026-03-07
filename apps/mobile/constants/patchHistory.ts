@@ -24,9 +24,11 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '💬 Narrated Actions: Hiring companions and accepting Slayer tasks is now handled through the branching dialogue system for deeper immersion.',
       '👹 New Enemies: Added Crawling Hand (Lv. 5) and Banshee (Lv. 15) to the Slayer Tower (B1).',
       '🏪 Summoning Supplies: Integrated the Summoning Shop directly into the skill screen for quick access to Spirit Pouches and Shards.',
+      '✂️ New Skill: Crafting. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful jewelry (Rings & Amulets).',
     ],
     fixed: [
       '🍞 Level Up Toast Fix: Completely refactored the toast notification system to prevent "stuck" toasts. Uses refs for timer management and animation state to ensure smooth dismissal.',
+      '📜 Quick Switch Scroll Fix: Resolved an issue where the sidebar panel would not scroll properly due to flex layout conflicts.',
     ],
   },
   {

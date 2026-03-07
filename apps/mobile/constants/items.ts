@@ -224,6 +224,23 @@ export const ITEM_META: Record<string, ItemMeta> = {
   runite_platebody: { emoji: '🛡️', label: 'Runite Platebody', sellValue: 9000, description: 'Runite chest armour. Humming with power.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 112, rangedDefence: 84, magicDefence: -56 } },
   runite_shield: { emoji: '🛡️', label: 'Runite Shield', sellValue: 5500, description: 'A runite shield. Endgame defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 84, rangedDefence: 70, magicDefence: -42 } },
 
+  // ── Crafting (Armour & Jewelry) ──
+  leather: { emoji: '🟤', label: 'Leather', sellValue: 15, description: 'Tanned cow hide. Ready to be crafted.', type: 'other' },
+  leather_cowl: { emoji: '🪖', label: 'Leather Cowl', sellValue: 30, description: 'A simple leather headpiece.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 2, rangedDefence: 4, magicDefence: 4 } },
+  leather_body: { emoji: '🧥', label: 'Leather Body', sellValue: 80, description: 'A sturdy leather chestpiece.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 6, rangedDefence: 8, magicDefence: 8 } },
+  leather_chaps: { emoji: '👖', label: 'Leather Chaps', sellValue: 55, description: 'Leather leg protection.', type: 'equipment', equipSlot: 'legs', equipmentStats: { meleeDefence: 4, rangedDefence: 6, magicDefence: 6 } },
+  leather_boots: { emoji: '👢', label: 'Leather Boots', sellValue: 25, description: 'Standard leather footwear.', type: 'equipment', equipSlot: 'feet', equipmentStats: { meleeDefence: 1, rangedDefence: 2, magicDefence: 2 } },
+
+  sapphire_ring: { emoji: '💍', label: 'Sapphire Ring', sellValue: 200, description: 'A gold ring encrusted with a sapphire.', type: 'equipment', equipSlot: 'ring', equipmentStats: { magicDefence: 5 } },
+  emerald_ring: { emoji: '💍', label: 'Emerald Ring', sellValue: 350, description: 'A gold ring encrusted with an emerald.', type: 'equipment', equipSlot: 'ring', equipmentStats: { magicDefence: 10 } },
+  ruby_ring: { emoji: '💍', label: 'Ruby Ring', sellValue: 700, description: 'A gold ring encrusted with a ruby.', type: 'equipment', equipSlot: 'ring', equipmentStats: { magicDefence: 20 } },
+  diamond_ring: { emoji: '💍', label: 'Diamond Ring', sellValue: 1500, description: 'A gold ring encrusted with a diamond.', type: 'equipment', equipSlot: 'ring', equipmentStats: { magicDefence: 35 } },
+
+  sapphire_amulet: { emoji: '📿', label: 'Sapphire Amulet', sellValue: 250, description: 'A beautiful sapphire amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 2, maxHit: 1 } },
+  emerald_amulet: { emoji: '📿', label: 'Emerald Amulet', sellValue: 450, description: 'A beautiful emerald amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 4, maxHit: 2 } },
+  ruby_amulet: { emoji: '📿', label: 'Ruby Amulet', sellValue: 900, description: 'A beautiful ruby amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 8, maxHit: 4 } },
+  diamond_amulet: { emoji: '📿', label: 'Diamond Amulet', sellValue: 1800, description: 'A beautiful diamond amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 12, maxHit: 6 } },
+
   // ── Gems (Mining rare drops) ──
   sapphire: { emoji: '💎', label: 'Sapphire', sellValue: 50, description: 'A blue gem. Found while mining iron and above.', type: 'other' },
   emerald: { emoji: '💚', label: 'Emerald', sellValue: 100, description: 'A green gem. Found while mining coal and above.', type: 'other' },

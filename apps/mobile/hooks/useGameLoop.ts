@@ -57,6 +57,8 @@ import { SMELTING_RECIPES } from '@/constants/smithing';
 import { FORGING_RECIPES } from '@/constants/forging';
 import { COOKING_RECIPES } from '@/constants/cooking';
 import { HERBLORE_RECIPES } from '@/constants/herblore';
+import { CRAFTING_RECIPES } from '@/constants/crafting';
+import { AGILITY_COURSES } from '@/constants/agility';
 import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
 import {
     RANDOM_EVENT_CHANCE_BASE,
@@ -142,6 +144,28 @@ HERBLORE_RECIPES.forEach((recipe) => {
         items: recipe.items,
         consumedItems: recipe.consumedItems,
         successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Crafting: consume materials, produce equipment/items
+CRAFTING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Agility: run courses for XP and mastery, no items
+AGILITY_COURSES.forEach((course) => {
+    ACTION_DEFS[course.id] = {
+        xpPerTick: course.xpPerTick,
+        items: course.items,
+        consumedItems: [],
+        successRate: course.successRate,
         masteryXp: 1,
     };
 });

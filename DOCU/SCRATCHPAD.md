@@ -10,19 +10,22 @@
 - [ ] Implement Slayer Shop functionality (v0.5.4)
 - [ ] Implement Woodworking core loop (v0.5.5)
 - [ ] Implement Sorcery/Wizardry core loops (v0.5.6)
+- [x] Implement Crafting core loop (Leather & Jewelry) (v0.5.3)
 - [x] Implement Slayer core loop (v0.5.3)
 - [x] Implement Summoning core loop (v0.5.3)
 - [x] Implement Companions (Leadership) hiring (v0.5.3)
 - [x] Fix stuck Level Up Toast (v0.5.3)
+- [x] Fix Quick Switch Panel scroll bug (v0.5.3)
 - [x] Groundwork for Woodworking, Sorcery, Wizardry (v0.5.3) [TRACE: User Request]
 - [x] Cooking Expansion with Perfect Variants (v0.5.3)
 - [x] Summoning familiar decay & specific skill bonuses (Spider & Badger) (v0.5.3)
 - [x] Dynamic Coming Soon UI locking screen for unimplemented skills (v0.5.3)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
 
-**Completed Task:** Fully implemented **Cooking Expansion & Summoning Details** (v0.5.3).
+**Completed Task:** Fully implemented **Crafting Module & Quick Switch Fix** (v0.5.3).
 
 ## [2026-03-06] v0.5.3 "The Legion & The Soul"
+- **New Skill: Crafting:** Forge jewelry and craft leather armour via active skilling.
 - **New Skill: Slayer:** Task assignment via Master Mark; added Crawling Hand and Banshee enemies; Slayer Coins item.
 - **New Skill: Summoning:** 5 pouches; integrated screen shop for shards/pouches; Elder Spirit-Speaker dialogue.
 - **Companion System:** Hiring logic via dialogue; added Garry the Guard.
