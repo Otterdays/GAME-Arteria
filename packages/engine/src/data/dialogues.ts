@@ -210,6 +210,155 @@ export const ACT_1_DIALOGUES: Record<string, DialogueTree> = {
                 ]
             }
         }
+    },
+    'dt_slayer_master': {
+        id: 'dt_slayer_master',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Master Marks',
+                text: 'You look like you want to kill something. But not just anything. Something specific. Something... sanctioned.',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'Give me a task.',
+                        nextNodeId: 'node_2',
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'Tell me about Slayer Coins.',
+                        nextNodeId: 'node_3'
+                    },
+                    {
+                        id: 'opt_3',
+                        text: 'I\'m just passing through.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Master Marks',
+                text: 'Alright. I\'ve marked your soul with a bounty. Don\'t come back until it\'s done. Or pay me 500 gold to forget I ever saw you.',
+                options: [
+                    {
+                        id: 'opt_4',
+                        text: 'Accept bounty.',
+                        nextNodeId: 'end',
+                        onSelect: {
+                            assignSlayerTask: true
+                        }
+                    }
+                ]
+            },
+            'node_3': {
+                id: 'node_3',
+                speaker: 'Master Marks',
+                text: 'Slayer Coins are earned from completed tasks. They don\'t buy bread — they buy dead. Special gear, instance keys, that sort of thing.',
+                options: [
+                    {
+                        id: 'opt_5',
+                        text: 'Got it.',
+                        nextNodeId: 'node_1'
+                    }
+                ]
+            }
+        }
+    },
+    'dt_barnaby_intro': {
+        id: 'dt_barnaby_intro',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Barnaby the Uncertain',
+                text: 'Oh! Hello. I was just... well, I was wondering if I should stand here or over there. I\'m Barnaby. I\'m a warrior, mostly. When I\'m sure of it.',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'You look capable. Want to join me?',
+                        nextNodeId: 'node_2',
+                        requirements: {
+                            skills: { leadership: 20 }
+                        }
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'Leadership level required: 20',
+                        nextNodeId: 'node_1',
+                        requirements: {
+                            // This is a trick to show the requirement in the text
+                        }
+                    },
+                    {
+                        id: 'opt_3',
+                        text: 'Maybe later.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Barnaby the Uncertain',
+                text: 'Join you? In the actual world? With the monsters? Well... I think I\'m 50% sure that\'s a good idea! Let\'s go!',
+                options: [
+                    {
+                        id: 'opt_4',
+                        text: 'Welcome aboard, Barnaby.',
+                        nextNodeId: 'end',
+                        onSelect: {
+                            hireCompanion: 'barnaby'
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    'dt_summoning_shop': {
+        id: 'dt_summoning_shop',
+        startNodeId: 'node_1',
+        nodes: {
+            'node_1': {
+                id: 'node_1',
+                speaker: 'Elder Spirit-Speaker',
+                text: 'The veil is thin here. To bind a spirit, you need the right vessels. Pouches to hold the essence, and shards to anchor it. What do you need?',
+                options: [
+                    {
+                        id: 'opt_1',
+                        text: 'Let me see your supplies.',
+                        nextNodeId: 'end',
+                        onSelect: {
+                            // In mobile app, we can make 'end' with a flag like 'open_shop' 
+                            // but currently we just use dialogues or separate screens.
+                            // For now, I'll just make it informational and the user buys from the screen.
+                        }
+                    },
+                    {
+                        id: 'opt_2',
+                        text: 'How do I get Charms?',
+                        nextNodeId: 'node_2'
+                    },
+                    {
+                        id: 'opt_3',
+                        text: 'Farewell.',
+                        nextNodeId: 'end'
+                    }
+                ]
+            },
+            'node_2': {
+                id: 'node_2',
+                speaker: 'Elder Spirit-Speaker',
+                text: 'Charms are not sold. They are earned. They are fragments of willpower left behind by defeated monsters. Slay beasts, and you shall find them.',
+                options: [
+                    {
+                        id: 'opt_4',
+                        text: 'I understand.',
+                        nextNodeId: 'node_1'
+                    }
+                ]
+            }
+        }
     }
 };
 

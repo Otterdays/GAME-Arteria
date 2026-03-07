@@ -9,7 +9,10 @@ export type SkillId =
     | 'mining'
     | 'runecrafting'
     | 'scavenging'
-    | 'smithing';
+    | 'smithing'
+    | 'leadership'
+    | 'summoning'
+    | 'slayer';
 
 export const SKILL_NAV_ORDER: SkillId[] = [
     'astrology',
@@ -18,11 +21,14 @@ export const SKILL_NAV_ORDER: SkillId[] = [
     'forging',
     'harvesting',
     'herblore',
+    'leadership',
     'logging',
     'mining',
     'runecrafting',
     'scavenging',
-    'smithing'
+    'slayer',
+    'smithing',
+    'summoning',
 ];
 
 export function getNextSkill(current: SkillId): SkillId {

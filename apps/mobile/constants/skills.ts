@@ -100,7 +100,24 @@ export type SkillId =
     | 'attack'
     | 'strength'
     | 'defence'
-    | 'hitpoints';
+    | 'hitpoints'
+    | 'woodworking'
+    | 'sorcery'
+    | 'wizardry'
+    | 'ranged'
+    | 'alchemy'
+    | 'exploration'
+    | 'cleansing'
+    | 'barter'
+    | 'research'
+    | 'chaostheory'
+    | 'aetherweaving'
+    | 'voidwalking'
+    | 'celestialbinding'
+    | 'chronomancy'
+    | 'constitution'
+    | 'firemaking'
+    | 'magic';
 
 export interface SkillMeta {
     label: string;
@@ -137,6 +154,23 @@ export const SKILL_META: Record<SkillId, SkillMeta> = {
     strength: { label: 'Strength', color: palette.skillStrength, emoji: '💪' },
     defence: { label: 'Defence', color: palette.skillDefence, emoji: '🛡️' },
     hitpoints: { label: 'Hitpoints', color: palette.skillHitpoints, emoji: '❤️' },
+    woodworking: { label: 'Woodworking', color: palette.skillWoodworking, emoji: '🪵' },
+    sorcery: { label: 'Sorcery', color: palette.skillSorcery, emoji: '🪄' },
+    wizardry: { label: 'Wizardry', color: palette.skillWizardry, emoji: '🧙' },
+    ranged: { label: 'Ranged', color: palette.skillRanged, emoji: '🏹' },
+    alchemy: { label: 'Alchemy', color: palette.skillAlchemy, emoji: '⚗️' },
+    exploration: { label: 'Exploration', color: palette.skillExploration, emoji: '🗺️' },
+    cleansing: { label: 'Cleansing', color: palette.skillCleansing, emoji: '🧼' },
+    barter: { label: 'Barter', color: palette.skillBarter, emoji: '💰' },
+    research: { label: 'Research', color: palette.skillResearch, emoji: '📚' },
+    chaostheory: { label: 'Chaos Theory', color: palette.skillChaostheory, emoji: '🎲' },
+    aetherweaving: { label: 'Aether Weaving', color: palette.skillAetherweaving, emoji: '🌌' },
+    voidwalking: { label: 'Void Walking', color: palette.skillVoidwalking, emoji: '👣' },
+    celestialbinding: { label: 'Celestial Binding', color: palette.skillCelestialbinding, emoji: '⛓️' },
+    chronomancy: { label: 'Chronomancy', color: palette.skillChronomancy, emoji: '⏳' },
+    constitution: { label: 'Constitution', color: palette.skillConstitution, emoji: '🧬' },
+    firemaking: { label: 'Firemaking', color: palette.skillFiremaking, emoji: '🔥' },
+    magic: { label: 'Magic', color: palette.skillMagic, emoji: '🔮' },
 };
 
 export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
@@ -156,8 +190,10 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
     'herblore',
 ];
 
-/** All skills with implemented screens (sidebar + main grid). */
 export const IMPLEMENTED_SKILLS = new Set<SkillId>([
     ...IMPLEMENTED_GATHERING_SKILLS,
     ...IMPLEMENTED_CRAFTING_SKILLS,
+    'leadership',
+    'summoning',
+    'slayer',
 ]);

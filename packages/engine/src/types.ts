@@ -31,15 +31,45 @@ export type SkillId =
     | 'attack'
     | 'strength'
     | 'defence'
-    | 'hitpoints';
+    | 'hitpoints'
+    | 'woodworking'
+    | 'sorcery'
+    | 'wizardry'
+    | 'ranged'
+    | 'alchemy'
+    | 'exploration'
+    | 'cleansing'
+    | 'barter'
+    | 'research'
+    | 'chaostheory'
+    | 'aetherweaving'
+    | 'voidwalking'
+    | 'celestialbinding'
+    | 'chronomancy'
+    | 'constitution'
+    | 'firemaking'
+    | 'magic';
+
+/** Item mastery: track totalProduced, masteryTier, isPerfect per item. */
+export interface ItemMasteryEntry {
+    totalProduced: number;
+    masteryTier: number; // 0-4
+    isPerfect: boolean;
+}
 
 /** State of a single skill */
 export interface SkillState {
     id: SkillId;
     xp: number;
     level: number;
-    /** Mastery XP per individual action/item within a skill */
+    /** Mastery XP per individual action/item within a skill (legacy) */
     mastery: Record<string, number>;
+}
+
+/** Familiar state */
+export interface FamiliarState {
+    pouchId: string;
+    expiresAt: number;
 }
 
 /** A single item in the player's bank/inventory */
@@ -71,6 +101,19 @@ export interface CombatStats {
     magicDefence: number;
 }
 
+export interface SlayerTask {
+    monsterId: string;
+    targetAmount: number;
+    currentAmount: number;
+}
+
+export interface PlayerCompanion {
+    id: string;
+    skills: Record<SkillId, SkillState>;
+    isActive: boolean;
+    assignedTaskId: string | null;
+}
+
 /** Full player state (serializable as JSON for saves) */
 export interface PlayerState {
     name: string;
@@ -89,6 +132,28 @@ export interface PlayerState {
     pets?: {
         activePetId: string | null;
         unlocked: string[];
+    };
+    /** Daily (radiant) quests: reset at midnight; list of 3 with progress and rewards. */
+    dailyQuests?: {
+        resetAt: number;
+        quests: any[];
+    };
+    /** Currently active summoning familiar. */
+    activeFamiliar?: FamiliarState | null;
+    /** Current slayer task */
+    slayerTask?: SlayerTask | null;
+    /** Hired companions and their progress */
+    companions?: Record<string, PlayerCompanion>;
+    /** Item mastery: track totalProduced, masteryTier, isPerfect per item. */
+    itemMastery: Record<string, ItemMasteryEntry>;
+    /** Lifetime stats for tracking progression */
+    lifetimeStats?: {
+        enemiesDefeated: number;
+        totalGoldEarned: number;
+        totalDeaths: number;
+        highestHit: number;
+        totalItemsProduced: number;
+        byItem: Partial<Record<string, number>>;
     };
 }
 

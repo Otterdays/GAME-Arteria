@@ -58,13 +58,15 @@ These two documents are the authoritative references. All other docs supplement 
 
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc. **Always be documenting** — keeps AI and humans in sync during creative work.*
 
-**Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration pattern), zhip-ai-styling.md (visual/UX reference).
+**Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration path), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.5.1** "Architectural Tome" (Technical User Manual, Engine Taxonomy). Post-0.5.1: Bestiary expansion, companion unlocks, combat alpha groundwork.
-
-**Dev/Prod coexistence:** `2_Build_APK_Local.bat` → Arteria (prod). `1_Run_Local_Android_Build.bat` → Arteria-dev, so both can be installed. `app.config.js` reads `ARTERIA_LEAN_PROD`; batch scripts run prebuild when switching modes. See EXPO_GUIDE §5b, STYLE_GUIDE §7. Restructured from 0.4.x on 2026-02-28 so versioning reflects early-stage development. See CHANGELOG.md.
+**Version scheme:** 0.x.x. Current **0.5.3** "The Legion & The Soul". Post-0.5.3: Companion AI behavior, Slayer shop, Summoning special moves.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
+
+**v0.5.3 (2026-03-06) — The Legion & The Soul:** **New Skills Implementation:** Added- **Slayer & Summoning (0.5.3):** Groundwork for combat tasks and familiar binding.
+- **Complete Skill Registry (0.5.3):** Added all 34 planned skills to the engine and UI.
+- **Level-Up Toast Fix:** Sticky notifications resolved. **Slayer:** Task assignment via "Master Mark" NPC dialogue, new enemies (Crawling Hand, Banshee), Slayer Coins. **Summoning:** 5 binding pouches (Wolf, Dreadfowl, Bull, Spider, Badger), integrated supplies shop, "Elder Spirit-Speaker" dialogue. **Companions:** Hiring system for Barnaby and Garry the Guard; new early-game companion Garry. **UI Fix:** Refactored Level Up Toast to prevent stuck notifications.
 
 **v0.5.2 (2026-03-06) — The Celestial Expansion:** **New Skill: Astrology:** Fully implemented Astrology skill screen with 4 constellations (Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree). **New Items:** Stardust, Golden Stardust, and Meteorite. Integrated Astrology into the core game loop with XP, ticks, and mastery progression. **UI/UX:** Fixed critical linting errors and unified skill navigation for Astrology.
 
@@ -127,3 +129,9 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **Polish:** Food eating during combat (potion/food hotbar), auto-flee at HP threshold, "While You Were Away" combat report, loot popup/toast.
 - **Enemy Scaling:** Ensure enemies calculate attack/defense equivalent to player logic. Add enemy attack speed variation.
 - **Dungeons & Factions:** Dungeon modes (Delves, Expeditions), enemy factions, boss encounters.
+
+**v0.5.3 (In Progress) — The Legion & The Soul:**
+- **Slayer Alpha:** Integrated the Slayer skill with a monster bestiary (Chicken, Cow, Goblin, Wolves). Created the Slayer screen with task tracking (Ready for combat integration).
+- **Summoning Alpha:** Laid the groundwork for familiar spirit binding. Created the Summoning screen for crafting pouches (Spirit Wolf, Dreadfowl, Bull Heifer). Added specific ingredients (shards, pouches, charms).
+- **Companion System (Leadership):** Fully architected the Wandering Souls system. Created the Leadership screen to hire Barnaby, Yvette, and Reginald. Each companion features unique traits and level requirements.
+- **Engine Expansion:** Integrated SlayerTask and PlayerCompanion interfaces into the core engine state. Updated playerFactory to support all 28 planned skills.

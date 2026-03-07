@@ -52,7 +52,10 @@ const ALL_SKILLS: SkillId[] = [
   'scavenging', 'crafting', 'farming',
   'harvesting', 'runecrafting', 'thieving', 'fletching', 'tailoring',
   'construction', 'leadership', 'adventure', 'dungeoneering',
-  'astrology', 'summoning', 'slayer'
+  'astrology', 'summoning', 'slayer',
+  'woodworking', 'sorcery', 'wizardry',
+  'ranged', 'alchemy', 'exploration', 'cleansing', 'barter', 'research', 'chaostheory',
+  'aetherweaving', 'voidwalking', 'celestialbinding', 'chronomancy', 'constitution', 'firemaking', 'magic'
 ];
 
 /** Skills that navigate to the Combat tab when tapped. */

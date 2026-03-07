@@ -77,6 +77,8 @@ export interface DialogueOption {
         removeItems?: InventoryItem[];
         startQuest?: string;
         completeQuestStep?: { questId: string; stepId: string };
+        assignSlayerTask?: boolean;
+        hireCompanion?: string;
     };
 }
 

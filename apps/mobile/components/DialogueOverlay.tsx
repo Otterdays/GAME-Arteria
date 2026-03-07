@@ -124,6 +124,12 @@ export function DialogueOverlay() {
             if (option.onSelect.removeItems) {
                 dispatch(gameActions.removeItems(option.onSelect.removeItems));
             }
+            if (option.onSelect.assignSlayerTask) {
+                dispatch(gameActions.assignSlayerTask());
+            }
+            if (option.onSelect.hireCompanion) {
+                dispatch(gameActions.hireCompanion({ companionId: option.onSelect.hireCompanion }));
+            }
         }
 
         // Move to next node or close

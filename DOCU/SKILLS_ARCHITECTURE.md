@@ -287,3 +287,77 @@ interface AstrologyConstellation {
 - **Slayer Master**: NPC assigns tasks (e.g. "Kill 20 Woodland Wolves").
 - **Task Streaks**: Bonus XP and coins for chaining tasks.
 - **Unlocks**: High Slayer levels unlock exclusive gathering nodes or elite combat instances.
+
+---
+
+## 10. Woodworking
+
+### 10.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Crafting (The Wood Economy) |
+| **Core loop** | Logs → Wood Items (Furniture, Shields, Staves) |
+| **Interaction** | Feeds Construction and Combat (staves/shields) |
+
+### 10.2 Recipes
+| Level | Name | Ingredients | Utility |
+|-------|------|-------------|---------|
+| 1 | Pine Stool | Normal Log x2 | Housing item, low XP |
+| 10 | Training Staff | Oak Log x1 | Combat weapon (magic) |
+| 25 | Willow Shield | Willow Log x2 | Combat armour (defence) |
+| 50 | Maple Dining Table | Maple Log x5 | High-tier housing, massive XP |
+
+---
+
+## 11. Sorcery (The Magic Pillar)
+
+### 11.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Combat / Magic |
+| **Core loop** | Channel Mana + Runes → Offensive Spells |
+| **Cost** | Drains Mana Points per cast + consumes Runes |
+
+### 11.2 Spells (draft)
+- **Lumina Spark (Lv 1)**: Basic light damage.
+- **Voidmire Bolt (Lv 20)**: High damage, chance to "Glitched" enemy.
+- **Astral Storm (Lv 70)**: Multi-target reality tear.
+
+---
+
+## 12. Wizardry (The Support Pillar)
+
+### 12.1 Overview
+| Aspect | Design |
+|--------|--------|
+| **Pillar** | Support / Magic |
+| **Core loop** | Academic Study (Researching Toms/Scrolls) → Magic Passives |
+| **Benefit** | Reduces Rune consumption, increases Mana Max, unlocks new spells for Sorcery |
+
+### 12.2 Research Options
+- **Basic Scroll Reading**: Low XP, first-time unlock for Sorcery.
+- **Tome of the Void**: Requires Scavenged fragments. Unlocks high-tier Void spells.
+- **Celestial Almanac**: Study constellations (Astrology synergy) for global magic speed.
+
+---
+
+## 13. Future / Planned Skills (Soft Registry)
+
+The following skills are registered in the engine and UI as "Coming Soon" or "Planned". Full design documents pending.
+
+| Skill | Pillar | Core Concept |
+|-------|--------|--------------|
+| **Ranged** | Combat | Bows, thrown weapons, and wind-reading mechanics. |
+| **Alchemy** | Crafting | Volatile transmutations and advanced battle-concoctions. |
+| **Exploration** | Support | Map uncovering and hidden dungeon discovery. |
+| **Cleansing** | Support | Purifying cursed gear and healing world corruption. |
+| **Barter** | Support | Economic manipulation and Black Market access. |
+| **Research** | Support | Passive Knowledge Tree progression. |
+| **Chaos Theory** | Support | Embracing randomness and Blibbertooth's whims. |
+| **Aether Weaving** | Cosmic | Reality manipulation for late-game gear. |
+| **Void Walking** | Cosmic | Trailing through reality tears for shortcuts. |
+| **Celestial Binding** | Cosmic | Automation via angelic/spirit contracts. |
+| **Chronomancy** | Cosmic | Time-dilation and offline efficiency boosts. |
+| **Constitution** | Combat | Advanced health regeneration and status resistance. |
+| **Firemaking** | Crafting/Support | Consuming logs for utility buffs and heat. |
+| **Magic** | Combat/Support | Generic mastery over Sorcery and Wizardry. |

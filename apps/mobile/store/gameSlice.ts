@@ -17,6 +17,7 @@ import { getMasteryXpMultiplier } from '@/constants/mastery';
 import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
 import { PRAYER_MAP } from '@/constants/prayers';
+import type { ItemMasteryEntry } from '../../../packages/engine/src/types';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
 // We inline these so the mobile app doesn't need to resolve
@@ -51,13 +52,49 @@ export type SkillId =
     | 'attack'
     | 'strength'
     | 'defence'
-    | 'hitpoints';
+    | 'hitpoints'
+    | 'woodworking'
+    | 'sorcery'
+    | 'wizardry'
+    | 'ranged'
+    | 'alchemy'
+    | 'exploration'
+    | 'cleansing'
+    | 'barter'
+    | 'research'
+    | 'chaostheory'
+    | 'aetherweaving'
+    | 'voidwalking'
+    | 'celestialbinding'
+    | 'chronomancy'
+    | 'constitution'
+    | 'firemaking'
+    | 'magic';
 
 interface SkillState {
     id: SkillId;
     xp: number;
     level: number;
     mastery: Record<string, number>;
+}
+
+export interface SlayerTask {
+    monsterId: string;
+    targetAmount: number;
+    currentAmount: number;
+}
+
+export interface FamiliarState {
+    pouchId: string;
+    expiresAt: number;
+}
+
+export interface PlayerCompanion {
+    id: string;
+    skills: Record<SkillId, SkillState>;
+    isActive: boolean;
+    assignedTaskId: string | null;
+    partialTickMs?: number;
 }
 
 export interface InventoryItem {
@@ -191,12 +228,8 @@ export interface PlayerState {
     transcendences?: Partial<Record<SkillId, number>>;
     /** Is skill transcended (XP curve flattened for this skill)? */
     isTranscended?: Partial<Record<SkillId, boolean>>;
-    /** Item mastery: track totalCrafted, masteryTier, isPerfect per item. */
-    itemMastery?: Partial<Record<string, {
-        totalCrafted: number;
-        masteryTier: number; // 0-4
-        isPerfect: boolean;
-    }>>;
+    /** Item mastery: track totalProduced, masteryTier, isPerfect per item. */
+    itemMastery: Record<string, ItemMasteryEntry>;
     /** Account-wide Cosmic Weight: +0.25% XP per transcendence (global buff). */
     cosmicWeightXPBonus?: number;
     /** Detailed stats: by item type (ore, log, fish, rune, bar, equipment, other), first/last play. */
@@ -262,6 +295,12 @@ export interface PlayerState {
     maxPrayerPoints?: number;
     /** Currently active prayer IDs. */
     activePrayers?: string[];
+    /** Current slayer task */
+    slayerTask?: SlayerTask | null;
+    /** Hired companions and their progress */
+    companions?: Record<string, PlayerCompanion>;
+    /** Currently active summoning familiar (itemId). */
+    activeFamiliar?: FamiliarState | null;
 }
 
 // ─── Helpers ───
@@ -271,17 +310,21 @@ const ALL_SKILLS: SkillId[] = [
     'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring', 'prayer', 'construction', 'leadership', 'adventure', 'dungeoneering',
     'astrology', 'summoning', 'slayer',
     'attack', 'strength', 'defence', 'hitpoints',
+    'woodworking', 'sorcery', 'wizardry',
+    'ranged', 'alchemy', 'exploration', 'cleansing', 'barter', 'research', 'chaostheory',
+    'aetherweaving', 'voidwalking', 'celestialbinding', 'chronomancy', 'constitution', 'firemaking', 'magic',
 ];
 
 // Inline XP table for level calculation
-const XP_TABLE: number[] = [];
-(function buildTable() {
-    XP_TABLE.push(0);
+export const XP_TABLE: number[] = (() => {
+    const table: number[] = [];
+    table.push(0);
     let cum = 0;
-    for (let lvl = 1; lvl < 99; lvl++) {
+    for (let lvl = 1; lvl < 100; lvl++) {
         cum += Math.floor(lvl + 300 * Math.pow(2, lvl / 7)) / 4;
-        XP_TABLE.push(Math.floor(cum));
+        table.push(Math.floor(cum));
     }
+    return table;
 })();
 
 function levelForXP(xp: number): number {
@@ -374,6 +417,10 @@ function createFreshPlayer(): PlayerState {
         prayerPoints: 10,
         maxPrayerPoints: 10,
         activePrayers: [],
+        slayerTask: null,
+        companions: {},
+        activeFamiliar: null,
+        itemMastery: {},
     };
 }
 
@@ -406,6 +453,20 @@ export function recalculateCombatStats(player: PlayerState): void {
             if (slot === 'weapon' && stats.attackSpeed) {
                 attackSpeed = stats.attackSpeed;
             }
+        }
+    }
+
+    // Familiar Buffs
+    if (player.activeFamiliar) {
+        const { SUMMONING_POUCHES } = require('@/constants/summoning');
+        const pouch = SUMMONING_POUCHES.find((p: any) => p.id === player.activeFamiliar?.pouchId);
+        if (pouch && pouch.buff.stat && pouch.buff.value) {
+            const val = pouch.buff.value ?? 0;
+            if (pouch.buff.stat === 'maxHit') maxHit += val;
+            if (pouch.buff.stat === 'accuracy') accuracy += val;
+            if (pouch.buff.stat === 'meleeDefence') meleeDefence += val;
+            if (pouch.buff.stat === 'rangedDefence') rangedDefence += val;
+            if (pouch.buff.stat === 'magicDefence') magicDefence += val;
         }
     }
 
@@ -514,7 +575,10 @@ function migratePlayer(saved: PlayerState): PlayerState {
         return item;
     });
 
-    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory };
+    const slayerTask = saved.slayerTask ?? null;
+    const companions = saved.companions ?? {};
+
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions };
     recalculateCombatStats(migrated);
     return migrated;
 }
@@ -1119,6 +1183,216 @@ export const gameSlice = createSlice({
             state.lootVacuumQueue = state.lootVacuumQueue.filter((e) => e.id !== action.payload);
         },
 
+        // ─── Slayer Reducers ───
+
+        /** Assign a random Slayer task based on level. */
+        assignSlayerTask(state) {
+            const { SLAYER_MONSTERS } = require('@/constants/slayer');
+            const level = state.player.skills.slayer.level;
+            const possible = SLAYER_MONSTERS.filter((m: any) => m.levelReq <= level);
+            if (possible.length === 0) return;
+
+            const monster = possible[Math.floor(Math.random() * possible.length)];
+            const amount = Math.floor(Math.random() * 36) + 15; // 15-50
+
+            state.player.slayerTask = {
+                monsterId: monster.id,
+                targetAmount: amount,
+                currentAmount: 0,
+            };
+
+            state.feedbackToastQueue.push({
+                id: Math.random().toString(36).substring(7),
+                type: 'info',
+                title: 'New Slayer Task',
+                message: `Go hunt ${amount}x ${monster.name}!`,
+            });
+        },
+
+        /** Cancel current task for a small gold fee or just clear it. */
+        cancelSlayerTask(state) {
+            state.player.slayerTask = null;
+        },
+
+        /** Progress slayer task (called from combat engine). */
+        progressSlayerTask(state, action: PayloadAction<{ monsterId: string; quantity: number }>) {
+            const task = state.player.slayerTask;
+            if (!task || task.monsterId !== action.payload.monsterId) return;
+
+            task.currentAmount = Math.min(task.targetAmount, task.currentAmount + action.payload.quantity);
+
+            if (task.currentAmount >= task.targetAmount) {
+                // Task Complete!
+                const { SLAYER_MONSTERS } = require('@/constants/slayer');
+                const monster = SLAYER_MONSTERS.find((m: any) => m.id === task.monsterId);
+                const bonusXp = (monster?.slayerXpPerKill ?? 10) * task.targetAmount * 0.5; // Bonus completion XP
+
+                state.player.slayerTask = null;
+                state.feedbackToastQueue.push({
+                    id: Math.random().toString(36).substring(7),
+                    type: 'lucky',
+                    title: 'Task Complete!',
+                    message: `You finished your ${monster?.name} bounty!`,
+                });
+
+                // Dispatching applyXP inside reducer is technically not allowed, logic should be handled by caller or state update.
+                // But for now we just handle XP separately or let the combat loop handle it.
+            }
+        },
+
+        // ─── Summoning Reducers ───
+
+        /** Bind a pouch: consumes ingredients, grants XP and the pouch item. */
+        bindSummoningPouch(state, action: PayloadAction<{ pouchId: string }>) {
+            const { SUMMONING_POUCHES } = require('@/constants/summoning');
+            const pouch = SUMMONING_POUCHES.find((p: any) => p.id === action.payload.pouchId);
+            if (!pouch) return;
+
+            // Ingredient check
+            const hasAll = pouch.ingredients.every((ing: any) => {
+                const inv = state.player.inventory.find(i => i.id === ing.id);
+                return inv && inv.quantity >= ing.quantity;
+            });
+
+            if (!hasAll) return;
+
+            // Consume
+            for (const ing of pouch.ingredients) {
+                const inv = state.player.inventory.find(i => i.id === ing.id);
+                if (inv) inv.quantity -= ing.quantity;
+            }
+            state.player.inventory = state.player.inventory.filter(i => i.quantity > 0);
+
+            // Grant Item
+            const existing = state.player.inventory.find(i => i.id === pouch.id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                state.player.inventory.push({ id: pouch.id, quantity: 1 });
+            }
+
+            // XP Logic (Manual call to applyXP-like logic since we are in a reducer)
+            const skill = state.player.skills.summoning;
+            const oldLevel = skill.level;
+            skill.xp += pouch.xpPerPouch;
+            skill.level = levelForXP(skill.xp);
+
+            if (skill.level > oldLevel) {
+                state.levelUpQueue.push({
+                    id: Math.random().toString(36).substring(7),
+                    skillId: 'summoning',
+                    level: skill.level,
+                });
+            }
+
+            state.feedbackToastQueue.push({
+                id: Math.random().toString(36).substring(7),
+                type: 'info',
+                title: 'Pouch Bound',
+                message: `You bound a ${pouch.name}! (+${pouch.xpPerPouch} XP)`,
+            });
+        },
+
+        // ─── Leadership Reducers ───
+
+        /** Hire a soul into the companion roster. */
+        hireCompanion(state, action: PayloadAction<{ companionId: string }>) {
+            const { COMPANIONS } = require('@/constants/companions');
+            const def = COMPANIONS.find((c: any) => c.id === action.payload.companionId);
+            if (!def || state.player.skills.leadership.level < def.levelReq) return;
+
+            if (!state.player.companions) state.player.companions = {};
+            if (state.player.companions[def.id]) return;
+
+            // Initialize companion state
+            const companionSkills = {} as Record<SkillId, SkillState>;
+            const skillIds: SkillId[] = [
+                'mining', 'logging', 'fishing', 'runecrafting', 'harvesting',
+                'scavenging', 'cooking', 'smithing', 'forging', 'crafting',
+                'farming', 'herblore', 'agility', 'thieving', 'fletching',
+                'tailoring', 'prayer', 'construction', 'leadership', 'adventure',
+                'dungeoneering', 'astrology', 'summoning', 'slayer', 'attack',
+                'strength', 'defence', 'hitpoints'
+            ];
+
+            skillIds.forEach(id => {
+                companionSkills[id] = { id, xp: 0, level: 1, mastery: {} };
+            });
+
+            state.player.companions[def.id] = {
+                id: def.id,
+                isActive: false,
+                skills: companionSkills,
+                assignedTaskId: null,
+            };
+
+            state.feedbackToastQueue.push({
+                id: Math.random().toString(36).substring(7),
+                type: 'lucky',
+                title: 'Soul Hired',
+                message: `${def.name} has joined your roster.`,
+            });
+        },
+
+        /** Toggle a companion as active (respects roster limits). */
+        toggleCompanionActive(state, action: PayloadAction<{ companionId: string }>) {
+            const c = state.player.companions?.[action.payload.companionId];
+            if (!c) return;
+
+            if (!c.isActive) {
+                // Check limit
+                const level = state.player.skills.leadership.level;
+                const max = level >= 50 ? 3 : level >= 35 ? 2 : level >= 20 ? 1 : 0;
+                const activeCount = Object.values(state.player.companions || {}).filter(x => x.isActive).length;
+                if (activeCount >= max) {
+                    state.feedbackToastQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        type: 'warning',
+                        title: 'Roster Full',
+                        message: `At Leadership Lv. ${level}, you can only have ${max} active souls.`,
+                    });
+                    return;
+                }
+                c.isActive = true;
+            } else {
+                c.isActive = false;
+            }
+        },
+
+        /** Assign a hired companion to a specific gathering task. */
+        assignCompanionTask(state, action: PayloadAction<{ companionId: string; taskId: string }>) {
+            const { companionId, taskId } = action.payload;
+            const c = state.player.companions?.[companionId];
+            if (!c) return;
+
+            // For now, only gathering tasks (mining, logging, etc.) are allowed
+            c.assignedTaskId = taskId;
+        },
+
+        /** Remove a companion from their current task. */
+        unassignCompanionTask(state, action: PayloadAction<{ companionId: string }>) {
+            const c = state.player.companions?.[action.payload.companionId];
+            if (c) c.assignedTaskId = null;
+        },
+
+        /** Give XP to a companion. */
+        addCompanionXP(state, action: PayloadAction<{ companionId: string; skillId: SkillId; xp: number }>) {
+            const { companionId, skillId, xp } = action.payload;
+            const c = state.player.companions?.[companionId];
+            if (!c) return;
+            const sk = c.skills[skillId];
+            if (!sk) return;
+
+            sk.xp += xp;
+            sk.level = levelForXP(sk.xp);
+        },
+
+        /** Update partial tick for a companion. */
+        updateCompanionPartialTick(state, action: PayloadAction<{ companionId: string; partialMs: number }>) {
+            const c = state.player.companions?.[action.payload.companionId];
+            if (c) c.partialTickMs = action.payload.partialMs;
+        },
+
         /** Sell an item (to Nick / merchant). */
         sellItem(state, action: PayloadAction<{ id: string; quantity: number; pricePer: number }>) {
             const { id, quantity, pricePer } = action.payload;
@@ -1557,6 +1831,45 @@ export const gameSlice = createSlice({
                 state.player.activePrayers.push(prayerId);
             }
         },
+        /** Summon a familiar to gain passive buffs. Lasts 60 minutes. */
+        summonFamiliar(state, action: PayloadAction<{ pouchId: string }>) {
+            const { pouchId } = action.payload;
+            // Consume 1 pouch
+            const inv = state.player.inventory.find(i => i.id === pouchId);
+            if (!inv || inv.quantity < 1) return;
+            inv.quantity--;
+
+            state.player.activeFamiliar = {
+                pouchId,
+                expiresAt: Date.now() + 60 * 60 * 1000 // 60 minutes
+            };
+            recalculateCombatStats(state.player);
+
+            state.combatLog.push({
+                id: combatLogIdCounter++,
+                message: `You summon your ${pouchId.replace(/_/g, ' ')}!`,
+                type: 'info',
+                timestamp: Date.now(),
+            });
+        },
+        /** Dismiss current familiar. */
+        dismissFamiliar(state) {
+            state.player.activeFamiliar = null;
+            recalculateCombatStats(state.player);
+        },
+        /** Check if familiar expired. */
+        checkFamiliarExpiry(state) {
+            if (state.player.activeFamiliar && Date.now() > state.player.activeFamiliar.expiresAt) {
+                state.player.activeFamiliar = null;
+                recalculateCombatStats(state.player);
+                state.combatLog.push({
+                    id: combatLogIdCounter++,
+                    message: "Your familiar has returned to the spirit realm.",
+                    type: 'info',
+                    timestamp: Date.now(),
+                });
+            }
+        },
         /** Helper to ensure lifetimeStats exists (internal use in reducers) */
         _ensureLifetimeStats(state: any) {
             if (!state.player.lifetimeStats) {
@@ -1702,6 +2015,30 @@ export const gameSlice = createSlice({
                             timestamp: Date.now(),
                         });
 
+                        // Slayer progress
+                        const task = state.player.slayerTask;
+                        if (task && task.monsterId === combat.enemyId) {
+                            task.currentAmount = Math.min(task.targetAmount, task.currentAmount + 1);
+
+                            const { SLAYER_MONSTERS } = require('@/constants/slayer');
+                            const monster = SLAYER_MONSTERS.find((m: any) => m.id === combat.enemyId);
+                            if (monster) {
+                                applyCombatXP('slayer', monster.slayerXpPerKill);
+                            }
+
+                            if (task.currentAmount >= task.targetAmount) {
+                                const bonus = (monster?.slayerXpPerKill ?? 10) * task.targetAmount * 0.5;
+                                applyCombatXP('slayer', bonus);
+                                state.player.slayerTask = null;
+                                state.feedbackToastQueue.push({
+                                    id: Math.random().toString(36).substring(7),
+                                    type: 'lucky',
+                                    title: 'Slayer Task Complete!',
+                                    message: `You finished your ${monster?.name} bounty!`,
+                                });
+                            }
+                        }
+
                         // ── Combat XP — style determines distribution ──
                         // Hitpoints always gets 33% of base XP (like OSRS)
                         // The remaining style-specific XP goes to the chosen skill(s)
@@ -1736,8 +2073,12 @@ export const gameSlice = createSlice({
                         const { ENEMIES } = require('@/constants/enemies');
                         const enemyMeta = ENEMIES[combat.enemyId];
                         if (enemyMeta?.drops) {
+                            let lootMult = 1;
+                            if (state.player.activeFamiliar?.pouchId === 'spirit_spider_pouch') {
+                                lootMult = 1.05;
+                            }
                             for (const drop of enemyMeta.drops) {
-                                if (Math.random() < drop.chance) {
+                                if (Math.random() < (drop.chance * lootMult)) {
                                     const qty = drop.minQty + Math.floor(Math.random() * (drop.maxQty - drop.minQty + 1));
                                     const existing = state.player.inventory.find(i => i.id === drop.itemId);
                                     if (existing) {
@@ -1747,7 +2088,7 @@ export const gameSlice = createSlice({
                                     }
                                     state.combatLog.push({
                                         id: combatLogIdCounter++,
-                                        message: `Loot: ${drop.itemId} x${qty}`,
+                                        message: `Loot: ${drop.itemId.replace(/_/g, ' ')} x${qty}`,
                                         type: 'loot',
                                         timestamp: Date.now(),
                                     });
@@ -1775,7 +2116,61 @@ export const gameSlice = createSlice({
                             playerStats.currentHitpoints + healAmount
                         );
 
+                        // ── Elite Spawn Logic (5% chance) ──
+                        if (Math.random() < 0.05) {
+                            let eliteId = null;
+                            if (combat.enemyId === 'enemy_goblin') eliteId = 'enemy_goblin_elite';
+                            else if (combat.enemyId === 'enemy_skeleton') eliteId = 'enemy_skeleton_elite';
+
+                            if (eliteId) {
+                                const eliteMeta = ENEMIES[eliteId];
+                                if (eliteMeta && eliteMeta.combat) {
+                                    combat.enemyId = eliteId;
+                                    combat.enemyName = eliteMeta.name;
+                                    combat.enemyMaxHp = eliteMeta.combat.hp;
+                                    combat.enemyCurrentHp = eliteMeta.combat.hp;
+                                    combat.enemyAttack = eliteMeta.combat.attack;
+                                    combat.enemyAccuracy = eliteMeta.combat.accuracy ?? 0.8;
+                                    combat.enemyAttackSpeed = eliteMeta.combat.attackSpeed ?? 2400;
+
+                                    state.feedbackToastQueue.push({
+                                        id: Math.random().toString(36).substring(7),
+                                        type: 'warning',
+                                        title: 'ELITE SPAWNED!',
+                                        message: `A ${eliteMeta.name} has appeared!`,
+                                    });
+
+                                    state.combatLog.push({
+                                        id: combatLogIdCounter++,
+                                        message: `🚨 A ${eliteMeta.name} ambushes you!`,
+                                        type: 'info',
+                                        timestamp: Date.now(),
+                                    });
+
+                                    // Reset timers
+                                    combat.playerAttackTimerMs = 0;
+                                    combat.enemyAttackTimerMs = 0;
+                                    return; // Skip normal respawn
+                                }
+                            }
+                        }
+
                         // Respawn enemy (auto-battler: continuous fighting)
+                        const originalMeta = ENEMIES[combat.enemyId];
+                        // If we were fighting an elite, respawn the base version
+                        if (combat.enemyId.includes('elite')) {
+                            const baseId = combat.enemyId.replace('_elite', '');
+                            const baseMeta = ENEMIES[baseId];
+                            if (baseMeta && baseMeta.combat) {
+                                combat.enemyId = baseId;
+                                combat.enemyName = baseMeta.name;
+                                combat.enemyMaxHp = baseMeta.combat.hp;
+                                combat.enemyAttack = baseMeta.combat.attack;
+                                combat.enemyAccuracy = baseMeta.combat.accuracy ?? 0.8;
+                                combat.enemyAttackSpeed = baseMeta.combat.attackSpeed ?? 2400;
+                            }
+                        }
+
                         combat.enemyCurrentHp = combat.enemyMaxHp;
                         combat.playerAttackTimerMs = 0;
                         combat.enemyAttackTimerMs = 0;

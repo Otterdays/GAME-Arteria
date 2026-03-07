@@ -98,15 +98,19 @@ app.post('/api/scrape', async (req, res) => {
     const title = await page.title();
 
     let content = await page.content();
+    let textContent = await page.evaluate(() => document.body.innerText);
+
     if (extractMain) {
       for (const sel of MAIN_CONTENT_SELECTORS) {
         try {
           const el = await page.$(sel);
           if (el) {
             const inner = await el.innerHTML();
+            const innerText = await el.innerText();
             await el.dispose();
             if (inner && inner.length > 100) {
               content = inner;
+              textContent = innerText;
               break;
             }
           }
@@ -127,6 +131,7 @@ app.post('/api/scrape', async (req, res) => {
       title,
       html: content,
       markdown,
+      text: textContent,
       extracted: extractMain,
     });
   } catch (err) {
@@ -140,7 +145,10 @@ app.post('/api/save', async (req, res) => {
   if (!filename || !content) {
     return res.status(400).json({ ok: false, error: 'Missing filename or content' });
   }
-  const ext = format === 'markdown' ? 'md' : 'html';
+  let ext = 'html';
+  if (format === 'markdown') ext = 'md';
+  if (format === 'text') ext = 'txt';
+  
   const safe = filename.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 120);
   const filepath = join(OUTPUT_DIR, `${safe}.${ext}`);
   try {

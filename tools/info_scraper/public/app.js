@@ -27,7 +27,10 @@ function slugFromUrl(url) {
 }
 
 function getPreviewContent(data, format) {
-  const content = format === 'markdown' ? data.markdown : data.html;
+  let content = data.html;
+  if (format === 'markdown') content = data.markdown;
+  if (format === 'text') content = data.text;
+  
   if (!content) return '';
   if (content.length > 50000) return content.slice(0, 50000) + '\n\n… (truncated)';
   return content;
@@ -39,7 +42,7 @@ scrapeBtn.addEventListener('click', async () => {
     setStatus('Enter a URL.', 'error');
     return;
   }
-  const format = document.querySelector('input[name="format"]:checked')?.value || 'html';
+  const format = document.querySelector('input[name="format"]:checked')?.value || 'text';
   scrapeBtn.disabled = true;
   setStatus('Scraping…', 'loading');
   preview.textContent = '';
@@ -82,7 +85,10 @@ scrapeBtn.addEventListener('click', async () => {
 saveBtn.addEventListener('click', async () => {
   if (!lastResult) return;
   const format = saveFormat.value;
-  let content = format === 'markdown' ? lastResult.markdown : lastResult.html;
+  let content = lastResult.html;
+  if (format === 'markdown') content = lastResult.markdown;
+  if (format === 'text') content = lastResult.text;
+  
   if (!content && format === 'markdown' && lastResult.html) {
     content = lastResult.html;
   }
@@ -90,9 +96,7 @@ saveBtn.addEventListener('click', async () => {
     setStatus('No content to save. Scrape again.', 'error');
     return;
   }
-  const actualFormat = (format === 'markdown' && lastResult.markdown)
-    ? 'markdown'
-    : 'html';
+  
   saveBtn.disabled = true;
   setStatus('Saving…', 'loading');
 
@@ -103,7 +107,7 @@ saveBtn.addEventListener('click', async () => {
       body: JSON.stringify({
         filename: slugFromUrl(lastResult.url),
         content,
-        format: actualFormat,
+        format,
       }),
     });
     const data = await res.json();

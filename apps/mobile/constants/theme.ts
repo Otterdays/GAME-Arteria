@@ -65,6 +65,26 @@ export type PaletteShape = {
   skillStrength: string;
   skillDefence: string;
   skillHitpoints: string;
+  skillSlayer: string;
+  skillSummoning: string;
+  skillLeadership: string;
+  skillWoodworking: string;
+  skillSorcery: string;
+  skillWizardry: string;
+  skillRanged: string;
+  skillAlchemy: string;
+  skillExploration: string;
+  skillCleansing: string;
+  skillBarter: string;
+  skillResearch: string;
+  skillChaostheory: string;
+  skillAetherweaving: string;
+  skillVoidwalking: string;
+  skillCelestialbinding: string;
+  skillChronomancy: string;
+  skillConstitution: string;
+  skillFiremaking: string;
+  skillMagic: string;
 };
 
 // ── Core Palette (from design spec) ─────────────────────────
@@ -132,6 +152,26 @@ const DARK_PALETTE: PaletteShape = {
   skillStrength: '#2ecc71',
   skillDefence: '#3498db',
   skillHitpoints: '#e74c3c',
+  skillSlayer: '#954c3c',
+  skillSummoning: '#4c953c',
+  skillLeadership: '#4c3c95',
+  skillWoodworking: '#8e4e2a',
+  skillSorcery: '#6a0dad',
+  skillWizardry: '#4169e1',
+  skillRanged: '#2ed573',
+  skillAlchemy: '#1e90ff',
+  skillExploration: '#7bed9f',
+  skillCleansing: '#ffffff',
+  skillBarter: '#eccc68',
+  skillResearch: '#a4b0be',
+  skillChaostheory: '#ff4757',
+  skillAetherweaving: '#5352ed',
+  skillVoidwalking: '#2f3542',
+  skillCelestialbinding: '#ffa502',
+  skillChronomancy: '#3742fa',
+  skillConstitution: '#ff6b81',
+  skillFiremaking: '#ff4757',
+  skillMagic: '#a29bfe',
 };
 
 /** Theme registry. [TRACE: DOCU/THEMING.md] */

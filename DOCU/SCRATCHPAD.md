@@ -5,9 +5,28 @@
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
-**Active Task:** Successfully launched **The Celestial Expansion (v0.5.2)**. Fully implemented **Astrology** as the 11th active skill. Next steps: Begin groundwork for **Summoning** (Familiar binding) and **Slayer** (Combat tasks). Monitor the new unified skill navigation for edge cases.
+**Active Task:**
+- [ ] Implement Companion AI Behavior (v0.5.4)
+- [ ] Implement Slayer Shop functionality (v0.5.4)
+- [ ] Implement Woodworking core loop (v0.5.5)
+- [ ] Implement Sorcery/Wizardry core loops (v0.5.6)
+- [x] Implement Slayer core loop (v0.5.3)
+- [x] Implement Summoning core loop (v0.5.3)
+- [x] Implement Companions (Leadership) hiring (v0.5.3)
+- [x] Fix stuck Level Up Toast (v0.5.3)
+- [x] Groundwork for Woodworking, Sorcery, Wizardry (v0.5.3) [TRACE: User Request]
+- [x] Cooking Expansion with Perfect Variants (v0.5.3)
+- [x] Summoning familiar decay & specific skill bonuses (Spider & Badger) (v0.5.3)
+- [x] Dynamic Coming Soon UI locking screen for unimplemented skills (v0.5.3)
+- [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
 
-**Completed Task:** Implemented **Astrology** skill! Built the custom star-chart UI with 4 constellations (Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree). Added `Stardust`, `Golden Stardust`, and `Meteorite` items. Integrated with the core game loop, navigation arrows, and the skill header progression bar. Resolved critical TypeScript lints and bumped version to `v0.5.2`.
+**Completed Task:** Fully implemented **Cooking Expansion & Summoning Details** (v0.5.3).
+
+## [2026-03-06] v0.5.3 "The Legion & The Soul"
+- **New Skill: Slayer:** Task assignment via Master Mark; added Crawling Hand and Banshee enemies; Slayer Coins item.
+- **New Skill: Summoning:** 5 pouches; integrated screen shop for shards/pouches; Elder Spirit-Speaker dialogue.
+- **Companion System:** Hiring logic via dialogue; added Garry the Guard.
+- **UI Fix:** Refactored Level Up Toast to use refs, resolving the "stuck toast" bug.
 
 ## [2026-03-06] v0.5.2 "The Celestial Expansion"
 - **New Skill: Astrology:** Fully implemented the Astrology skill screen (`astrology.tsx`). Includes 4 constellations each with unique drops and level requirements. Study stars to gather cosmic materials while idle.

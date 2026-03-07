@@ -4,4 +4,7 @@ export { HARVESTING_ACTIONS } from './harvesting';
 export { FISHING_ACTIONS } from './fishing';
 export { SCAVENGING_ACTIONS } from './scavenging';
 export { ASTROLOGY_ACTIONS } from './astrology';
+export { SLAYER_MONSTERS } from './slayer';
+export { SUMMONING_POUCHES } from './summoning';
+export { COMPANIONS } from './leadership';
 export { createNewPlayer } from './playerFactory';

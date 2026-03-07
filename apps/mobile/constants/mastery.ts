@@ -203,3 +203,39 @@ export function getMasteryPreserveChance(player: PlayerState, skillId: SkillId):
 export function getMasteryBonusLevel(player: PlayerState, skillId: SkillId, upgradeId: string): number {
     return player.masterySpent?.[skillId]?.[upgradeId] ?? 0;
 }
+
+/** 
+ * Item Mastery: Bonuses based on total produced count.
+ * T1: 100+ -> +5% speed
+ * T2: 500+ -> +10% yield
+ * T3: 2500+ -> +15% speed (total)
+ * T4: 10000+ -> +20% yield (total)
+ */
+export function getItemMasteryTier(count: number): number {
+    if (count >= 10000) return 4;
+    if (count >= 2500) return 3;
+    if (count >= 500) return 2;
+    if (count >= 100) return 1;
+    return 0;
+}
+
+export function getItemMasterySpeedBonus(count: number): number {
+    const tier = getItemMasteryTier(count);
+    if (tier >= 3) return 1.15;
+    if (tier >= 1) return 1.05;
+    return 1;
+}
+
+export function getItemMasteryYieldBonus(count: number): number {
+    const tier = getItemMasteryTier(count);
+    if (tier >= 4) return 1.20;
+    if (tier >= 2) return 1.10;
+    return 1;
+}
+
+export function getPerfectCookChance(player: PlayerState, itemId: string): number {
+    const stats = player.itemMastery?.[itemId];
+    const tier = stats ? getItemMasteryTier(stats.totalProduced) : 0;
+    // 2% base + 2% per tier (Max 10%)
+    return 0.02 + (tier * 0.02);
+}

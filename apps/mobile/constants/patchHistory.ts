@@ -2,7 +2,7 @@
  * Patch History — Full changelog from CHANGELOG.md.
  * Hardcoded patch history for Arteria.
  * Displayed in the in-game Settings -> Patch Notes screen.
- * Current release: 0.5.2 "Celestial Expansion"
+ * Current release: 0.5.3 "The Legion & The Soul"
  */
 
 export interface PatchEntry {
@@ -14,6 +14,21 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.5.3',
+    date: '2026-03-06',
+    added: [
+      '💀 New Skill: Slayer. Speak to "Master Mark" to receive tasks to cull specific monsters. Earn Slayer Coins to spend in the future Slayer Shop.',
+      '🐺 New Skill: Summoning. Gather charms from combat and shards from the shop to bind spirits into pouches. Added 5 initial pouches: Spirit Wolf, Dreadfowl, Bull Heifer, Spirit Spider, and Honey Badger.',
+      '🤝 Companion System: You can now hire wandering souls to join your cause. Added Garry the Guard as an early-game companion (Lv. 10 Leadership).',
+      '💬 Narrated Actions: Hiring companions and accepting Slayer tasks is now handled through the branching dialogue system for deeper immersion.',
+      '👹 New Enemies: Added Crawling Hand (Lv. 5) and Banshee (Lv. 15) to the Slayer Tower (B1).',
+      '🏪 Summoning Supplies: Integrated the Summoning Shop directly into the skill screen for quick access to Spirit Pouches and Shards.',
+    ],
+    fixed: [
+      '🍞 Level Up Toast Fix: Completely refactored the toast notification system to prevent "stuck" toasts. Uses refs for timer management and animation state to ensure smooth dismissal.',
+    ],
+  },
   {
     version: '0.5.2',
     date: '2026-03-06',

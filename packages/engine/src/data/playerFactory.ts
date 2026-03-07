@@ -7,9 +7,10 @@ import type { PlayerState, SkillId, SkillState } from '../types';
 const ALL_SKILLS: SkillId[] = [
     'mining',
     'logging',
+    'fishing',
+    'runecrafting',
     'harvesting',
     'scavenging',
-    'fishing',
     'cooking',
     'smithing',
     'forging',
@@ -17,6 +18,17 @@ const ALL_SKILLS: SkillId[] = [
     'farming',
     'herblore',
     'agility',
+    'thieving',
+    'fletching',
+    'tailoring',
+    'construction',
+    'leadership',
+    'adventure',
+    'dungeoneering',
+    'astrology',
+    'summoning',
+    'slayer',
+    'prayer',
     'attack',
     'strength',
     'defence',
@@ -27,7 +39,7 @@ function makeSkill(id: SkillId, startXP: number = 0): SkillState {
     return {
         id,
         xp: startXP,
-        level: startXP > 0 ? 1 : 1, // Will be recalculated by XPTable
+        level: id === 'hitpoints' ? 10 : 1,
         mastery: {},
     };
 }
@@ -35,10 +47,8 @@ function makeSkill(id: SkillId, startXP: number = 0): SkillState {
 export function createNewPlayer(name: string = 'Adventurer'): PlayerState {
     const skills = {} as Record<SkillId, SkillState>;
     for (const skillId of ALL_SKILLS) {
-        // Hitpoints starts at level 10 (1,154 XP) like classic RPGs
         if (skillId === 'hitpoints') {
             skills[skillId] = makeSkill(skillId, 1154);
-            skills[skillId].level = 10;
         } else {
             skills[skillId] = makeSkill(skillId);
         }
@@ -67,5 +77,7 @@ export function createNewPlayer(name: string = 'Adventurer'): PlayerState {
             activeQuests: {},
             completedQuests: [],
         },
+        slayerTask: null,
+        companions: {},
     };
 }

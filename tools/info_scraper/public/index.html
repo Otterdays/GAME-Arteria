@@ -129,8 +129,9 @@
       </div>
       <div class="row opts">
         <label class="opt"><input type="checkbox" id="extractMain" checked /> Extract main content</label>
-        <label class="opt"><input type="radio" name="format" value="html" checked /> HTML</label>
+        <label class="opt"><input type="radio" name="format" value="text" checked /> Text Only</label>
         <label class="opt"><input type="radio" name="format" value="markdown" /> Markdown</label>
+        <label class="opt"><input type="radio" name="format" value="html" /> HTML</label>
       </div>
       <div id="status"></div>
     </div>
@@ -140,8 +141,9 @@
         <strong>Preview</strong>
         <div class="save-row">
           <select id="saveFormat">
-            <option value="html">Save as HTML</option>
+            <option value="text">Save as Text</option>
             <option value="markdown">Save as Markdown</option>
+            <option value="html">Save as HTML</option>
           </select>
           <button class="btn-secondary" id="save" disabled>Save to output/</button>
         </div>

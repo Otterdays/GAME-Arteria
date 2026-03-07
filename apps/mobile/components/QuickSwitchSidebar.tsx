@@ -16,6 +16,7 @@ import {
     StyleSheet,
     Pressable,
     Platform,
+    ScrollView,
 } from 'react-native';
 import Animated, {
     useSharedValue,
@@ -229,28 +230,26 @@ export function QuickSwitchSidebar() {
                     ]}
                     style={StyleSheet.absoluteFill}
                 />
-                <View style={styles.sidebarContent}>
+                <ScrollView style={styles.sidebarContent} contentContainerStyle={styles.skillList} showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Quick Switch</Text>
                     <Text style={styles.subtitle}>Jump between skills</Text>
-                    <View style={styles.skillList}>
-                        {[...IMPLEMENTED_GATHERING_SKILLS, ...IMPLEMENTED_CRAFTING_SKILLS].map((skillId) => (
-                            <SkillRow
-                                key={skillId}
-                                skillId={skillId}
-                                isActive={activeTask?.skillId === skillId}
-                                onNavigate={handleSkillPress}
-                                palette={palette}
-                                styles={styles}
-                            />
-                        ))}
-                    </View>
+                    {[...IMPLEMENTED_GATHERING_SKILLS, ...IMPLEMENTED_CRAFTING_SKILLS].map((skillId) => (
+                        <SkillRow
+                            key={skillId}
+                            skillId={skillId}
+                            isActive={activeTask?.skillId === skillId}
+                            onNavigate={handleSkillPress}
+                            palette={palette}
+                            styles={styles}
+                        />
+                    ))}
                     <View style={styles.footer}>
                         <View style={styles.footerLine} />
                         <Text style={styles.footerText}>
                             Tap outside to close
                         </Text>
                     </View>
-                </View>
+                </ScrollView>
             </Animated.View>
         </>
     );

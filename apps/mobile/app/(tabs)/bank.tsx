@@ -36,6 +36,8 @@ function getUsedInSkills(type: ItemType): string {
         rune: 'Runecrafting',
         equipment: 'Forging',
         other: '',
+        pouch: 'Summoning',
+        summoning: 'Summoning',
     };
     return map[type] ?? '';
 }
@@ -44,6 +46,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
+import { getItemMasteryTier, getItemMasterySpeedBonus, getItemMasteryYieldBonus } from '@/constants/mastery';
 
 const BANK_CUSTOM_TABS_MAX = 6;
 
@@ -127,6 +130,48 @@ function ItemDetailModal({
                             💰 {(meta.sellValue * item.quantity).toLocaleString()}
                         </Text>
                     </View>
+
+                    <View style={styles.detailSeparator} />
+
+                    {/* Item Mastery Section */}
+                    {(() => {
+                        const lifetime = useAppSelector(s => s.game.player.lifetimeStats);
+                        const count = lifetime?.byItem?.[item.id] ?? 0;
+                        const tier = getItemMasteryTier(count);
+                        const speed = getItemMasterySpeedBonus(count);
+                        const yields = getItemMasteryYieldBonus(count);
+
+                        let nextThreshold = 100;
+                        if (tier === 1) nextThreshold = 500;
+                        else if (tier === 2) nextThreshold = 2500;
+                        else if (tier === 3) nextThreshold = 10000;
+
+                        const progress = tier === 4 ? 1 : Math.min(1, count / nextThreshold);
+
+                        return (
+                            <View style={styles.masterySection}>
+                                <View style={styles.detailRow}>
+                                    <Text style={[styles.detailStatLabel, { color: tier > 0 ? '#fbbf24' : '#9ca3af' }]}>
+                                        Mastery Tier {tier > 0 ? 'I'.repeat(tier).replace(/IIII/, 'IV') : '0'}
+                                    </Text>
+                                    <Text style={styles.detailStatValue}>{count.toLocaleString()} Produced</Text>
+                                </View>
+                                {tier < 4 && (
+                                    <View style={styles.masteryProgressBg}>
+                                        <View style={[styles.masteryProgressFill, { width: `${progress * 100}%` }]} />
+                                    </View>
+                                )}
+                                <View style={styles.masteryBonusRow}>
+                                    <Text style={[styles.masteryBonusText, { color: speed > 1 ? '#10b981' : '#6b7280' }]}>
+                                        ⚡ Speed: {speed > 1 ? `+${Math.round((speed - 1) * 100)}%` : 'Base'}
+                                    </Text>
+                                    <Text style={[styles.masteryBonusText, { color: yields > 1 ? '#10b981' : '#6b7280' }]}>
+                                        📦 Yield: {yields > 1 ? `+${Math.round((yields - 1) * 100)}%` : 'Base'}
+                                    </Text>
+                                </View>
+                            </View>
+                        );
+                    })()}
 
                     <View style={styles.detailSeparator} />
 
@@ -661,6 +706,22 @@ export default function BankScreen() {
                     gap: Spacing.sm,
                     marginTop: Spacing.xs,
                 },
+                // Mastery styles
+                masterySection: { marginVertical: 4 },
+                masteryProgressBg: {
+                    height: 8,
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    borderRadius: 4,
+                    marginVertical: 10,
+                    overflow: 'hidden',
+                },
+                masteryProgressFill: {
+                    height: '100%',
+                    backgroundColor: '#fbbf24',
+                },
+                masteryBonusRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+                masteryBonusText: { fontSize: 12, fontWeight: 'bold' },
+
                 detailSellButton: {
                     flex: 1,
                     backgroundColor: palette.bgCard,

@@ -21,10 +21,23 @@ const SKILL_EMOJIS: Partial<Record<SkillId, string>> = {
     fishing: '🎣',
     cooking: '🍳',
     smithing: '🔨',
+    forging: '🔥',
     crafting: '✂️',
     farming: '🌾',
     herblore: '🧪',
     agility: '🏃',
+    thieving: '🎭',
+    fletching: '🏹',
+    tailoring: '🧵',
+    prayer: '🙏',
+    construction: '🏠',
+    runecrafting: '✨',
+    leadership: '👑',
+    adventure: '🗺️',
+    dungeoneering: '🗝️',
+    astrology: '🌟',
+    summoning: '🔮',
+    slayer: '💀',
     attack: '⚔️',
     strength: '💪',
     defence: '🛡️',
@@ -38,7 +51,8 @@ export default function LevelUpToast() {
 
     // Use refs to avoid re-render loops
     const isAnimating = useRef(false);
-    const currentToast = useRef<{ skillId: string; level: number } | null>(null);
+    const currentToastId = useRef<string | null>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const pullY = useRef(new Animated.Value(-120)).current;
     const opacity = useRef(new Animated.Value(0)).current;
@@ -46,13 +60,23 @@ export default function LevelUpToast() {
     // Force re-render when toast content changes (display only)
     const [displayToast, setDisplayToast] = React.useState<{ skillId: string; level: number } | null>(null);
 
+    // Initial cleanup on unmount only
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
+    }, []);
+
     useEffect(() => {
         // If already animating or nothing in queue, bail
         if (isAnimating.current || queue.length === 0) return;
 
         const next = queue[0];
+        // If we are looking at the same toast ID we already handled, skip
+        if (next.id === currentToastId.current) return;
+
         isAnimating.current = true;
-        currentToast.current = next;
+        currentToastId.current = next.id;
         setDisplayToast(next);
 
         // Reset animation values to start position
@@ -76,15 +100,16 @@ export default function LevelUpToast() {
         ]).start();
 
         // After 2s, animate out and pop the queue
-        const timer = setTimeout(() => {
+        timerRef.current = setTimeout(() => {
             let handled = false;
             const done = () => {
                 if (handled) return;
                 handled = true;
                 dispatch(gameActions.popLevelUp());
                 setDisplayToast(null);
-                currentToast.current = null;
+                currentToastId.current = null;
                 isAnimating.current = false;
+                timerRef.current = null;
             };
             Animated.parallel([
                 Animated.timing(pullY, {
@@ -102,9 +127,9 @@ export default function LevelUpToast() {
             setTimeout(done, 400);
         }, 2000);
 
-        return () => clearTimeout(timer);
-        // Only re-run when the queue length changes or the first item changes
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // We do NOT return a clearTimeout here because we want the timer 
+        // to survive re-renders (which occur if the queue updates while animating).
+        // The isAnimating.current check at start handles concurrency.
     }, [queue.length, queue[0]?.id]);
 
     const styles = useMemo(

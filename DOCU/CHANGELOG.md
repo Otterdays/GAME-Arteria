@@ -5,6 +5,23 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+## [0.5.3] - 2026-03-06 — "The Legion & The Soul"
+### Added
+- **New Skill: Slayer:** Initial implementation with task assignment via "Master Mark" NPC.
+- **New Skill: Summoning:** Bind nature spirits with charms and shards. Added 5 initial pouches (Wolf, Dreadfowl, Bull, Spider, Badger).
+- **Summoning Shop:** Integrated supplies shop into the skill screen for convenience.
+- **Companion System:** Hire wandering souls like Barnaby and Garry the Guard through the dialogue system.
+- **New Enemies:** Crawling Hand (Lv. 5) and Banshee (Lv. 15) added to the world meta.
+- **Narrative Integration:** Dialogue system now- [v0.5.3] Groundwork for **Woodworking**, **Sorcery**, and **Wizardry**.
+- [v0.5.3] **Complete Skill Registry:** Added all 34 planned skills to the engine, store, and UI grid as "Coming Soon".
+- [v0.5.3] Added **Slayer**, **Summoning**, and **Companions** core loops.
+- **Cooking Expansion:** Added 10 "Perfect" cooked food variants requiring Item Mastery and high cooking chance.
+- **Summoning Expansion:** Familiars decay over 1 hour. Honey Badger boosts mining yield (+1), Spirit Spider grants +5% loot drops.
+- **Dynamic Coming Soon UI:** Added an interactive "Coming Soon" skill lock screen for unimplemented skills.
+### Fixed
+- [v0.5.3] Fixed stuck Level Up Toast.
+- [v0.5.3] Detailed documentation update in MDD and Skills Architecture.
+
 ## [0.5.2] - 2026-03-06 — "The Celestial Expansion"
 ### Added
 - **New Skill: Astrology:** Fully implemented Astrology skill screen with 4 constellations (Deedree, The Anchor Eternal, The Void Fish, The Lumina Tree).

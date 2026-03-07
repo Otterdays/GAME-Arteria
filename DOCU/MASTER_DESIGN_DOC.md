@@ -100,9 +100,9 @@ Aetheria's skill system is the core of progression. Skills are organized into **
 | Pillar | Implemented ✅ | Coming Soon 🚧 | Planned 🔮 |
 |--------|---------------|----------------|------------|
 | **Gathering** | Mining, Logging, Fishing, Harvesting, Scavenging | — | — |
-| **Crafting** | Runecrafting, Smithing, Forging, Cooking, Herblore | Crafting, Farming | Tailoring, Alchemy, Fletching, Construction |
-| **Combat** | — | Attack, Strength, Defence, Hitpoints | Ranged, Magic, Constitution |
-| **Support** | — | Agility | Exploration, Cleansing, Barter, Leadership, Research, Chaos Theory |
+| **Crafting** | Runecrafting, Smithing, Forging, Cooking, Herblore | Crafting, Farming, Woodworking | Tailoring, Alchemy, Fletching, Construction |
+| **Combat** | — | Attack, Strength, Defence, Hitpoints, Sorcery | Ranged, Magic, Constitution |
+| **Support** | — | Agility, Wizardry | Exploration, Cleansing, Barter, Leadership, Research, Chaos Theory |
 | **Cosmic** | — | — | Aether Weaving, Void Walking, Celestial Binding, Chronomancy |
 
 **Total:** 17 defined (10 live, 7 in development) + 8 planned cosmic/endgame
@@ -223,20 +223,33 @@ Transform raw materials into useful items. The crossover hub of the economy.
 
 - **Core Mechanic:** **Recipe Discovery** — Some potions require experimentation to discover; hints hidden in NPC dialogue
 - **Recipes:** Minor Healing, Strength Elixir, Agility Tonic, Defence Brew, XP Boost, Nature's Blessing, Void Resistance
-- **Key Ingredient:** Empty Vial (purchased from Nick) + Herb (from Harvesting)
-- **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
-- **SFX:** Tink on tick
-- **Crossover:** Herbs (Harvesting) + Vials (Shop) → Potions (buffs/combat). *Part of **Herb Chain** (Harvesting → Herblore).*
-- **Pet:** Fizz — rare drop from herblore (tiny cauldron)
+-   **Core Mechanic:** **Recipe Discovery** — Some potions require experimentation to discover; hints hidden in NPC dialogue
+-   **Recipes:** Minor Healing, Strength Elixir, Agility Tonic, Defence Brew, XP Boost, Nature's Blessing, Void Resistance
+-   **Key Ingredient:** Empty Vial (purchased from Nick) + Herb (from Harvesting)
+-   **Mastery Bonuses:** +5% XP, +3% yield, +4% speed per level
+-   **SFX:** Tink on tick
+-   **Crossover:** Herbs (Harvesting) + Vials (Shop) → Potions (buffs/combat). *Part of **Herb Chain** (Harvesting → Herblore).*
+-   **Pet:** Fizz — rare drop from herblore (tiny cauldron)
+
+#### **🪑 Woodworking — "The Master Masonry of Wood" 🔜**
+> *"Turning logs into legacy. A chair is just a tree that learned to sit down."*
+
+-   **Core Mechanic:** **Stress Analysis** — Active play allows finding the "grain" of the wood for +10% yield. Offline uses base yield.
+-   **Items:** Furniture (decorative/housing), Wood Shields, Combat Staves, Barrels (for Herblore storage).
+-   **Crossover:** Logs (Logging) → Wood Items (Construction/Combat). Creates the **Wood Chain** (Logging → Woodworking → Construction).
+-   **Pet:** Splinter — rare drop from woodworking (sentient cedar block)
 
 ---
 
-### **2.4 Coming Soon — The Road Ahead (7 Skills)**
+### **2.4 Coming Soon — The Road Ahead (10 Skills)**
 
 These skills are defined in code but not yet fully implemented with screens and mechanics.
 
 | Skill | Pillar | Status | Core Mechanic Preview |
 |-------|--------|--------|----------------------|
+| **Woodworking** 🔜 | Crafting | 🚧 Planned | Logs → Furniture, Shields, Staves. Processes the "Wood Chain". |
+| **Sorcery** 🔜 | Combat | 🚧 Planned | Raw mana channeling. Environment manipulation. Uses Magic Chain. |
+| **Wizardry** 🔜 | Support | 🚧 Planned | Academic study of magic. Passive magic boosts and research. |
 | **Crafting** 🔜 | Crafting | 🚧 Planned | General crafting: arrows, bags, jewelry. The "miscellaneous" creator. |
 | **Farming** 🔜 | Crafting | 🚧 Planned | Patches with growth timers. Seeds → Crops over real-time hours. Housing garden visual. |
 | **Attack** 🔜 | Combat | 🚧 Planned | Melee accuracy/power. Weapon specialization branches. |
@@ -252,29 +265,29 @@ These skills are defined in code but not yet fully implemented with screens and 
 These skills are planned in design documents but not yet coded. They represent the full 25-skill vision.
 
 **Crafting Expansion:**
-- **Fletching** — Logs → arrow shafts, bow parts; shafts + feathers + metal tips → arrows; bows. Feeds Ranged. *See DOCU/FLETCHING_TAILORING.md.*
-- **Tailoring** — Cloth/fiber → gloves, hats, shoes, boots, robes. Light armour alternative to forged plate. *See DOCU/FLETCHING_TAILORING.md.*
-- **Alchemy** — Potions, bombs, transmutations. Volatility: catch unstable reactions.
-- **Construction** — Player housing, guild halls. Blueprint system requiring multiple skills.
+-   **Fletching** — Logs → arrow shafts, bow parts; shafts + feathers + metal tips → arrows; bows. Feeds Ranged. *See DOCU/FLETCHING_TAILORING.md.*
+-   **Tailoring** — Cloth/fiber → gloves, hats, shoes, boots, robes. Light armour alternative to forged plate. *See DOCU/FLETCHING_TAILORING.md.*
+-   **Alchemy** — Potions, bombs, transmutations. Volatility: catch unstable reactions.
+-   **Construction** — Player housing, guild halls. Blueprint system requiring multiple skills.
 
 **Combat Expansion:**
-- **Ranged** — Bows, thrown weapons. Wind Reading environmental factor.
-- **Magic** — Spellcasting (Luminar/Voidmire/Balanced). Spell Weaving for hybrid effects.
-- **Constitution** — Health, healing, disease resistance. Gates content.
+-   **Ranged** — Bows, thrown weapons. Wind Reading environmental factor.
+-   **Magic** — Spellcasting (Luminar/Voidmire/Balanced). Spell Weaving for hybrid effects.
+-   **Constitution** — Health, healing, disease resistance. Gates content.
 
 **Support Pillar:**
-- **Exploration** — Map uncovering, fast travel points, hidden dungeons.
-- **Cleansing** — Purify cursed items, heal Unraveling zones. Essential for endgame.
-- **Barter** — Shop prices, Black Market access.
-- **Leadership** — Companion buffs, guild bonuses. Gates companion count.
-- **Research** — Unlock recipes, lore, enemy weaknesses. Knowledge Tree.
-- **Chaos Theory** — Embrace randomness. The "Seriousness" management skill.
+-   **Exploration** — Map uncovering, fast travel points, hidden dungeons.
+-   **Cleansing** — Purify cursed items, heal Unraveling zones. Essential for endgame.
+-   **Barter** — Shop prices, Black Market access.
+-   **Leadership** — Companion buffs, guild bonuses. Gates companion count.
+-   **Research** — Unlock recipes, lore, enemy weaknesses. Knowledge Tree.
+-   **Chaos Theory** — Embrace randomness. The "Seriousness" management skill.
 
 **Cosmic Pillar (Endgame):**
-- **Aether Weaving** — Manipulate reality for legendary crafting (requires 3 skills at 80).
-- **Void Walking** — Short-range teleportation, access hidden areas.
-- **Celestial Binding** — Summon angelic assistants for automation.
-- **Chronomancy** — Speed up skill training, reset daily limits once/week.
+-   **Aether Weaving** — Manipulate reality for legendary crafting (requires 3 skills at 80).
+-   **Void Walking** — Short-range teleportation, access hidden areas.
+-   **Celestial Binding** — Summon angelic assistants for automation.
+-   **Chronomancy** — Speed up skill training, reset daily limits once/week.
 
 ---
 
@@ -308,7 +321,8 @@ Skills are grouped into **chains** — linear or branching flows where one skill
 | **Rune Chain** | Mining (essence) → Runecrafting | Essence → Runes | Runes feed Magic, enchanting. |
 | **Food Chain** | Fishing → Cooking | Raw fish → Cooked food | Food for Combat buffs, HP. |
 | **Herb Chain** | Harvesting → Herblore | Herbs + Vial → Potions | Potions for buffs, combat. |
-| **Wood Chain** *(planned)* | Logging ↔ Firemaking | Logs ↔ Ash/Heat | Firemaking consumes logs; may fuel Smithing, Cooking. |
+| **Wood Chain** | Logging → Woodworking → Construction | Logs → Wood Items → Housing | Core timber economy. |
+| **Magic Chain** | Runecrafting + Wizardry → Sorcery | Runes + Study → Spells | Magical combat/utility economy. |
 | **Life Chain** *(planned)* | Fishing ↔ Farming ↔ Cooking | Fish + Crops → Food | Farming produces crops; Cooking uses both. |
 | **Craft Chain** *(planned)* | Logging + Smithing → Crafting | Logs + Bars → Arrows, Bags | Crafting is the misc hub. |
 

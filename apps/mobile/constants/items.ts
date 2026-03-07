@@ -9,7 +9,7 @@
  * - See DOCU/MASTER_DESIGN_DOC.md Chapter 6.6 for full design
  */
 
-export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'other';
+export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'pouch' | 'summoning' | 'other';
 
 export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet';
 
@@ -94,6 +94,18 @@ export const ITEM_META: Record<string, ItemMeta> = {
   cooked_swordfish: { emoji: '🐬', label: 'Cooked Swordfish', sellValue: 300, description: 'Grilled swordfish. Fills you right up.', type: 'food', healAmount: 140 },
   cooked_shark: { emoji: '🦈', label: 'Cooked Shark', sellValue: 550, description: 'Cooked shark steak. Massive healing potential.', type: 'food', healAmount: 200 },
   cooked_cosmic_jellyfish: { emoji: '🪼', label: 'Cooked Cosmic Jellyfish', sellValue: 1200, description: 'Somehow cooked. Defies culinary logic. Restores the soul.', type: 'food', healAmount: 300 },
+
+  // ── Perfect Food (Mastery) ──
+  perfect_shrimp: { emoji: '🍤', label: 'Perfect Shrimp', sellValue: 15, description: 'Glistening and golden. Restores extra health.', type: 'food', healAmount: 45 },
+  perfect_sardine: { emoji: '🐟', label: 'Perfect Sardine', sellValue: 36, description: 'Expertly seared. Restores extra health.', type: 'food', healAmount: 60 },
+  perfect_herring: { emoji: '🐟', label: 'Perfect Herring', sellValue: 66, description: 'Flawlessly smoked. Restores extra health.', type: 'food', healAmount: 75 },
+  perfect_trout: { emoji: '🎣', label: 'Perfect Trout', sellValue: 135, description: 'Crisped to perfection. Restores extra health.', type: 'food', healAmount: 105 },
+  perfect_salmon: { emoji: '🐠', label: 'Perfect Salmon', sellValue: 240, description: 'A culinary masterpiece. Restores extra health.', type: 'food', healAmount: 135 },
+  perfect_tuna: { emoji: '🐡', label: 'Perfect Tuna', sellValue: 420, description: 'Seared to perfection. Restores extra health.', type: 'food', healAmount: 150 },
+  perfect_lobster: { emoji: '🦞', label: 'Perfect Lobster', sellValue: 630, description: 'Drenched in essence butter. Restores extra health.', type: 'food', healAmount: 180 },
+  perfect_swordfish: { emoji: '🐬', label: 'Perfect Swordfish', sellValue: 900, description: 'Masterfully grilled. Restores extra health.', type: 'food', healAmount: 210 },
+  perfect_shark: { emoji: '🦈', label: 'Perfect Shark', sellValue: 1650, description: 'The pinnacle of seafood. Restores extra health.', type: 'food', healAmount: 300 },
+  perfect_cosmic_jellyfish: { emoji: '🪼', label: 'Perfect Cosmic Jellyfish', sellValue: 3600, description: 'Imbued with culinary divinity. Massive restorative power.', type: 'food', healAmount: 450 },
 
   // ── Harvesting (plants, fibers) ──
   wheat: { emoji: '🌾', label: 'Wheat', sellValue: 2, description: 'Basic grain. Used in cooking and brewing.', type: 'other' },
@@ -217,6 +229,12 @@ export const ITEM_META: Record<string, ItemMeta> = {
   emerald: { emoji: '💚', label: 'Emerald', sellValue: 100, description: 'A green gem. Found while mining coal and above.', type: 'other' },
   ruby: { emoji: '❤️', label: 'Ruby', sellValue: 200, description: 'A red gem. Found while mining mithril and above.', type: 'other' },
   diamond: { emoji: '🔷', label: 'Diamond', sellValue: 500, description: 'A brilliant diamond. Found while mining adamant and above.', type: 'other' },
+
+  // ── Summoning & Slayer ──
+  spirit_pouch: { emoji: '👜', label: 'Spirit Pouch', sellValue: 10, description: 'An empty leather pouch, ready to be infused with spirit energy.', type: 'summoning' },
+  spirit_shard: { emoji: '💎', label: 'Spirit Shard', sellValue: 1, description: 'A tiny blue crystal that binds souls to matter.', type: 'summoning' },
+  wolf_bones: { emoji: '🦴', label: 'Wolf Bones', sellValue: 5, description: 'Bones from a wild wolf. Imbued with primal energy.', type: 'summoning' },
+  slayer_coins: { emoji: '🪙', label: 'Slayer Coins', sellValue: 0, description: 'Bounty currency earned from completing Slayer tasks.', type: 'other' },
 };
 
 const UNKNOWN: ItemMeta = { emoji: '❓', label: 'Unknown Item', sellValue: 1, description: 'An unregistered item.', type: 'other' };
@@ -268,4 +286,6 @@ export const SHOP_CATALOG: { id: string; buyPrice: number }[] = [
   { id: 'coal', buyPrice: 42 },
   { id: 'gold_ore', buyPrice: 110 },
   { id: 'empty_vial', buyPrice: 15 },
+  { id: 'spirit_pouch', buyPrice: 50 },
+  { id: 'spirit_shard', buyPrice: 2 },
 ];

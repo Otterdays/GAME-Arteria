@@ -164,17 +164,47 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.5.2' ? 'The Celestial Expansion'
-                            : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
-                                : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                                    : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                        : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                            : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion === '0.5.3' ? 'The Legion & The Soul'
+                            : currentVersion === '0.5.2' ? 'The Celestial Expansion'
+                                : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                                    : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                        : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                            : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                                : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
                         {currentVersion.startsWith('0.5') ? (
                             <>
+                                {currentVersion === '0.5.3' && (
+                                    <>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>💀 New Skill: Slayer</Text>
+                                            <Text style={styles.changeText}>• Seek Master Mark to start culling monsters! Tasks are assigned based on your level. Complete them to earn Slayer Coins for future unique equipment.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🐺 New Skill: Summoning</Text>
+                                            <Text style={styles.changeText}>• Bind the spirits of nature with the new Summoning skill. Added 5 initial pouches including Spirit Wolf, Dreadfowl, and Honey Badger. Buy supplies directly on the skill screen!</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🤝 Companion System</Text>
+                                            <Text style={styles.changeText}>• Your Leadership can now attract wandering souls. Hire Barnaby the Uncertain or the new Garry the Guard to assist in your journey.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>💬 Branching Dialogues</Text>
+                                            <Text style={styles.changeText}>• Important actions like taking bounties or hiring allies are now part of the narrative choice system for deeper immersion.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🍳 Perfect Cooking & Summoning Mechanics</Text>
+                                            <Text style={styles.changeText}>• Added 10 "Perfect" cooked food variants tied to Item Mastery. Summoning familiars now decay over 1 hour. Honey Badger boosts mining yield (+1), Spirit Spider grants +5% loot drop rate.</Text>
+                                        </View>
+                                        <View style={styles.changeBlock}>
+                                            <Text style={styles.changeHeader}>🍞 UI Fixes & Polish</Text>
+                                            <Text style={styles.changeText}>• Overhauled the "Coming Soon" skill lock screen with dynamic aesthetics. Re-engineered the Level Up notification system so toasts won't get stuck during fast-paced level ups.</Text>
+                                        </View>
+                                        <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                                    </>
+                                )}
                                 {currentVersion === '0.5.2' && (
                                     <>
                                         <View style={styles.changeBlock}>

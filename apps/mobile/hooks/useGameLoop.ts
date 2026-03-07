@@ -69,7 +69,15 @@ import {
     RANDOM_EVENT_TYPES,
 } from '@/constants/randomEvents';
 import { SKILL_PETS } from '@/constants/pets';
-import { getMasteryYieldMultiplier, getMasterySpeedMultiplier, getMasteryDoubleDropChance, getMasteryPreserveChance } from '@/constants/mastery';
+import {
+    getMasteryYieldMultiplier,
+    getMasterySpeedMultiplier,
+    getMasteryDoubleDropChance,
+    getMasteryPreserveChance,
+    getItemMasterySpeedBonus,
+    getItemMasteryYieldBonus,
+    getPerfectCookChance,
+} from '@/constants/mastery';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
@@ -188,10 +196,19 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             if (!action) return;
 
             const baseInterval = activeTask.intervalMs;
+
+            // Item Mastery Speed Bonus
+            let itemMasterySpeed = 1;
+            if (action.items.length > 0) {
+                const primaryItem = action.items[0].id;
+                const count = playerRef.current.lifetimeStats?.byItem?.[primaryItem] ?? 0;
+                itemMasterySpeed = getItemMasterySpeedBonus(count);
+            }
+
             const speedMult = activeTask.skillId
                 ? getMasterySpeedMultiplier(playerRef.current, activeTask.skillId as SkillId)
                 : 1;
-            const interval = baseInterval / speedMult;
+            const interval = baseInterval / (speedMult * itemMasterySpeed);
             const partialMs = (activeTask.partialTickMs || 0) + deltaMs;
             const fullTicks = Math.floor(partialMs / interval);
             const leftover = partialMs - fullTicks * interval;
@@ -366,11 +383,57 @@ export function useGameLoop(options?: UseGameLoopOptions) {
 
                 dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
 
-                const yieldMult = getMasteryYieldMultiplier(playerRef.current, skillId);
-                let items = action.items.map((item) => ({
-                    id: item.id,
-                    quantity: Math.floor(item.quantity * successfulTicks * yieldMult),
-                }));
+                const masteryYield = getMasteryYieldMultiplier(playerRef.current, skillId);
+                let itemMasteryYield = 1;
+                if (action.items.length > 0) {
+                    const primaryItem = action.items[0].id;
+                    const count = playerRef.current.lifetimeStats?.byItem?.[primaryItem] ?? 0;
+                    itemMasteryYield = getItemMasteryYieldBonus(count);
+                }
+
+                const yieldMult = masteryYield * itemMasteryYield;
+                let items = action.items.map((item) => {
+                    let bonusYield = 0;
+                    if (skillId === 'mining' && playerRef.current.activeFamiliar?.pouchId === 'honey_badger_pouch') {
+                        bonusYield = 1;
+                    }
+
+                    return {
+                        id: item.id,
+                        quantity: Math.floor((item.quantity + bonusYield) * successfulTicks * yieldMult),
+                    };
+                });
+
+                // ── Perfect Cook Logic (Cooking only) ──
+                if (skillId === 'cooking' && action.items.length > 0) {
+                    const primary = action.items[0];
+                    const chance = getPerfectCookChance(playerRef.current, primary.id);
+                    let perfectCount = 0;
+                    for (let i = 0; i < successfulTicks; i++) {
+                        if (Math.random() < chance) perfectCount++;
+                    }
+                    if (perfectCount > 0) {
+                        const originalId = primary.id;
+                        const perfectId = (action as any).perfectId; // This comes from COOKING_RECIPES
+                        if (perfectId) {
+                            // Deduct from regular and add to perfect
+                            items = items.map(it => {
+                                if (it.id === originalId) {
+                                    const qtyPerTick = Math.floor(it.quantity / successfulTicks);
+                                    return { ...it, quantity: it.quantity - (perfectCount * qtyPerTick) };
+                                }
+                                return it;
+                            });
+                            items.push({ id: perfectId, quantity: perfectCount });
+
+                            dispatch(gameActions.pushFeedbackToast({
+                                type: 'lucky',
+                                title: 'Perfect Cook!',
+                                message: `You cooked ${perfectCount} perfect ${primary.id.replace('cooked_', '')}!`,
+                            }));
+                        }
+                    }
+                }
 
                 // Mastery double-drop: roll per successful tick for bonus items
                 const doubleChance = getMasteryDoubleDropChance(playerRef.current, skillId);
@@ -451,6 +514,63 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     }
                 }
             }
+
+            // ─── Companion Task Processing ───
+            if (playerRef.current.companions) {
+                Object.values(playerRef.current.companions).forEach(comp => {
+                    if (!comp.isActive || !comp.assignedTaskId) return;
+
+                    const compAction = ACTION_DEFS[comp.assignedTaskId];
+                    if (!compAction) return;
+
+                    // Companion base interval: 2x slower than player (they are souls/ghosts)
+                    // But they don't consume items (per roadmap design).
+                    const compInterval = 4000; // Fixed 4s for companions for now
+                    const compPartial = (comp.partialTickMs || 0) + deltaMs;
+                    const compTicks = Math.floor(compPartial / compInterval);
+                    const compLeftover = compPartial - compTicks * compInterval;
+
+                    dispatch(gameActions.updateCompanionPartialTick({ companionId: comp.id, partialMs: compLeftover }));
+
+                    if (compTicks > 0) {
+                        let success = 0;
+                        for (let i = 0; i < compTicks; i++) {
+                            if (Math.random() <= compAction.successRate) success++;
+                        }
+
+                        if (success > 0) {
+                            // Companion Yield: 25% of player's yield
+                            const compItems = compAction.items.map(item => ({
+                                id: item.id,
+                                quantity: Math.max(1, Math.floor(item.quantity * success * 0.25))
+                            }));
+                            dispatch(gameActions.addItems(compItems));
+
+                            // Companion XP
+                            let compSkill: SkillId = 'scavenging';
+                            if (comp.assignedTaskId.includes('ore')) compSkill = 'mining';
+                            else if (comp.assignedTaskId.includes('log')) compSkill = 'logging';
+                            else if (comp.assignedTaskId.includes('fish')) compSkill = 'fishing';
+                            else if (comp.assignedTaskId.includes('constellation')) compSkill = 'astrology';
+                            else if (comp.assignedTaskId.includes('rune')) compSkill = 'runecrafting';
+
+                            dispatch(gameActions.addCompanionXP({
+                                companionId: comp.id,
+                                skillId: compSkill,
+                                xp: compAction.xpPerTick * success
+                            }));
+
+                            if (accumulator) {
+                                for (const item of compItems) {
+                                    const ex = accumulator.itemsGained.find(i => i.id === item.id);
+                                    if (ex) ex.quantity += item.quantity;
+                                    else accumulator.itemsGained.push({ ...item });
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         },
         [activeTask, dispatch, isPatron]
     );
@@ -463,6 +583,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             steps.forEach(({ questId, stepId }) => {
                 dispatch(gameActions.completeQuestStep({ questId, stepId }));
             });
+            dispatch(gameActions.checkFamiliarExpiry());
         }, 1000);
         return () => clearInterval(intervalId);
     }, [isLoaded, dispatch]);
