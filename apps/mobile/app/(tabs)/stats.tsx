@@ -11,7 +11,9 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAppSelector } from '@/store/hooks';
 import { getItemMeta } from '@/constants/items';
 import { ACHIEVEMENTS } from '@/constants/achievements';
+import { ENEMIES } from '@/constants/enemies';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
+import { FloatingParticles } from '@/components/FloatingParticles';
 
 const { width } = Dimensions.get('window');
 
@@ -46,7 +48,19 @@ export default function StatsScreen() {
     const sectionLayouts = useRef<Record<string, number>>({});
 
     const stats = player.stats ?? { byType: {}, firstPlayedAt: Date.now(), lastPlayedAt: Date.now() };
-    const lifetime = player.lifetimeStats ?? { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+    const lifetime = player.lifetimeStats ?? {
+        enemiesDefeated: 0,
+        totalGoldEarned: 0,
+        totalDeaths: 0,
+        highestHit: 0,
+        totalItemsProduced: 0,
+        byItem: {},
+        totalXpGained: 0,
+        totalFoodEaten: 0,
+        totalBonesBuried: 0,
+        totalSlayerTasksCompleted: 0,
+        highestRefineLevel: 0
+    };
     const now = Date.now();
 
     // --- Data Calculations ---
@@ -54,6 +68,16 @@ export default function StatsScreen() {
     const totalLevel = useMemo(() => {
         return Object.values(player.skills).reduce((acc, s) => acc + s.level, 0);
     }, [player.skills]);
+
+    const totalXp = useMemo(() => {
+        return Object.values(player.skills).reduce((acc, s) => acc + s.xp, 0);
+    }, [player.skills]);
+
+    const bestiaryProgress = useMemo(() => {
+        const seen = player.seenEnemies?.length ?? 0;
+        const total = Object.keys(ENEMIES).length;
+        return { seen, total };
+    }, [player.seenEnemies]);
 
     const sortedGathering = useMemo(() => {
         const entries = Object.entries(stats.byType ?? {}).filter(([, v]) => (v ?? 0) > 0);
@@ -230,6 +254,7 @@ export default function StatsScreen() {
         <View style={styles.container}>
             {/* Header */}
             <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
+                <FloatingParticles color={palette.gold} count={8} />
                 <Text style={styles.headerTitle}>📖 The Anchor's Tome of Records</Text>
                 <Text style={styles.headerSubtitle}>Character Biography & Lifetime History</Text>
             </View>
@@ -261,7 +286,10 @@ export default function StatsScreen() {
                     </LinearGradient>
                     <View style={styles.sectionContent}>
                         {renderRow('Total Level', `${totalLevel} / 2475`)}
+                        {renderRow('Total Experience', totalXp)}
                         {renderRow('Lifetime Gold', lifetime.totalGoldEarned, true)}
+                        {renderRow('Lumina Balance', player.lumina ?? 0)}
+                        {renderRow('Cosmic Weight', `${((player.cosmicWeightXPBonus ?? 0) * 100).toFixed(2)}%`)}
                         {renderRow('First Played', formatDate(stats.firstPlayedAt))}
                         {renderRow('Days Active', `${daysBetween(stats.firstPlayedAt, now)} days`)}
                     </View>
@@ -333,10 +361,12 @@ export default function StatsScreen() {
                     </LinearGradient>
                     <View style={styles.sectionContent}>
                         {renderRow('Enemies Defeated', lifetime.enemiesDefeated)}
+                        {renderRow('Slayer Tasks Done', lifetime.totalSlayerTasksCompleted ?? 0)}
                         {renderRow('Total Deaths', lifetime.totalDeaths)}
                         {renderRow('Highest Hit', lifetime.highestHit)}
-                        {renderRow('Enemies Spotted', player.seenEnemies?.length ?? 0)}
-                        {player.activeCombat && renderRow('Current Session Kills', player.activeCombat.killCount)}
+                        {renderRow('Highest Refinement', `+${lifetime.highestRefineLevel ?? 0}`)}
+                        {renderRow('Bestiary Progress', `${bestiaryProgress.seen} / ${bestiaryProgress.total}`)}
+                        {player.activeCombat && renderRow('Session Kills', player.activeCombat.killCount)}
                     </View>
                 </View>
 
@@ -349,7 +379,9 @@ export default function StatsScreen() {
                         <Text style={styles.sectionTitle}>📅 Daily Quest Tracker</Text>
                     </LinearGradient>
                     <View style={styles.sectionContent}>
-                        {renderRow('All-time Completed', player.totalDailyQuestsCompleted ?? 0)}
+                        {renderRow('All-time Daily Quests', player.totalDailyQuestsCompleted ?? 0)}
+                        {renderRow('Bones Buried', lifetime.totalBonesBuried ?? 0)}
+                        {renderRow('Food Consumed', lifetime.totalFoodEaten ?? 0)}
 
                         <Text style={[styles.sectionTitle, { color: palette.textSecondary, marginBottom: 8, marginLeft: 0, marginTop: 12 }]}>Today's Progress</Text>
                         {!player.dailyQuests?.quests || player.dailyQuests.quests.length === 0 ? (

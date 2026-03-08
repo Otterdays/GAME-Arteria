@@ -12,27 +12,29 @@ export type SkillId =
     | 'runecrafting'
     | 'scavenging'
     | 'smithing'
+    | 'thieving'
     | 'leadership'
     | 'summoning'
     | 'slayer';
 
 export const SKILL_NAV_ORDER: SkillId[] = [
-    'agility',
+    'agility' /* a */,
     'astrology',
-    'cooking',
+    'cooking' /* c */,
     'crafting',
-    'fishing',
+    'fishing' /* f */,
     'forging',
-    'harvesting',
+    'harvesting' /* h */,
     'herblore',
-    'leadership',
+    'leadership' /* l */,
     'logging',
-    'mining',
-    'runecrafting',
-    'scavenging',
+    'mining' /* m */,
+    'runecrafting' /* r */,
+    'scavenging' /* s */,
     'slayer',
     'smithing',
     'summoning',
+    'thieving' /* t */,
 ];
 
 export function getNextSkill(current: SkillId): SkillId {

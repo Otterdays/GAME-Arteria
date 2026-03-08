@@ -1,586 +1,255 @@
-/**
- * Skills Screen — Main gameplay screen.
- * QoL improvements:
- *   A. Skills grouped by pillar (Gathering / Combat / Crafting / Support)
- *   B. Total Level badge in the header
- *   C. Locked-card style for unimplemented skills ("Phase 2 ›" tag, no Alert)
- */
-
-import React, { useCallback, useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, useWindowDimensions, TouchableOpacity, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
-import { Spacing, FontSize, Radius, CardStyle, FontCinzel, FontCinzelBold, HeaderShadow, ShadowSubtle } from '@/constants/theme';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { gameActions, SkillId } from '@/store/gameSlice';
 import { router } from 'expo-router';
-import { SKILL_META, IMPLEMENTED_SKILLS } from '@/constants/skills';
-import { isSkillInProgress } from '@/constants/comingSoon';
-import { ComingSoonBadge } from '@/components/ComingSoonBadge';
-import { formatNumber } from '@/utils/formatNumber';
-import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
-import { HorizonHUD } from '@/components/HorizonHUD';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Spacing, FontSize, Radius, FontCinzelBold, ShadowSubtle } from '@/constants/theme';
+import { IconSymbol, IconSymbolName } from '@/components/ui/icon-symbol';
 import { BouncyButton } from '@/components/BouncyButton';
-import { ActivePulseGlow } from '@/components/ActivePulseGlow';
-import { ActivityLogModal } from '@/components/ActivityLogModal';
-import { MasteryModal } from '@/components/MasteryModal';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { getLoginBonusStatus } from '@/constants/loginBonus';
 import { getDisplayName } from '@/constants/character';
-import { useFeedbackToast } from '@/hooks/useFeedbackToast';
-import { SKILL_PETS } from '@/constants/pets';
-import { QuickSwitchToggle } from '@/components/QuickSwitchToggle';
+import { useAppSelector } from '@/store/hooks';
 
-// ─── Skill metadata (from shared constants) ───────────────────────────────────
-
-// A. All skills array
-const ALL_SKILLS: SkillId[] = [
-  'attack', 'defence', 'strength',
-  'magic', 'hitpoints', 'ranged',
-  'prayer', 'mining', 'smithing',
-  'forging', 'fishing', 'cooking',
-  'logging', 'scavenging', 'herblore',
-  'crafting', 'farming', 'harvesting',
-  'runecrafting', 'thieving', 'fletching',
-  'tailoring', 'construction', 'leadership',
-  'adventure', 'dungeoneering', 'astrology',
-  'summoning', 'slayer', 'agility',
-  'woodworking', 'sorcery', 'wizardry',
-  'alchemy', 'exploration', 'cleansing',
-  'barter', 'research', 'chaostheory',
-  'aetherweaving', 'voidwalking', 'celestialbinding',
-  'chronomancy', 'constitution', 'firemaking'
-];
-
-/** Skills that navigate to the Combat tab when tapped. */
-const COMBAT_SKILLS = new Set<SkillId>(['attack', 'hitpoints', 'strength', 'defence', 'prayer', 'magic', 'ranged']);
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function xpForLevel(level: number): number {
-  if (level <= 1) return 0;
-  let cumulative = 0;
-  for (let lvl = 1; lvl < level; lvl++) {
-    cumulative += Math.floor(lvl + 300 * Math.pow(2, lvl / 7)) / 4;
-  }
-  return Math.floor(cumulative);
+interface PanelButtonProps {
+    title: string;
+    subtext: string;
+    icon: IconSymbolName;
+    route: string;
+    colSpan?: 1 | 2;
+    colors: [string, string];
+    iconColor: string;
 }
 
-function progressPercent(xp: number, level: number): number {
-  if (level >= 99) return 100;
-  const currentLevelXP = xpForLevel(level);
-  const nextLevelXP = xpForLevel(level + 1);
-  const range = nextLevelXP - currentLevelXP;
-  if (range <= 0) return 100;
-  return Math.min(100, ((xp - currentLevelXP) / range) * 100);
-}
+export default function HubScreen() {
+    const { palette } = useTheme();
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
 
-// ─── SkillBox ────────────────────────────────────────────────────────────────
+    const playerName = useAppSelector(s => s.game.player.name) || '';
+    const name = getDisplayName(playerName);
 
-function SkillBox({
-  skillId,
-  isActive,
-  onNavigate,
-  onShowComingSoon,
-  styles,
-}: {
-  skillId: SkillId;
-  isActive: boolean;
-  onNavigate: (id: SkillId) => void;
-  onShowComingSoon: (id: SkillId) => void;
-  styles: any;
-}) {
-  const skill = useAppSelector((s) => s.game.player.skills[skillId]);
-  const meta = SKILL_META[skillId];
-  const isImplemented = IMPLEMENTED_SKILLS.has(skillId);
-  const isCombatSkill = COMBAT_SKILLS.has(skillId);
-  const isClickable = isImplemented || isCombatSkill;
+    const PADDING = Spacing.md;
+    const GAP = Spacing.md;
+    const itemsPerRow = 2;
+    // Calculate a good square size for the 2-column grid
+    const buttonSize = (width - PADDING * 2 - GAP * (itemsPerRow - 1)) / itemsPerRow;
 
-  const currentLevel = Math.min(skill.level, 99);
+    const styles = useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    flex: 1,
+                    backgroundColor: palette.bgApp,
+                },
+                header: {
+                    padding: Spacing.xl,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: palette.bgCard,
+                    borderBottomWidth: 1,
+                    borderBottomColor: palette.border,
+                    ...ShadowSubtle,
+                },
+                headerTitle: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: 28,
+                    color: palette.gold,
+                    letterSpacing: 2,
+                    textShadowColor: 'rgba(212, 175, 55, 0.4)',
+                    textShadowOffset: { width: 0, height: 2 },
+                    textShadowRadius: 8,
+                },
+                headerSubText: {
+                    color: palette.textSecondary,
+                    fontSize: FontSize.md,
+                    marginTop: 4,
+                },
+                content: {
+                    padding: PADDING,
+                    paddingBottom: Spacing.xl * 3,
+                },
+                grid: {
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: GAP,
+                },
+                buttonCard: {
+                    borderRadius: Radius.xl,
+                    overflow: 'hidden',
+                    backgroundColor: palette.bgCard,
+                    ...ShadowSubtle,
+                },
+                buttonInner: {
+                    flex: 1,
+                    padding: Spacing.lg,
+                    justifyContent: 'space-between',
+                },
+                iconContainer: {
+                    width: 52,
+                    height: 52,
+                    borderRadius: 26,
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: Spacing.sm,
+                    borderWidth: 1,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                },
+                title: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.xl,
+                    color: '#fff',
+                    marginBottom: 4,
+                    textShadowColor: 'rgba(0, 0, 0, 0.6)',
+                    textShadowOffset: { width: 0, height: 1 },
+                    textShadowRadius: 4,
+                },
+                subtext: {
+                    fontSize: FontSize.sm,
+                    color: 'rgba(255, 255, 255, 0.8)',
+                },
+                ambientBg: {
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    opacity: 0.15,
+                }
+            }),
+        [palette]
+    );
 
-  return (
-    <BouncyButton
-      scaleTo={0.92}
-      hapticFeedback={true}
-      onPress={() => isClickable ? onNavigate(skillId) : onShowComingSoon(skillId)}
-      disabled={false}
-      accessibilityRole="button"
-      accessibilityLabel={`${meta.label}, level ${currentLevel} of 99. ${!isClickable ? 'Coming soon' : ''}`}
-      style={[
-        styles.skillBox,
-        isActive && styles.skillBoxActive,
-        !isClickable && styles.skillBoxLocked,
-        { overflow: 'hidden' }
-      ]}
-    >
-      {isActive && <ActivePulseGlow color={meta.color} />}
+    const handlePress = (route: string) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        router.push(route as any);
+    };
 
-      {/* Icon side */}
-      <View style={styles.skillBoxLeft}>
-        <Text style={[styles.skillBoxEmoji, !isClickable && styles.lockedEmoji]}>{meta.emoji}</Text>
-      </View>
+    const buttons: PanelButtonProps[] = [
+        {
+            title: 'The Skills',
+            subtext: 'Train, gather, & master',
+            icon: 'hammer.fill',
+            route: '/(tabs)/skills',
+            colSpan: 2,
+            colors: ['#4f46e5', '#3b82f6'],
+            iconColor: '#93c5fd',
+        },
+        {
+            title: 'Combat',
+            subtext: 'Brave the wilderness',
+            icon: 'shield.fill',
+            route: '/(tabs)/combat',
+            colors: ['#b91c1c', '#ef4444'],
+            iconColor: '#fca5a5',
+        },
+        {
+            title: 'Bank',
+            subtext: 'Manage wealth',
+            icon: 'archivebox.fill',
+            route: '/(tabs)/bank',
+            colors: ['#ca8a04', '#eab308'],
+            iconColor: '#fef08a',
+        },
+        {
+            title: 'Shop',
+            subtext: 'Trade resources',
+            icon: 'cart.fill',
+            route: '/(tabs)/shop',
+            colors: ['#047857', '#10b981'],
+            iconColor: '#6ee7b7',
+        },
+        {
+            title: 'Explore',
+            subtext: 'Venture outwards',
+            icon: 'map.fill',
+            route: '/(tabs)/explore',
+            colors: ['#0f766e', '#14b8a6'],
+            iconColor: '#5eead4',
+        },
+        {
+            title: 'Quests',
+            subtext: 'Follow the lore',
+            icon: 'book.pages.fill',
+            route: '/(tabs)/quests',
+            colors: ['#6d28d9', '#8b5cf6'],
+            iconColor: '#c4b5fd',
+        },
+        {
+            title: 'Stats',
+            subtext: 'Track progress',
+            icon: 'chart.bar.fill',
+            route: '/(tabs)/stats',
+            colors: ['#be185d', '#ec4899'],
+            iconColor: '#f9a8d4',
+        },
+        {
+            title: 'Settings',
+            subtext: 'Tweak & adjust',
+            icon: 'gearshape.fill',
+            route: '/(tabs)/settings',
+            colors: ['#334155', '#64748b'],
+            iconColor: '#cbd5e1',
+        },
+    ];
 
-      {/* Levels side: for implemented skills show level/99; for unimplemented show only Coming Soon */}
-      <View style={styles.skillBoxRight}>
-        {(isImplemented || isCombatSkill) ? (
-          <>
-            <Text style={styles.skillBoxLevelTop}>{currentLevel}</Text>
-            <Text style={styles.skillBoxLevelBottom}>99</Text>
-          </>
-        ) : (
-          <View style={styles.comingSoonWrap}>
-            <ComingSoonBadge inProgress={isSkillInProgress(skillId)} size="sm" />
-          </View>
-        )}
-      </View>
-    </BouncyButton>
-  );
-}
-
-// ─── Screen ───────────────────────────────────────────────────────────────────
-
-const NARROW_WIDTH = 360;
-
-export default function SkillsScreen() {
-  const { palette } = useTheme();
-  const { width } = useWindowDimensions();
-  const dispatch = useAppDispatch();
-  const insets = useSafeAreaInsets();
-  const [logModalVisible, setLogModalVisible] = useState(false);
-  const [masteryModalVisible, setMasteryModalVisible] = useState(false);
-  const isNarrow = width < NARROW_WIDTH;
-  const activeTask = useAppSelector((s) => s.game.player.activeTask);
-  const skills = useAppSelector((s) => s.game.player.skills);
-  const activeSkillId = activeTask?.skillId ?? null;
-
-  useFocusEffect(useCallback(() => {
-    dispatch(gameActions.clearPulseTab('skills'));
-  }, [dispatch]));
-
-  // B. Total level — sum of all skill levels
-  const totalLevel = Object.values(skills).reduce((sum, s) => sum + Math.min(s?.level ?? 1, 99), 0);
-  const maxTotalLevel = ALL_SKILLS.length * 99;
-
-  const horizonHudEnabled = useAppSelector(
-    (s) => s.game.player.settings?.horizonHudEnabled ?? true
-  );
-  const isPatron = useAppSelector((s) => s.game.player.settings?.isPatron ?? false);
-  const playerName = useAppSelector((s) => s.game.player.name);
-  const displayName = getDisplayName(playerName);
-  const activePetId = useAppSelector((s) => s.game.player.pets?.activePetId ?? null);
-  const activePet = activePetId ? SKILL_PETS[activePetId] : null;
-
-  const handleNavigate = useCallback(
-    (skillId: SkillId) => {
-      if (COMBAT_SKILLS.has(skillId)) {
-        router.push('/(tabs)/combat' as any);
-      } else {
-        router.push(`/skills/${skillId}` as any);
-      }
-    },
-    []
-  );
-
-  const handleShowComingSoon = useCallback((skillId: SkillId) => {
-    router.push({ pathname: '/skills/coming-soon', params: { skill: skillId } } as any);
-  }, []);
-
-  // Calculate active skill progress for the header
-  const activeSkill = activeTask ? skills[activeTask.skillId as SkillId] : null;
-  const activeMeta = activeTask ? SKILL_META[activeTask.skillId as SkillId] : null;
-
-  const currentLevelXP = activeSkill ? xpForLevel(activeSkill.level) : 0;
-  const nextLevelXP = activeSkill ? xpForLevel(activeSkill.level + 1) : 0;
-  const xpIntoLevel = activeSkill ? Math.max(0, Math.floor(activeSkill.xp - currentLevelXP)) : 0;
-  const xpNeeded = activeSkill ? Math.max(1, nextLevelXP - currentLevelXP) : 0;
-  const progress = activeSkill ? progressPercent(activeSkill.xp, activeSkill.level) : 0;
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: { flex: 1, backgroundColor: palette.bgApp },
-        header: {
-          padding: Spacing.md,
-          paddingBottom: Spacing.sm,
-          backgroundColor: palette.bgCard,
-          borderBottomWidth: 1,
-          borderBottomColor: palette.border,
-          ...HeaderShadow,
-        },
-        headerTop: {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: Spacing.sm,
-        },
-        headerTitle: {
-          fontFamily: FontCinzelBold,
-          fontSize: FontSize.lg,
-          color: palette.textPrimary,
-        },
-        totalLevelRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: Spacing.sm,
-          marginTop: 1,
-        },
-        totalLevel: {
-          fontSize: FontSize.xs,
-          color: palette.gold,
-          fontWeight: '600',
-        },
-        patronBadge: {
-          paddingHorizontal: 6,
-          paddingVertical: 2,
-          borderRadius: Radius.sm,
-          backgroundColor: 'rgba(255,202,40,0.2)',
-          borderWidth: 1,
-          borderColor: palette.gold,
-        },
-        patronBadgeText: {
-          fontSize: 10,
-          fontWeight: '700',
-          color: palette.gold,
-          letterSpacing: 0.5,
-        },
-        activeSkillBadge: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: palette.bgApp,
-          paddingHorizontal: Spacing.sm,
-          paddingVertical: 4,
-          borderRadius: Radius.full,
-          borderWidth: 1,
-          borderColor: palette.border,
-          gap: 4,
-        },
-        activeSkillEmoji: { fontSize: 12 },
-        activeSkillText: {
-          color: palette.white,
-          fontSize: 11,
-          fontWeight: 'bold',
-        },
-        idleBadge: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: palette.bgApp,
-          paddingHorizontal: Spacing.sm,
-          paddingVertical: 4,
-          borderRadius: Radius.full,
-          borderWidth: 1,
-          borderColor: palette.border,
-          gap: 4,
-        },
-        idleDot: {
-          width: 5,
-          height: 5,
-          borderRadius: 2.5,
-          backgroundColor: palette.textDisabled,
-        },
-        idleText: {
-          color: palette.textSecondary,
-          fontSize: 11,
-          fontWeight: '600',
-        },
-        headerXpSection: { gap: 2 },
-        headerXpBarBg: {
-          height: 5,
-          backgroundColor: palette.bgApp,
-          borderRadius: Radius.full,
-          overflow: 'hidden',
-        },
-        headerXpBarFill: {
-          height: '100%',
-          borderRadius: Radius.full,
-        },
-        headerXpText: {
-          fontSize: 9,
-          color: palette.textSecondary,
-          textAlign: 'center',
-          fontWeight: '600',
-          letterSpacing: 0.5,
-        },
-        scrollView: { flex: 1 },
-        scrollContent: { paddingBottom: Spacing.xl },
-        skillsGrid: {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          paddingHorizontal: Spacing.xs,
-          paddingTop: Spacing.sm,
-        },
-        skillBoxContainer: {
-          width: isNarrow ? '50%' : '33.33%',
-          padding: 6,
-        },
-        skillBox: {
-          width: '100%',
-          aspectRatio: 2.1,
-          backgroundColor: palette.bgCard,
-          ...CardStyle,
-          borderColor: palette.border,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: Spacing.sm,
-        },
-        skillBoxActive: {
-          borderColor: palette.accentWeb,
-          backgroundColor: palette.bgCardHover,
-          shadowColor: palette.accentWeb,
-          shadowOpacity: 0.25,
-        },
-        skillBoxLocked: { opacity: 0.5 },
-        skillBoxLeft: {
-          flex: 1,
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-        },
-        skillBoxRight: {
-          flex: 1.5,
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-          gap: 2,
-        },
-        comingSoonWrap: {
-          marginTop: 6,
-          alignSelf: 'center',
-        },
-        skillBoxEmoji: { fontSize: 24 },
-        lockedEmoji: { opacity: 0.4 },
-        skillBoxLevelTop: {
-          fontSize: FontSize.lg,
-          fontWeight: '800',
-          color: palette.gold,
-          textShadowColor: 'rgba(0,0,0,0.8)',
-          textShadowOffset: { width: 1, height: 1 },
-          textShadowRadius: 1,
-        },
-        skillBoxLevelBottom: {
-          fontSize: FontSize.xs,
-          fontWeight: '700',
-          color: '#B08D57',
-          marginTop: -4,
-          textShadowColor: 'rgba(0,0,0,0.8)',
-          textShadowOffset: { width: 1, height: 1 },
-          textShadowRadius: 1,
-        },
-        horizonToggle: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4,
-          paddingVertical: 4,
-          paddingHorizontal: Spacing.sm,
-          marginTop: Spacing.xs,
-          alignSelf: 'center',
-          backgroundColor: palette.bgApp,
-          borderRadius: Radius.full,
-          borderWidth: 1,
-          borderColor: palette.border,
-        },
-        horizonToggleText: {
-          fontSize: FontSize.xs,
-          color: palette.textSecondary,
-          fontWeight: '600',
-        },
-      }),
-    [palette, isNarrow]
-  );
-
-  const loginBonus = useAppSelector((s) => s.game.player.loginBonus ?? { lastClaimDate: null, consecutiveDays: 0 });
-  const { showFeedbackToast } = useFeedbackToast();
-  const loginStatus = useMemo(
-    () => getLoginBonusStatus(loginBonus.lastClaimDate, loginBonus.consecutiveDays),
-    [loginBonus.lastClaimDate, loginBonus.consecutiveDays]
-  );
-
-  const loginBonusRewardText = useMemo(() => {
-    const { gold, lumina } = loginStatus.reward;
-    return lumina ? `${gold.toLocaleString()} gp + ${lumina} Lumina` : `${gold.toLocaleString()} gp`;
-  }, [loginStatus.reward]);
-
-  const handleClaimLoginBonus = useCallback(() => {
-    const { gold, lumina } = loginStatus.reward;
-    dispatch(gameActions.claimLoginBonus({
-      gold,
-      lumina,
-      day: loginStatus.day,
-    }));
-    showFeedbackToast({
-      type: 'lucky',
-      title: `Day ${loginStatus.day} Login Bonus!`,
-      message: lumina ? `+${gold.toLocaleString()} gp + ${lumina} Lumina` : `+${gold.toLocaleString()} gp`,
-    });
-  }, [dispatch, loginStatus, showFeedbackToast]);
-
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {loginStatus.canClaim && (
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#3d2a6e',
-            paddingHorizontal: Spacing.md,
-            paddingVertical: Spacing.sm,
-            borderBottomWidth: 1,
-            borderBottomColor: 'rgba(139,92,246,0.3)',
-          }}
-          onPress={handleClaimLoginBonus}
-        >
-          <Text style={{ color: '#e0d4f7', fontWeight: '700', fontSize: FontSize.sm }}>
-            🎁 Day {loginStatus.day} — Claim {loginBonusRewardText}!
-          </Text>
-          <BouncyButton
-            style={{
-              backgroundColor: palette.gold,
-              paddingHorizontal: Spacing.md,
-              paddingVertical: 6,
-              borderRadius: Radius.sm,
-            }}
-            onPress={handleClaimLoginBonus}
-          >
-            <Text style={{ color: '#1a1a1a', fontWeight: '800', fontSize: FontSize.sm }}>Claim</Text>
-          </BouncyButton>
-        </Pressable>
-      )}
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-            <View>
-              <Text style={styles.headerTitle}>Skills</Text>
-              <Text style={{ fontSize: FontSize.xs, color: palette.textMuted, marginTop: 1 }}>
-                Welcome, {displayName}{activePet ? ` ${activePet.emoji}` : ''}
-              </Text>
-              <View style={styles.totalLevelRow}>
-                <Text style={styles.totalLevel}>Total Lv. {totalLevel} / {maxTotalLevel}</Text>
-                {isPatron && (
-                  <View style={styles.patronBadge}>
-                    <Text style={styles.patronBadgeText}>PATRON</Text>
-                  </View>
-                )}
-              </View>
+    return (
+        <View style={styles.container}>
+            <View style={[styles.header, { paddingTop: insets.top + Spacing.xl }]}>
+                <Text style={styles.headerTitle}>Arteria</Text>
+                <Text style={styles.headerSubText}>Welcome back, {name}</Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
-              <QuickSwitchToggle />
+            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+                <View style={styles.grid}>
+                    {buttons.map((btn, i) => {
+                        const isFullWidth = btn.colSpan === 2;
+                        return (
+                            <BouncyButton
+                                key={btn.title}
+                                scaleTo={0.96}
+                                onPress={() => handlePress(btn.route)}
+                                style={[
+                                    styles.buttonCard,
+                                    {
+                                        width: isFullWidth ? '100%' : buttonSize,
+                                        height: isFullWidth ? 140 : buttonSize * 1.05,
+                                    }
+                                ]}
+                            >
+                                <LinearGradient
+                                    colors={btn.colors}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={StyleSheet.absoluteFill}
+                                />
+                                {/** Hex pattern or magic overlay would go here. We use generic circle background as stand-in */}
+                                <View style={styles.ambientBg}>
+                                    <View style={{ position: 'absolute', bottom: -40, right: -40, width: 140, height: 140, borderRadius: 70, backgroundColor: '#fff', opacity: 0.2 }} />
+                                    <View style={{ position: 'absolute', top: -20, left: -20, width: 80, height: 80, borderRadius: 40, backgroundColor: '#fff', opacity: 0.1 }} />
+                                </View>
 
-              <TouchableOpacity
-                onPress={() => setMasteryModalVisible(true)}
-                style={{
-                  padding: 8,
-                  backgroundColor: palette.bgApp,
-                  borderRadius: Radius.full,
-                  borderWidth: 1,
-                  borderColor: palette.border,
-                }}
-              >
-                <IconSymbol name="star.fill" size={18} color={palette.gold} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => setLogModalVisible(true)}
-                style={{
-                  padding: 8,
-                  backgroundColor: palette.bgApp,
-                  borderRadius: Radius.full,
-                  borderWidth: 1,
-                  borderColor: palette.border,
-                }}
-              >
-                <IconSymbol name="list.bullet" size={18} color={palette.textSecondary} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          {activeTask ? (
-            <View style={styles.activeSkillBadge}>
-              <Text style={styles.activeSkillEmoji}>{activeMeta?.emoji}</Text>
-              <Text style={styles.activeSkillText}>{activeMeta?.label} Lv. {activeSkill?.level}</Text>
-            </View>
-          ) : (
-            <View style={styles.idleBadge}>
-              <View style={styles.idleDot} />
-              <Text style={styles.idleText}>Idle</Text>
-            </View>
-          )}
+                                <View style={[styles.buttonInner, isFullWidth && { flexDirection: 'row', alignItems: 'center' }]}>
+                                    <View>
+                                        <View style={[styles.iconContainer, isFullWidth && { marginBottom: 0, marginRight: Spacing.lg }]}>
+                                            <IconSymbol name={btn.icon} size={28} color={btn.iconColor} />
+                                        </View>
+                                    </View>
+                                    <View style={[isFullWidth && { flex: 1, justifyContent: 'center' }]}>
+                                        <Text style={styles.title}>{btn.title}</Text>
+                                        <Text style={styles.subtext}>{btn.subtext}</Text>
+                                    </View>
+                                    {isFullWidth && (
+                                        <View style={{ padding: Spacing.sm, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 20 }}>
+                                            <IconSymbol name="chevron.right" size={24} color="#fff" />
+                                        </View>
+                                    )}
+                                </View>
+                            </BouncyButton>
+                        );
+                    })}
+                </View>
+            </ScrollView>
         </View>
-
-        {/* Global XP Bar in Header */}
-        <View style={styles.headerXpSection}>
-          <View style={styles.headerXpBarBg}>
-            {activeMeta ? (
-              <ProgressBarWithPulse
-                progress={progress}
-                fillColor={activeMeta.color}
-                widthPercent={progress}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.headerXpBarFill,
-                  { width: `${Math.max(2, progress)}%`, backgroundColor: palette.border },
-                ]}
-              />
-            )}
-          </View>
-          <Text style={styles.headerXpText}>
-            {activeTask && activeSkill
-              ? activeSkill.level >= 99
-                ? `${formatNumber(activeSkill.xp)} XP — MAX`
-                : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`
-              : 'Awaiting action...'}
-          </Text>
-        </View>
-        {horizonHudEnabled && <HorizonHUD />}
-        <TouchableOpacity
-          style={styles.horizonToggle}
-          onPress={() => dispatch(gameActions.setHorizonHudEnabled(!horizonHudEnabled))}
-          accessibilityLabel={horizonHudEnabled ? 'Hide goal cards' : 'Show goal cards'}
-          accessibilityRole="button"
-        >
-          <IconSymbol
-            name={horizonHudEnabled ? 'chevron.down' : 'chevron.up'}
-            size={14}
-            color={palette.textSecondary}
-          />
-          <Text style={styles.horizonToggleText}>
-            {horizonHudEnabled ? 'Hide goals' : 'Show goals'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <ActivityLogModal visible={logModalVisible} onClose={() => setLogModalVisible(false)} />
-      <MasteryModal visible={masteryModalVisible} onClose={() => setMasteryModalVisible(false)} />
-
-      {/* A. Skill grid */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.skillsGrid}>
-          {ALL_SKILLS.map((skillId) => (
-            <View key={skillId} style={styles.skillBoxContainer}>
-              <SkillBox
-                skillId={skillId}
-                isActive={activeSkillId === skillId}
-                onNavigate={handleNavigate}
-                onShowComingSoon={handleShowComingSoon}
-                styles={styles}
-              />
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
+    );
 }

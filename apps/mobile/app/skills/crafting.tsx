@@ -396,7 +396,7 @@ export default function CraftingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('crafting')}`);
+                            router.replace(`/skills/${getPrevSkill('crafting')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -413,7 +413,7 @@ export default function CraftingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('crafting')}`);
+                            router.replace(`/skills/${getNextSkill('crafting')}` as any);
                         }}
                         style={styles.navButton}
                     >

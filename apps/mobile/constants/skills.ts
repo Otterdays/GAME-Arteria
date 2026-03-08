@@ -180,6 +180,7 @@ export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
     'harvesting',
     'scavenging',
     'astrology',
+    'thieving',
 ];
 
 export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [

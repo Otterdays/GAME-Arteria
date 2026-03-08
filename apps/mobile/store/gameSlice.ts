@@ -247,6 +247,11 @@ export interface PlayerState {
         totalItemsProduced: number;  // total crafted/smelted/cooked/brewed items
         /** Per-item produced count: { 'bronze_bar': 42, 'cooked_shrimp': 17, ... } */
         byItem: Partial<Record<string, number>>;
+        totalXpGained?: number;
+        totalFoodEaten?: number;
+        totalBonesBuried?: number;
+        totalSlayerTasksCompleted?: number;
+        highestRefineLevel?: number;
     };
     /** Daily (radiant) quests: reset at midnight; list of 3 with progress and rewards. */
     dailyQuests?: {
@@ -589,6 +594,7 @@ export interface OfflineReport {
     elapsedMs: number;
     xpGained: Partial<Record<SkillId, number>>;
     itemsGained: InventoryItem[];
+    goldGained?: number;
     wasCapped: boolean;
     /** When wasCapped: "24h (F2P)" or "7 days (Patron)" */
     capLabel?: string;
@@ -837,6 +843,11 @@ export const gameSlice = createSlice({
 
                 // If we leveled up, queue a toast, pulse Skills tab, grant mastery points, and log
                 if (skill.level > oldLevel) {
+                    if (!state.player.lifetimeStats) {
+                        state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalXpGained: 0 };
+                    }
+                    state.player.lifetimeStats.totalXpGained = (state.player.lifetimeStats.totalXpGained ?? 0) + effectiveXp;
+
                     const levelsGained = skill.level - oldLevel;
                     state.player.masteryPoints = state.player.masteryPoints ?? {};
                     state.player.masteryPoints[skillId] = (state.player.masteryPoints[skillId] ?? 0) + levelsGained;
@@ -974,6 +985,21 @@ export const gameSlice = createSlice({
             }
 
             const existing = state.player.inventory.find(i => i.id === nextId);
+
+            // Track highest refinement level
+            if (match) {
+                const currentRefine = parseInt(match[2], 10) + 1;
+                if (!state.player.lifetimeStats) {
+                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, highestRefineLevel: 0 };
+                }
+                state.player.lifetimeStats.highestRefineLevel = Math.max(state.player.lifetimeStats.highestRefineLevel ?? 0, currentRefine);
+            } else {
+                if (!state.player.lifetimeStats) {
+                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, highestRefineLevel: 0 };
+                }
+                state.player.lifetimeStats.highestRefineLevel = Math.max(state.player.lifetimeStats.highestRefineLevel ?? 0, 1);
+            }
+
             if (existing) {
                 existing.quantity += 1;
             } else {
@@ -1733,6 +1759,11 @@ export const gameSlice = createSlice({
             );
             const healed = playerStats.currentHitpoints - oldHp;
 
+            if (!state.player.lifetimeStats) {
+                state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalFoodEaten: 0 };
+            }
+            state.player.lifetimeStats.totalFoodEaten = (state.player.lifetimeStats.totalFoodEaten ?? 0) + 1;
+
             state.combatLog.push({
                 id: combatLogIdCounter++,
                 message: `You eat ${itemId.replace(/_/g, ' ')} and heal ${healed} HP.`,
@@ -1776,6 +1807,11 @@ export const gameSlice = createSlice({
                         state.player.prayerPoints ?? 0,
                         state.player.maxPrayerPoints
                     );
+
+                    if (!state.player.lifetimeStats) {
+                        state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalBonesBuried: 0 };
+                    }
+                    state.player.lifetimeStats.totalBonesBuried = (state.player.lifetimeStats.totalBonesBuried ?? 0) + 1;
 
                     state.activityLog = state.activityLog ?? [];
                     state.activityLog.unshift({
@@ -1880,6 +1916,11 @@ export const gameSlice = createSlice({
                     highestHit: 0,
                     totalItemsProduced: 0,
                     byItem: {},
+                    totalXpGained: 0,
+                    totalFoodEaten: 0,
+                    totalBonesBuried: 0,
+                    totalSlayerTasksCompleted: 0,
+                    highestRefineLevel: 0,
                 };
             }
         },
@@ -2036,6 +2077,10 @@ export const gameSlice = createSlice({
                                     title: 'Slayer Task Complete!',
                                     message: `You finished your ${monster?.name} bounty!`,
                                 });
+                                if (!state.player.lifetimeStats) {
+                                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalSlayerTasksCompleted: 0 };
+                                }
+                                state.player.lifetimeStats.totalSlayerTasksCompleted = (state.player.lifetimeStats.totalSlayerTasksCompleted ?? 0) + 1;
                             }
                         }
 

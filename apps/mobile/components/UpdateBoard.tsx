@@ -164,17 +164,50 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.5.3' ? 'The Legion & The Soul'
-                            : currentVersion === '0.5.2' ? 'The Celestial Expansion'
-                                : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
-                                    : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                                        : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                            : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                                : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion === '0.6.0' ? 'The Ascended Master'
+                            : currentVersion === '0.5.3' ? 'The Legion & The Soul'
+                                : currentVersion === '0.5.2' ? 'The Celestial Expansion'
+                                    : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                                        : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                            : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                                : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                                    : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion.startsWith('0.5') ? (
+                        {currentVersion === '0.6.0' ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✨ Magic Hub Dashboard</Text>
+                                    <Text style={styles.changeText}>• The starting landing page has been transformed into a magical hub with portal buttons for faster navigation.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎭 New Skill: Thieving</Text>
+                                    <Text style={styles.changeText}>• Pickpocket NPCs and loot stalls for gold and items. Beware of the stun risk if you're caught!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏃 New Skill: Agility</Text>
+                                    <Text style={styles.changeText}>• Run 6 different obstacle courses spanning from the Crownlands Rooftops to the Void Rift Traverse to gain XP and global passive bonuses.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>👑 Mastery Skill Capes</Text>
+                                    <Text style={styles.changeText}>• Hit Level 99 in a skill? Purchase a Mastery Skill Cape from the Ascended Master in the Shop tab for 99,000 gp.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📊 Skills Page QoL</Text>
+                                    <Text style={styles.changeText}>• Skills are now grouped by Pillar (Combat, Gathering, Artisan, e.t.c) with thin progress bars, mastery badges, and a new search bar!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🐺 Summoning & Slayer</Text>
+                                    <Text style={styles.changeText}>• Bind 5 new spirit pouches and seek Master Mark to start culling monsters. Integratedshops directly into the skill screens.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✂️ Crafting & Companions</Text>
+                                    <Text style={styles.changeText}>• Turn leather into armour and gems into jewelry. Hire allies like Garry the Guard to assist in your journey.</Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                            </>
+                        ) : currentVersion.startsWith('0.5') ? (
                             <>
                                 {currentVersion === '0.5.3' && (
                                     <>
@@ -184,23 +217,11 @@ export default function UpdateBoard() {
                                         </View>
                                         <View style={styles.changeBlock}>
                                             <Text style={styles.changeHeader}>🐺 New Skill: Summoning</Text>
-                                            <Text style={styles.changeText}>• Bind the spirits of nature with the new Summoning skill. Added 5 initial pouches including Spirit Wolf, Dreadfowl, and Honey Badger. Buy supplies directly on the skill screen!</Text>
+                                            <Text style={styles.changeText}>• Bind the spirits of nature with the new Summoning skill. Added 5 initial pouches including Spirit Wolf, Dreadfowl, and Honey Badger.</Text>
                                         </View>
                                         <View style={styles.changeBlock}>
                                             <Text style={styles.changeHeader}>🤝 Companion System</Text>
                                             <Text style={styles.changeText}>• Your Leadership can now attract wandering souls. Hire Barnaby the Uncertain or the new Garry the Guard to assist in your journey.</Text>
-                                        </View>
-                                        <View style={styles.changeBlock}>
-                                            <Text style={styles.changeHeader}>💬 Branching Dialogues</Text>
-                                            <Text style={styles.changeText}>• Important actions like taking bounties or hiring allies are now part of the narrative choice system for deeper immersion.</Text>
-                                        </View>
-                                        <View style={styles.changeBlock}>
-                                            <Text style={styles.changeHeader}>🍳 Perfect Cooking & Summoning Mechanics</Text>
-                                            <Text style={styles.changeText}>• Added 10 "Perfect" cooked food variants tied to Item Mastery. Summoning familiars now decay over 1 hour. Honey Badger boosts mining yield (+1), Spirit Spider grants +5% loot drop rate.</Text>
-                                        </View>
-                                        <View style={styles.changeBlock}>
-                                            <Text style={styles.changeHeader}>🍞 UI Fixes & Polish</Text>
-                                            <Text style={styles.changeText}>• Overhauled the "Coming Soon" skill lock screen with dynamic aesthetics. Re-engineered the Level Up notification system so toasts won't get stuck during fast-paced level ups.</Text>
                                         </View>
                                         <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
                                     </>

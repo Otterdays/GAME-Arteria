@@ -775,14 +775,14 @@ export default function SettingsScreen() {
                     <View style={styles.sectionCard}>
                         <Pressable
                             style={styles.row}
-                            onPress={() => dispatch(gameActions.setForceShowUpdateBoard(true))}
+                            onPress={() => router.push('/patch-notes')}
                             android_ripple={{ color: palette.bgCardHover }}
                         >
                             <View style={styles.rowInfo}>
-                                <Text style={styles.rowLabel}>Version</Text>
-                                <Text style={styles.rowDesc}>Tap to see what's new</Text>
+                                <Text style={styles.rowLabel}>Version v{PATCH_HISTORY[0].version}</Text>
+                                <Text style={styles.rowDesc}>Tap to see the full chronicles of Arteria history</Text>
                             </View>
-                            <Text style={styles.versionText}>v{PATCH_HISTORY[0].version}</Text>
+                            <Text style={styles.arrow}>›</Text>
                         </Pressable>
                         <Pressable
                             style={styles.row}

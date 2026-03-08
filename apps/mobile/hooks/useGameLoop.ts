@@ -45,6 +45,8 @@ interface ActionDef {
     consumedItems?: { id: string; quantity: number }[];   // items CONSUMED per tick (Runecrafting)
     successRate: number;
     masteryXp: number;
+    lootGold?: { min: number; max: number };
+    lootItems?: { id: string; chance: number; min: number; max: number }[];
 }
 
 import { MINING_NODES } from '@/constants/mining';
@@ -60,6 +62,7 @@ import { HERBLORE_RECIPES } from '@/constants/herblore';
 import { CRAFTING_RECIPES } from '@/constants/crafting';
 import { AGILITY_COURSES } from '@/constants/agility';
 import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
+import { THIEVING_TARGETS } from '@/constants/thieving';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -167,6 +170,19 @@ AGILITY_COURSES.forEach((course) => {
         consumedItems: [],
         successRate: course.successRate,
         masteryXp: 1,
+    };
+});
+
+// Thieving: pickpocket NPCs or loot stalls
+THIEVING_TARGETS.forEach((target) => {
+    ACTION_DEFS[target.id] = {
+        xpPerTick: target.xpPerTick,
+        items: [], // Dynamic loot handled in processDelta
+        consumedItems: [],
+        successRate: target.successRate,
+        masteryXp: 1,
+        lootGold: target.lootGold,
+        lootItems: target.lootItems,
     };
 });
 
@@ -427,6 +443,39 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                         quantity: Math.floor((item.quantity + bonusYield) * successfulTicks * yieldMult),
                     };
                 });
+
+                // ── Thieving Logic ──
+                if (skillId === 'thieving') {
+                    if (action.lootGold) {
+                        let totalGold = 0;
+                        for (let i = 0; i < successfulTicks; i++) {
+                            totalGold += Math.floor(Math.random() * (action.lootGold.max - action.lootGold.min + 1)) + action.lootGold.min;
+                        }
+                        const finalGold = Math.floor(totalGold * yieldMult);
+                        if (finalGold > 0) {
+                            dispatch(gameActions.addGold(finalGold));
+                            if (accumulator) accumulator.goldGained = (accumulator.goldGained ?? 0) + finalGold;
+                        }
+                    }
+                    if (action.lootItems) {
+                        for (let i = 0; i < successfulTicks; i++) {
+                            for (const lootOpts of action.lootItems) {
+                                if (Math.random() < lootOpts.chance) {
+                                    const amount = Math.floor(Math.random() * (lootOpts.max - lootOpts.min + 1)) + lootOpts.min;
+                                    const qty = Math.floor(amount * yieldMult);
+                                    if (qty > 0) {
+                                        const existing = items.find(it => it.id === lootOpts.id);
+                                        if (existing) {
+                                            existing.quantity += qty;
+                                        } else {
+                                            items.push({ id: lootOpts.id, quantity: qty });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // ── Perfect Cook Logic (Cooking only) ──
                 if (skillId === 'cooking' && action.items.length > 0) {

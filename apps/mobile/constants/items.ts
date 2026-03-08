@@ -11,7 +11,7 @@
 
 export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'pouch' | 'summoning' | 'other';
 
-export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet';
+export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet' | 'cape';
 
 export interface EquipmentStats {
   accuracy?: number;
@@ -252,6 +252,25 @@ export const ITEM_META: Record<string, ItemMeta> = {
   spirit_shard: { emoji: '💎', label: 'Spirit Shard', sellValue: 1, description: 'A tiny blue crystal that binds souls to matter.', type: 'summoning' },
   wolf_bones: { emoji: '🦴', label: 'Wolf Bones', sellValue: 5, description: 'Bones from a wild wolf. Imbued with primal energy.', type: 'summoning' },
   slayer_coins: { emoji: '🪙', label: 'Slayer Coins', sellValue: 0, description: 'Bounty currency earned from completing Slayer tasks.', type: 'other' },
+
+  // ── Skill Capes ──
+  skill_cape_mining: { emoji: '🧥', label: 'Mining Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Mining.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_logging: { emoji: '🧥', label: 'Logging Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Logging.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_harvesting: { emoji: '🧥', label: 'Harvesting Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Harvesting.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_scavenging: { emoji: '🧥', label: 'Scavenging Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Scavenging.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_fishing: { emoji: '🧥', label: 'Fishing Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Fishing.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_astrology: { emoji: '🧥', label: 'Astrology Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Astrology.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_runecrafting: { emoji: '🧥', label: 'Runecrafting Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Runecrafting.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_smithing: { emoji: '🧥', label: 'Smithing Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Smithing.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_forging: { emoji: '🧥', label: 'Forging Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Forging.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_cooking: { emoji: '🧥', label: 'Cooking Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Cooking.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_herblore: { emoji: '🧥', label: 'Herblore Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Herblore.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_crafting: { emoji: '🧥', label: 'Crafting Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Crafting.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_agility: { emoji: '🧥', label: 'Agility Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Agility.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_leadership: { emoji: '🧥', label: 'Leadership Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Leadership.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_summoning: { emoji: '🧥', label: 'Summoning Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Summoning.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_slayer: { emoji: '🧥', label: 'Slayer Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Slayer.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+
 };
 
 const UNKNOWN: ItemMeta = { emoji: '❓', label: 'Unknown Item', sellValue: 1, description: 'An unregistered item.', type: 'other' };

@@ -60,7 +60,19 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration path), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.5.3** "The Legion & The Soul". Post-0.5.3: Companion AI behavior, Slayer shop, Summoning special moves.
+**Version scheme:** 0.x.x. Current **0.6.0** "The Ascended Master". Post-0.6.0: Companion AI behavior, Slayer shop, Summoning special moves.
+
+**v0.6.0 (2026-03-07) — The Ascended Master:**
+- **Magic Hub Dashboard**: Redesigned home screen featuring magical portal buttons and a centralized game overview.
+- **Thieving Skill**: Implement pickpocketing and stall looting mechanics with failure/stun risk.
+- **New Skill: Agility**: Run 6 obstacle courses for passive bonuses.
+- **Skill Capes**: Mastery Skill Cape shop (Lv. 99 only).
+- **Skills Page QoL**: Pillar grouping, inline progress bars, mastery level badges, and magical search bar.
+- **The Chronicles**: Native in-app changelog viewer to see total project history.
+- **Slayer & Summoning**: Task assignment via Master Mark and 5 binding pouches (Wolf, Dreadfowl, Bull, Spider, Badger).
+- **Companion System**: Hiring system for Barnaby and Garry the Guard.
+- **Crafting**: Leather armour and jewelry (rings/amulets).
+- **UI & Navigation**: Skills grid relocated to a dedicated tab to make room for the Hub dashboard.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
@@ -130,8 +142,4 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **Enemy Scaling:** Ensure enemies calculate attack/defense equivalent to player logic. Add enemy attack speed variation.
 - **Dungeons & Factions:** Dungeon modes (Delves, Expeditions), enemy factions, boss encounters.
 
-**v0.5.3 (In Progress) — The Legion & The Soul:**
-- **Slayer Alpha:** Integrated the Slayer skill with a monster bestiary (Chicken, Cow, Goblin, Wolves). Created the Slayer screen with task tracking (Ready for combat integration).
-- **Summoning Alpha:** Laid the groundwork for familiar spirit binding. Created the Summoning screen for crafting pouches (Spirit Wolf, Dreadfowl, Bull Heifer). Added specific ingredients (shards, pouches, charms).
-- **Companion System (Leadership):** Fully architected the Wandering Souls system. Created the Leadership screen to hire Barnaby, Yvette, and Reginald. Each companion features unique traits and level requirements.
-- **Engine Expansion:** Integrated SlayerTask and PlayerCompanion interfaces into the core engine state. Updated playerFactory to support all 28 planned skills.
+

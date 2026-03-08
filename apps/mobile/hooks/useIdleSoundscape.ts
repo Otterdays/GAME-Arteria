@@ -8,7 +8,7 @@
 import { useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
 
-export type SoundscapeId = 'mining' | 'logging' | 'fishing' | 'harvesting' | 'scavenging' | 'runecrafting' | 'smithing' | 'forging' | 'cooking' | 'herblore' | 'astrology' | 'leadership' | 'summoning' | 'slayer' | 'none';
+export type SoundscapeId = 'agility' | 'thieving' | 'crafting' | 'mining' | 'logging' | 'fishing' | 'harvesting' | 'scavenging' | 'runecrafting' | 'smithing' | 'forging' | 'cooking' | 'herblore' | 'astrology' | 'leadership' | 'summoning' | 'slayer' | 'none';
 
 export function useIdleSoundscape(soundscapeId: SoundscapeId) {
     const enabled = useAppSelector(

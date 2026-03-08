@@ -2,7 +2,7 @@
   "expo": {
     "name": "Arteria",
     "slug": "arteria",
-    "version": "0.5.3",
+    "version": "0.6.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "arteria",
@@ -12,7 +12,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "runtimeVersion": "0.5.3"
+      "runtimeVersion": "0.6.0"
     },
     "android": {
       "adaptiveIcon": {

@@ -11,7 +11,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
 import { useRequestStartTask } from '@/hooks/useRequestStartTask';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
-import { AGILITY_COURSES, AgilityCourse } from '@/constants/agility';
+import { THIEVING_TARGETS, ThievingTarget } from '@/constants/thieving';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import * as Haptics from 'expo-haptics';
 import { formatNumber, formatXpHr } from '@/utils/formatNumber';
@@ -32,40 +32,40 @@ function xpForLevel(level: number): number {
     return Math.floor(c);
 }
 
-const colorAgility = '#14b8a6';
+const colorThieving = '#8b5cf6';
 
-export default function AgilityScreen() {
-    useIdleSoundscape('agility');
+export default function ThievingScreen() {
+    useIdleSoundscape('thieving');
     const { palette } = useTheme();
     const { showFeedbackToast } = useFeedbackToast();
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
     // Default to basic fallback object if skill not initialized yet, though the engine should have handled it
-    const agilitySkill = useAppSelector((s) => s.game.player.skills.agility) || { xp: 0, level: 1, mastery: {} };
+    const thievingSkill = useAppSelector((s) => s.game.player.skills.thieving) || { xp: 0, level: 1, mastery: {} };
     const activeTask = useAppSelector((s) => s.game.player.activeTask);
 
-    const isAgility = activeTask?.skillId === 'agility';
-    const activeNodeId = isAgility ? activeTask.actionId : null;
-    const activeNode = AGILITY_COURSES.find((n) => n.id === activeNodeId);
+    const isThieving = activeTask?.skillId === 'thieving';
+    const activeNodeId = isThieving ? activeTask.actionId : null;
+    const activeNode = THIEVING_TARGETS.find((n) => n.id === activeNodeId);
 
     const [popTrigger, setPopTrigger] = React.useState(0);
-    const lastXp = React.useRef(agilitySkill.xp);
+    const lastXp = React.useRef(thievingSkill.xp);
     const lastGain = React.useRef(0);
     const shakeAnim = React.useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
-        if (agilitySkill.xp > lastXp.current) {
-            const gain = agilitySkill.xp - lastXp.current;
-            lastXp.current = agilitySkill.xp;
+        if (thievingSkill.xp > lastXp.current) {
+            const gain = thievingSkill.xp - lastXp.current;
+            lastXp.current = thievingSkill.xp;
             lastGain.current = gain;
             setPopTrigger((t) => t + 1);
             shakeAnim.setValue(0);
             Animated.timing(shakeAnim, { toValue: 1, duration: 200, useNativeDriver: true }).start(() => shakeAnim.setValue(0));
         } else {
-            lastXp.current = agilitySkill.xp;
+            lastXp.current = thievingSkill.xp;
         }
-    }, [agilitySkill.xp, shakeAnim]);
+    }, [thievingSkill.xp, shakeAnim]);
 
     const shakeX = shakeAnim.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, 4, -4, 4, 0] });
 
@@ -107,21 +107,21 @@ export default function AgilityScreen() {
                     gap: Spacing.sm,
                 },
                 levelTag: {
-                    backgroundColor: `${colorAgility}25`,
+                    backgroundColor: `${colorThieving}25`,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 2,
                     borderRadius: Radius.full,
                     borderWidth: 1,
-                    borderColor: `${colorAgility}50`,
+                    borderColor: `${colorThieving}50`,
                 },
                 levelTagText: {
-                    color: colorAgility,
+                    color: colorThieving,
                     fontSize: FontSize.xs,
                     fontWeight: 'bold',
                     textTransform: 'uppercase',
                 },
-                agilityTitle: { fontFamily: FontCinzelBold, fontSize: FontSize.xl, color: palette.textPrimary },
-                agilitySub: { fontSize: FontSize.sm, color: palette.textSecondary },
+                thievingTitle: { fontFamily: FontCinzelBold, fontSize: FontSize.xl, color: palette.textPrimary },
+                thievingSub: { fontSize: FontSize.sm, color: palette.textSecondary },
                 listContent: { padding: Spacing.md, gap: Spacing.md },
                 nodeCard: {
                     backgroundColor: palette.bgCard,
@@ -136,7 +136,7 @@ export default function AgilityScreen() {
                 nodeEmoji: {
                     fontSize: 32,
                     marginRight: Spacing.md,
-                    textShadowColor: colorAgility,
+                    textShadowColor: colorThieving,
                     textShadowOffset: { width: 0, height: 0 },
                     textShadowRadius: 8,
                 },
@@ -182,18 +182,18 @@ export default function AgilityScreen() {
         [palette]
     );
 
-    const clvXP = xpForLevel(agilitySkill.level);
-    const nlvXP = xpForLevel(agilitySkill.level + 1);
-    const xpIntoLevel = Math.max(0, Math.floor(agilitySkill.xp - clvXP));
+    const clvXP = xpForLevel(thievingSkill.level);
+    const nlvXP = xpForLevel(thievingSkill.level + 1);
+    const xpIntoLevel = Math.max(0, Math.floor(thievingSkill.xp - clvXP));
     const xpNeeded = Math.max(1, nlvXP - clvXP);
-    const pct = agilitySkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
+    const pct = thievingSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
-    const handleNodePress = (node: AgilityCourse) => {
-        if (agilitySkill.level < node.levelReq) {
+    const handleNodePress = (node: ThievingTarget) => {
+        if (thievingSkill.level < node.levelReq) {
             showFeedbackToast({
                 type: 'locked',
                 title: 'Locked',
-                message: `Requires Agility Level ${node.levelReq}`,
+                message: `Requires Thieving Level ${node.levelReq}`,
             });
             return;
         }
@@ -204,7 +204,7 @@ export default function AgilityScreen() {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             requestStartTask({
                 type: 'skilling',
-                skillId: 'agility',
+                skillId: 'thieving',
                 actionId: node.id,
                 intervalMs: node.baseTickMs,
                 partialTickMs: 0,
@@ -214,7 +214,7 @@ export default function AgilityScreen() {
 
     return (
         <Animated.View style={[styles.container, { paddingTop: insets.top }, { transform: [{ translateX: shakeX }] }]}>
-            <Stack.Screen options={{ title: 'Agility', headerShown: false }} />
+            <Stack.Screen options={{ title: 'Thieving', headerShown: false }} />
             <View style={styles.headerRow}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton} accessibilityLabel="Go back" accessibilityRole="button">
                     <Text style={styles.backButtonText}>‹ Back</Text>
@@ -227,7 +227,7 @@ export default function AgilityScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('agility')}` as any);
+                            router.replace(`/skills/${getPrevSkill('thieving')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -235,40 +235,40 @@ export default function AgilityScreen() {
                     </TouchableOpacity>
 
                     <View style={styles.titleContent}>
-                        <Text style={styles.agilityTitle}>Agility</Text>
+                        <Text style={styles.thievingTitle}>Thieving</Text>
                         <View style={styles.levelTag}>
-                            <Text style={styles.levelTagText}>Lv. {agilitySkill.level}</Text>
+                            <Text style={styles.levelTagText}>Lv. {thievingSkill.level}</Text>
                         </View>
                     </View>
 
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('agility')}` as any);
+                            router.replace(`/skills/${getNextSkill('thieving')}` as any);
                         }}
                         style={styles.navButton}
                     >
                         <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.agilitySub}>Run obstacle courses to improve your agility.</Text>
-                <MasteryBadges skillId="agility" />
+                <Text style={styles.thievingSub}>Pickpocket targets and loot stalls for wealth.</Text>
+                <MasteryBadges skillId="thieving" />
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
-                        <ProgressBarWithPulse progress={pct} fillColor={colorAgility} widthPercent={pct} />
+                        <ProgressBarWithPulse progress={pct} fillColor={colorThieving} widthPercent={pct} />
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.xpText}>
-                            {agilitySkill.level >= 99 ? '' : <AnimatedNumber value={xpIntoLevel} formatValue={(v) => formatNumber(v)} />}
-                            {agilitySkill.level >= 99 ? `${formatNumber(agilitySkill.xp)} XP — MAX` : ` / ${formatNumber(xpNeeded)} XP`}
+                            {thievingSkill.level >= 99 ? '' : <AnimatedNumber value={xpIntoLevel} formatValue={(v) => formatNumber(v)} />}
+                            {thievingSkill.level >= 99 ? `${formatNumber(thievingSkill.xp)} XP — MAX` : ` / ${formatNumber(xpNeeded)} XP`}
                         </Text>
                     </View>
                     <FloatingXpPop amount={lastGain.current} emoji={activeNode?.emoji || '👟'} triggerKey={popTrigger} />
                 </View>
             </View>
             <ScrollView contentContainerStyle={styles.listContent}>
-                {AGILITY_COURSES.map((node) => {
-                    const isLocked = agilitySkill.level < node.levelReq;
+                {THIEVING_TARGETS.map((node) => {
+                    const isLocked = thievingSkill.level < node.levelReq;
                     const isActive = activeNodeId === node.id;
                     return (
                         <BouncyButton
@@ -282,7 +282,7 @@ export default function AgilityScreen() {
                             onPress={() => handleNodePress(node)}
                             accessibilityRole="button"
                             accessibilityState={{ disabled: isLocked, selected: isActive }}
-                            accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Run for ${node.xpPerTick} XP`}`}
+                            accessibilityLabel={`${node.name}. ${isLocked ? `Unlocks at level ${node.levelReq}` : `Pickpocket for ${node.xpPerTick} XP`}`}
                         >
                             {!isLocked && (
                                 <LinearGradient
@@ -292,7 +292,7 @@ export default function AgilityScreen() {
                                     end={{ x: 1, y: 1 }}
                                 />
                             )}
-                            {isActive && <ActivePulseGlow color={colorAgility} />}
+                            {isActive && <ActivePulseGlow color={colorThieving} />}
                             <View style={styles.nodeHeader}>
                                 <Text style={[styles.nodeEmoji, isLocked && { opacity: 0.5 }]}>{node.emoji}</Text>
                                 <View style={styles.nodeTitleContainer}>
@@ -312,7 +312,7 @@ export default function AgilityScreen() {
                                 <View style={styles.statPill}>
                                     <Text style={styles.statLabel}>To Level</Text>
                                     <Text style={[styles.statValue, { color: palette.green }]}>
-                                        {agilitySkill.level >= 99 ? 'MAX' : `~${Math.ceil((nlvXP - agilitySkill.xp) / node.xpPerTick)}`}
+                                        {thievingSkill.level >= 99 ? 'MAX' : `~${Math.ceil((nlvXP - thievingSkill.xp) / node.xpPerTick)}`}
                                     </Text>
                                 </View>
                                 <View style={styles.statPill}>
@@ -322,11 +322,11 @@ export default function AgilityScreen() {
                             </View>
                             {!isLocked && (
                                 <View style={[styles.trainButton, isActive && styles.trainButtonActive]}>
-                                    <Text style={styles.trainButtonText}>{isActive ? 'Stop Running' : 'Run Course'}</Text>
+                                    <Text style={styles.trainButtonText}>{isActive ? 'Stop Thieving' : 'Thieve Target'}</Text>
                                 </View>
                             )}
                             {isActive && activeTask && (
-                                <SmoothProgressBar partialTickMs={activeTask.partialTickMs} intervalMs={activeTask.intervalMs} fillColor={colorAgility} />
+                                <SmoothProgressBar partialTickMs={activeTask.partialTickMs} intervalMs={activeTask.intervalMs} fillColor={colorThieving} />
                             )}
                             {isLocked && (
                                 <View style={[styles.trainButton, styles.trainButtonLocked]}>

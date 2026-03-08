@@ -2,7 +2,7 @@
  * Patch History — Full changelog from CHANGELOG.md.
  * Hardcoded patch history for Arteria.
  * Displayed in the in-game Settings -> Patch Notes screen.
- * Current release: 0.5.3 "The Legion & The Soul"
+ * Current release: 0.6.0 "The Ascended Master"
  */
 
 export interface PatchEntry {
@@ -15,20 +15,31 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
-    version: '0.5.3',
-    date: '2026-03-06',
+    version: '0.6.0',
+    date: '2026-03-07',
     added: [
-      '💀 New Skill: Slayer. Speak to "Master Mark" to receive tasks to cull specific monsters. Earn Slayer Coins to spend in the future Slayer Shop.',
+      '✨ Magic Hub: The starting landing page has been transformed into a magical dashboard with stylized portal buttons.',
+      '🎭 New Skill: Thieving. Pickpocket NPCs and loot stalls for gold and items. Beware of the stun risk!',
+      '🏃 New Skill: Agility. Run 6 different obstacle courses spanning from the Crownlands Rooftops to the Void Rift Traverse to gain XP and global passive bonuses!',
+      '👑 Skill Capes: Upon reaching Level 99 in a skill, you can now purchase a Mastery Skill Cape from the Ascended Master located directly in the Shop tab (99,000 gp each).',
+      '📊 Skills QoL: Organized all 45+ skills into Pillars (Combat, Gathering, Artisan, etc.) with thin progress bars and mastery badges on every card.',
+      '� Skill Search: Instantly filter the 45+ skill list with the new magical search bar.',
       '🐺 New Skill: Summoning. Gather charms from combat and shards from the shop to bind spirits into pouches. Added 5 initial pouches: Spirit Wolf, Dreadfowl, Bull Heifer, Spirit Spider, and Honey Badger.',
       '🤝 Companion System: You can now hire wandering souls to join your cause. Added Garry the Guard as an early-game companion (Lv. 10 Leadership).',
       '💬 Narrated Actions: Hiring companions and accepting Slayer tasks is now handled through the branching dialogue system for deeper immersion.',
+      '💀 New Skill: Slayer. Speak to "Master Mark" to receive tasks to cull specific monsters. Earn Slayer Coins to spend in the future Slayer Shop.',
       '👹 New Enemies: Added Crawling Hand (Lv. 5) and Banshee (Lv. 15) to the Slayer Tower (B1).',
       '🏪 Summoning Supplies: Integrated the Summoning Shop directly into the skill screen for quick access to Spirit Pouches and Shards.',
       '✂️ New Skill: Crafting. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful jewelry (Rings & Amulets).',
+      '📜 The Chronicles of Arteria: Access a full historical changelog of every version directly from the Settings menu.',
+    ],
+    changed: [
+      'Moved the main Skills grid to its own dedicated tab to make room for the Hub portal.',
     ],
     fixed: [
-      '🍞 Level Up Toast Fix: Completely refactored the toast notification system to prevent "stuck" toasts. Uses refs for timer management and animation state to ensure smooth dismissal.',
+      '🍞 Level Up Toast Fix: Completely refactored the toast notification system to prevent "stuck" toasts.',
       '📜 Quick Switch Scroll Fix: Resolved an issue where the sidebar panel would not scroll properly due to flex layout conflicts.',
+      'Corrected several typos in the Agility and Crafting skill descriptions.',
     ],
   },
   {

@@ -6,25 +6,27 @@
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
 **Active Task:**
-- [ ] Implement Companion AI Behavior (v0.5.4)
-- [ ] Implement Slayer Shop functionality (v0.5.4)
-- [ ] Implement Woodworking core loop (v0.5.5)
-- [ ] Implement Sorcery/Wizardry core loops (v0.5.6)
-- [x] Implement Crafting core loop (Leather & Jewelry) (v0.5.3)
-- [x] Implement Slayer core loop (v0.5.3)
-- [x] Implement Summoning core loop (v0.5.3)
-- [x] Implement Companions (Leadership) hiring (v0.5.3)
-- [x] Fix stuck Level Up Toast (v0.5.3)
-- [x] Fix Quick Switch Panel scroll bug (v0.5.3)
-- [x] Groundwork for Woodworking, Sorcery, Wizardry (v0.5.3) [TRACE: User Request]
-- [x] Cooking Expansion with Perfect Variants (v0.5.3)
-- [x] Summoning familiar decay & specific skill bonuses (Spider & Badger) (v0.5.3)
-- [x] Dynamic Coming Soon UI locking screen for unimplemented skills (v0.5.3)
+- [ ] Implement Companion AI Behavior (v0.6.2)
+- [ ] Implement Slayer Shop functionality (v0.6.2)
+- [ ] Implement Woodworking core loop (v0.6.5)
+- [ ] Implement Sorcery/Wizardry core loops (v0.6.6)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
 
-**Completed Task:** Fully implemented **Crafting Module & Quick Switch Fix** (v0.5.3).
+**Completed Task:** Fully implemented **The Ascended Master** (v0.6.0).
 
-## [2026-03-06] v0.5.3 "The Legion & The Soul"
+## [2026-03-07] v0.6.0 "The Ascended Master"
+- **Magic Hub Dashboard**: Redesigned home screen into a magical portal hub for faster navigation between systems.
+- **New Skill: Thieving**: Fully implemented pickpocketing and stall looting loop with failing/stunning risks.
+- **New Skill: Agility**: 6 obstacle courses for passive bonuses.
+- **Skill Capes**: Mastery Skill Cape shop (Lv. 99 only).
+- **The Chronicles**: Native Patch Notes screen accessible via Version row in Settings.
+- **Skills Page QoL**:
+  - Organized all 45+ skills into **Pillars** (Combat, Gathering, Artisan, Support, Cosmic).
+  - Added **Magical Search Bar** to instantly filter skills.
+  - Added **Inline Progress Bars** to skill cards for better visual feedback.
+  - Added **Mastery Badge** (star + level) to track your specialty level on the grid.
+  - Added **Action Indicator** (⚡) to the active skill card.
+- **Versioning**: Consolidated all 0.6.x updates into 0.6.0.
 - **New Skill: Crafting:** Forge jewelry and craft leather armour via active skilling.
 - **New Skill: Slayer:** Task assignment via Master Mark; added Crawling Hand and Banshee enemies; Slayer Coins item.
 - **New Skill: Summoning:** 5 pouches; integrated screen shop for shards/pouches; Elder Spirit-Speaker dialogue.

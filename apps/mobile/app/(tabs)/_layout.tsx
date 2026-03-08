@@ -47,6 +47,15 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
+            title: 'Home',
+            tabBarIcon: ({ color }) => (
+              <IconSymbol name="house.fill" size={26} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="skills"
+          options={{
             title: 'Skills',
             tabBarIcon: ({ color }) => (
               <TabIconWithPulse name="hammer.fill" size={26} color={color} pulse={pulseTab === 'skills'} />

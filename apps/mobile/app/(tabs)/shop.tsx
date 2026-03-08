@@ -24,6 +24,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { gameActions, type InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { BouncyButton } from '@/components/BouncyButton';
+import { IMPLEMENTED_SKILLS } from '@/constants/skills';
 
 type TabMode = 'buy' | 'sell';
 
@@ -100,7 +101,7 @@ function BuyRow({
     playerGold,
     onBuy,
 }: {
-    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    styles: Record<string, any>;
     itemId: string;
     buyPrice: number;
     playerGold: number;
@@ -175,7 +176,7 @@ function SellRow({
     item: InventoryItem;
     onSell1: () => void;
     onSellAll: () => void;
-    styles: Record<string, StyleProp<ViewStyle | TextStyle>>;
+    styles: Record<string, any>;
 }) {
     const meta = getItemMeta(item.id);
     const locked = !!item.isLocked;
@@ -231,8 +232,15 @@ export default function ShopScreen() {
     const luminaShopRerollDate = useAppSelector((s) => s.game.player.luminaShopRerollDate);
     const xpBoostExpiresAt = useAppSelector((s) => s.game.player.xpBoostExpiresAt);
     const inventory = useAppSelector((s) => s.game.player.inventory);
+    const skills = useAppSelector((s) => s.game.player.skills);
     const [tab, setTab] = useState<TabMode>('buy');
     const [sellFilter, setSellFilter] = useState<ItemType | 'all'>('all');
+
+    const eligibleCapes = useMemo(() => {
+        return Array.from(IMPLEMENTED_SKILLS)
+            .filter(skillId => (skills[skillId]?.level ?? 1) >= 99)
+            .map(skillId => `skill_cape_${skillId}`);
+    }, [skills]);
 
     const filteredSellList = useMemo(() => {
         if (sellFilter === 'all') return inventory;
@@ -503,75 +511,75 @@ export default function ShopScreen() {
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.headerBox}>
-            <View style={styles.header}>
-                <View style={{ flex: 1 }}>
-                    <Text style={styles.title}>Shop</Text>
-                    <View style={styles.subtitleRow}>
-                        <Text style={styles.subtitle}>Nick — Merchant</Text>
-                        <BouncyButton
-                            style={styles.chatButton}
-                            onPress={() => dispatch(gameActions.startDialogue({ treeId: 'dt_nick_shop', startNodeId: 'node_1' }))}
-                        >
-                            <Text style={styles.chatButtonText}>💬 Talk</Text>
-                        </BouncyButton>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <View style={styles.goldBadge}>
-                        <Text style={styles.goldEmoji}>💰</Text>
-                        <AnimatedNumber
-                            value={gold}
-                            style={styles.goldText}
-                            formatValue={(v) => v.toLocaleString()}
-                        />
-                    </View>
-                    <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
-                        <Text style={styles.goldEmoji}>✨</Text>
-                        <AnimatedNumber
-                            value={lumina}
-                            style={[styles.goldText, { color: palette.accentPrimary }]}
-                            formatValue={(v) => v.toLocaleString()}
-                        />
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.toggleRow}>
-                <TouchableOpacity
-                    style={[styles.toggleBtn, tab === 'buy' && styles.toggleBtnActive]}
-                    onPress={() => setTab('buy')}
-                    activeOpacity={0.7}
-                >
-                    <Text style={[styles.toggleText, tab === 'buy' && styles.toggleTextActive]}>Buy</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.toggleBtn, tab === 'sell' && styles.toggleBtnActive]}
-                    onPress={() => setTab('sell')}
-                    activeOpacity={0.7}
-                >
-                    <Text style={[styles.toggleText, tab === 'sell' && styles.toggleTextActive]}>Sell</Text>
-                </TouchableOpacity>
-            </View>
-
-            {tab === 'sell' && (
-                <View style={styles.filterRow}>
-                    {SELL_FILTERS.map((opt) => {
-                        const isActive = sellFilter === opt.key;
-                        return (
-                            <TouchableOpacity
-                                key={opt.key}
-                                style={[styles.filterChip, isActive && styles.filterChipActive]}
-                                onPress={() => setSellFilter(opt.key)}
-                                activeOpacity={0.7}
+                <View style={styles.header}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.title}>Shop</Text>
+                        <View style={styles.subtitleRow}>
+                            <Text style={styles.subtitle}>Nick — Merchant</Text>
+                            <BouncyButton
+                                style={styles.chatButton}
+                                onPress={() => dispatch(gameActions.startDialogue({ treeId: 'dt_nick_shop', startNodeId: 'node_1' }))}
                             >
-                                <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
-                                    {opt.label}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
+                                <Text style={styles.chatButtonText}>💬 Talk</Text>
+                            </BouncyButton>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={styles.goldBadge}>
+                            <Text style={styles.goldEmoji}>💰</Text>
+                            <AnimatedNumber
+                                value={gold}
+                                style={styles.goldText}
+                                formatValue={(v) => v.toLocaleString()}
+                            />
+                        </View>
+                        <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
+                            <Text style={styles.goldEmoji}>✨</Text>
+                            <AnimatedNumber
+                                value={lumina}
+                                style={[styles.goldText, { color: palette.accentPrimary }]}
+                                formatValue={(v) => v.toLocaleString()}
+                            />
+                        </View>
+                    </View>
                 </View>
-            )}
+
+                <View style={styles.toggleRow}>
+                    <TouchableOpacity
+                        style={[styles.toggleBtn, tab === 'buy' && styles.toggleBtnActive]}
+                        onPress={() => setTab('buy')}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={[styles.toggleText, tab === 'buy' && styles.toggleTextActive]}>Buy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.toggleBtn, tab === 'sell' && styles.toggleBtnActive]}
+                        onPress={() => setTab('sell')}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={[styles.toggleText, tab === 'sell' && styles.toggleTextActive]}>Sell</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {tab === 'sell' && (
+                    <View style={styles.filterRow}>
+                        {SELL_FILTERS.map((opt) => {
+                            const isActive = sellFilter === opt.key;
+                            return (
+                                <TouchableOpacity
+                                    key={opt.key}
+                                    style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                    onPress={() => setSellFilter(opt.key)}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                                        {opt.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                )}
             </View>
 
             {tab === 'buy' && (
@@ -609,6 +617,27 @@ export default function ShopScreen() {
                                     styles={styles}
                                 />
                             ))}
+                            {eligibleCapes.length > 0 && (
+                                <View style={{ marginTop: Spacing.md }}>
+                                    <View style={[styles.row, { marginBottom: Spacing.sm, borderColor: palette.gold + '44', backgroundColor: palette.gold + '0c' }]}>
+                                        <Text style={styles.rowEmoji}>👑</Text>
+                                        <View style={styles.rowBody}>
+                                            <Text style={styles.rowLabel}>Ascended Master</Text>
+                                            <Text style={styles.rowPrice}>Skill Capes of Mastery</Text>
+                                        </View>
+                                    </View>
+                                    {eligibleCapes.map((capeId) => (
+                                        <BuyRow
+                                            key={capeId}
+                                            styles={styles}
+                                            itemId={capeId}
+                                            buyPrice={99000}
+                                            playerGold={gold}
+                                            onBuy={(qty, cost) => handleBuy(capeId, qty, cost)}
+                                        />
+                                    ))}
+                                </View>
+                            )}
                             <View style={{ marginTop: Spacing.md, marginBottom: Spacing.sm }}>
                                 <Text style={[styles.rowPrice, { marginLeft: 0 }]}>Nick's catalog</Text>
                             </View>
