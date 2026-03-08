@@ -83,6 +83,7 @@ import {
     getItemMasteryYieldBonus,
     getPerfectCookChance,
 } from '@/constants/mastery';
+import { getHasteMultiplier } from '@/constants/resonance';
 
 const ACTION_DEFS: Record<string, ActionDef> = {};
 
@@ -248,7 +249,9 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             const speedMult = activeTask.skillId
                 ? getMasterySpeedMultiplier(playerRef.current, activeTask.skillId as SkillId)
                 : 1;
-            const interval = baseInterval / (speedMult * itemMasterySpeed);
+            const momentum = playerRef.current.momentum ?? 0;
+            const resonanceHaste = getHasteMultiplier(momentum);
+            const interval = baseInterval / (speedMult * itemMasterySpeed * resonanceHaste);
             const partialMs = (activeTask.partialTickMs || 0) + deltaMs;
             const fullTicks = Math.floor(partialMs / interval);
             const leftover = partialMs - fullTicks * interval;
@@ -299,6 +302,20 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             if (successfulTicks > 0 && activeTask.skillId) {
                 const skillId = activeTask.skillId as SkillId;
                 const totalXP = action.xpPerTick * successfulTicks;
+
+                // Resonance Lv 80: Kinetic Feedback — 10% chance per successful tick to grant +1% Momentum
+                if (skillId !== 'resonance') {
+                    const resLevel = playerRef.current.skills['resonance']?.level ?? 1;
+                    if (resLevel >= 80) {
+                        let bonusMomentum = 0;
+                        for (let i = 0; i < successfulTicks; i++) {
+                            if (Math.random() < 0.1) bonusMomentum++;
+                        }
+                        if (bonusMomentum > 0) {
+                            dispatch(gameActions.pulseResonance({ xpGain: 0, momentumGain: bonusMomentum }));
+                        }
+                    }
+                }
 
                 ticksSinceLastEventRef.current += successfulTicks;
 
@@ -591,14 +608,33 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             // ─── Companion Task Processing ───
             if (playerRef.current.companions) {
                 Object.values(playerRef.current.companions).forEach(comp => {
-                    if (!comp.isActive || !comp.assignedTaskId) return;
+                    if (!comp.isActive) return;
+
+                    // --- Sir Reginald Pomp Passive ---
+                    if (comp.id === 'reginald') {
+                        const junkIds = playerRef.current.junkItemIds;
+                        if (junkIds && junkIds.length > 0) {
+                            const hasJunk = playerRef.current.inventory.some(i => junkIds.includes(i.id));
+                            if (hasJunk) {
+                                dispatch(gameActions.reginaldAutoSell());
+                            }
+                        }
+                    }
+
+                    if (!comp.assignedTaskId) return;
 
                     const compAction = ACTION_DEFS[comp.assignedTaskId];
                     if (!compAction) return;
 
                     // Companion base interval: 2x slower than player (they are souls/ghosts)
                     // But they don't consume items (per roadmap design).
-                    const compInterval = 4000; // Fixed 4s for companions for now
+                    let compInterval = 4000; 
+
+                    // --- Scholar Yvette Passive ---
+                    if (comp.id === 'yvette') {
+                        compInterval = 2800; // 30% faster crafting/gathering speed
+                    }
+
                     const compPartial = (comp.partialTickMs || 0) + deltaMs;
                     const compTicks = Math.floor(compPartial / compInterval);
                     const compLeftover = compPartial - compTicks * compInterval;
@@ -607,37 +643,74 @@ export function useGameLoop(options?: UseGameLoopOptions) {
 
                     if (compTicks > 0) {
                         let success = 0;
+                        let isYvetteExplosion = false;
+
                         for (let i = 0; i < compTicks; i++) {
+                            // Yvette Explosion Check (5% chance per attempt)
+                            if (comp.id === 'yvette' && Math.random() < 0.05) {
+                                isYvetteExplosion = true;
+                                continue;
+                            }
                             if (Math.random() <= compAction.successRate) success++;
                         }
 
+                        if (isYvetteExplosion) {
+                            dispatch(gameActions.pushFeedbackToast({ 
+                                type: 'error', 
+                                title: 'Science!', 
+                                message: 'Scholar Yvette caused an explosion...' 
+                            }));
+                            // Give some scrap as a partial refund
+                            dispatch(gameActions.addItems([{ id: 'rusty_scrap', quantity: 1 }]));
+                        }
+
                         if (success > 0) {
-                            // Companion Yield: 25% of player's yield
-                            const compItems = compAction.items.map(item => ({
-                                id: item.id,
-                                quantity: Math.max(1, Math.floor(item.quantity * success * 0.25))
-                            }));
-                            dispatch(gameActions.addItems(compItems));
+                            // --- Barnaby the Uncertain Passive ---
+                            if (comp.id === 'barnaby') {
+                                let kept = 0;
+                                for (let s = 0; s < success; s++) {
+                                    if (Math.random() >= 0.5) kept++;
+                                }
+                                success = kept * 2; // Hit himself = lose tick; otherwise double yield
+                                if (success === 0) {
+                                    if (Math.random() < 0.2) {
+                                        dispatch(gameActions.pushFeedbackToast({ 
+                                            type: 'warning', 
+                                            title: 'Oops...', 
+                                            message: 'Barnaby dropped his tools and hurt himself.' 
+                                        }));
+                                    }
+                                }
+                            }
 
-                            // Companion XP
-                            let compSkill: SkillId = 'scavenging';
-                            if (comp.assignedTaskId.includes('ore')) compSkill = 'mining';
-                            else if (comp.assignedTaskId.includes('log')) compSkill = 'logging';
-                            else if (comp.assignedTaskId.includes('fish')) compSkill = 'fishing';
-                            else if (comp.assignedTaskId.includes('constellation')) compSkill = 'astrology';
-                            else if (comp.assignedTaskId.includes('rune')) compSkill = 'runecrafting';
+                            if (success > 0) {
+                                // Companion Yield: 25% of player's yield
+                                const compItems = compAction.items.map(item => ({
+                                    id: item.id,
+                                    quantity: Math.max(1, Math.floor(item.quantity * success * 0.25))
+                                }));
+                                dispatch(gameActions.addItems(compItems));
 
-                            dispatch(gameActions.addCompanionXP({
-                                companionId: comp.id,
-                                skillId: compSkill,
-                                xp: compAction.xpPerTick * success
-                            }));
+                                // Companion XP
+                                let compSkill: SkillId = 'scavenging';
+                                if (comp.assignedTaskId.includes('ore')) compSkill = 'mining';
+                                else if (comp.assignedTaskId.includes('log')) compSkill = 'logging';
+                                else if (comp.assignedTaskId.includes('fish')) compSkill = 'fishing';
+                                else if (comp.assignedTaskId.includes('constellation')) compSkill = 'astrology';
+                                else if (comp.assignedTaskId.includes('rune')) compSkill = 'runecrafting';
 
-                            if (accumulator) {
-                                for (const item of compItems) {
-                                    const ex = accumulator.itemsGained.find(i => i.id === item.id);
-                                    if (ex) ex.quantity += item.quantity;
-                                    else accumulator.itemsGained.push({ ...item });
+                                dispatch(gameActions.addCompanionXP({
+                                    companionId: comp.id,
+                                    skillId: compSkill,
+                                    xp: compAction.xpPerTick * success
+                                }));
+
+                                if (accumulator) {
+                                    for (const item of compItems) {
+                                        const ex = accumulator.itemsGained.find(i => i.id === item.id);
+                                        if (ex) ex.quantity += item.quantity;
+                                        else accumulator.itemsGained.push({ ...item });
+                                    }
                                 }
                             }
                         }
@@ -661,9 +734,9 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         return () => clearInterval(intervalId);
     }, [isLoaded, dispatch]);
 
-    // Main game loop interval
+    // Main game loop interval (skilling, combat, resonance momentum decay)
     useEffect(() => {
-        if ((!activeTask && !activeCombat) || !isLoaded) return;
+        if (!isLoaded) return;
 
         lastTickRef.current = Date.now();
 
@@ -672,10 +745,10 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             const delta = now - lastTickRef.current;
             lastTickRef.current = now;
             if (activeTask) processDelta(delta);
-            // Combat ticks run independently of skilling
             if (playerRef.current.activeCombat) {
                 dispatch(gameActions.processCombatTick({ deltaMs: delta }));
             }
+            dispatch(gameActions.decayMomentum({ deltaSeconds: delta / 1000 }));
         }, TICK_INTERVAL_MS);
 
         return () => clearInterval(intervalId);

@@ -63,6 +63,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="resonance"
+          options={{
+            title: 'Resonance',
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={26} name="waveform.circle.fill" color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="combat"
           options={{
             title: 'Combat',

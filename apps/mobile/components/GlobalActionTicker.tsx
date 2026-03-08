@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useAppSelector } from '@/store/hooks';
 import { useInterpolatedProgress } from '@/hooks/useInterpolatedProgress';
@@ -31,18 +31,23 @@ export const GlobalActionTicker = () => {
 
     const intervalMs = activeTask?.intervalMs ?? 0;
     const partialTickMs = activeTask?.partialTickMs ?? 0;
-    const progress = useInterpolatedProgress(partialTickMs, intervalMs);
+    const progressAnim = useInterpolatedProgress(partialTickMs, intervalMs);
 
     // P. Haptic Heartbeat — pulse when progress bar reaches 100% and resets (hooks must run before early return)
-    const prevProgress = useRef(progress);
     useEffect(() => {
-        const wasNearFull = prevProgress.current >= 85;
-        const nowNearLow = progress < 15;
-        if (wasNearFull && nowNearLow) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-        prevProgress.current = progress;
-    }, [progress]);
+        let wasNearFull = false;
+        const listenerId = progressAnim.addListener(({ value }) => {
+            const isNearFull = value >= 85;
+            const nowNearLow = value < 15;
+            if (wasNearFull && nowNearLow) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+            wasNearFull = isNearFull;
+        });
+        return () => {
+            progressAnim.removeListener(listenerId);
+        };
+    }, [progressAnim]);
 
     const styles = useMemo(
         () =>
@@ -103,10 +108,16 @@ export const GlobalActionTicker = () => {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
+    const widthInterpolated = progressAnim.interpolate({
+        inputRange: [0, 100],
+        outputRange: ['0%', '100%'],
+        extrapolate: 'clamp',
+    });
+
     return (
         <View style={[styles.container, { bottom: insets.bottom + bottomOffset }]}>
             <View style={styles.progressBg}>
-                <View style={[styles.progressFill, { width: `${progress}%` }]} />
+                <Animated.View style={[styles.progressFill, { width: widthInterpolated }]} />
             </View>
             <View style={styles.content}>
                 <Text style={styles.emoji}>{emoji}</Text>

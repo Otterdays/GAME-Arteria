@@ -42,12 +42,17 @@ export default function MiningScreen() {
     const dispatch = useAppDispatch();
     const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
-    const player = useAppSelector((s) => s.game.player);
-    const miningSkill = player.skills.mining;
-    const activeTask = player.activeTask;
+    const miningSkill = useAppSelector((s) => s.game.player.skills.mining);
+    // Only re-render if the active item ID/skill changes, do not listen to partialTickMs
+    const activeTaskBase = useAppSelector(
+        (s) => s.game.player.activeTask,
+        (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+    );
+    const flags = useAppSelector((s) => s.game.player.narrative.flags);
+    const mockPlayerForNarrative = useMemo(() => ({ narrative: { flags } }), [flags]);
 
-    const isMining = activeTask?.skillId === 'mining';
-    const activeNodeId = isMining ? activeTask.actionId : null;
+    const isMining = activeTaskBase?.skillId === 'mining';
+    const activeNodeId = isMining ? activeTaskBase?.actionId : null;
     const activeNode = MINING_NODES.find(n => n.id === activeNodeId);
 
     // XP floating pop-up logic + Q. Screen shake on tick complete
@@ -305,7 +310,7 @@ export default function MiningScreen() {
     const pct = miningSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
     const handleNodePress = (node: MiningNode) => {
-        const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+        const meetsReq = meetsNarrativeRequirement(mockPlayerForNarrative as any, node.requirement);
         if (!meetsReq) {
             showFeedbackToast({
                 type: 'locked',
@@ -367,7 +372,7 @@ export default function MiningScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('mining')}`);
+                            router.replace(`/skills/${getPrevSkill('mining')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -387,7 +392,7 @@ export default function MiningScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('mining')}`);
+                            router.replace(`/skills/${getNextSkill('mining')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -431,7 +436,7 @@ export default function MiningScreen() {
                         contentContainerStyle={styles.iconBarScroll}
                     >
                         {MINING_NODES.map((node) => {
-                            const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+                            const meetsReq = meetsNarrativeRequirement(mockPlayerForNarrative as any, node.requirement);
                             const isUnlocked = miningSkill.level >= node.levelReq && meetsReq;
 
                             return (
@@ -448,7 +453,7 @@ export default function MiningScreen() {
 
             <ScrollView contentContainerStyle={styles.listContent}>
                 {MINING_NODES.map((node) => {
-                    const meetsReq = meetsNarrativeRequirement(player, node.requirement);
+                    const meetsReq = meetsNarrativeRequirement(mockPlayerForNarrative as any, node.requirement);
                     const isLocked = miningSkill.level < node.levelReq || !meetsReq;
                     const isActive = activeNodeId === node.id;
 
@@ -521,10 +526,8 @@ export default function MiningScreen() {
                                     <Text style={styles.trainButtonText}>{isActive ? 'Stop Mining' : 'Mine'}</Text>
                                 </View>
                             )}
-                            {isActive && activeTask && (
+                            {isActive && activeTaskBase && (
                                 <SmoothProgressBar
-                                    partialTickMs={activeTask.partialTickMs}
-                                    intervalMs={activeTask.intervalMs}
                                     fillColor={palette.skillMining}
                                 />
                             )}

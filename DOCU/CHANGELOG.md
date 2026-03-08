@@ -5,7 +5,7 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
-## [0.6.0] - 2026-03-07 — "The Ascended Master"
+## [0.6.0] - 2026-03-08 — "The Ascended Master"
 ### Added
 - **Magic Hub Dashboard**: Redesigned home screen featuring magical portal buttons and a centralized game overview.
 - **Thieving Skill**: Implement pickpocketing and stall looting mechanics with failure/stun risk.
@@ -23,9 +23,13 @@
 ### Changed
 - Relocated the Skills grid to its own navigation tab to make room for the Hub portal.
 ### Fixed
+- **Stability Patch**: Resolved a critical ReferenceError where `TextInput` was not imported in the skills panel search bar.
+- **Dependency Guard**: Improved import safety across primary navigation tabs.
 - **Level Up Toast Fix**: Completely refactored the toast notification system to prevent "stuck" toasts.
 - **Quick Switch Scroll**: Fixed a major bug where the quick switch panel would not scroll due to Flex conflicts.
 - **Descriptive Typos**: Corrected various typos in labels and skill cards.
+### Documentation
+- **CLICKER_DESIGN.md**: Added §7 "Broaden & Deepen Ideas (Sourced)" — world-state/corruption, seasonal pulse modes, Chaos Theory crossover, companion relay, Chronicle/Timekeeper framing, shared active-play minigame framework, accessibility/feedback, economy guardrails; all subsections cite source docs. References expanded and renumbered to §8.
 
 ## [0.5.2] - 2026-03-06 — "The Celestial Expansion"
 ### Added

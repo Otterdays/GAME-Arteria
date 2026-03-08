@@ -267,6 +267,13 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Leadership cap display:** Show "Companions: 2/3" (or current max) in UI.
 - [ ] 🟢 **Unlock teaser:** "Unlock Barnaby at Leadership 20" style messaging (Leadership gates companions; avoids vague "Level 20").
 
+### 5.4 — Crossover Subsystems (Clicker + World Builder) 🟡
+> **Goal:** One game, two complementary subsystems that feed the core idle RPG. See MASTER_DESIGN_DOC §1.3 and CLICKER_DESIGN.md.
+- [x] 🟡 **Resonance (Clicker skill):** Tap-to-build Momentum; Momentum grants global Haste to all other skills. Dedicated tab, orb UI, level unlocks (Multi-Pulse, Resonant Echo, Kinetic Feedback, Perfect Stability). Implemented as Support skill.
+- [ ] 🟡 **Aether / Sparks economy (optional):** Tap or Momentum could generate spendable Aether for temporary buffs (+% XP, Sanctum fuel) or Lumina-like shop use. Design in CLICKER_DESIGN.md.
+- [ ] 🔴 **Sanctum as world builder:** Grid/map place rooms (Smithing Room, Kitchen, Garden, etc.); Construction provides blueprints/materials. Sanctum produces passive gold, rest bonus (+% XP), companion efficiency. MASTER_DESIGN_DOC Chapter 13.
+- [ ] 🟡 **Construction bridge:** Construction skill feeds Sanctum (planks, nails, furniture); level-gates room tiers or building unlocks.
+
 ---
 
 ## 📜 Phase 6 — "The Narrative Framework"

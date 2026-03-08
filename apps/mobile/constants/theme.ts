@@ -85,6 +85,7 @@ export type PaletteShape = {
   skillConstitution: string;
   skillFiremaking: string;
   skillMagic: string;
+  skillResonance: string;
 };
 
 // ── Core Palette (from design spec) ─────────────────────────
@@ -172,6 +173,7 @@ const DARK_PALETTE: PaletteShape = {
   skillConstitution: '#ff6b81',
   skillFiremaking: '#ff4757',
   skillMagic: '#a29bfe',
+  skillResonance: '#a78bfa',
 };
 
 /** Theme registry. [TRACE: DOCU/THEMING.md] */

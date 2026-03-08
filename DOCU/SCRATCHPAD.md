@@ -1,13 +1,36 @@
 # SCRATCHPAD
 
+## Current Tasks
+- [x] CLICKER_DESIGN.md §7 Broaden & Deepen added (2026-03-08)
+- [x] Safe dependency modernization pass completed (2026-03-08)
+- [x] Document work: Crossover ecosystem + Clicker design doc (2026-03-08)
+- [x] Fix `TextInput` ReferenceError in `skills.tsx` (v0.6.1)
+- [x] Audit primary tabs for missing core imports
+- [x] Bump version to 0.6.1 "The Stability Patch"
+- [x] Update project & in-app documentation
+
+## Immediate Context
+- **CLICKER_DESIGN §7 (2026-03-08):** Added "Broaden & Deepen Ideas (Sourced)" with eight subsections: World-State Resonance (corruption), Seasonal Pulse Modes, Chaos Theory crossover, Companion relay, Chronicle/Timekeeper framing, Shared active-play minigame framework, Accessibility/feedback, Economy guardrails. Each cites MASTER_DESIGN_DOC, ROADMAP, WORLD_EXPLORATION, COMPANIONS, TRUTH_DOCTRINE, ORE_CHAIN_EXPANSION, zhip-ai-styling. References renumbered to §8.
+- **Dependency modernization (2026-03-08):** Updated root `expo` → `~55.0.5`, `expo-router` → `~55.0.4`, and `babel-preset-expo` → `^55.0.10`. Updated mobile `@react-navigation/bottom-tabs` → `^7.15.5`, `expo-dev-client` → `~55.0.11`, `expo-notifications` → `~55.0.11`, `expo-splash-screen` → `~55.0.10`, and `react-native-mmkv` → `^4.2.0`. SBOM refreshed to match.
+- **Lint tooling note (2026-03-08):** `expo lint` toolchain is compatible with ESLint 9.x here, not ESLint 10.x. Kept `apps/mobile` on `eslint@^9.39.3`; lint now runs and reports existing repo lint debt instead of crashing in plugin init.
+- **Doc work (2026-03-08):** Crossover vision and Clicker design formalized. MASTER_DESIGN_DOC §1.3 added (Crossover Ecosystem: Clicker + World Builder). ROADMAP §5.4 added (Crossover Subsystems — Resonance done, Aether/Sanctum/Construction bridge). New **CLICKER_DESIGN.md**: design, layout, styling, tech, direction, merits; references click_idea.md and click_idea_2.md. SUMMARY doc index updated with CLICKER_DESIGN.md.
+- **Stability Fix**: `TextInput` ReferenceError in `skills.tsx` resolved.
+- **Audit**: Verified component imports in `bank.tsx`, `settings.tsx`, `stats.tsx`.
+- **Docs**: Fully updated `CHANGELOG`, `SUMMARY`, `UpdateBoard`, `patchHistory`, `index.html`, and `ui-audit-2026-03-08.md`.
+
+## History
+- 2026-03-08: CLICKER_DESIGN.md §7 Broaden & Deepen (sourced ideas) added; SCRATCHPAD, CHANGELOG, SUMMARY updated.
+- 2026-03-08: Completed safe dependency modernization pass. Verified active app is `apps/mobile`, updated SBOM, and documented ESLint 10 incompatibility with current Expo lint stack.
+- 2026-03-08: Resolved "textinput" ReferenceError in `skills.tsx`. Bumped version to v0.6.1 "The Stability Patch".
+
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
 > **🤖 AI: When shipping new features, bump version and update:** `app.json` → `UpdateBoard.tsx` (in-app) → `index.html` (website §Changelog) → `patchHistory.ts` (Patch Notes) → `CHANGELOG.md`. See Documentation & AI Developer Guidelines below.
 
 **Active Task:**
-- [ ] Implement Companion AI Behavior (v0.6.2)
-- [ ] Implement Slayer Shop functionality (v0.6.2)
+- [x] Implement Companion AI Behavior (v0.6.2)
+- [x] Implement Slayer Shop functionality (v0.6.2)
 - [ ] Implement Woodworking core loop (v0.6.5)
 - [ ] Implement Sorcery/Wizardry core loops (v0.6.6)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md

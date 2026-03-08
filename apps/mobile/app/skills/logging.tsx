@@ -40,10 +40,13 @@ export default function LoggingScreen() {
     const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
     const loggingSkill = useAppSelector((s) => s.game.player.skills.logging);
-    const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const activeTaskBase = useAppSelector(
+        (s) => s.game.player.activeTask,
+        (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+    );
 
-    const isLogging = activeTask?.skillId === 'logging';
-    const activeNodeId = isLogging ? activeTask.actionId : null;
+    const isLogging = activeTaskBase?.skillId === 'logging';
+    const activeNodeId = isLogging ? activeTaskBase?.actionId : null;
     const activeNode = LOGGING_NODES.find(n => n.id === activeNodeId);
 
     // XP floating pop-up logic + screen shake on tick complete
@@ -494,10 +497,8 @@ export default function LoggingScreen() {
                                     <Text style={styles.trainButtonText}>{isActive ? 'Stop Chopping' : 'Chop'}</Text>
                                 </View>
                             )}
-                            {isActive && activeTask && (
+                            {isActive && activeTaskBase && (
                                 <SmoothProgressBar
-                                    partialTickMs={activeTask.partialTickMs}
-                                    intervalMs={activeTask.intervalMs}
                                     fillColor={palette.skillLogging}
                                 />
                             )}

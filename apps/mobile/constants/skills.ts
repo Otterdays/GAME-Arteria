@@ -117,7 +117,8 @@ export type SkillId =
     | 'chronomancy'
     | 'constitution'
     | 'firemaking'
-    | 'magic';
+    | 'magic'
+    | 'resonance';
 
 export interface SkillMeta {
     label: string;
@@ -171,6 +172,7 @@ export const SKILL_META: Record<SkillId, SkillMeta> = {
     constitution: { label: 'Constitution', color: palette.skillConstitution, emoji: '🧬' },
     firemaking: { label: 'Firemaking', color: palette.skillFiremaking, emoji: '🔥' },
     magic: { label: 'Magic', color: palette.skillMagic, emoji: '🔮' },
+    resonance: { label: 'Resonance', color: palette.skillResonance, emoji: '〰️' },
 };
 
 export const IMPLEMENTED_GATHERING_SKILLS: SkillId[] = [
@@ -194,6 +196,7 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
 
 export const IMPLEMENTED_SUPPORT_SKILLS: SkillId[] = [
     'agility',
+    'resonance',
 ];
 
 export const IMPLEMENTED_SKILLS = new Set<SkillId>([

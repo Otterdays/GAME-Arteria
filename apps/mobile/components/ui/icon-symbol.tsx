@@ -39,6 +39,7 @@ const MAPPING = {
   'lock.fill': 'lock',
   'bag.fill': 'bag-personal',
   'clock': 'clock-outline',
+  'waveform.circle.fill': 'pulse',
 } as Record<string, ComponentProps<typeof MaterialCommunityIcons>['name']>;
 
 export type IconSymbolName = keyof typeof MAPPING;

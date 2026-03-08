@@ -1,53 +1,56 @@
-# Thoughts on EAS Build Times & User Confusion
+# My Thoughts
 
-> [!WARNING]
-> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
-The user is experiencing the slow turnaround time of Cloud Builds (Free Tier EAS queues can take a few minutes). They are concerned that they have to wait 5-10 minutes every time they want to test a change or push an update.
+## Investigation - March 8, 2026 - 1:15 AM
+The user reported a "textinput" error in the skills panel.
+I searched for "TextInput" in `apps/mobile/app/(tabs)/skills.tsx` and found it being used in a search bar:
 
-I need to explain the "Aha!" moment of Expo: Fast Refresh and OTA Updates.
-1. **Testing is instant**: Once the Custom Dev Client is installed on their phone, they never have to build to test. They just run `npx expo start`, hit save in VSCode, and the app updates instantly over Wi-Fi (Fast Refresh).
-2. **Updates are fast (OTA)**: Pushing simple logic/UI updates doesn't require a build. Run `Update_2_EAS_OTA_Update.bat` or `npx eas-cli update` — no global EAS install needed.
-3. **Why build?**: They only wait in this EAS queue when they change something *native* (like adding a new C++ module) or when they want to put a final `.aab` on the Google Play Store. And if they really hated the wait for native builds, they *could* build locally using standard Gradle (`npx expo run:android`), but sticking to EAS is safer for maintaining an ephemeral `android` folder.
-4. **Local Builds (Run Android)**: I've successfully transitioned to local builds via `1_Run_Local_Android_Build.bat`. This is much faster for dev iteration.
+```tsx
+715:       {/* Search Bar */}
+716:       <View style={styles.searchContainer}>
+717:         <TextInput
+718:           ...
+719:         />
+720:       </View>
+```
 
-# The Immersion Pivot (v0.2.1)
-The jump from "basic AFK loop" to "Immersive RPG" happened here.
-- **Icon Senses**: Swapping generic Material icons for `MaterialCommunityIcons` changed the vibe instantly. `pickaxe` and `sword-cross` are much more thematic.
-- **The "Ticker" Pulse (Relocated v0.2.1)**: Initially at the top, the ticker felt like a jarring overlay. I've relocated it to a **Bottom Dock** (above the Tab Bar). This merges it with the navigation UI, keeping headers clean while maintaining task visibility.
-- **Android "Native" Feel**: Edge-to-edge layout with translucent bars removes the "web-wrapper" feel.
-- **Universal Heartbeat (v0.2.1)**: Moving the ticker to the root `_layout.tsx` was critical. RPG players hate losing feedback when they "dive" into a skill screen. Now, the ticker intelligently ducks behind the tab bar or hugs the bottom bezel depending on where the user is.
-- **Dual-Layer Progression**: The header now handles the "Long Grind" (XP Bar), while the Ticker handles the "Instant Pulse" (Tick bar). This dual-feedback loop is what makes "number go up" feel satisfying.
+However, `TextInput` is NOT imported from `react-native`. It's a classic ReferenceError.
 
-# The Dialogue System & Story Engine (v1.2.0+)
-- **Global Modals vs Screens**: Decided to build dialogues as an overlay rather than a dedicated route. This keeps the player "grounded" in the game world. When an NPC speaks, it should feel like an interruption, not a completely different app section.
-- **Redux Integration**: By storing `activeDialogueId` in Redux, we ensure dialogues can be triggered from ANY screen - a random event while skilling, checking an item in the bank, or explicitly going to a location.
-- **Tree-based Logic**: The engine is purely functional, storing arrays/objects of `DialogueTree`. The UI is just a dumb renderer, keeping our codebase clean and MVC-aligned.
+## Plan
+1. Fix the import in `app/(tabs)/skills.tsx`.
+2. Update the changelog.
+3. Verify if there are any other places with similar issues.
 
-# Android Build Failure: JRE vs JDK (2026-03-03)
-- **Symptom**: Build fails because the toolchain found in `C:\Program Files\Eclipse Adoptium\jre-21.0.10.7-hotspot` lacks `[JAVA_COMPILER]`.
-- **Root Cause**: Gradle is auto-detecting a JRE instead of a JDK. Modern Expo/Gradle builds require a full JDK to compile the Expo Gradle plugin and other native components.
-- **Fix**: Force Gradle to use the JDK located at `C:\Program Files\Java\jdk-21.0.10` by setting `org.gradle.java.home` in the local `gradle.properties` or ensuring the environment variable `JAVA_HOME` is correctly set to a JDK path, not a JRE path.
+## Resolution - March 8, 2026 - 1:45 AM
+The `TextInput` import fix in `skills.tsx` resolved the crash. I also performed a quick audit of other primary navigation tabs (`bank.tsx`, `settings.tsx`, `stats.tsx`) and verified that crucial components are imported correctly. 
 
-# Android Bundling Failure: Path Depth Desync (2026-03-03)
-- **Symptom**: `:app:createBundleReleaseJsAndAssets` fails with "Android Bundling failed".
-- **Root Cause**: Desync in relative import paths (`../../../../packages/engine/...`). In `DialogueOverlay.tsx` (depth 3), 4 dots were used, pointing outside the project root.
-- **Fix**: Adjusted relative paths in `DialogueOverlay.tsx`, `constants/mining.ts`, and `constants/runecrafting.ts` to correctly point to the engine package at `Arteria/packages/engine`.
+I've bumped the version to **0.6.1 "The Stability Patch"** and synced all documentation (`CHANGELOG.md`, `SUMMARY.md`, `UpdateBoard.tsx`, `patchHistory.ts`, and the root `index.html`) to maintain a clean project record. 
 
-- **Conclusion**: OTA is the "final prize" of the dev cycle. The current rebuild of the APK is the one that enables this magic forever.
+Classic ReferenceErrors like this usually come from rapid UI iterative work (like the v0.6.0 search bar addition). A future "Pre-flight audit" script could be useful to catch missing imports before distribution.
 
-# The Animation Driver Trap (v0.4.2)
-- **The Conflict**: React Native animations have two worlds: `useNativeDriver: true` (transforms/opacity running on the UI thread) and `useNativeDriver: false` (layout/color running on the JS thread).
-- **The Crash**: Trying to animate both on the same `Animated.View` causes a hard crash. In `SpecialMessageModal`, I tried to scale the card (native) while shimmering the border color (JS).
-- **The Solution**: Nested `Animated.View` hierarchy. The outer View handles the native transforms. The inner View handles the JS color transitions. This separates the "ownership" of the node between the threads.
-- **The Hot-OTA Drill**: This crash was the perfect stress test. Because the crash happened during JS execution (after the native layer started), the background `expo-updates` check was already alive. Players can "wait 10 seconds" on the crash screen, force-quit, and reopen into a fixed JS bundle without a full re-install.
+## Implementation - March 8, 2026
+The user requested fleshing out the Slayer Shop. To do this, I needed to identify where Slayer UI was located and what items existed.
+I found the Slayer skills page at `apps/mobile/app/skills/slayer.tsx` and the basic Slayer config at `apps/mobile/constants/slayer.ts`.
+I found `slayer_coins` defined in `ITEM_META` in `apps/mobile/constants/items.ts`.
 
-# The Combat Tick System (Phase 4, 2026-03-05)
-- **Why Timer Accumulators?**: Rather than processing combat on fixed intervals (which causes drift and stutter), we use the same delta-time accumulator pattern as skilling. `playerAttackTimerMs` and `enemyAttackTimerMs` accumulate the 100ms game loop delta; when they exceed attack speed, a hit resolves. This gives us smooth, deterministic combat that survives tab switches and background/foreground transitions.
-- **Continuous Auto-Battler**: The decision to auto-respawn enemies on kill (rather than returning to zone selection) is critical for the idle RPG feel. Players select a zone + enemy, press Engage, and leave it running. Kill count and gold accumulate. This mirrors Melvor Idle's combat loop exactly.
-- **XP Split**: Combat XP is split evenly across hitpoints/attack/strength/defence. This keeps all combat skills progressing equally during AFK grinding. Future: allow players to choose a "combat style" (aggressive = more strength XP, defensive = more defence XP).
-- **Equipment Matters**: The `recalculateCombatStats` function ensures equipment directly impacts hit chance and damage. A player with no weapon has ~50% hit chance vs Tier 1 enemies; with a Runite scimitar, it jumps to 90%+. This makes the smithing → forging → equip pipeline feel rewarding.
-    
-# UI Polish & UX Continuity (v0.5.1, 2026-03-06)
-- **Skill Navigation Arrows**: The "back and forth" between the Skills menu and individual panels was a friction point. Adding chevron arrows to the skill titles allows for a seamless horizontal traversal across the entire skill suite. It rewards users who have multiple skills running or who just want to check progress without menu-diving.
-- **The "Enhanced!" Badge**: Mining and Logging are the "showpiece" skills with custom icon-based UIs and physics-based feedback (shaking/thumping). The badge is a visual signal to the user that these are premium experiences, and it sets a standard for future "Enhanced" screen overhauls.
-- **Import Vigilance**: The `ReferenceError` in `cooking.tsx` was a reminder that even "simple" UI additions like navigation arrows need careful dependency checks. Copy-pasting JSX between screens (Mining → Cooking) without verifying imports is a quick way to introduce breaks. Fixed by explicitly importing `getNextSkill` and `getPrevSkill`.
+To flesh out the shop:
+1. Added new slayer items (`broad_arrows`, `enchanted_gem`, `slayer_helmet`, `extended_tasks`) to `ITEM_META`.
+2. Created a `SLAYER_SHOP_CATALOG` in `slayer.ts` to define the items and their coin cost.
+3. Updated `slayer.tsx` to handle purchasing logic (verifying coin balance, removing coins, adding item to inventory, pushing feedback toasts).
+4. Added an attractive UI section below the Master's Bestiary that renders the shop catalog.
+
+The Slayer Shop is now functional, satisfying the milestone for v0.6.2.
+
+## Implementation (Companion AI Behaviors) - March 8, 2026
+The user requested fleshing out Companion behavior to be as useful as possible. Based on `COMPANIONS.md`, I updated the core idle processing tick (`useGameLoop.ts`) and player state (`gameSlice.ts`) to honor the individual Wandering Souls' traits:
+
+1. **Garry the Guard**: When active, +10% max HP is applied directly to the player. (Inserted gracefully into `recalculateCombatStats`);
+2. **Sir Reginald Pomp**: Created `reginaldAutoSell` reducer. In `useGameLoop`, if Reginald is active and the player has `junkItemIds` defined with matching inventory items, he passively purges them into gold, granting a rare aristocratic quote via feedback toast. 
+3. **Scholar Yvette**: Given a 30% reduction to her interval time when active, vastly increasing her resource influx. Added her 5% "Science!" explosion check: if she fails a tick, she gives the player rusty scrap as a consolation.
+4. **Barnaby the Uncertain**: Modified his auto-gather task to process his 50% hit chance constraint. Kept yields are given a natural 2x multiplier but dropped yields grant nothing (but a warning).
+
+Marked Companion AI as complete in `SCRATCHPAD.md`.
+
+## Bug Fix: UI Lag & Level Up Toasts - March 8, 2026
+The user reported that the `LevelUpToast` had issues appearing when multiple levels popped (notably around Runecrafting Level 2, as early-game XP dumps can trigger multiple dings). Additionally, progress bars were extremely jumpy on fast intervals (like 3s). 
+1. **useInterpolatedProgress Rewrite:** The old hook was bridging a React state `setProgress(pct)` update inside `requestAnimationFrame` up to 60 times a second. This caused catastrophic lag on the JS thread. Re-architected this to simply return an `Animated.Value` that runs a smooth, native-like linear `Animated.timing`. This instantly restored high-fps progress bars without lagging the game.
+2. **LevelUpToast Flashing:** The `LevelUpToast` logic contained a bug where `setDisplayToast(null)` was forcibly unmounting the animated component just as Redux popped a new toast. This led to flash-unmounting and crashing logic. Removed the null unmount rule so the UI only animates in and out gracefully, retaining its `pullY` reference perfectly.

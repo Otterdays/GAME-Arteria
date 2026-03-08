@@ -68,13 +68,17 @@ export default function RunecraftingScreen() {
     const requestStartTask = useRequestStartTask();
     const { showFeedbackToast } = useFeedbackToast();
     const insets = useSafeAreaInsets();
-    const player = useAppSelector((s) => s.game.player);
-    const rcSkill = player.skills.runecrafting;
-    const inventory = player.inventory;
-    const activeTask = player.activeTask;
+    const rcSkill = useAppSelector((s) => s.game.player.skills.runecrafting);
+    const inventory = useAppSelector((s) => s.game.player.inventory);
+    const activeTaskBase = useAppSelector(
+        (s) => s.game.player.activeTask,
+        (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+    );
+    const flags = useAppSelector((s) => s.game.player.narrative?.flags ?? []);
+    const mockPlayer = useMemo(() => ({ narrative: { flags } } as any), [flags]);
 
-    const isRunecrafting = activeTask?.skillId === 'runecrafting';
-    const activeAltarId = isRunecrafting ? activeTask.actionId : null;
+    const isRunecrafting = activeTaskBase?.skillId === 'runecrafting';
+    const activeAltarId = isRunecrafting ? activeTaskBase?.actionId : null;
     const activeAltar = RUNE_ALTARS.find((a) => a.id === activeAltarId);
 
     // Helper: how much essence of a given type does the player own?
@@ -360,12 +364,12 @@ export default function RunecraftingScreen() {
     const pct = rcSkill.level >= 99 ? 100 : Math.min(100, (xpIntoLevel / xpNeeded) * 100);
 
     const handleAltarPress = (altar: RuneAltar) => {
-        const meetsReq = meetsNarrativeRequirement(player, altar.requirement);
+        const meetsReq = meetsNarrativeRequirement(mockPlayer, altar.requirement);
         if (!meetsReq) {
             showFeedbackToast({
                 type: 'locked',
                 title: 'Locked',
-                message: 'You must progress further in the story to use this altar.',
+                message: 'Story progression is required before you can bind these runes.',
             });
             return;
         }
@@ -430,7 +434,7 @@ export default function RunecraftingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('runecrafting')}`);
+                            router.replace(`/skills/${getPrevSkill('runecrafting')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -447,32 +451,33 @@ export default function RunecraftingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('runecrafting')}`);
+                            router.replace(`/skills/${getNextSkill('runecrafting')}` as any);
                         }}
                         style={styles.navButton}
                     >
                         <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.screenSub}>Bind essence at the altars to forge powerful runes.</Text>
-                <MasteryBadges skillId="runecrafting" />
+                <Text style={styles.screenSub}>Harness cosmic energies and bind them into runes.</Text>
 
-                {/* Essence stock row */}
+                {/* Essence Quick View */}
                 <View style={styles.essenceRow}>
-                    {(['rune_essence', 'pure_essence', 'cosmic_shard'] as const).map((e) => (
-                        <View key={e} style={styles.essencePill}>
-                            <Text style={styles.essencePillEmoji}>{getItemMeta(e).emoji}</Text>
-                            <Text style={styles.essencePillQty}>{formatNumber(essenceOwned(e))}</Text>
+                    {Object.entries(ESSENCE_LABEL).map(([id, label]) => (
+                        <View key={id} style={styles.essencePill}>
+                            <Text style={styles.essencePillEmoji}>{label.split(' ')[0]}</Text>
+                            <Text style={styles.essencePillQty}>{formatNumber(essenceOwned(id))}</Text>
                         </View>
                     ))}
                 </View>
+
+                <MasteryBadges skillId="runecrafting" />
 
                 {/* XP progress bar */}
                 <View style={styles.xpRow}>
                     <View style={styles.xpBarBg}>
                         <ProgressBarWithPulse progress={pct} fillColor={palette.skillCrafting} widthPercent={pct} />
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.xpText}>
                             {rcSkill.level >= 99 ? '' : <AnimatedNumber value={xpIntoLevel} formatValue={(v) => formatNumber(v)} />}
                             {rcSkill.level >= 99
@@ -482,7 +487,7 @@ export default function RunecraftingScreen() {
                     </View>
                     <FloatingXpPop
                         amount={lastGain.current}
-                        emoji={activeAltar?.emoji || '✨'}
+                        emoji={activeAltar?.emoji || '🔮'}
                         triggerKey={popTrigger}
                     />
                 </View>
@@ -494,7 +499,7 @@ export default function RunecraftingScreen() {
                     <View key={label}>
                         <Text style={styles.tierHeader}>{label}</Text>
                         {altars.map((altar) => {
-                            const meetsReq = meetsNarrativeRequirement(player, altar.requirement);
+                            const meetsReq = meetsNarrativeRequirement(mockPlayer, altar.requirement);
                             const isLevelLocked = rcSkill.level < altar.levelReq;
                             const isLocked = isLevelLocked || !meetsReq;
                             const isActive = activeAltarId === altar.id;
@@ -613,10 +618,8 @@ export default function RunecraftingScreen() {
                                             </Text>
                                         </View>
                                     )}
-                                    {isActive && activeTask && (
+                                    {isActive && activeTaskBase && (
                                         <SmoothProgressBar
-                                            partialTickMs={activeTask.partialTickMs}
-                                            intervalMs={activeTask.intervalMs}
                                             fillColor={rcColor}
                                         />
                                     )}

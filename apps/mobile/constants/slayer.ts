@@ -65,3 +65,42 @@ export const SLAYER_MONSTERS: SlayerMonster[] = [
         locations: ['Frostfall Mountain'],
     },
 ];
+
+export interface SlayerShopItem {
+    id: string;
+    name: string;
+    description: string;
+    cost: number;
+    type: 'item' | 'upgrade';
+}
+
+export const SLAYER_SHOP_CATALOG: SlayerShopItem[] = [
+    {
+        id: 'broad_arrows',
+        name: 'Broad Arrows',
+        description: 'Specialized ammunition for piercing tough hides. (+15 arrows)',
+        cost: 35,
+        type: 'item',
+    },
+    {
+        id: 'enchanted_gem',
+        name: 'Enchanted Gem',
+        description: 'Communicates with your Slayer Master from afar.',
+        cost: 100,
+        type: 'item',
+    },
+    {
+        id: 'slayer_helmet',
+        name: 'Slayer Helmet',
+        description: 'Protective headgear for professional monster hunters. Huge stats.',
+        cost: 400,
+        type: 'item',
+    },
+    {
+        id: 'extended_tasks',
+        name: 'Extended Tasks',
+        description: 'Receive larger monster bounties per task. (+25 kills)',
+        cost: 150,
+        type: 'upgrade',
+    },
+];

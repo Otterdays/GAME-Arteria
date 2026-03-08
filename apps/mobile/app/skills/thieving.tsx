@@ -43,10 +43,13 @@ export default function ThievingScreen() {
     const insets = useSafeAreaInsets();
     // Default to basic fallback object if skill not initialized yet, though the engine should have handled it
     const thievingSkill = useAppSelector((s) => s.game.player.skills.thieving) || { xp: 0, level: 1, mastery: {} };
-    const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const activeTaskBase = useAppSelector(
+        (s) => s.game.player.activeTask,
+        (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+    );
 
-    const isThieving = activeTask?.skillId === 'thieving';
-    const activeNodeId = isThieving ? activeTask.actionId : null;
+    const isThieving = activeTaskBase?.skillId === 'thieving';
+    const activeNodeId = isThieving ? activeTaskBase?.actionId : null;
     const activeNode = THIEVING_TARGETS.find((n) => n.id === activeNodeId);
 
     const [popTrigger, setPopTrigger] = React.useState(0);
@@ -325,8 +328,8 @@ export default function ThievingScreen() {
                                     <Text style={styles.trainButtonText}>{isActive ? 'Stop Thieving' : 'Thieve Target'}</Text>
                                 </View>
                             )}
-                            {isActive && activeTask && (
-                                <SmoothProgressBar partialTickMs={activeTask.partialTickMs} intervalMs={activeTask.intervalMs} fillColor={colorThieving} />
+                            {isActive && activeTaskBase && (
+                                <SmoothProgressBar fillColor={colorThieving} />
                             )}
                             {isLocked && (
                                 <View style={[styles.trainButton, styles.trainButtonLocked]}>

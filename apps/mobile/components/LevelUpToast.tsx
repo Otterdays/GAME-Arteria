@@ -106,7 +106,9 @@ export default function LevelUpToast() {
                 if (handled) return;
                 handled = true;
                 dispatch(gameActions.popLevelUp());
-                setDisplayToast(null);
+                // We deliberately do NOT `setDisplayToast(null)` here! 
+                // Unmounting the Animated.View while `queue` updates causes React flash & unmount errors.
+                // It will just stay visually "hidden" offscreen (opacity 0, pullY -120) until the next toast pops.
                 currentToastId.current = null;
                 isAnimating.current = false;
                 timerRef.current = null;

@@ -17,6 +17,7 @@ import { getMasteryXpMultiplier } from '@/constants/mastery';
 import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
 import { PRAYER_MAP } from '@/constants/prayers';
+import { MOMENTUM_CAP, MOMENTUM_DECAY_PER_SECOND, PERFECT_STABILITY_FLOOR } from '@/constants/resonance';
 import type { ItemMasteryEntry } from '../../../packages/engine/src/types';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -69,7 +70,8 @@ export type SkillId =
     | 'chronomancy'
     | 'constitution'
     | 'firemaking'
-    | 'magic';
+    | 'magic'
+    | 'resonance';
 
 interface SkillState {
     id: SkillId;
@@ -306,13 +308,15 @@ export interface PlayerState {
     companions?: Record<string, PlayerCompanion>;
     /** Currently active summoning familiar (itemId). */
     activeFamiliar?: FamiliarState | null;
+    /** Resonance skill: 0–100. Global haste to all other skills when > 0. [TRACE: click_idea.md] */
+    momentum?: number;
 }
 
 // ─── Helpers ───
 
 const ALL_SKILLS: SkillId[] = [
     'mining', 'logging', 'fishing', 'runecrafting', 'harvesting', 'scavenging', 'cooking', 'smithing', 'forging',
-    'crafting', 'farming', 'herblore', 'agility', 'thieving', 'fletching', 'tailoring', 'prayer', 'construction', 'leadership', 'adventure', 'dungeoneering',
+    'crafting', 'farming', 'herblore', 'agility', 'thieving', 'resonance', 'fletching', 'tailoring', 'prayer', 'construction', 'leadership', 'adventure', 'dungeoneering',
     'astrology', 'summoning', 'slayer',
     'attack', 'strength', 'defence', 'hitpoints',
     'woodworking', 'sorcery', 'wizardry',
@@ -426,6 +430,7 @@ function createFreshPlayer(): PlayerState {
         companions: {},
         activeFamiliar: null,
         itemMastery: {},
+        momentum: 0,
     };
 }
 
@@ -475,7 +480,10 @@ export function recalculateCombatStats(player: PlayerState): void {
         }
     }
 
-    const maxHp = hpLevel * 10;
+    let maxHp = hpLevel * 10;
+    if (player.companions?.['garry']?.isActive) {
+        maxHp = Math.floor(maxHp * 1.10);
+    }
 
     player.combatStats.maxHitpoints = maxHp;
     if (player.combatStats.currentHitpoints > maxHp) {
@@ -583,7 +591,8 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const slayerTask = saved.slayerTask ?? null;
     const companions = saved.companions ?? {};
 
-    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions };
+    const momentum = saved.momentum ?? 0;
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions, momentum };
     recalculateCombatStats(migrated);
     return migrated;
 }
@@ -1036,6 +1045,37 @@ export const gameSlice = createSlice({
             state.player.lifetimeStats.totalGoldEarned += action.payload;
         },
 
+        /** Resonance: tap the orb — add XP and momentum. [TRACE: click_idea.md] */
+        pulseResonance(state, action: PayloadAction<{ xpGain: number; momentumGain: number }>) {
+            const { xpGain, momentumGain } = action.payload;
+            const res = state.player.skills['resonance'];
+            if (res) {
+                res.xp += xpGain;
+                const newLevel = levelForXP(res.xp);
+                if (newLevel > res.level) {
+                    res.level = newLevel;
+                    state.levelUpQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        skillId: 'resonance',
+                        level: newLevel,
+                    });
+                    state.pulseTab = 'skills';
+                }
+            }
+            const m = (state.player.momentum ?? 0) + momentumGain;
+            state.player.momentum = Math.min(MOMENTUM_CAP, m);
+        },
+
+        /** Resonance: decay momentum over time. Level 99 Perfect Stability floors at 25%. */
+        decayMomentum(state, action: PayloadAction<{ deltaSeconds: number }>) {
+            const res = state.player.skills['resonance'];
+            const level = res?.level ?? 1;
+            const floor = level >= 99 ? PERFECT_STABILITY_FLOOR : 0;
+            let m = (state.player.momentum ?? 0) - action.payload.deltaSeconds * MOMENTUM_DECAY_PER_SECOND;
+            if (m < floor) m = floor;
+            state.player.momentum = m;
+        },
+
         /** Mark a version as seen by the user (dismisses Update Board until next bump) */
         updateSeenVersion(state, action: PayloadAction<string>) {
             state.player.lastSeenVersion = action.payload;
@@ -1418,6 +1458,52 @@ export const gameSlice = createSlice({
             const c = state.player.companions?.[action.payload.companionId];
             if (c) c.partialTickMs = action.payload.partialMs;
         },
+
+        /** Sir Reginald Pomp Passive: Auto-sell junk and grant gold. */
+        reginaldAutoSell(state) {
+            if (!state.player.junkItemIds || state.player.junkItemIds.length === 0) return;
+            let soldCount = 0;
+            let goldEarned = 0;
+
+            const newInventory: InventoryItem[] = [];
+            for (const item of state.player.inventory) {
+                if (state.player.junkItemIds.includes(item.id) && !item.isLocked) {
+                    const meta = getItemMeta(item.id);
+                    const value = meta?.sellValue || 1;
+                    goldEarned += value * item.quantity;
+                    soldCount += item.quantity;
+                } else {
+                    newInventory.push(item);
+                }
+            }
+
+            if (soldCount > 0) {
+                state.player.inventory = newInventory;
+                state.player.gold += goldEarned;
+                if (!state.player.lifetimeStats) {
+                    state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {} };
+                }
+                state.player.lifetimeStats.totalGoldEarned = (state.player.lifetimeStats.totalGoldEarned ?? 0) + goldEarned;
+
+                // Push a rare feedback toast with flavor text
+                if (Math.random() < 0.1) {
+                    const quotes = [
+                        '"A gentleman knows when to clear his pockets."',
+                        '"These trinkets are beneath us. Let us profit."',
+                        '"One person\'s rubbish is... well, still rubbish, but we received coin for it!"',
+                        '"Junk disposal is a noble art."',
+                    ];
+                    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                    state.feedbackToastQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        type: 'lucky',
+                        title: 'Noble Disposal',
+                        message: `Reginald sold ${soldCount} junk items for ${goldEarned} 🪙.\n${randomQuote}`,
+                    });
+                }
+            }
+        },
+
 
         /** Sell an item (to Nick / merchant). */
         sellItem(state, action: PayloadAction<{ id: string; quantity: number; pricePer: number }>) {

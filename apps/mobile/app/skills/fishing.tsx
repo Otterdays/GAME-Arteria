@@ -59,10 +59,15 @@ export default function FishingScreen() {
     const requestStartTask = useRequestStartTask();
     const insets = useSafeAreaInsets();
     const fishingSkill = useAppSelector((s) => s.game.player.skills.fishing);
-    const activeTask = useAppSelector((s) => s.game.player.activeTask);
+    const activeTaskBase = useAppSelector(
+        (s) => s.game.player.activeTask,
+        (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+    );
+    const flags = useAppSelector((s) => s.game.player.narrative?.flags ?? []);
+    const mockPlayer = useMemo(() => ({ narrative: { flags } }), [flags]);
 
-    const isFishing = activeTask?.skillId === 'fishing';
-    const activeNodeId = isFishing ? activeTask.actionId : null;
+    const isFishing = activeTaskBase?.skillId === 'fishing';
+    const activeNodeId = isFishing ? activeTaskBase?.actionId : null;
     const activeSpot = FISHING_SPOTS.find((s) => s.id === activeNodeId);
 
     // XP floating pop-up + screen bob on catch
@@ -316,7 +321,7 @@ export default function FishingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('fishing')}`);
+                            router.replace(`/skills/${getPrevSkill('fishing')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -333,7 +338,7 @@ export default function FishingScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('fishing')}`);
+                            router.replace(`/skills/${getNextSkill('fishing')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -447,10 +452,8 @@ export default function FishingScreen() {
                                             <Text style={styles.trainButtonText}>{isActive ? 'Stop Fishing' : 'Fish'}</Text>
                                         </View>
                                     )}
-                                    {isActive && activeTask && (
+                                    {isActive && activeTaskBase && (
                                         <SmoothProgressBar
-                                            partialTickMs={activeTask.partialTickMs}
-                                            intervalMs={activeTask.intervalMs}
                                             fillColor={palette.skillFishing}
                                         />
                                     )}

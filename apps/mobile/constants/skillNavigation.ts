@@ -1,6 +1,7 @@
 export type SkillId =
     | 'agility'
     | 'astrology'
+    | 'resonance'
     | 'cooking'
     | 'crafting'
     | 'fishing'
@@ -20,6 +21,7 @@ export type SkillId =
 export const SKILL_NAV_ORDER: SkillId[] = [
     'agility' /* a */,
     'astrology',
+    'resonance',
     'cooking' /* c */,
     'crafting',
     'fishing' /* f */,

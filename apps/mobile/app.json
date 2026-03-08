@@ -30,7 +30,7 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ],
-      "runtimeVersion": "0.5.3"
+      "runtimeVersion": "0.6.0"
     },
     "web": {
       "output": "static",

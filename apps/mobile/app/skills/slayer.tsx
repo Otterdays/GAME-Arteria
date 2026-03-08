@@ -7,7 +7,8 @@ import { BouncyButton } from '@/components/BouncyButton';
 import { useIdleSoundscape } from '@/hooks/useIdleSoundscape';
 import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { SKILL_META } from '@/constants/skills';
-import { SLAYER_MONSTERS, SlayerMonster } from '@/constants/slayer';
+import { SLAYER_MONSTERS, SlayerMonster, SLAYER_SHOP_CATALOG, SlayerShopItem } from '@/constants/slayer';
+import { getItemMeta } from '@/constants/items';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { XP_TABLE, gameActions } from '@/store/gameSlice';
 
@@ -34,6 +35,28 @@ export default function SlayerScreen() {
     const progressInLevel = skill.xp - currentLevelXp;
     const xpNeededForLevel = nextLevelXp - currentLevelXp;
     const progressPercent = Math.min(100, Math.max(0, (progressInLevel / xpNeededForLevel) * 100));
+
+    const slayerCoins = player.inventory.find(i => i.id === 'slayer_coins')?.quantity || 0;
+
+    const handleBuyItem = (item: SlayerShopItem) => {
+        if (slayerCoins < item.cost) {
+            dispatch(gameActions.pushFeedbackToast({
+                type: 'error',
+                title: 'Not enough Coins',
+                message: `You need ${item.cost} Slayer Coins.`,
+            }));
+            return;
+        }
+
+        dispatch(gameActions.removeItems([{ id: 'slayer_coins', quantity: item.cost }]));
+        dispatch(gameActions.addItems([{ id: item.id, quantity: 1 }]));
+
+        dispatch(gameActions.pushFeedbackToast({
+            type: 'lucky',
+            title: 'Purchase Successful',
+            message: `You bought ${item.name}!`,
+        }));
+    };
 
     return (
         <View style={[styles.container, { backgroundColor: palette.bgApp }]}>
@@ -148,6 +171,38 @@ export default function SlayerScreen() {
                     );
                 })}
 
+                {/* Slayer Shop Section */}
+                <View style={styles.shopSection}>
+                    <View style={styles.shopHeaderRow}>
+                        <Text style={[styles.sectionTitle, { color: palette.textSecondary, marginBottom: 0 }]}>The Slayer's Shop</Text>
+                        <Text style={[styles.coinsBalance, { color: meta.color }]}>🪙 {slayerCoins} Coins</Text>
+                    </View>
+                    {SLAYER_SHOP_CATALOG.map((item) => {
+                        const itemMeta = getItemMeta(item.id);
+                        const canAfford = slayerCoins >= item.cost;
+                        return (
+                            <View key={item.id} style={[styles.shopItemRow, { backgroundColor: palette.bgCard }]}>
+                                <View style={styles.shopItemMain}>
+                                    <View style={styles.shopItemTitleRow}>
+                                        {itemMeta && <Text style={styles.shopItemEmoji}>{itemMeta.emoji}</Text>}
+                                        <Text style={[styles.shopItemName, { color: palette.textPrimary }]}>{item.name}</Text>
+                                    </View>
+                                    <Text style={[styles.shopItemDesc, { color: palette.textSecondary }]}>{item.description}</Text>
+                                </View>
+                                <BouncyButton
+                                    onPress={() => handleBuyItem(item)}
+                                    style={[
+                                        styles.buyButton,
+                                        { backgroundColor: canAfford ? meta.color : palette.border }
+                                    ]}
+                                >
+                                    <Text style={styles.buyButtonText}>{item.cost} 🪙</Text>
+                                </BouncyButton>
+                            </View>
+                        );
+                    })}
+                </View>
+
                 <View style={styles.footerNote}>
                     <Text style={[styles.footerText, { color: palette.textSecondary }]}>
                         Slayer tasks grant Slayer XP and Slayer Coins upon completion. Exclusive combat instances are locked behind Slayer levels.
@@ -238,6 +293,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     actionButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
+    shopSection: { marginTop: 20 },
+    shopHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+    coinsBalance: { fontSize: 16, fontWeight: 'bold' },
+    shopItemRow: { flexDirection: 'row', padding: 16, borderRadius: 12, marginBottom: 10, alignItems: 'center' },
+    shopItemMain: { flex: 1, paddingRight: 10 },
+    shopItemTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+    shopItemEmoji: { fontSize: 18, marginRight: 8 },
+    shopItemName: { fontSize: 16, fontWeight: 'bold' },
+    shopItemDesc: { fontSize: 12, lineHeight: 16 },
+    buyButton: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+    buyButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
     footerNote: { marginTop: 20, padding: 20, opacity: 0.7 },
     footerText: { textAlign: 'center', fontSize: 12, lineHeight: 18, fontStyle: 'italic' },
 });

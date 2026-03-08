@@ -252,6 +252,10 @@ export const ITEM_META: Record<string, ItemMeta> = {
   spirit_shard: { emoji: '💎', label: 'Spirit Shard', sellValue: 1, description: 'A tiny blue crystal that binds souls to matter.', type: 'summoning' },
   wolf_bones: { emoji: '🦴', label: 'Wolf Bones', sellValue: 5, description: 'Bones from a wild wolf. Imbued with primal energy.', type: 'summoning' },
   slayer_coins: { emoji: '🪙', label: 'Slayer Coins', sellValue: 0, description: 'Bounty currency earned from completing Slayer tasks.', type: 'other' },
+  broad_arrows: { emoji: '🏹', label: 'Broad Arrows', sellValue: 15, description: 'Specialized arrows to pierce tough monster hides.', type: 'other' },
+  enchanted_gem: { emoji: '🔮', label: 'Enchanted Gem', sellValue: 50, description: 'A gem that vibrates with slayer energy.', type: 'other' },
+  slayer_helmet: { emoji: '🪖', label: 'Slayer Helmet', sellValue: 500, description: 'Protective headgear for professional monster hunters.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 20, rangedDefence: 20, magicDefence: 20 } },
+  extended_tasks: { emoji: '📜', label: 'Extended Tasks', sellValue: 0, description: 'An arcane scroll that grants larger monster bounties per task.', type: 'other' },
 
   // ── Skill Capes ──
   skill_cape_mining: { emoji: '🧥', label: 'Mining Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Mining.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },

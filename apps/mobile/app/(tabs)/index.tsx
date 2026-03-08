@@ -137,6 +137,14 @@ export default function HubScreen() {
             iconColor: '#93c5fd',
         },
         {
+            title: 'Resonance',
+            subtext: 'Pulse the orb, haste the world',
+            icon: 'waveform.circle.fill',
+            route: '/(tabs)/resonance',
+            colors: ['#7c3aed', '#a78bfa'],
+            iconColor: '#c4b5fd',
+        },
+        {
             title: 'Combat',
             subtext: 'Brave the wilderness',
             icon: 'shield.fill',

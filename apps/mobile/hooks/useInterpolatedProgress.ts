@@ -7,46 +7,35 @@
  * This avoids competing setState calls that caused jumpiness.
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing } from 'react-native';
 
 export function useInterpolatedProgress(
   partialTickMs: number,
   intervalMs: number
-): number {
-  const [progress, setProgress] = useState(0);
-  const lastRef = useRef({ partialTickMs: 0, timestamp: 0 });
+): Animated.Value {
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
-  // Sync lastRef when Redux updates; do NOT setProgress here to avoid fighting with RAF
   useEffect(() => {
-    const now = Date.now();
-    lastRef.current = { partialTickMs, timestamp: now };
     if (intervalMs <= 0) {
-      setProgress(0);
+      progressAnim.setValue(0);
       return;
     }
-  }, [partialTickMs, intervalMs]);
 
-  // Single source of truth: RAF loop interpolates at ~60fps
-  useEffect(() => {
-    if (intervalMs <= 0) return;
+    const startPct = (partialTickMs / intervalMs) * 100;
+    const endPct = 100;
+    const remainingMs = Math.max(0, intervalMs - partialTickMs);
 
-    let cancelled = false;
-    const tick = () => {
-      if (cancelled) return;
-      const { partialTickMs: lastMs, timestamp } = lastRef.current;
-      const elapsed = Date.now() - timestamp;
-      const interpolatedMs = Math.min(lastMs + elapsed, intervalMs);
-      const pct = (interpolatedMs / intervalMs) * 100;
-      setProgress(pct);
-      requestAnimationFrame(tick);
-    };
-    const rafId = requestAnimationFrame(tick);
+    progressAnim.setValue(startPct);
 
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(rafId);
-    };
-  }, [intervalMs]);
+    // Animate to 100% over the remaining interval length (smooth linear)
+    Animated.timing(progressAnim, {
+      toValue: endPct,
+      duration: remainingMs,
+      easing: Easing.linear,
+      useNativeDriver: false, // width/interpolations cannot easily be native
+    }).start();
+  }, [partialTickMs, intervalMs, progressAnim]);
 
-  return progress;
+  return progressAnim;
 }

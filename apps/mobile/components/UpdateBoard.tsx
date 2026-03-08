@@ -178,6 +178,10 @@ export default function UpdateBoard() {
                         {currentVersion === '0.6.0' ? (
                             <>
                                 <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🛡️ Stability Patch</Text>
+                                    <Text style={styles.changeText}>• Resolved a critical bug where the new skills search bar would cause a crash. All main navigation tabs have been audited for stability.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>✨ Magic Hub Dashboard</Text>
                                     <Text style={styles.changeText}>• The starting landing page has been transformed into a magical hub with portal buttons for faster navigation.</Text>
                                 </View>
@@ -195,11 +199,11 @@ export default function UpdateBoard() {
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>📊 Skills Page QoL</Text>
-                                    <Text style={styles.changeText}>• Skills are now grouped by Pillar (Combat, Gathering, Artisan, e.t.c) with thin progress bars, mastery badges, and a new search bar!</Text>
+                                    <Text style={styles.changeText}>• Skills are now grouped by Pillar with thin progress bars, mastery badges, and a new search bar!</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🐺 Summoning & Slayer</Text>
-                                    <Text style={styles.changeText}>• Bind 5 new spirit pouches and seek Master Mark to start culling monsters. Integratedshops directly into the skill screens.</Text>
+                                    <Text style={styles.changeText}>• Bind 5 new spirit pouches and seek Master Mark to start culling monsters. Integrated shops directly into the skill screens.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>✂️ Crafting & Companions</Text>

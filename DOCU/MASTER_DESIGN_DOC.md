@@ -82,6 +82,17 @@
 
 5. **The "Just One More" UI:** Every screen shows three things: what you accomplished (dopamine), what you can do now (engagement), and what's coming soon (retention).
 
+### 1.3 The Crossover Ecosystem: Clicker + World Builder
+
+Arteria is **one game with two complementary subsystems** that cross over into the core idle RPG—not two separate products. This keeps a single install, single save, and one coherent narrative while giving active players a way to "pump" the engine and builders a way to shape their space.
+
+| Subsystem | Role | Crossover into main game |
+|-----------|------|---------------------------|
+| **Clicker (Resonance)** | Tap to build **Momentum**; Momentum grants **global Haste** to all other skills. Implemented as the **Resonance** skill (Support pillar). | Higher Momentum = faster skilling/combat ticks. Future: Aether/Sparks from tapping can fuel temporary buffs or Sanctum. |
+| **World Builder (Sanctum)** | Place and upgrade rooms, furniture, assign companions. Construction skill provides blueprints and materials. | Sanctum produces passive gold, rest bonus (+% XP), companion efficiency. Main game feeds builder: planks, nails, bars, herbs. |
+
+**Design principle:** Tap game and builder **reward** the idle RPG; they do not replace it. Idle remains the core; clicker and Sanctum are complementary. See **[CLICKER_DESIGN.md](CLICKER_DESIGN.md)** for the full clicker design (layout, styling, tech, direction). Chapter 13 (Housing & The Sanctum) describes the world-builder vision; future phases will expand it into a true place-and-manage layer.
+
 ---
 
 ## **Chapter 2: The Skills Overview — 17 Skills & Counting**

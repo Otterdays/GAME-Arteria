@@ -42,6 +42,7 @@ These two documents are the authoritative references. All other docs supplement 
 | **zhipu-ai.md** | Baseline feature sheet for Melvor-like core engine, skills, combat, economy. |
 | **IMPROVEMENTS.md** | Systems audit + prioritized UX/GUI/feature improvements (quick wins, polish, larger features). |
 | **CURRENT_IMPROVEMENTS.md** | Expansion opportunities using existing systems — what to add next without new architecture. |
+| **CLICKER_DESIGN.md** | Clicker (Resonance) design: layout, styling, tech, direction, crossover (§1–6). §7: broaden/deepen ideas (world state, seasonal, chaos, companions, chronicle, minigame framework, accessibility, economy) with source refs. See MASTER_DESIGN_DOC §1.3. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
 | **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. Patches, courses, targets, recipes. Implementation order. |
 | **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
@@ -62,7 +63,8 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Version scheme:** 0.x.x. Current **0.6.0** "The Ascended Master". Post-0.6.0: Companion AI behavior, Slayer shop, Summoning special moves.
 
-**v0.6.0 (2026-03-07) — The Ascended Master:**
+**v0.6.0 (2026-03-08) — The Ascended Master:**
+- **Stability Patch**: Resolved a critical ReferenceError where `TextInput` was not imported in the skills panel search bar.
 - **Magic Hub Dashboard**: Redesigned home screen featuring magical portal buttons and a centralized game overview.
 - **Thieving Skill**: Implement pickpocketing and stall looting mechanics with failure/stun risk.
 - **New Skill: Agility**: Run 6 obstacle courses for passive bonuses.

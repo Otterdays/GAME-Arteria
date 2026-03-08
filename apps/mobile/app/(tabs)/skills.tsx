@@ -15,6 +15,7 @@ import {
   Pressable,
   TouchableOpacity,
   useWindowDimensions,
+  TextInput,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -49,7 +50,7 @@ const PILLARS: { label: string; skills: SkillId[] }[] = [
   { label: 'Combat', skills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer', 'constitution'] },
   { label: 'Gathering', skills: ['mining', 'logging', 'fishing', 'harvesting', 'scavenging', 'thieving', 'exploration'] },
   { label: 'Artisan', skills: ['smithing', 'forging', 'cooking', 'crafting', 'herblore', 'runecrafting', 'fletching', 'tailoring', 'woodworking', 'alchemy', 'firemaking'] },
-  { label: 'Support', skills: ['agility', 'astrology', 'summoning', 'slayer', 'farming', 'construction', 'leadership', 'adventure', 'dungeoneering', 'research'] },
+  { label: 'Support', skills: ['agility', 'resonance', 'astrology', 'summoning', 'slayer', 'farming', 'construction', 'leadership', 'adventure', 'dungeoneering', 'research'] },
   { label: 'Cosmic', skills: ['sorcery', 'wizardry', 'cleansing', 'barter', 'chaostheory', 'aetherweaving', 'voidwalking', 'celestialbinding', 'chronomancy'] },
 ];
 
@@ -80,7 +81,7 @@ function progressPercent(xp: number, level: number): number {
 
 // ─── SkillBox ────────────────────────────────────────────────────────────────
 
-function SkillBox({
+const SkillBox = React.memo(function SkillBox({
   skillId,
   isActive,
   onNavigate,
@@ -178,7 +179,7 @@ function SkillBox({
       )}
     </BouncyButton>
   );
-}
+});
 
 function SectionHeader({ title, palette }: { title: string; palette: any }) {
   const accentLookup: Record<string, string> = {
@@ -233,7 +234,6 @@ export default function SkillsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const isNarrow = width < NARROW_WIDTH;
   const activeTask = useAppSelector((s) => s.game.player.activeTask);
-  const skills = useAppSelector((s) => s.game.player.skills);
   const activeSkillId = activeTask?.skillId ?? null;
 
   useFocusEffect(useCallback(() => {
@@ -241,7 +241,9 @@ export default function SkillsScreen() {
   }, [dispatch]));
 
   // B. Total level — sum of all skill levels
-  const totalLevel = Object.values(skills).reduce((sum, s) => sum + Math.min(s?.level ?? 1, 99), 0);
+  const totalLevel = useAppSelector((s) =>
+    Object.values(s.game.player.skills).reduce((sum, sk) => sum + Math.min(sk?.level ?? 1, 99), 0)
+  );
   const maxTotalLevel = ALL_SKILLS.length * 99;
 
   const horizonHudEnabled = useAppSelector(
@@ -257,6 +259,8 @@ export default function SkillsScreen() {
     (skillId: SkillId) => {
       if (COMBAT_SKILLS.has(skillId)) {
         router.push('/(tabs)/combat' as any);
+      } else if (skillId === 'resonance') {
+        router.push('/(tabs)/resonance' as any);
       } else {
         router.push(`/skills/${skillId}` as any);
       }
@@ -269,14 +273,15 @@ export default function SkillsScreen() {
   }, []);
 
   // Calculate active skill progress for the header
-  const activeSkill = activeTask ? skills[activeTask.skillId as SkillId] : null;
   const activeMeta = activeTask ? SKILL_META[activeTask.skillId as SkillId] : null;
+  const activeSkillLevel = useAppSelector((s) => activeTask ? s.game.player.skills[activeTask.skillId as SkillId]?.level : 0);
+  const activeSkillXp = useAppSelector((s) => activeTask ? s.game.player.skills[activeTask.skillId as SkillId]?.xp : 0);
 
-  const currentLevelXP = activeSkill ? xpForLevel(activeSkill.level) : 0;
-  const nextLevelXP = activeSkill ? xpForLevel(activeSkill.level + 1) : 0;
-  const xpIntoLevel = activeSkill ? Math.max(0, Math.floor(activeSkill.xp - currentLevelXP)) : 0;
-  const xpNeeded = activeSkill ? Math.max(1, nextLevelXP - currentLevelXP) : 0;
-  const progress = activeSkill ? progressPercent(activeSkill.xp, activeSkill.level) : 0;
+  const currentLevelXP = activeSkillLevel ? xpForLevel(activeSkillLevel) : 0;
+  const nextLevelXP = activeSkillLevel ? xpForLevel(activeSkillLevel + 1) : 0;
+  const xpIntoLevel = activeSkillXp ? Math.max(0, Math.floor(activeSkillXp - currentLevelXP)) : 0;
+  const xpNeeded = activeSkillLevel ? Math.max(1, nextLevelXP - currentLevelXP) : 0;
+  const progress = (activeSkillXp && activeSkillLevel) ? progressPercent(activeSkillXp, activeSkillLevel) : 0;
 
   const filteredPillars = useMemo(() => {
     if (!searchQuery) return PILLARS;
@@ -654,7 +659,7 @@ export default function SkillsScreen() {
           {activeTask ? (
             <View style={styles.activeSkillBadge}>
               <Text style={styles.activeSkillEmoji}>{activeMeta?.emoji}</Text>
-              <Text style={styles.activeSkillText}>{activeMeta?.label} Lv. {activeSkill?.level}</Text>
+              <Text style={styles.activeSkillText}>{activeMeta?.label} Lv. {activeSkillLevel}</Text>
             </View>
           ) : (
             <View style={styles.idleBadge}>
@@ -683,9 +688,9 @@ export default function SkillsScreen() {
             )}
           </View>
           <Text style={styles.headerXpText}>
-            {activeTask && activeSkill
-              ? activeSkill.level >= 99
-                ? `${formatNumber(activeSkill.xp)} XP — MAX`
+            {activeTask && activeSkillLevel
+              ? activeSkillLevel >= 99
+                ? `${formatNumber(activeSkillXp)} XP — MAX`
                 : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`
               : 'Awaiting action...'}
           </Text>
