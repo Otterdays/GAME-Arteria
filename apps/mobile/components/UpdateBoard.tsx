@@ -194,12 +194,24 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeText}>• Run 6 different obstacle courses spanning from the Crownlands Rooftops to the Void Rift Traverse to gain XP and global passive bonuses.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏪 The Agora: Shop Revamp</Text>
+                                    <Text style={styles.changeText}>• Nick's shop has been completely redesigned with a premium glassmorphism aesthetic, golden accents, and better item grouping for a high-end merchant feel.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📉 Smooth Progress Bars</Text>
+                                    <Text style={styles.changeText}>• Fixed a subtle flickering bug in the skilling progress bars. Interpolation is now perfectly synced to the game engine for a buttery smooth 60fps experience.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>👑 Mastery Skill Capes</Text>
                                     <Text style={styles.changeText}>• Hit Level 99 in a skill? Purchase a Mastery Skill Cape from the Ascended Master in the Shop tab for 99,000 gp.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>📊 Skills Page QoL</Text>
                                     <Text style={styles.changeText}>• Skills are now grouped by Pillar with thin progress bars, mastery badges, and a new search bar!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎨 Enhanced Skill UI</Text>
+                                    <Text style={styles.changeText}>• Slayer, Summoning, and Resonance have been upgraded to the premium "Enhanced!" UI with navigation arrows and gold badges.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🐺 Summoning & Slayer</Text>

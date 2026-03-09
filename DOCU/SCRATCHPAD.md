@@ -6,8 +6,10 @@
 - [x] Document work: Crossover ecosystem + Clicker design doc (2026-03-08)
 - [x] Fix `TextInput` ReferenceError in `skills.tsx` (v0.6.1)
 - [x] Audit primary tabs for missing core imports
-- [x] Bump version to 0.6.1 "The Stability Patch"
-- [x] Update project & in-app documentation
+- [x] Implement enhanced UI for Slayer, Summoning, and Resonance skill pages
+- [x] Fix Astrology navigation bug and unify Resonance routing
+- [x] Optimize GlobalActionTicker layout and animations for smoother shifting
+- [x] Update project & in-app documentation (remaining on v0.6.0)
 
 ## Immediate Context
 - **CLICKER_DESIGN §7 (2026-03-08):** Added "Broaden & Deepen Ideas (Sourced)" with eight subsections: World-State Resonance (corruption), Seasonal Pulse Modes, Chaos Theory crossover, Companion relay, Chronicle/Timekeeper framing, Shared active-play minigame framework, Accessibility/feedback, Economy guardrails. Each cites MASTER_DESIGN_DOC, ROADMAP, WORLD_EXPLORATION, COMPANIONS, TRUTH_DOCTRINE, ORE_CHAIN_EXPANSION, zhip-ai-styling. References renumbered to §8.

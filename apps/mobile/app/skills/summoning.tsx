@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,6 +10,12 @@ import { SUMMONING_POUCHES, SummoningPouch } from '@/constants/summoning';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { XP_TABLE, gameActions } from '@/store/gameSlice';
 import { SHOP_CATALOG, getItemMeta } from '@/constants/items';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
+import { getLevelBadgeStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 
 /**
  * Summoning Screen (Familiar Binding)
@@ -26,8 +31,8 @@ export default function SummoningScreen() {
 
     useIdleSoundscape('summoning');
 
-    const onNext = () => router.replace(`/skills/${getNextSkill('summoning')}`);
-    const onPrev = () => router.replace(`/skills/${getPrevSkill('summoning')}`);
+    const onNext = () => router.replace(`/skills/${getNextSkill('summoning')}` as any);
+    const onPrev = () => router.replace(`/skills/${getPrevSkill('summoning')}` as any);
 
     const currentLevelXp = XP_TABLE[skill.level - 1] || 0;
     const nextLevelXp = XP_TABLE[skill.level] || XP_TABLE[98];
@@ -42,26 +47,41 @@ export default function SummoningScreen() {
             {/* Header with Navigation */}
             <View style={[styles.header, { backgroundColor: palette.bgCard }]}>
                 <View style={styles.headerTop}>
-                    <BouncyButton onPress={onPrev} style={styles.navButton}>
-                        <Text style={[styles.navArrow, { color: palette.textSecondary }]}>←</Text>
-                    </BouncyButton>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onPrev();
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
 
                     <View style={styles.titleContainer}>
+                        <View style={[styles.enhancedBadge, { backgroundColor: palette.gold }]}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
                         <Text style={styles.emojiText}>{meta.emoji}</Text>
                         <Text style={[styles.titleText, { color: palette.textPrimary }]}>{meta.label}</Text>
                     </View>
 
-                    <BouncyButton onPress={onNext} style={styles.navButton}>
-                        <Text style={[styles.navArrow, { color: palette.textSecondary }]}>→</Text>
-                    </BouncyButton>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onNext();
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.xpInfo}>
-                    <View style={[styles.levelBadge, { borderColor: meta.color }]}>
+                    <View style={getLevelBadgeStyles(palette, meta.color).levelBadge}>
                         <Text style={[styles.levelText, { color: meta.color }]}>{skill.level}</Text>
                     </View>
                     <View style={styles.progressContainer}>
-                        <View style={{ height: 6 }}>
+                        <View style={styles.xpBarBg}>
                             <ProgressBarWithPulse
                                 progress={skill.xp}
                                 fillColor={meta.color}
@@ -245,8 +265,49 @@ const styles = StyleSheet.create({
     navArrow: { fontSize: 24, fontWeight: 'bold' },
     titleContainer: { flexDirection: 'row', alignItems: 'center' },
     emojiText: { fontSize: 28, marginRight: 10 },
-    titleText: { fontSize: 22, fontWeight: 'bold', letterSpacing: 0.5 },
-    // Active Familiar Banner Styles
+    titleText: { fontFamily: FontCinzelBold, fontSize: 22, fontWeight: 'bold' },
+    enhancedBadge: {
+        position: 'absolute',
+        top: -10,
+        left: 0,
+        paddingHorizontal: 6,
+        paddingVertical: 1,
+        borderRadius: 4,
+        zIndex: 10,
+        transform: [{ rotate: '-5deg' }],
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.12,
+        shadowRadius: 3,
+        elevation: 1,
+    },
+    enhancedBadgeText: {
+        color: '#0f111a',
+        fontSize: 8,
+        fontWeight: '900',
+        textTransform: 'uppercase',
+    },
+    xpInfo: { flexDirection: 'row', alignItems: 'center' },
+    levelBadge: {
+        backgroundColor: '#000',
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        marginRight: 10,
+    },
+    levelText: { fontWeight: 'bold', fontSize: 16 },
+    progressContainer: { flex: 1 },
+    xpBarBg: {
+        height: 6,
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        borderRadius: Radius.full,
+        overflow: 'hidden',
+    },
+    scrollContent: { padding: 20 },
+    sectionTitle: { fontSize: 13, fontWeight: 'bold', letterSpacing: 1, marginBottom: 15, textTransform: 'uppercase' },
     activeFamiliarBanner: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -280,7 +341,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     dismissText: { fontSize: 12, fontWeight: 'bold' },
-    // Equip Button
     equipButton: {
         paddingHorizontal: 15,
         paddingVertical: 10,
@@ -288,7 +348,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     equipButtonText: { fontSize: 12, fontWeight: '900', textTransform: 'uppercase' },
-    // Owned Badge
     actionRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
     ownedBadge: {
         paddingHorizontal: 12,
@@ -299,21 +358,6 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.05)',
     },
     ownedText: { fontSize: 11, fontWeight: 'bold' },
-    xpInfo: { flexDirection: 'row', alignItems: 'center' },
-    levelBadge: {
-        backgroundColor: '#000',
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
-        marginRight: 10,
-    },
-    levelText: { fontWeight: 'bold', fontSize: 16 },
-    progressContainer: { flex: 1 },
-    scrollContent: { padding: 20 },
-    sectionTitle: { fontSize: 13, fontWeight: 'bold', letterSpacing: 1, marginBottom: 15, textTransform: 'uppercase' },
     pouchCard: {
         borderRadius: 20,
         padding: 16,

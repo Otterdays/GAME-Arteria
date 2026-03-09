@@ -74,7 +74,7 @@ These two documents are the authoritative references. All other docs supplement 
 - **Slayer & Summoning**: Task assignment via Master Mark and 5 binding pouches (Wolf, Dreadfowl, Bull, Spider, Badger).
 - **Companion System**: Hiring system for Barnaby and Garry the Guard.
 - **Crafting**: Leather armour and jewelry (rings/amulets).
-- **UI & Navigation**: Skills grid relocated to a dedicated tab to make room for the Hub dashboard.
+- **UI & Navigation**: Enhanced UI for Slayer, Summoning, and Resonance; fixed Astrology navigation; Skills grid relocated to dedicated tab.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
@@ -125,8 +125,11 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 - **More skills:** Data + UI for **Cooking** (fish/meat → food, healing/boosts), **Harvesting** (gather herbs/plants), **Scavenging** (random loot tables). ROADMAP already lists these; implement in same pattern as Mining/Logging/Fishing (nodes, ticks, bank).
 - **Crafting queue / Alchemy:** Phase 3 items; cross-skill dependencies. Combat deferred until core skilling/quest loop is rich.
 
-**Current Status (Phase 2.3 — Lore & Progression):**
+**Current Status (Phase 4 — The Ascended Master ✅):**
+- **v0.6.0 The Ascended Master:** Magic Hub dashboard, Thieving & Agility skills, Mastery Skill Capes (Lv. 99), Pillar-based Skills UI, "The Agora" Shop revamp (glassmorphism/gold), Smooth ProgressBar (sync fix), Summoning skill, Slayer skill (Master Mark), Companion system (Garry the Guard), Crafting (Leather/Jewelry).
+- **v0.5.2 The Celestial Expansion:** Astrology skill, Celestial items (Stardust), Unified skill navigation arrows.
 - **v0.4.2 Skill Pets & OTA Polish:** Rare skilling companions (Rocky, Timber, etc.), Pets screen, active pet emoji. Integrated `expo-updates` + fixed OTA batch pipeline (CI/LeanProd). Premium `SpecialMessageModal`. Fixed Cooking crash & Bank UI bugs.
+- **v0.5.1 THE 0.5.1 extended update:** World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, premium themes.
 - **v0.4.1 The Anchor Man:** Cooking skill (10 fish), Goblin first enemy, nickname system (NameEntryModal).
 - **v0.4.0 QoL + Daily & Lumina:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina.
 - **v0.3.0 UX + Quest + Mastery:** Bank sort/empty state, Shop Buy 25/50/Max. Quests: real completion (rewards when all steps done); **quest step auto-complete** (engine completionRequirements + getQuestStepsToComplete; app dispatches completeQuestStep). **Mastery:** 1 pt/level-up, spend in Settings → Mastery for +% XP buffs.

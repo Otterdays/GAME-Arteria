@@ -15,20 +15,34 @@ export function useInterpolatedProgress(
   intervalMs: number
 ): Animated.Value {
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const lastTickRef = useRef(-1);
 
   useEffect(() => {
     if (intervalMs <= 0) {
       progressAnim.setValue(0);
+      lastTickRef.current = -1;
       return;
     }
+
+    const wentBackward = partialTickMs < lastTickRef.current;
+    const drift = Math.abs(partialTickMs - lastTickRef.current);
+
+    // If it's a normal 100ms sequential tick, let the existing animation continue doing its smooth interpolation to 100%.
+    // Only restart the animation if we went backward (new tick), jumped significantly (app lag/backgrounded), or first render.
+    if (lastTickRef.current !== -1 && !wentBackward && drift < 500) {
+      lastTickRef.current = partialTickMs;
+      return;
+    }
+
+    lastTickRef.current = partialTickMs;
 
     const startPct = (partialTickMs / intervalMs) * 100;
     const endPct = 100;
     const remainingMs = Math.max(0, intervalMs - partialTickMs);
 
+    progressAnim.stopAnimation();
     progressAnim.setValue(startPct);
 
-    // Animate to 100% over the remaining interval length (smooth linear)
     Animated.timing(progressAnim, {
       toValue: endPct,
       duration: remainingMs,

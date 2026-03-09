@@ -21,6 +21,13 @@ const SKILL_EMOJIS: Record<string, string> = {
     cooking: '🍳',
     herblore: '🧪',
     combat: '⚔️',
+    slayer: '👹',
+    summoning: '🔮',
+    astrology: '🌌',
+    resonance: '🧿',
+    agility: '🏃',
+    thieving: '🎭',
+    leadership: '👑',
 };
 
 export const GlobalActionTicker = () => {
@@ -57,9 +64,14 @@ export const GlobalActionTicker = () => {
                     left: 0,
                     right: 0,
                     zIndex: 1000,
-                    backgroundColor: 'rgba(13, 15, 21, 0.98)',
+                    backgroundColor: 'rgba(13, 15, 21, 0.95)',
                     borderTopWidth: 1,
                     borderTopColor: 'rgba(255,255,255,0.08)',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -3 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    elevation: 10,
                 },
                 content: {
                     flexDirection: 'row',
@@ -93,8 +105,20 @@ export const GlobalActionTicker = () => {
     if (!activeTask) return null;
 
     // Detect if we are in a tab route to add offset for the tab bar
-    const isInTabs = segments[0] === '(tabs)';
-    const bottomOffset = isInTabs ? 56 : 0;
+    const isInTabs = (segments as any[]).includes('(tabs)');
+    const bottomOffsetBase = isInTabs ? 56 : 0;
+    const targetOffset = insets.bottom + bottomOffsetBase;
+
+    const animatedBottom = useRef(new Animated.Value(targetOffset)).current;
+
+    useEffect(() => {
+        Animated.spring(animatedBottom, {
+            toValue: targetOffset,
+            useNativeDriver: false,
+            friction: 7,
+            tension: 50,
+        }).start();
+    }, [targetOffset]);
 
     const skillName = activeTask.skillId
         ? activeTask.skillId.charAt(0).toUpperCase() + activeTask.skillId.slice(1)
@@ -115,7 +139,7 @@ export const GlobalActionTicker = () => {
     });
 
     return (
-        <View style={[styles.container, { bottom: insets.bottom + bottomOffset }]}>
+        <Animated.View style={[styles.container, { bottom: animatedBottom }]}>
             <View style={styles.progressBg}>
                 <Animated.View style={[styles.progressFill, { width: widthInterpolated }]} />
             </View>
@@ -125,7 +149,7 @@ export const GlobalActionTicker = () => {
                     {skillName}: <Text style={styles.actionText}>{actionName}</Text>
                 </Text>
             </View>
-        </View>
+        </Animated.View>
     );
 };
 

@@ -233,8 +233,11 @@ export default function SkillsScreen() {
   const [masteryModalVisible, setMasteryModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const isNarrow = width < NARROW_WIDTH;
-  const activeTask = useAppSelector((s) => s.game.player.activeTask);
-  const activeSkillId = activeTask?.skillId ?? null;
+  const activeTaskBase = useAppSelector(
+    (s) => s.game.player.activeTask,
+    (prev, next) => prev?.skillId === next?.skillId && prev?.actionId === next?.actionId
+  );
+  const activeSkillId = activeTaskBase?.skillId ?? null;
 
   useFocusEffect(useCallback(() => {
     dispatch(gameActions.clearPulseTab('skills'));
@@ -273,9 +276,9 @@ export default function SkillsScreen() {
   }, []);
 
   // Calculate active skill progress for the header
-  const activeMeta = activeTask ? SKILL_META[activeTask.skillId as SkillId] : null;
-  const activeSkillLevel = useAppSelector((s) => activeTask ? s.game.player.skills[activeTask.skillId as SkillId]?.level : 0);
-  const activeSkillXp = useAppSelector((s) => activeTask ? s.game.player.skills[activeTask.skillId as SkillId]?.xp : 0);
+  const activeMeta = activeTaskBase ? SKILL_META[activeTaskBase.skillId as SkillId] : null;
+  const activeSkillLevel = useAppSelector((s) => activeTaskBase ? s.game.player.skills[activeTaskBase.skillId as SkillId]?.level : 0);
+  const activeSkillXp = useAppSelector((s) => activeTaskBase ? s.game.player.skills[activeTaskBase.skillId as SkillId]?.xp : 0);
 
   const currentLevelXP = activeSkillLevel ? xpForLevel(activeSkillLevel) : 0;
   const nextLevelXP = activeSkillLevel ? xpForLevel(activeSkillLevel + 1) : 0;
@@ -656,7 +659,7 @@ export default function SkillsScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          {activeTask ? (
+          {activeTaskBase ? (
             <View style={styles.activeSkillBadge}>
               <Text style={styles.activeSkillEmoji}>{activeMeta?.emoji}</Text>
               <Text style={styles.activeSkillText}>{activeMeta?.label} Lv. {activeSkillLevel}</Text>
@@ -688,7 +691,7 @@ export default function SkillsScreen() {
             )}
           </View>
           <Text style={styles.headerXpText}>
-            {activeTask && activeSkillLevel
+            {activeTaskBase && activeSkillLevel
               ? activeSkillLevel >= 99
                 ? `${formatNumber(activeSkillXp)} XP — MAX`
                 : `${formatNumber(xpIntoLevel)} / ${formatNumber(xpNeeded)} XP`

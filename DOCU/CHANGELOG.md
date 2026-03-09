@@ -18,9 +18,13 @@
 - **Summoning Shop**: Integrated supplies shop into the skill screen for convenience.
 - **Companion System**: Hire wandering souls like Barnaby and Garry the Guard through the dialogue system.
 - **New Enemies**: Crawling Hand (Lv. 5) and Banshee (Lv. 15) added to the world meta.
+- **The Agora Shop Revamp**: Completely redesigned the merchant interface with premium glassmorphism, golden accents, and better item grouping.
 - **New Skill: Crafting**: Full implementation of the Crafting skill. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful rings and amulets.
 - **Dynamic Coming Soon UI**: Added an interactive "Coming Soon" skill lock screen for unimplemented skills.
+- **Enhanced Skill Pages**: Slayer, Summoning, and Resonance have been upgraded to the "Enhanced!" UI style with navigation arrows, integrated XP bars, and gold level badges.
+- **Resonance Unified**: Relocated Resonance skill into the standard `skills/` directory to resolve routing conflicts and enable consistent navigation.
 ### Changed
+- **Smooth Progress Bars**: Optimized interpolation logic to fix flickering/stuttering during active tasks.
 - Relocated the Skills grid to its own navigation tab to make room for the Hub portal.
 ### Fixed
 - **Stability Patch**: Resolved a critical ReferenceError where `TextInput` was not imported in the skills panel search bar.
@@ -28,6 +32,8 @@
 - **Level Up Toast Fix**: Completely refactored the toast notification system to prevent "stuck" toasts.
 - **Quick Switch Scroll**: Fixed a major bug where the quick switch panel would not scroll due to Flex conflicts.
 - **Descriptive Typos**: Corrected various typos in labels and skill cards.
+- **Astrology Navigation**: Fixed a critical routing bug where the right-arrow on Astrology led to an unmatched route.
+- **Ticker Shifting**: Corrected the GlobalActionTicker position to intelligently shift down when the tab bar is hidden.
 ### Documentation
 - **CLICKER_DESIGN.md**: Added §7 "Broaden & Deepen Ideas (Sourced)" — world-state/corruption, seasonal pulse modes, Chaos Theory crossover, companion relay, Chronicle/Timekeeper framing, shared active-play minigame framework, accessibility/feedback, economy guardrails; all subsections cite source docs. References expanded and renumbered to §8.
 

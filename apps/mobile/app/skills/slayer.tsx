@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,6 +11,12 @@ import { SLAYER_MONSTERS, SlayerMonster, SLAYER_SHOP_CATALOG, SlayerShopItem } f
 import { getItemMeta } from '@/constants/items';
 import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 import { XP_TABLE, gameActions } from '@/store/gameSlice';
+import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
+import { getLevelBadgeStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ActivePulseGlow } from '@/components/ActivePulseGlow';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 
 /**
  * Slayer Screen (Task-based monster hunting)
@@ -27,8 +33,8 @@ export default function SlayerScreen() {
 
     useIdleSoundscape('slayer');
 
-    const onNext = () => router.replace(`/skills/${getNextSkill('slayer')}`);
-    const onPrev = () => router.replace(`/skills/${getPrevSkill('slayer')}`);
+    const onNext = () => router.replace(`/skills/${getNextSkill('slayer')}` as any);
+    const onPrev = () => router.replace(`/skills/${getPrevSkill('slayer')}` as any);
 
     const currentLevelXp = XP_TABLE[skill.level - 1] || 0;
     const nextLevelXp = XP_TABLE[skill.level] || XP_TABLE[98];
@@ -65,26 +71,41 @@ export default function SlayerScreen() {
             {/* Header with Navigation */}
             <View style={[styles.header, { backgroundColor: palette.bgCard }]}>
                 <View style={styles.headerTop}>
-                    <BouncyButton onPress={onPrev} style={styles.navButton}>
-                        <Text style={[styles.navArrow, { color: palette.textSecondary }]}>←</Text>
-                    </BouncyButton>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onPrev();
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
 
                     <View style={styles.titleContainer}>
+                        <View style={[styles.enhancedBadge, { backgroundColor: palette.gold }]}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
                         <Text style={styles.emojiText}>{meta.emoji}</Text>
                         <Text style={[styles.titleText, { color: palette.textPrimary }]}>{meta.label}</Text>
                     </View>
 
-                    <BouncyButton onPress={onNext} style={styles.navButton}>
-                        <Text style={[styles.navArrow, { color: palette.textSecondary }]}>→</Text>
-                    </BouncyButton>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onNext();
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.xpInfo}>
-                    <View style={[styles.levelBadge, { borderColor: meta.color }]}>
+                    <View style={getLevelBadgeStyles(palette, meta.color).levelBadge}>
                         <Text style={[styles.levelText, { color: meta.color }]}>{skill.level}</Text>
                     </View>
                     <View style={styles.progressContainer}>
-                        <View style={{ height: 6 }}>
+                        <View style={styles.xpBarBg}>
                             <ProgressBarWithPulse
                                 progress={skill.xp}
                                 fillColor={meta.color}
@@ -229,17 +250,34 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     navButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(255,255,255,0.03)',
+        padding: Spacing.xs,
+        opacity: 0.5,
     },
     navArrow: { fontSize: 24, fontWeight: 'bold' },
     titleContainer: { flexDirection: 'row', alignItems: 'center' },
     emojiText: { fontSize: 28, marginRight: 10 },
-    titleText: { fontSize: 22, fontWeight: 'bold', letterSpacing: 0.5 },
+    titleText: { fontFamily: FontCinzelBold, fontSize: 22, fontWeight: 'bold' },
+    enhancedBadge: {
+        position: 'absolute',
+        top: -10,
+        left: 0,
+        paddingHorizontal: 6,
+        paddingVertical: 1,
+        borderRadius: 4,
+        zIndex: 10,
+        transform: [{ rotate: '-5deg' }],
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.12,
+        shadowRadius: 3,
+        elevation: 1,
+    },
+    enhancedBadgeText: {
+        color: '#0f111a',
+        fontSize: 8,
+        fontWeight: '900',
+        textTransform: 'uppercase',
+    },
     xpInfo: { flexDirection: 'row', alignItems: 'center' },
     levelBadge: {
         backgroundColor: '#000',
@@ -253,6 +291,12 @@ const styles = StyleSheet.create({
     },
     levelText: { fontWeight: 'bold', fontSize: 16 },
     progressContainer: { flex: 1 },
+    xpBarBg: {
+        height: 6,
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        borderRadius: Radius.full,
+        overflow: 'hidden',
+    },
     scrollContent: { padding: 20 },
     sectionTitle: { fontSize: 13, fontWeight: 'bold', letterSpacing: 1, marginBottom: 15, textTransform: 'uppercase' },
     activeTaskSection: { marginBottom: 30 },

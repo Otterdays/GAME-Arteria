@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold, FontCinzel, ShadowSubtle } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getItemMeta, SHOP_CATALOG, type ItemType } from '@/constants/items';
 import { LUMINA_SHOP_ITEMS } from '@/constants/luminaShop';
@@ -25,6 +25,8 @@ import { gameActions, type InventoryItem } from '@/store/gameSlice';
 import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { BouncyButton } from '@/components/BouncyButton';
 import { IMPLEMENTED_SKILLS } from '@/constants/skills';
+import { LinearGradient } from 'expo-linear-gradient';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type TabMode = 'buy' | 'sell';
 
@@ -69,26 +71,31 @@ function LuminaShopRow({
     const canBuy = canAfford && !atRerollCap && !xpBoostActive;
 
     return (
-        <View style={[styles.row, { marginBottom: Spacing.sm }]}>
-            <Text style={styles.rowEmoji}>{item.emoji}</Text>
-            <View style={styles.rowBody}>
-                <Text style={styles.rowLabel}>{item.label}</Text>
-                <Text style={styles.rowPrice}>
-                    ✨ {item.cost} Lumina
-                    {item.maxPerDay != null && ` · ${item.maxPerDay - usedToday}/${item.maxPerDay} left today`}
-                    {xpBoostActive && ' · Active!'}
-                </Text>
+        <View style={styles.card}>
+            <LinearGradient colors={['rgba(139,92,246,0.1)', 'transparent']} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
+            <View style={styles.cardInner}>
+                <View style={[styles.emojiBox, { backgroundColor: 'rgba(139,92,246,0.2)' }]}>
+                    <Text style={styles.rowEmoji}>{item.emoji}</Text>
+                </View>
+                <View style={styles.rowBody}>
+                    <Text style={[styles.rowLabel, { color: '#e0d4f7' }]}>{item.label}</Text>
+                    <Text style={[styles.rowPrice, { color: '#a78bfa' }]}>
+                        ✨ {item.cost} Lumina
+                        {item.maxPerDay != null && ` · ${item.maxPerDay - usedToday}/${item.maxPerDay} left today`}
+                        {xpBoostActive && ' · Active!'}
+                    </Text>
+                </View>
+                <TouchableOpacity
+                    style={[styles.luminaBuyBtn, !canBuy && styles.buyButtonDisabled]}
+                    onPress={() => canBuy && onPurchase()}
+                    disabled={!canBuy}
+                    activeOpacity={0.8}
+                >
+                    <Text style={[styles.luminaBuyBtnText, !canBuy && styles.buyButtonDisabledText]}>
+                        {xpBoostActive ? 'Active' : atRerollCap ? 'Limit' : canAfford ? 'Buy' : '—'}
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                style={[styles.luminaBuyBtn, !canBuy && styles.buyButtonDisabled]}
-                onPress={() => canBuy && onPurchase()}
-                disabled={!canBuy}
-                activeOpacity={0.8}
-            >
-                <Text style={[styles.luminaBuyBtnText, !canBuy && styles.buyButtonDisabledText]}>
-                    {xpBoostActive ? 'Active' : atRerollCap ? 'Limit' : canAfford ? 'Buy' : '—'}
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 }
@@ -115,53 +122,60 @@ function BuyRow({
     const canAfford = playerGold >= cost;
 
     return (
-        <View style={styles.row}>
-            <Text style={styles.rowEmoji}>{meta.emoji}</Text>
-            <View style={styles.rowBody}>
-                <Text style={styles.rowLabel}>{meta.label}</Text>
-                <Text style={styles.rowPrice}>💰 {buyPrice.toLocaleString()} each</Text>
+        <View style={styles.card}>
+            <LinearGradient colors={['rgba(212,175,55,0.05)', 'transparent']} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
+            <View style={styles.cardInner}>
+                <View style={styles.emojiBox}>
+                    <Text style={styles.rowEmoji}>{meta.emoji}</Text>
+                </View>
+                <View style={styles.rowBody}>
+                    <Text style={styles.rowLabel}>{meta.label}</Text>
+                    <Text style={styles.rowPrice}>💰 {buyPrice.toLocaleString()} each</Text>
+                </View>
             </View>
-            <View style={styles.qtyRow}>
-                {BUY_QUANTITIES.map((n) => (
-                    <TouchableOpacity
-                        key={n}
-                        style={[styles.qtyChip, qty === n && styles.qtyChipActive]}
-                        onPress={() => {
-                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            setQty(n);
-                        }}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={[styles.qtyChipText, qty === n && styles.qtyChipTextActive]}>{n}</Text>
-                    </TouchableOpacity>
-                ))}
-                {maxAfford > 0 && (
-                    <TouchableOpacity
-                        style={[styles.qtyChip, isMax && styles.qtyChipActive]}
-                        onPress={() => {
-                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            setQty(maxAfford);
-                        }}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={[styles.qtyChipText, isMax && styles.qtyChipTextActive]}>Max</Text>
-                    </TouchableOpacity>
-                )}
+            <View style={styles.buyActionRow}>
+                <View style={styles.qtyRow}>
+                    {BUY_QUANTITIES.map((n) => (
+                        <TouchableOpacity
+                            key={n}
+                            style={[styles.qtyChip, qty === n && styles.qtyChipActive]}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                setQty(n);
+                            }}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={[styles.qtyChipText, qty === n && styles.qtyChipTextActive]}>{n}</Text>
+                        </TouchableOpacity>
+                    ))}
+                    {maxAfford > 0 && (
+                        <TouchableOpacity
+                            style={[styles.qtyChip, isMax && styles.qtyChipActive]}
+                            onPress={() => {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                setQty(maxAfford);
+                            }}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={[styles.qtyChipText, isMax && styles.qtyChipTextActive]}>Max</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+                <TouchableOpacity
+                    style={[styles.buyButton, !canAfford && styles.buyButtonDisabled]}
+                    onPress={() => {
+                        if (canAfford) {
+                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            onBuy(qty, cost);
+                        }
+                    }}
+                    disabled={!canAfford}
+                    activeOpacity={0.8}
+                >
+                    <Text style={styles.buyButtonText}>Buy {qty}</Text>
+                    <Text style={styles.buyButtonSub}>{cost.toLocaleString()} gp</Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                style={[styles.buyButton, !canAfford && styles.buyButtonDisabled]}
-                onPress={() => {
-                    if (canAfford) {
-                        if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                        onBuy(qty, cost);
-                    }
-                }}
-                disabled={!canAfford}
-                activeOpacity={0.8}
-            >
-                <Text style={styles.buyButtonText}>Buy {qty}</Text>
-                <Text style={styles.buyButtonSub}>{cost.toLocaleString()} gp</Text>
-            </TouchableOpacity>
         </View>
     );
 }
@@ -182,41 +196,45 @@ function SellRow({
     const locked = !!item.isLocked;
 
     return (
-        <View style={[styles.row, locked && styles.rowLocked]}>
-            <Text style={styles.rowEmoji}>{meta.emoji}</Text>
-            <View style={styles.rowBody}>
-                <Text style={styles.rowLabel}>{meta.label}{locked ? ' 🔒' : ''}</Text>
-                <Text style={styles.rowPrice}>
-                    💰 {meta.sellValue} each · {(item.quantity >= 1000 ? `${(item.quantity / 1000).toFixed(1)}k` : item.quantity)} owned
-                </Text>
-            </View>
-            <View style={styles.sellButtons}>
-                <TouchableOpacity
-                    style={[styles.sellBtn, locked && styles.sellBtnDisabled]}
-                    onPress={() => {
-                        if (!locked) {
-                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            onSell1();
-                        }
-                    }}
-                    disabled={locked}
-                    activeOpacity={0.8}
-                >
-                    <Text style={styles.sellBtnText}>Sell 1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.sellBtn, locked && styles.sellBtnDisabled]}
-                    onPress={() => {
-                        if (!locked) {
-                            if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            onSellAll();
-                        }
-                    }}
-                    disabled={locked}
-                    activeOpacity={0.8}
-                >
-                    <Text style={styles.sellBtnText}>Sell All</Text>
-                </TouchableOpacity>
+        <View style={[styles.card, locked && styles.rowLocked]}>
+            <View style={styles.cardInner}>
+                <View style={styles.emojiBox}>
+                    <Text style={styles.rowEmoji}>{meta.emoji}</Text>
+                </View>
+                <View style={styles.rowBody}>
+                    <Text style={styles.rowLabel}>{meta.label}{locked ? ' 🔒' : ''}</Text>
+                    <Text style={styles.rowPrice}>
+                        💰 {meta.sellValue} each · {(item.quantity >= 1000 ? `${(item.quantity / 1000).toFixed(1)}k` : item.quantity)} owned
+                    </Text>
+                </View>
+                <View style={styles.sellButtons}>
+                    <TouchableOpacity
+                        style={[styles.sellBtnLight, locked && styles.sellBtnDisabled]}
+                        onPress={() => {
+                            if (!locked) {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                onSell1();
+                            }
+                        }}
+                        disabled={locked}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.sellBtnLightText}>Sell 1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.sellBtnStrong, locked && styles.sellBtnDisabled]}
+                        onPress={() => {
+                            if (!locked) {
+                                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                onSellAll();
+                            }
+                        }}
+                        disabled={locked}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.sellBtnStrongText}>Sell All</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -285,143 +303,204 @@ export default function ShopScreen() {
             StyleSheet.create({
                 container: { flex: 1, backgroundColor: palette.bgApp },
                 headerBox: {
-                    padding: Spacing.md,
-                    paddingBottom: Spacing.sm,
-                    backgroundColor: palette.bgCard,
+                    paddingTop: Spacing.xl,
+                    paddingHorizontal: Spacing.xl,
+                    paddingBottom: Spacing.lg,
                     borderBottomWidth: 1,
                     borderBottomColor: palette.border,
+                    position: 'relative',
+                    overflow: 'hidden',
                 },
-                header: {
+                headerTop: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: Spacing.sm,
+                    alignItems: 'flex-start',
                 },
                 title: {
-                    fontSize: FontSize.xl,
-                    color: palette.textPrimary,
+                    fontSize: 32,
+                    color: palette.gold,
                     fontFamily: FontCinzelBold,
+                    textShadowColor: 'rgba(212,175,55,0.3)',
+                    textShadowOffset: { width: 0, height: 2 },
+                    textShadowRadius: 8,
                 },
                 subtitleRow: {
                     flexDirection: 'row',
                     alignItems: 'center',
-                    marginTop: 2,
-                    gap: 8,
+                    marginTop: 4,
+                    gap: 12,
                 },
-                subtitle: { fontSize: FontSize.sm, color: palette.textSecondary },
+                subtitle: { 
+                    fontSize: FontSize.sm, 
+                    color: palette.textSecondary,
+                    fontFamily: FontCinzelBold,
+                    letterSpacing: 1,
+                    textTransform: 'uppercase'
+                },
                 chatButton: {
-                    backgroundColor: palette.bgInput,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(212,175,55,0.15)',
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 4,
-                    borderRadius: 12,
+                    borderRadius: Radius.full,
                     borderWidth: 1,
-                    borderColor: palette.border,
+                    borderColor: 'rgba(212,175,55,0.3)',
+                    gap: 4,
                 },
                 chatButtonText: {
                     fontSize: 12,
-                    color: palette.textPrimary,
-                    fontWeight: '600',
+                    color: palette.gold,
+                    fontWeight: '700',
+                },
+                wealthBox: {
+                    alignItems: 'flex-end',
+                    gap: Spacing.xs,
                 },
                 goldBadge: {
                     flexDirection: 'row',
                     alignItems: 'center',
-                    backgroundColor: palette.bgCard,
+                    backgroundColor: 'rgba(0,0,0,0.2)',
                     paddingHorizontal: Spacing.sm,
-                    paddingVertical: Spacing.xs,
-                    borderRadius: Radius.md,
+                    paddingVertical: 6,
+                    borderRadius: Radius.lg,
                     borderWidth: 1,
                     borderColor: palette.border,
+                    minWidth: 100,
+                    justifyContent: 'flex-end',
                 },
-                goldEmoji: { fontSize: FontSize.base, marginRight: 4 },
+                goldEmoji: { fontSize: FontSize.sm, marginRight: 6 },
                 goldText: {
-                    fontSize: FontSize.base,
-                    fontWeight: '600',
+                    fontSize: FontSize.md,
+                    fontWeight: '800',
                     color: palette.gold,
+                    textShadowColor: 'rgba(0,0,0,0.5)',
+                    textShadowOffset: { width: 0, height: 1 },
+                    textShadowRadius: 2,
                 },
-                toggleRow: {
+                tabsRow: {
                     flexDirection: 'row',
-                    paddingVertical: Spacing.sm,
-                    gap: Spacing.sm,
+                    paddingHorizontal: Spacing.xl,
+                    paddingTop: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                    backgroundColor: palette.bgApp,
                 },
-                toggleBtn: {
+                segmentedControl: {
+                    flexDirection: 'row',
+                    backgroundColor: palette.bgInput,
+                    borderRadius: Radius.lg,
+                    padding: 4,
                     flex: 1,
-                    paddingVertical: Spacing.sm,
-                    borderRadius: Radius.md,
-                    backgroundColor: palette.bgCard,
-                    borderWidth: 1,
-                    borderColor: palette.border,
+                },
+                tabBtn: {
+                    flex: 1,
+                    paddingVertical: 10,
                     alignItems: 'center',
+                    borderRadius: Radius.md,
                 },
-                toggleBtnActive: {
-                    backgroundColor: palette.accentPrimary,
-                    borderColor: palette.accentPrimary,
+                tabBtnActive: {
+                    backgroundColor: palette.bgCard,
+                    ...ShadowSubtle,
+                    shadowColor: palette.black,
                 },
-                toggleText: {
-                    fontSize: FontSize.base,
-                    fontWeight: '600',
+                tabText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '700',
                     color: palette.textSecondary,
                 },
-                toggleTextActive: { color: palette.white },
+                tabTextActive: {
+                    color: palette.textPrimary,
+                },
+                filterRowWrap: {
+                    backgroundColor: palette.bgApp,
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.sm,
+                },
                 filterRow: {
                     flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    paddingTop: Spacing.sm,
-                    gap: 6,
+                    gap: 8,
+                    paddingHorizontal: Spacing.sm,
                 },
                 filterChip: {
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
                     borderRadius: Radius.full,
-                    backgroundColor: palette.bgCard,
+                    backgroundColor: palette.bgInput,
                     borderWidth: 1,
-                    borderColor: palette.border,
+                    borderColor: 'transparent',
                 },
                 filterChipActive: {
-                    borderColor: palette.accentPrimary,
-                    backgroundColor: 'rgba(74,144,226,0.15)',
+                    backgroundColor: palette.bgCard,
+                    borderColor: palette.gold,
                 },
                 filterChipText: {
-                    fontSize: FontSize.sm,
+                    fontSize: FontSize.xs,
                     color: palette.textSecondary,
-                },
-                filterChipTextActive: {
-                    color: palette.accentPrimary,
                     fontWeight: '600',
                 },
-                listContent: {
-                    paddingHorizontal: Spacing.md,
-                    paddingBottom: Spacing.xl,
+                filterChipTextActive: {
+                    color: palette.gold,
                 },
-                row: {
+                listContent: {
+                    paddingHorizontal: Spacing.lg,
+                    paddingTop: Spacing.sm,
+                    paddingBottom: Spacing['2xl'],
+                },
+                card: {
+                    backgroundColor: palette.bgCardHover,
+                    borderRadius: Radius.lg,
+                    marginBottom: Spacing.md,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    overflow: 'hidden',
+                    ...ShadowSubtle,
+                },
+                cardInner: {
                     flexDirection: 'row',
                     alignItems: 'center',
-                    backgroundColor: palette.bgCard,
-                    padding: Spacing.sm,
-                    marginBottom: Spacing.sm,
+                    padding: Spacing.md,
+                },
+                emojiBox: {
+                    width: 48,
+                    height: 48,
                     borderRadius: Radius.md,
+                    backgroundColor: palette.bgInput,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: Spacing.md,
                     borderWidth: 1,
                     borderColor: palette.border,
                 },
-                rowLocked: { opacity: 0.75 },
-                rowEmoji: { fontSize: 28, marginRight: Spacing.sm },
-                rowBody: { flex: 1 },
+                rowEmoji: { fontSize: 24 },
+                rowBody: { flex: 1, justifyContent: 'center' },
                 rowLabel: {
-                    fontSize: FontSize.base,
-                    fontWeight: '600',
+                    fontSize: FontSize.md,
+                    fontWeight: '700',
                     color: palette.textPrimary,
+                    marginBottom: 2,
                 },
                 rowPrice: {
                     fontSize: FontSize.sm,
                     color: palette.textSecondary,
-                    marginTop: 2,
+                    fontWeight: '500',
+                },
+                buyActionRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: Spacing.md,
+                    paddingBottom: Spacing.md,
+                    paddingTop: 4,
                 },
                 qtyRow: {
                     flexDirection: 'row',
-                    gap: 4,
-                    marginRight: Spacing.sm,
+                    gap: 6,
+                    flexWrap: 'wrap',
+                    flex: 1,
+                    marginRight: Spacing.md,
                 },
                 qtyChip: {
-                    paddingHorizontal: 10,
+                    paddingHorizontal: 12,
                     paddingVertical: 6,
                     borderRadius: Radius.sm,
                     backgroundColor: palette.bgInput,
@@ -429,102 +508,147 @@ export default function ShopScreen() {
                     borderColor: palette.border,
                 },
                 qtyChipActive: {
-                    borderColor: palette.accentPrimary,
-                    backgroundColor: 'rgba(74,144,226,0.2)',
+                    backgroundColor: 'rgba(212,175,55,0.1)',
+                    borderColor: palette.gold,
                 },
                 qtyChipText: {
-                    fontSize: FontSize.sm,
+                    fontSize: FontSize.xs,
+                    fontWeight: '600',
                     color: palette.textSecondary,
                 },
                 qtyChipTextActive: {
-                    color: palette.accentPrimary,
-                    fontWeight: '600',
+                    color: palette.gold,
                 },
                 buyButton: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.lg,
+                    paddingVertical: 10,
                     borderRadius: Radius.md,
                     backgroundColor: palette.green,
                     borderWidth: 1,
                     borderColor: palette.greenDim,
                     alignItems: 'center',
-                    minWidth: 72,
+                    minWidth: 96,
+                    ...ShadowSubtle,
+                    shadowColor: palette.green,
                 },
                 buyButtonDisabled: {
                     backgroundColor: palette.bgInput,
                     borderColor: palette.border,
+                    shadowOpacity: 0,
                     opacity: 0.7,
                 },
                 buyButtonDisabledText: { color: palette.textDisabled },
-                luminaBuyBtn: {
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.sm,
-                    borderRadius: Radius.md,
-                    backgroundColor: palette.accentPrimary,
-                    borderWidth: 1,
-                    borderColor: palette.accentPrimary,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                },
-                luminaBuyBtnText: {
-                    fontSize: FontSize.sm,
-                    fontWeight: '700',
-                    color: palette.white,
-                },
                 buyButtonText: {
                     fontSize: FontSize.sm,
-                    fontWeight: '700',
-                    color: palette.white,
+                    fontWeight: '800',
+                    color: palette.bgApp, // Contrast text
                 },
                 buyButtonSub: {
-                    fontSize: 11,
-                    color: 'rgba(255,255,255,0.9)',
-                    marginTop: 1,
+                    fontSize: 10,
+                    color: 'rgba(0,0,0,0.6)',
+                    fontWeight: '600',
+                    marginTop: 2,
                 },
-                sellButtons: { flexDirection: 'row', gap: 6 },
-                sellBtn: {
+                sellButtons: { flexDirection: 'row', gap: 8 },
+                sellBtnLight: {
                     paddingHorizontal: Spacing.sm,
-                    paddingVertical: Spacing.sm,
-                    borderRadius: Radius.sm,
+                    paddingVertical: 8,
+                    borderRadius: Radius.md,
+                    backgroundColor: palette.bgInput,
+                    borderWidth: 1,
+                    borderColor: palette.border,
+                    minWidth: 70,
+                    alignItems: 'center',
+                },
+                sellBtnStrong: {
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 8,
+                    borderRadius: Radius.md,
                     backgroundColor: palette.gold,
                     borderWidth: 1,
                     borderColor: palette.goldDim,
+                    minWidth: 80,
+                    alignItems: 'center',
+                    ...ShadowSubtle,
+                    shadowColor: palette.gold,
                 },
-                sellBtnText: {
+                sellBtnLightText: {
                     fontSize: FontSize.sm,
-                    fontWeight: '600',
+                    fontWeight: '700',
+                    color: palette.textPrimary,
+                },
+                sellBtnStrongText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '800',
                     color: palette.bgApp,
                 },
-                sellBtnDisabled: { opacity: 0.5 },
+                sellBtnDisabled: { opacity: 0.4, shadowOpacity: 0 },
+                luminaBuyBtn: {
+                    paddingHorizontal: Spacing.lg,
+                    paddingVertical: 10,
+                    borderRadius: Radius.md,
+                    backgroundColor: '#8b5cf6', // Violet/Lumina color
+                    borderWidth: 1,
+                    borderColor: '#a78bfa',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...ShadowSubtle,
+                    shadowColor: '#8b5cf6',
+                },
+                luminaBuyBtnText: {
+                    fontSize: FontSize.sm,
+                    fontWeight: '800',
+                    color: palette.white,
+                },
+                sectionHeader: {
+                    fontFamily: FontCinzelBold,
+                    fontSize: FontSize.lg,
+                    color: palette.gold,
+                    marginTop: Spacing.md,
+                    marginBottom: Spacing.sm,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1,
+                },
+                rowLocked: { opacity: 0.6 },
                 empty: {
-                    paddingVertical: Spacing.xl,
+                    paddingVertical: Spacing['2xl'],
                     alignItems: 'center',
                 },
                 emptyText: {
                     fontSize: FontSize.base,
                     color: palette.textSecondary,
+                    fontFamily: FontCinzel,
                 },
             }),
         [palette]
     );
 
     return (
-        <View style={[styles.container, { paddingTop: insets.top }]}>
-            <View style={styles.headerBox}>
-                <View style={styles.header}>
+        <View style={styles.container}>
+            <View style={[styles.headerBox, { paddingTop: insets.top + Spacing.lg }]}>
+                <LinearGradient
+                    colors={[palette.bgCard, palette.bgApp]}
+                    style={StyleSheet.absoluteFill}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                />
+                
+                <View style={styles.headerTop}>
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.title}>Shop</Text>
+                        <Text style={styles.title}>The Agora</Text>
                         <View style={styles.subtitleRow}>
-                            <Text style={styles.subtitle}>Nick — Merchant</Text>
+                            <Text style={styles.subtitle}>Nick • Merchant</Text>
                             <BouncyButton
                                 style={styles.chatButton}
                                 onPress={() => dispatch(gameActions.startDialogue({ treeId: 'dt_nick_shop', startNodeId: 'node_1' }))}
                             >
-                                <Text style={styles.chatButtonText}>💬 Talk</Text>
+                                <IconSymbol name="bubble.left.fill" size={10} color={palette.gold} />
+                                <Text style={styles.chatButtonText}>Talk</Text>
                             </BouncyButton>
                         </View>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    
+                    <View style={styles.wealthBox}>
                         <View style={styles.goldBadge}>
                             <Text style={styles.goldEmoji}>💰</Text>
                             <AnimatedNumber
@@ -533,41 +657,49 @@ export default function ShopScreen() {
                                 formatValue={(v) => v.toLocaleString()}
                             />
                         </View>
-                        <View style={[styles.goldBadge, { borderColor: palette.accentPrimary }]}>
+                        <View style={[styles.goldBadge, { borderColor: 'rgba(139,92,246,0.5)' }]}>
                             <Text style={styles.goldEmoji}>✨</Text>
                             <AnimatedNumber
                                 value={lumina}
-                                style={[styles.goldText, { color: palette.accentPrimary }]}
+                                style={[styles.goldText, { color: '#c4b5fd' }]}
                                 formatValue={(v) => v.toLocaleString()}
                             />
                         </View>
                     </View>
                 </View>
+            </View>
 
-                <View style={styles.toggleRow}>
+            <View style={styles.tabsRow}>
+                <View style={styles.segmentedControl}>
                     <TouchableOpacity
-                        style={[styles.toggleBtn, tab === 'buy' && styles.toggleBtnActive]}
+                        style={[styles.tabBtn, tab === 'buy' && styles.tabBtnActive]}
                         onPress={() => setTab('buy')}
-                        activeOpacity={0.7}
+                        activeOpacity={0.8}
                     >
-                        <Text style={[styles.toggleText, tab === 'buy' && styles.toggleTextActive]}>Buy</Text>
+                        <Text style={[styles.tabText, tab === 'buy' && styles.tabTextActive]}>Buy Items</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={[styles.toggleBtn, tab === 'sell' && styles.toggleBtnActive]}
+                        style={[styles.tabBtn, tab === 'sell' && styles.tabBtnActive]}
                         onPress={() => setTab('sell')}
-                        activeOpacity={0.7}
+                        activeOpacity={0.8}
                     >
-                        <Text style={[styles.toggleText, tab === 'sell' && styles.toggleTextActive]}>Sell</Text>
+                        <Text style={[styles.tabText, tab === 'sell' && styles.tabTextActive]}>Sell Vault</Text>
                     </TouchableOpacity>
                 </View>
+            </View>
 
-                {tab === 'sell' && (
-                    <View style={styles.filterRow}>
-                        {SELL_FILTERS.map((opt) => {
+            {tab === 'sell' && (
+                <View style={styles.filterRowWrap}>
+                    <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={SELL_FILTERS}
+                        contentContainerStyle={styles.filterRow}
+                        keyExtractor={(item) => item.key}
+                        renderItem={({ item: opt }) => {
                             const isActive = sellFilter === opt.key;
                             return (
                                 <TouchableOpacity
-                                    key={opt.key}
                                     style={[styles.filterChip, isActive && styles.filterChipActive]}
                                     onPress={() => setSellFilter(opt.key)}
                                     activeOpacity={0.7}
@@ -577,10 +709,10 @@ export default function ShopScreen() {
                                     </Text>
                                 </TouchableOpacity>
                             );
-                        })}
-                    </View>
-                )}
-            </View>
+                        }}
+                    />
+                </View>
+            )}
 
             {tab === 'buy' && (
                 <FlatList
@@ -598,13 +730,7 @@ export default function ShopScreen() {
                     contentContainerStyle={styles.listContent}
                     ListHeaderComponent={
                         <View style={{ marginBottom: Spacing.lg }}>
-                            <View style={[styles.row, { marginBottom: Spacing.sm, borderColor: palette.accentPrimary + '44', backgroundColor: palette.accentPrimary + '0c' }]}>
-                                <Text style={styles.rowEmoji}>✨</Text>
-                                <View style={styles.rowBody}>
-                                    <Text style={styles.rowLabel}>Lumina Shop</Text>
-                                    <Text style={styles.rowPrice}>Premium currency — rerolls, boosts</Text>
-                                </View>
-                            </View>
+                            <Text style={styles.sectionHeader}>Cosmic Wares</Text>
                             {LUMINA_SHOP_ITEMS.map((lumItem) => (
                                 <LuminaShopRow
                                     key={lumItem.id}
@@ -617,15 +743,10 @@ export default function ShopScreen() {
                                     styles={styles}
                                 />
                             ))}
+                            
                             {eligibleCapes.length > 0 && (
                                 <View style={{ marginTop: Spacing.md }}>
-                                    <View style={[styles.row, { marginBottom: Spacing.sm, borderColor: palette.gold + '44', backgroundColor: palette.gold + '0c' }]}>
-                                        <Text style={styles.rowEmoji}>👑</Text>
-                                        <View style={styles.rowBody}>
-                                            <Text style={styles.rowLabel}>Ascended Master</Text>
-                                            <Text style={styles.rowPrice}>Skill Capes of Mastery</Text>
-                                        </View>
-                                    </View>
+                                    <Text style={[styles.sectionHeader, { color: palette.gold }]}>Mastery Capes</Text>
                                     {eligibleCapes.map((capeId) => (
                                         <BuyRow
                                             key={capeId}
@@ -638,9 +759,8 @@ export default function ShopScreen() {
                                     ))}
                                 </View>
                             )}
-                            <View style={{ marginTop: Spacing.md, marginBottom: Spacing.sm }}>
-                                <Text style={[styles.rowPrice, { marginLeft: 0 }]}>Nick's catalog</Text>
-                            </View>
+
+                            <Text style={[styles.sectionHeader, { marginTop: Spacing.xl }]}>General Stock</Text>
                         </View>
                     }
                     ListEmptyComponent={
@@ -667,7 +787,7 @@ export default function ShopScreen() {
                     ListEmptyComponent={
                         <View style={styles.empty}>
                             <Text style={styles.emptyText}>
-                                {inventory.length === 0 ? 'Bank is empty — gather items first.' : 'No matching items.'}
+                                {inventory.length === 0 ? 'Your vault is empty.' : 'No items match this filter.'}
                             </Text>
                         </View>
                     }
@@ -676,4 +796,3 @@ export default function ShopScreen() {
         </View>
     );
 }
-

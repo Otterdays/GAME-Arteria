@@ -30,10 +30,13 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '💀 New Skill: Slayer. Speak to "Master Mark" to receive tasks to cull specific monsters. Earn Slayer Coins to spend in the future Slayer Shop.',
       '👹 New Enemies: Added Crawling Hand (Lv. 5) and Banshee (Lv. 15) to the Slayer Tower (B1).',
       '🏪 Summoning Supplies: Integrated the Summoning Shop directly into the skill screen for quick access to Spirit Pouches and Shards.',
+      '🎨 Enhanced UI: Upgraded Slayer, Summoning, and Resonance skill pages to the "Enhanced!" aesthetic with navigation arrows and gold badges.',
       '✂️ New Skill: Crafting. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful jewelry (Rings & Amulets).',
+      '🏪 The Agora: Completely revamped the Shop tab with a premium glassmorphic merchant aesthetic, golden highlights, and improved tab/filter grouping.',
       '📜 The Chronicles of Arteria: Access a full historical changelog of every version directly from the Settings menu.',
     ],
     changed: [
+      '📉 Smooth Progress Bars: Optimized interpolation hooks to eliminate stuttering/flickering on fast action ticks.',
       'Moved the main Skills grid to its own dedicated tab to make room for the Hub portal.',
     ],
     fixed: [

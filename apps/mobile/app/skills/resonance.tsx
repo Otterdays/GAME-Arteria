@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -23,6 +23,12 @@ import {
 } from '@/constants/resonance';
 import { formatNumber } from '@/utils/formatNumber';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
+import { Stack, router } from 'expo-router';
+import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getLevelBadgeStyles } from '@/constants/skillPageStyles';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ProgressBarWithPulse } from '@/components/ProgressBarWithPulse';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -73,17 +79,86 @@ export default function ResonanceScreen() {
                     paddingBottom: Spacing.md,
                     backgroundColor: palette.bgCard,
                     borderBottomWidth: 1,
-                    borderBottomColor: palette.border,
+                    borderBottomColor: 'rgba(255,255,255,0.05)',
+                },
+                headerTop: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 15,
+                },
+                navButton: {
+                    padding: Spacing.xs,
+                    opacity: 0.5,
+                },
+                titleContainer: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    position: 'relative',
+                },
+                enhancedBadge: {
+                    position: 'absolute',
+                    top: -10,
+                    left: 0,
+                    paddingHorizontal: 6,
+                    paddingVertical: 1,
+                    borderRadius: 4,
+                    zIndex: 10,
+                    transform: [{ rotate: '-5deg' }],
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.12,
+                    shadowRadius: 3,
+                    elevation: 1,
+                },
+                enhancedBadgeText: {
+                    color: '#0f111a',
+                    fontSize: 8,
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
                 },
                 title: {
                     fontFamily: FontCinzelBold,
-                    fontSize: FontSize['2xl'],
-                    color: palette.skillResonance,
+                    fontSize: 22,
+                    color: palette.textPrimary,
+                },
+                titleEmoji: {
+                    fontSize: 24,
+                    marginRight: 8,
+                },
+                xpInfo: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 5,
+                },
+                levelBadge: {
+                    backgroundColor: '#000',
+                    width: 36,
+                    height: 36,
+                    borderRadius: 18,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderWidth: 1,
+                    marginRight: 10,
+                },
+                levelText: {
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                },
+                progressContainer: {
+                    flex: 1,
+                },
+                xpBarBg: {
+                    height: 6,
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    borderRadius: Radius.full,
+                    overflow: 'hidden',
                 },
                 subTitle: {
-                    fontSize: FontSize.sm,
+                    fontSize: FontSize.xs,
                     color: palette.textSecondary,
                     marginTop: 4,
+                    textAlign: 'center',
                 },
                 scroll: {
                     flex: 1,
@@ -162,13 +237,6 @@ export default function ResonanceScreen() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                 },
-                xpBarBg: {
-                    height: 6,
-                    borderRadius: 3,
-                    backgroundColor: palette.bgInput,
-                    overflow: 'hidden',
-                    marginTop: 4,
-                },
                 xpBarFill: {
                     height: '100%',
                     borderRadius: 3,
@@ -219,8 +287,52 @@ export default function ResonanceScreen() {
 
     return (
         <View style={styles.container}>
+            <Stack.Screen options={{ headerShown: false }} />
             <View style={styles.header}>
-                <Text style={styles.title}>Resonance</Text>
+                <View style={styles.headerTop}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getPrevSkill('resonance')}` as any);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.left" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+
+                    <View style={styles.titleContainer}>
+                        <View style={[styles.enhancedBadge, { backgroundColor: palette.gold }]}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
+                        <Text style={styles.titleEmoji}>🧿</Text>
+                        <Text style={styles.title}>Resonance</Text>
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            router.replace(`/skills/${getNextSkill('resonance')}` as any);
+                        }}
+                        style={styles.navButton}
+                    >
+                        <IconSymbol name="chevron.right" size={24} color={palette.textSecondary} />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.xpInfo}>
+                    <View style={getLevelBadgeStyles(palette, palette.skillResonance).levelBadge}>
+                        <Text style={[styles.levelText, { color: palette.skillResonance }]}>{resonance.level}</Text>
+                    </View>
+                    <View style={styles.progressContainer}>
+                        <View style={styles.xpBarBg}>
+                            <ProgressBarWithPulse
+                                progress={resonance.xp}
+                                fillColor={palette.skillResonance}
+                                widthPercent={level >= 99 ? 100 : (xp / nextLevelXp) * 100}
+                            />
+                        </View>
+                    </View>
+                </View>
                 <Text style={styles.subTitle}>The Pulse — steady the flow of time.</Text>
             </View>
             <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: Spacing.xl }} showsVerticalScrollIndicator={false}>

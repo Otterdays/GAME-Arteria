@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { Spacing, FontSize, Radius, FontCinzelBold } from '@/constants/theme';
+import { Spacing, FontSize, Radius, FontCinzelBold, ShadowSubtle } from '@/constants/theme';
 import { getLevelBadgeStyles, getNodeCardBaseStyles, getGlassCardGradientColors } from '@/constants/skillPageStyles';
 import { getNextSkill, getPrevSkill } from '@/constants/skillNavigation';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -105,6 +105,25 @@ export default function AstrologyScreen() {
                     flexDirection: 'row',
                     alignItems: 'center',
                     gap: Spacing.sm,
+                    position: 'relative',
+                },
+                enhancedBadge: {
+                    position: 'absolute',
+                    top: -10,
+                    left: 0,
+                    paddingHorizontal: 6,
+                    paddingVertical: 1,
+                    borderRadius: 4,
+                    zIndex: 10,
+                    transform: [{ rotate: '-5deg' }],
+                    ...ShadowSubtle,
+                },
+                enhancedBadgeText: {
+                    color: palette.bgApp,
+                    fontSize: 8,
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
                 },
                 levelTag: {
                     backgroundColor: `${colorAstrology}25`,
@@ -227,7 +246,7 @@ export default function AstrologyScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getPrevSkill('astrology')}`);
+                            router.replace(`/skills/${getPrevSkill('astrology')}` as any);
                         }}
                         style={styles.navButton}
                     >
@@ -235,6 +254,9 @@ export default function AstrologyScreen() {
                     </TouchableOpacity>
 
                     <View style={styles.titleContent}>
+                        <View style={[styles.enhancedBadge, { backgroundColor: palette.gold }]}>
+                            <Text style={styles.enhancedBadgeText}>Enhanced!</Text>
+                        </View>
                         <Text style={styles.astrologyTitle}>Astrology</Text>
                         <View style={styles.levelTag}>
                             <Text style={styles.levelTagText}>Lv. {astrologySkill.level}</Text>
@@ -244,7 +266,7 @@ export default function AstrologyScreen() {
                     <TouchableOpacity
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                            router.replace(`/skills/${getNextSkill('astrology')}`);
+                            router.replace(`/skills/${getNextSkill('astrology')}` as any);
                         }}
                         style={styles.navButton}
                     >

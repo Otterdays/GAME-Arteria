@@ -27,7 +27,7 @@
 | 2026-03-08 | expo-router          | 55.0.4    | 55.0.4    | 2026                 | File-based routing (hoisted for Babel)         |
 | 2026-03-08 | react                | 19.2.4    | 19.2.4    | current              | UI component library                           |
 | 2026-03-08 | react-native         | 0.83.2    | 0.84.1    | 2026                 | Native UI rendering (New Arch only in SDK 55)  |
-| 2026-03-08 | react-native-nitro-modules | 0.34.0 | 0.35.0    | 2026                 | Native module bridge (MMKV peer dep)           |
+| 2026-03-08 | react-native-nitro-modules | 0.35.0    | 0.35.0    | 2026                 | Native module bridge (MMKV peer dep)           |
 | 2026-03-08 | babel-preset-expo    | 55.0.10   | 55.0.10   | 2026                 | Babel preset for Expo (root monorepo, dev)     |
 | 2026-03-08 | jest                 | 29.7.0    | 30.2.0    | 2026                 | Root test runner (dev)                         |
 | 2026-03-08 | ts-jest              | 29.4.6    | 29.4.6    | current              | TypeScript support for Jest (dev)              |
