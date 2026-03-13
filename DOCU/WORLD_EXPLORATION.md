@@ -21,6 +21,16 @@
 
 **Design mantra:** *"Where do you want to be?" not "How do you get there?"*
 
+### 1.1 World Map vs Exploration Skill
+
+| Aspect | **Explore tab (World Map)** | **Exploration skill** |
+|--------|-----------------------------|------------------------|
+| **Role** | Macro: where the player travels (location selection). | Micro: how the player surveys routes, charts regions, and discovers opportunities. |
+| **Loop** | Tap a location → instant travel; locations gated by Exploration level, quest, calendar, or event. | Run expeditions (survey/scout/chart) for XP and discovery items; expeditions tied to world regions. |
+| **Payoff** | Unlock new locations (Frostvale, Whispering Woods, Scorched Reach, Skyward Peaks, etc.). | Level up Exploration to meet location level gates; earn survey notes, trail rations, map scraps, compasses, charts. |
+
+Level-gated locations (e.g. Scorched Reach Lv 40, Skyward Peaks Lv 70) use **Exploration level**, not total level. Train Exploration to unlock the world.
+
 ---
 
 ## 2. World Structure

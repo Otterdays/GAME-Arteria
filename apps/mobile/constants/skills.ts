@@ -200,6 +200,9 @@ export const IMPLEMENTED_SUPPORT_SKILLS: SkillId[] = [
     'agility',
     'resonance',
     'farming',
+    'exploration',
+    'wizardry',
+    'sorcery',
 ];
 
 export const IMPLEMENTED_SKILLS = new Set<SkillId>([

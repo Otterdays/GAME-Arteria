@@ -5,6 +5,8 @@
 
 > **🤖 AI: When implementing new features, ALWAYS update:** (1) **Update Board** (`apps/mobile/components/UpdateBoard.tsx`) — in-app changelog modal; (2) **Website** (`index.html` §Changelog); (3) **patchHistory.ts** — Patch Notes screen; (4) **CHANGELOG.md**; (5) **app.json** version. See SCRATCHPAD §Versioning.
 
+> **Version 0.6.0 retained (2026-03-07):** All features (Exploration, Wizardry, Sorcery, Resonance level unlocks, etc.) consolidated under 0.6.0. No version bump. See CHANGELOG, patchHistory.
+
 **Project:** Arteria — The AFK RPG
 
 ---
@@ -43,8 +45,9 @@ These two documents are the authoritative references. All other docs supplement 
 | **IMPROVEMENTS.md** | Systems audit + prioritized UX/GUI/feature improvements (quick wins, polish, larger features). |
 | **CURRENT_IMPROVEMENTS.md** | Expansion opportunities using existing systems — what to add next without new architecture. |
 | **CLICKER_DESIGN.md** | Clicker (Resonance) design: layout, styling, tech, direction, crossover (§1–6). §7: broaden/deepen ideas (world state, seasonal, chaos, companions, chronicle, minigame framework, accessibility, economy) with source refs. See MASTER_DESIGN_DOC §1.3. |
+| **CLICKER_CHECKLIST.md** | Live checklist for Resonance clicker features — implemented vs planned. Multi-Pulse, Soul Cranking, Anchor Energy, Kinetic Feedback, Perfect Stability. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
-| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. |
+| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. **Implemented:** Exploration (§2a), Wizardry (§12), Sorcery (§11). |
 | **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
 | **FLETCHING_TAILORING.md** | Future skills: Fletching (arrows, bows from logs) and Tailoring (gloves, hats, shoes, boots from cloth). Implementation order, data structures, crossover. |
 | **MASTER_DESIGN_DOC.md** | **v2.0 — The Expanded Cosmos.** Comprehensive GDD organized in 7 Parts, 21 Chapters. **New Chapter 2: Skills Overview** — complete encyclopedia of 10 implemented + 7 coming soon + 8+ planned skills with detailed descriptions, crossover connections, and pets. New systems: Absurdity/Chaos Theory, World State/Corruption, Prestige/Transcendence, Housing/Sanctum, Chronicle System, Three Stomach consumption, Equipment Quirks.
@@ -63,6 +66,8 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Version scheme:** 0.x.x. Current **0.6.0** "The Ascended Master". Post-0.6.0: Companion AI behavior, Slayer shop, Summoning special moves.
 
+**Implementation plans:** `.cursor/plans/` — exploration_grand_plan, sorcery_wizardry_plan (phased execution specs for lesser agents).
+
 **v0.6.0 (2026-03-08) — The Ascended Master:**
 - **Stability Patch**: Resolved a critical ReferenceError where `TextInput` was not imported in the skills panel search bar.
 - **Magic Hub Dashboard**: Redesigned home screen featuring magical portal buttons and a centralized game overview.
@@ -77,6 +82,9 @@ These two documents are the authoritative references. All other docs supplement 
 - **Farming**: Patch-based growth (3 patches, 7 crops). Plant seeds, wait, harvest. Seeds from shop; Bank Seeds filter.
 - **Firemaking**: Burn logs for XP. 9 burn types (normal→cosmic). Consumes logs; mastery (xp, speed, log saver).
 - **Woodworking**: Logs → furniture, shields, staves. **Flagship workbench UI** — next-gen artisan screen paradigm (hero panel, category rail, recipe cards with input/output slots, sticky action dock). 5 recipes across Furniture, Combat, Utility. See SKILLS_ARCHITECTURE §0 for UI direction.
+- **Exploration**: Support skill — survey routes, chart regions, discover. 6 expeditions (Crownlands Paths → Skyward Ascent); discovery items (survey_notes, trail_rations, ancient_map_scrap, fey_compass, volcanic_chart, peak_star_map). World Map level gates use Exploration level; Explore tab shows level + training hint. See WORLD_EXPLORATION.md, SKILLS_ARCHITECTURE (Exploration section).
+- **Wizardry**: Cosmic support — study tomes/scrolls for XP. 3 nodes (Basic Scroll, Tome of Void, Celestial Almanac). No items consumed.
+- **Sorcery**: Cosmic magic — consume runes to cast spells for XP. 3 spells (Lumina Spark, Voidmire Bolt, Astral Storm). Runes from Runecrafting. Auto-stop when out of runes.
 - **WYWA Fix**: Offline gains (XP, items, gold) apply on "Collect & Continue" dismiss; processDelta builds report only.
 - **UI & Navigation**: Enhanced UI for Slayer, Summoning, and Resonance; fixed Astrology navigation; Skills grid relocated to dedicated tab.
 - **Expansions System**: Patron's Pack is Exp. 1; dedicated Expansions page in Settings.

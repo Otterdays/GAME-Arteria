@@ -9,6 +9,8 @@
 **Last Updated:** 2026-03-05  
 **Status:** Major Expansion — New Systems & World Depth
 
+> **Implementation note (2026-03-07):** 24+ skills now implemented under v0.6.0, including Exploration, Wizardry, Sorcery, Resonance (with Multi-Pulse, Soul Cranking, Anchor Energy). See `DOCU/CHANGELOG.md`, `DOCU/SKILLS_ARCHITECTURE.md`, `DOCU/SUMMARY.md`.
+
 ---
 
 # **TABLE OF CONTENTS**

@@ -1,6 +1,10 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] Doc audit per rules (2026-03-07): Top-down updates; refreshed ARCHITECTURE, TECHNICAL_USER_MANUAL, SUMMARY, MASTER_DESIGN_DOC, CHANGELOG for Exploration, Wizardry, Sorcery. Version held at 0.6.0.
+- [x] Sorcery & Wizardry implementation (2026-03-07): Wizardry 3 study nodes (XP only); Sorcery 3 spells (consume runes for XP). Both skill screens, mastery, game loop, docs and release surfaces updated.
+- [x] Exploration skill implementation (2026-03-07): Expeditions (6), discovery items (6), skill screen, world-map level gating (Exploration level unlocks locations), mastery, docs and release surfaces updated.
+- [x] Resonance level unlocks (2026-03-07): Multi-Pulse (Lv 20), Soul Cranking (Lv 60), Anchor Energy. CLICKER_CHECKLIST.md created. Docs updated.
 - [x] Doc update: Skill Workbench UI Direction (2026-03-07): SKILLS_ARCHITECTURE §0, ARCHITECTURE, TECHNICAL_USER_MANUAL §12, SUMMARY, CHANGELOG, IMPROVEMENTS. Highlighted next-gen artisan screen paradigm.
 - [x] Woodworking skill implementation (2026-03-07): Flagship workbench UI, 5 recipes (furniture, combat, utility), SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock. Docs updated.
 - [x] Thorough doc update (2026-03-07): CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL for WYWA fix + Firemaking.
@@ -45,7 +49,7 @@
 - [x] Implement Companion AI Behavior (v0.6.2)
 - [x] Implement Slayer Shop functionality (v0.6.2)
 - [x] Implement Woodworking core loop (v0.6.5)
-- [ ] Implement Sorcery/Wizardry core loops (v0.6.6)
+- [x] Implement Sorcery/Wizardry core loops (v0.6.6)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
 
 **Completed Task:** Fully implemented **The Ascended Master** (v0.6.0).

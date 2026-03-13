@@ -65,6 +65,9 @@ import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
 import { THIEVING_TARGETS } from '@/constants/thieving';
 import { FIREMAKING_BURNS } from '@/constants/firemaking';
 import { WOODWORKING_RECIPES } from '@/constants/woodworking';
+import { EXPLORATION_EXPEDITIONS } from '@/constants/exploration';
+import { WIZARDRY_STUDIES } from '@/constants/wizardry';
+import { SORCERY_SPELLS } from '@/constants/sorcery';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -211,6 +214,37 @@ WOODWORKING_RECIPES.forEach((recipe) => {
     };
 });
 
+// Exploration: survey, scout, chart for XP and discovery items
+EXPLORATION_EXPEDITIONS.forEach((expedition) => {
+    ACTION_DEFS[expedition.id] = {
+        xpPerTick: expedition.xpPerTick,
+        items: expedition.items,
+        successRate: expedition.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Wizardry: study nodes, XP only
+WIZARDRY_STUDIES.forEach((study) => {
+    ACTION_DEFS[study.id] = {
+        xpPerTick: study.xpPerTick,
+        items: [],
+        successRate: study.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Sorcery: consume runes, XP only
+SORCERY_SPELLS.forEach((spell) => {
+    ACTION_DEFS[spell.id] = {
+        xpPerTick: spell.xpPerTick,
+        items: [],
+        consumedItems: spell.consumedItems,
+        successRate: spell.successRate,
+        masteryXp: 1,
+    };
+});
+
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
 export interface UseGameLoopOptions {
@@ -338,6 +372,12 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                         if (bonusMomentum > 0) {
                             dispatch(gameActions.pulseResonance({ xpGain: 0, momentumGain: bonusMomentum }));
                         }
+                    }
+                    // Anchor Energy: 1 per minute of non-Resonance skilling (for Soul Cranking)
+                    const deltaSeconds = deltaMs / 1000;
+                    const energyGain = Math.floor(deltaSeconds / 60);
+                    if (energyGain > 0) {
+                        dispatch(gameActions.addAnchorEnergy(energyGain));
                     }
                 }
 

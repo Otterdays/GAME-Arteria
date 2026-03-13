@@ -125,6 +125,21 @@ export const MASTERY_UPGRADES: Partial<Record<SkillId, MasteryUpgradeDef[]>> = {
         { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
         { id: 'log_saver', label: '+5% save logs', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, preservePerLevel: 5, desc: 'Chance to not consume logs when crafting' },
     ],
+    exploration: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
+        { id: 'yield_bonus', label: '+3% discovery', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, yieldPercentPerLevel: 3, desc: 'Chance for extra discovery items' },
+        { id: 'rare_find', label: '+2% rare find', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, doubleDropPerLevel: 2, desc: 'Chance to find rarer map fragments' },
+    ],
+    wizardry: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
+    ],
+    sorcery: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
+        { id: 'rune_saver', label: '+5% save runes', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, preservePerLevel: 5, desc: 'Chance to not consume runes when casting' },
+    ],
 };
 
 /// Mastery soft cap: Max 10 points per upgrade type, diminishing after 6

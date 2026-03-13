@@ -132,6 +132,14 @@ export const ITEM_META: Record<string, ItemMeta> = {
   celestial_fragment: { emoji: '☄️', label: 'Celestial Fragment', sellValue: 150, description: 'A shard from the Skyward Peaks. Warm to touch.', type: 'other' },
   voidmire_crystal: { emoji: '🕳️', label: 'Voidmire Crystal', sellValue: 400, description: 'Condensed void energy. Pulses with dark power.', type: 'other' },
 
+  // ── Exploration (discovery) ──
+  survey_notes: { emoji: '📝', label: 'Survey Notes', sellValue: 8, description: 'Sketched routes and landmarks from Crownlands.', type: 'other' },
+  trail_rations: { emoji: '🥾', label: 'Trail Rations', sellValue: 15, description: 'Light rations for long expeditions.', type: 'other' },
+  ancient_map_scrap: { emoji: '🗺️', label: 'Ancient Map Scrap', sellValue: 45, description: 'A fragment of an old forest map. Paths shift.', type: 'other' },
+  fey_compass: { emoji: '🧭', label: 'Fey Compass', sellValue: 90, description: 'Points toward planar crossings. Sometimes lies.', type: 'other' },
+  volcanic_chart: { emoji: '🌋', label: 'Volcanic Chart', sellValue: 180, description: 'Charted lava flows and Voidmire pools.', type: 'other' },
+  peak_star_map: { emoji: '⛰️', label: 'Peak Star Map', sellValue: 350, description: 'Celestial bearings from the highest peaks.', type: 'other' },
+
   // ── Astrology (Stardust) ──
   stardust: { emoji: '✨', label: 'Stardust', sellValue: 10, description: 'Glimmering dust from the cosmos. Used to uncover celestial mysteries.', type: 'other' },
   golden_stardust: { emoji: '🌟', label: 'Golden Stardust', sellValue: 50, description: 'Rare stardust that hums with ancient power.', type: 'other' },

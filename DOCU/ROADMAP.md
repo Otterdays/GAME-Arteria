@@ -253,7 +253,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟡 **Affinities & Quirks:** Select Luminar/Voidmire/Balanced (modifies starting stats/xp rates). Assign a random Cosmic Quirk modifier (e.g., "Attracts sentient furniture" - mostly flavor text).
 
 ### 5.2 — Support Skills 🟡
-- [ ] 🟡 **Exploration:** Uncover map nodes, passively reduces travel/dungeon time.
+- [x] 🟡 **Exploration (Phase 1):** Expeditions implemented — survey/scout/chart for XP and discovery items; World Map level gates use Exploration level. Future: travel-time reduction, hidden dungeons.
 - [ ] 🟡 **Cleansing:** Minigame or timer to purify "Cursed" items generated from Scavenging.
 - [ ] 🟡 **Barter:** Affects shop buy/sell ratios. Logic to unlock "Black Market" shop tab at Level 50.
 - [ ] 🔴 **Research:** Passive knowledge tree (similar to Path of Exile passive tree, but smaller) that provides global multipliers to other skills.

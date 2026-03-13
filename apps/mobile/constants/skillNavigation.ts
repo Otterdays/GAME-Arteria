@@ -7,6 +7,9 @@ export type SkillId =
     | 'farming'
     | 'firemaking'
     | 'woodworking'
+    | 'exploration'
+    | 'wizardry'
+    | 'sorcery'
     | 'fishing'
     | 'forging'
     | 'harvesting'
@@ -25,6 +28,9 @@ export const SKILL_NAV_ORDER: SkillId[] = [
     'agility' /* a */,
     'astrology',
     'resonance',
+    'exploration',
+    'wizardry',
+    'sorcery',
     'cooking' /* c */,
     'crafting',
     'farming' /* f */,

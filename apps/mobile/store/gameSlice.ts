@@ -17,7 +17,15 @@ import { getMasteryXpMultiplier, getMasteryYieldMultiplier } from '@/constants/m
 import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
 import { PRAYER_MAP } from '@/constants/prayers';
-import { MOMENTUM_CAP, MOMENTUM_DECAY_PER_SECOND, PERFECT_STABILITY_FLOOR } from '@/constants/resonance';
+import {
+    MOMENTUM_CAP,
+    MOMENTUM_DECAY_PER_SECOND,
+    PERFECT_STABILITY_FLOOR,
+    ANCHOR_ENERGY_CAP,
+    SOUL_CRANKING_ENERGY_COST,
+    SOUL_CRANKING_MOMENTUM_GAIN,
+    SOUL_CRANKING_XP_GAIN,
+} from '@/constants/resonance';
 import { FARMING_PATCHES, getPatchById, getCropById } from '@/constants/farming';
 import type { ItemMasteryEntry } from '../../../packages/engine/src/types';
 
@@ -313,6 +321,8 @@ export interface PlayerState {
     activeFamiliar?: FamiliarState | null;
     /** Resonance skill: 0–100. Global haste to all other skills when > 0. [TRACE: click_idea.md] */
     momentum?: number;
+    /** Anchor Energy: consumed by Soul Cranking (Lv 60). Earned from non-Resonance skilling. [TRACE: CLICKER_DESIGN.md] */
+    anchorEnergy?: number;
     /** Farming patches: patchId -> { cropId, plantedAt } or null if empty. [TRACE: DOCU/SKILLS_ARCHITECTURE §1] */
     farmingPatches?: Record<string, { cropId: string; plantedAt: number } | null>;
 }
@@ -1192,6 +1202,37 @@ export const gameSlice = createSlice({
             if (state.activityLog.length > ACTIVITY_LOG_MAX) {
                 state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
             }
+        },
+
+        /** Resonance: Soul Cranking (Lv 60) — Heavy Pulse consumes Anchor Energy for large Momentum. */
+        heavyPulseResonance(state) {
+            const res = state.player.skills['resonance'];
+            const level = res?.level ?? 1;
+            if (level < 60) return;
+            const energy = state.player.anchorEnergy ?? 0;
+            if (energy < SOUL_CRANKING_ENERGY_COST) return;
+            state.player.anchorEnergy = energy - SOUL_CRANKING_ENERGY_COST;
+            const m = (state.player.momentum ?? 0) + SOUL_CRANKING_MOMENTUM_GAIN;
+            state.player.momentum = Math.min(MOMENTUM_CAP, m);
+            if (res) {
+                res.xp += SOUL_CRANKING_XP_GAIN;
+                const newLevel = levelForXP(res.xp);
+                if (newLevel > res.level) {
+                    res.level = newLevel;
+                    state.levelUpQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        skillId: 'resonance',
+                        level: newLevel,
+                    });
+                    state.pulseTab = 'skills';
+                }
+            }
+        },
+
+        /** Anchor Energy: earned from non-Resonance skilling (1 per minute). */
+        addAnchorEnergy(state, action: PayloadAction<number>) {
+            const current = state.player.anchorEnergy ?? 0;
+            state.player.anchorEnergy = Math.min(ANCHOR_ENERGY_CAP, current + action.payload);
         },
 
         /** Resonance: decay momentum over time. Level 99 Perfect Stability floors at 25%. */

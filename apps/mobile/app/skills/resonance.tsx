@@ -4,8 +4,8 @@
  * [TRACE: click_idea.md]
  */
 
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, useWindowDimensions, TouchableOpacity } from 'react-native';
+import React, { useMemo, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -18,8 +18,12 @@ import {
     RESONANCE_UNLOCKS,
     getResonanceXpPerTap,
     getMomentumPerTap,
+    getMultiPulseMultiplier,
     MOMENTUM_CAP,
     getHasteMultiplier,
+    ANCHOR_ENERGY_CAP,
+    SOUL_CRANKING_ENERGY_COST,
+    SOUL_CRANKING_MOMENTUM_GAIN,
 } from '@/constants/resonance';
 import { formatNumber } from '@/utils/formatNumber';
 import { useFeedbackToast } from '@/hooks/useFeedbackToast';
@@ -41,7 +45,10 @@ export default function ResonanceScreen() {
 
     const resonance = useAppSelector((s) => s.game.player.skills.resonance) ?? { id: 'resonance', xp: 0, level: 1, mastery: {} };
     const momentum = useAppSelector((s) => s.game.player.momentum) ?? 0;
+    const anchorEnergy = useAppSelector((s) => s.game.player.anchorEnergy) ?? 0;
     const vibrationEnabled = useAppSelector((s) => s.game.player.settings?.vibrationEnabled ?? true);
+
+    const touchCountRef = useRef(1);
 
     const level = resonance.level;
     const xp = resonance.xp;
@@ -60,13 +67,49 @@ export default function ResonanceScreen() {
         transform: [{ scale: scale.value }],
     }));
 
-    const handlePulse = () => {
+    const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const longPressFiredRef = useRef(false);
+
+    const handleLongPress = () => {
+        if (level < 60 || anchorEnergy < SOUL_CRANKING_ENERGY_COST) return;
         if (vibrationEnabled) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         }
-        scale.value = withSpring(0.92, { damping: 12, stiffness: 400 });
+        scale.value = withSpring(0.85, { damping: 10, stiffness: 500 });
         scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-        dispatch(gameActions.pulseResonance({ xpGain: xpPerTap, momentumGain: momentumPerTap }));
+        dispatch(gameActions.heavyPulseResonance());
+        showFeedbackToast({ type: 'success', title: 'Soul Cranking!', message: `+${SOUL_CRANKING_MOMENTUM_GAIN}% Momentum` });
+    };
+
+    const LONG_PRESS_MS = 500;
+    const handleResponderGrant = (evt: any) => {
+        touchCountRef.current = Math.min(4, Math.max(1, evt.nativeEvent.touches?.length ?? 1));
+        longPressFiredRef.current = false;
+        scale.value = withSpring(0.92, { damping: 12, stiffness: 400 });
+        longPressTimerRef.current = setTimeout(() => {
+            longPressTimerRef.current = null;
+            longPressFiredRef.current = true;
+            handleLongPress();
+        }, LONG_PRESS_MS);
+    };
+    const handleResponderMove = (evt: any) => {
+        const n = evt.nativeEvent.touches?.length ?? 1;
+        if (n > touchCountRef.current) touchCountRef.current = Math.min(4, n);
+    };
+    const handleResponderRelease = () => {
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+        if (!longPressFiredRef.current) {
+            if (vibrationEnabled) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            const m = getMultiPulseMultiplier(touchCountRef.current, level);
+            dispatch(gameActions.pulseResonance({
+                xpGain: Math.floor(xpPerTap * m),
+                momentumGain: Math.min(MOMENTUM_CAP, momentumPerTap * m),
+            }));
+        }
     };
 
     const styles = useMemo(
@@ -337,13 +380,32 @@ export default function ResonanceScreen() {
             </View>
             <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: Spacing.xl }} showsVerticalScrollIndicator={false}>
                 <View style={styles.orbSection}>
-                    <AnimatedPressable style={[styles.orbTouch, orbAnimatedStyle]} onPress={handlePulse}>
+                    <Animated.View
+                        style={[styles.orbTouch, orbAnimatedStyle]}
+                        onStartShouldSetResponder={() => true}
+                        onResponderGrant={handleResponderGrant}
+                        onResponderMove={handleResponderMove}
+                        onResponderRelease={handleResponderRelease}
+                    >
                         <View style={styles.orbInner}>
                             <Text style={styles.orbLabel}>〰️</Text>
                             <Text style={[styles.orbLabel, { marginTop: 4 }]}>Pulse</Text>
                         </View>
-                    </AnimatedPressable>
-                    <Text style={styles.tapHint}>Tap to build Momentum • +{momentumPerTap}% momentum, +{xpPerTap} XP</Text>
+                    </Animated.View>
+                    <Text style={styles.tapHint}>
+                        Tap to build Momentum • +{momentumPerTap}% momentum, +{xpPerTap} XP
+                        {level >= 20 && ' • Multi-touch (2–4 fingers) for more'}
+                    </Text>
+                    {level >= 60 && (
+                        <Text style={[styles.tapHint, { marginTop: 4 }]}>
+                            Long-press for Soul Cranking: +{SOUL_CRANKING_MOMENTUM_GAIN}% Momentum ({SOUL_CRANKING_ENERGY_COST} Anchor Energy)
+                        </Text>
+                    )}
+                    {level >= 60 && (
+                        <Text style={[styles.tapHint, { marginTop: 4, color: palette.gold }]}>
+                            Anchor Energy: {anchorEnergy}/{ANCHOR_ENERGY_CAP}
+                        </Text>
+                    )}
                 </View>
 
                 <View style={styles.momentumSection}>

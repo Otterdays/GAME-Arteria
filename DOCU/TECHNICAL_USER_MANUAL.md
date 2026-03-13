@@ -67,6 +67,10 @@
 *   **Location:** `apps/mobile/components/skill/` (SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock)
 *   **Role:** Next-gen artisan screen paradigm (v0.6.0). Replaces the plain card-list pattern with a workbench-style layout: hero panel (active recipe, XP/hour), category rail (segmented chips), recipe workbench cards (explicit input/output slots), and sticky action dock. Woodworking is the flagship; Crafting, Firemaking, Herblore can migrate. See `DOCU/SKILLS_ARCHITECTURE.md` §0.
 
+### 12a. Arteria-skill-node-screens (Agility-style)
+*   **Location:** `apps/mobile/app/skills/exploration.tsx`, `wizardry.tsx`, `sorcery.tsx`
+*   **Role:** Node-based skill screens (no workbench primitives). Same pattern as Agility/Astrology: header, XP bar, prev/next nav, card list with level req, XP/tick, interval, start/stop. Exploration shows discovery loot; Sorcery shows rune costs and affordability. All use `ACTION_DEFS` in `useGameLoop.ts`; Sorcery uses `consumedItems` (auto-stop when out of runes).
+
 ---
 
 ## 🔧 Technical Interaction Diagram

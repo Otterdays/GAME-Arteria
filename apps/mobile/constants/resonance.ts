@@ -12,6 +12,19 @@ export const MOMENTUM_DECAY_PER_SECOND = 2;
 /** At 100% Momentum, other skills run 50% faster: interval / (1 + momentum/200) => 1.5x at 100. */
 export const HASTE_MULTIPLIER_AT_FULL = 0.5;
 
+/** Soul Cranking (Lv 60): Heavy Pulse consumes this. Earned from non-Resonance skilling. */
+export const ANCHOR_ENERGY_PER_MINUTE = 1;
+export const ANCHOR_ENERGY_CAP = 50;
+export const SOUL_CRANKING_ENERGY_COST = 5;
+export const SOUL_CRANKING_MOMENTUM_GAIN = 20;
+export const SOUL_CRANKING_XP_GAIN = 40;
+
+/** Multi-Pulse (Lv 20): multiplier per simultaneous finger (2 fingers = 2x, 4 = 4x). */
+export function getMultiPulseMultiplier(touchCount: number, level: number): number {
+    if (level < 20) return 1;
+    return Math.min(4, Math.max(1, touchCount));
+}
+
 /** Level unlocks (from click_idea.md). */
 export interface ResonanceUnlock {
     level: number;

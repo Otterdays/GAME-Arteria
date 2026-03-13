@@ -111,8 +111,8 @@ export function meetsLocationRequirement(player: PlayerState, loc: LocationDef):
             return (player.narrative?.flags ?? []).includes(String(loc.unlockValue));
         case 'level': {
             const reqLevel = typeof loc.unlockValue === 'number' ? loc.unlockValue : 1;
-            const totalLevel = Object.values(player.skills ?? {}).reduce((s, sk) => s + (sk?.level ?? 0), 0);
-            return totalLevel >= reqLevel;
+            const explorationLevel = player.skills?.exploration?.level ?? 0;
+            return explorationLevel >= reqLevel;
         }
         case 'calendar':
             return loc.unlockValue === 'dec' ? isDecember() : true;

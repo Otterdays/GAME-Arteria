@@ -127,6 +127,7 @@ Arteria/
 
 ## Universal UI Components
 - **Node-local State:** Screens (like Mining) subscribe to `activeTask` directly to render micro-progress visuals synchronized with the global ticker.
+- **Skill Node Screens (Agility-style):** Exploration, Wizardry, Sorcery use the same card-list pattern as Agility/Astrology — header, XP bar, node cards (level req, XP/tick, interval, start/stop). Sorcery adds rune cost display and affordability check. See `app/skills/exploration.tsx`, `wizardry.tsx`, `sorcery.tsx`.
 - **Skill Workbench Primitives (v0.6.0):** A new **next-gen artisan screen paradigm** in `components/skill/`. Replaces the plain card-list pattern with a workbench-style layout:
   - **SkillHeroHeader** — skill title, level, XP bar, active recipe, XP/hour; large progress focus.
   - **SkillCategoryRail** — segmented chips (Furniture, Combat, Utility) for faster category scanning.

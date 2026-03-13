@@ -6,6 +6,9 @@
 > **Farming:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/farming.ts`, `app/skills/farming.tsx`.
 > **Firemaking:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/firemaking.ts`, `app/skills/firemaking.tsx`. 9 burn types (Normal Log → Cosmic Wood); mastery (xp, speed, log saver).
 > **Woodworking:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/woodworking.ts`, `app/skills/woodworking.tsx`. 5 recipes (Furniture, Combat, Utility); flagship workbench UI (SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock).
+> **Exploration:** ✅ Implemented (v0.6.0). Support skill. See `apps/mobile/constants/exploration.ts`, `app/skills/exploration.tsx`. 6 expeditions (survey/scout/chart) tied to world regions; discovery items; World Map level gates use Exploration level. Screen modelled after Agility/Astrology (header, XP bar, expedition cards, start/stop).
+> **Wizardry:** ✅ Implemented (v0.6.0). Cosmic support. See `apps/mobile/constants/wizardry.ts`, `app/skills/wizardry.tsx`. 3 study nodes (Basic Scroll, Tome of Void, Celestial Almanac).
+> **Sorcery:** ✅ Implemented (v0.6.0). Cosmic magic. See `apps/mobile/constants/sorcery.ts`, `app/skills/sorcery.tsx`. 3 spells (Lumina Spark, Voidmire Bolt, Astral Storm) consume runes for XP. No Mana in Phase 1.
 
 ---
 
@@ -148,6 +151,12 @@ interface FarmingCrop {
 - **Stats:** "Laps completed" or "Agility XP"
 - **Daily quests:** "Complete X laps at Crownlands Rooftops"
 - **Mastery:** xp_bonus, speed_bonus (faster laps)
+
+---
+
+## 2a. Exploration (Implemented v0.6.0)
+
+Support skill: survey routes, chart regions, discover opportunities. **Expeditions** (not real-time travel): run a chosen expedition for XP and discovery items; expeditions are tied to world regions (Crownlands, Frostvale, Whispering Woods, Fey Markets, Scorched Reach, Skyward Peaks). **World Map:** Level-gated locations use Exploration level (e.g. Scorched Reach Lv 40, Skyward Peaks Lv 70). Explore tab shows current Exploration level and "Train Exploration to survey tougher regions." **Data:** `constants/exploration.ts` (ExplorationExpedition type, EXPLORATION_EXPEDITIONS), discovery items in `items.ts` (survey_notes, trail_rations, ancient_map_scrap, fey_compass, volcanic_chart, peak_star_map). **Screen:** `app/skills/exploration.tsx` — header, XP bar, expedition cards (level req, XP/tick, interval, discovery loot), start/stop. **Mastery:** xp_bonus, speed_bonus, yield_bonus, rare_find. See WORLD_EXPLORATION.md §1.1 (World Map vs Exploration skill).
 
 ---
 

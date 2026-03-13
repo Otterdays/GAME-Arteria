@@ -2,7 +2,8 @@
 
 > **Purpose:** Authoritative design, styling, tech, and direction for the clicker-style subsystem in Arteria. This doc sits within the broader **crossover ecosystem** (one game: idle RPG + clicker + world builder).  
 > **Source of truth:** MASTER_DESIGN_DOC.md §1.3 (Crossover Ecosystem); click_idea.md (Resonance concept); click_idea_2.md (Option A recommendation).  
-> **Last updated:** 2026-03-08 (§7 Broaden & Deepen added)
+> **Last updated:** 2026-03-07 (Multi-Pulse, Soul Cranking, Anchor Energy implemented; CLICKER_CHECKLIST.md added)  
+> **Live checklist:** See [CLICKER_CHECKLIST.md](CLICKER_CHECKLIST.md) for implemented vs planned features.
 
 ---
 
@@ -115,8 +116,11 @@ Resonance is implemented as a **first-class skill** (same XP table, level 1–99
 - **PlayerState:**
   - `player.skills.resonance`: standard `SkillState` (id, xp, level, mastery).
   - `player.momentum`: number 0–100 (persisted with save).
+  - `player.anchorEnergy`: number 0–50 (persisted). Earned from non-Resonance skilling (1/min); consumed by Soul Cranking (5 per Heavy Pulse).
 - **Actions:**
   - `pulseResonance({ xpGain, momentumGain })`: add XP (and level-up if threshold crossed; push to levelUpQueue), add momentum (capped at 100).
+  - `heavyPulseResonance()`: Soul Cranking (Lv 60+). Consumes 5 Anchor Energy; grants +20% Momentum, 40 XP.
+  - `addAnchorEnergy(amount)`: add Anchor Energy (capped at 50). Dispatched from useGameLoop when non-Resonance skill ticks process.
   - `decayMomentum({ deltaSeconds })`: subtract `deltaSeconds * MOMENTUM_DECAY_PER_SECOND`; at Lv 99 apply floor 25%.
 
 ### 4.2 Game Loop (useGameLoop)
@@ -130,8 +134,9 @@ Resonance is implemented as a **first-class skill** (same XP table, level 1–99
 ### 4.3 Constants (resonance.ts)
 
 - `RESONANCE_XP_PER_TAP`, `MOMENTUM_PER_TAP_BASE`, `MOMENTUM_CAP`, `MOMENTUM_DECAY_PER_SECOND`, `HASTE_MULTIPLIER_AT_FULL`, `PERFECT_STABILITY_FLOOR`.
+- `ANCHOR_ENERGY_CAP` (50), `ANCHOR_ENERGY_PER_MINUTE` (1), `SOUL_CRANKING_ENERGY_COST` (5), `SOUL_CRANKING_MOMENTUM_GAIN` (20), `SOUL_CRANKING_XP_GAIN` (40).
 - `RESONANCE_UNLOCKS`: array of { level, id, label, effect }.
-- Helpers: `getMomentumPerTap(level, hasResonantEcho)`, `getResonanceXpPerTap(level, hasResonantEcho)`, `getHasteMultiplier(momentumPercent)`.
+- Helpers: `getMomentumPerTap`, `getResonanceXpPerTap`, `getHasteMultiplier`, `getMultiPulseMultiplier(touchCount, level)`.
 
 ### 4.4 Navigation & Files
 

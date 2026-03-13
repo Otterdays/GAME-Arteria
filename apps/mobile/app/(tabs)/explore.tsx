@@ -21,7 +21,7 @@ function getLockReason(loc: (typeof LOCATIONS)[0]): string {
         case 'quest':
             return `Requires: ${loc.unlockValue}`;
         case 'level':
-            return `Requires level ${loc.unlockValue}`;
+            return `Requires Exploration level ${loc.unlockValue}`;
         case 'calendar':
             return loc.unlockValue === 'dec' ? 'Visit during Voidmas (December)' : 'Seasonal';
         case 'event':
@@ -111,11 +111,18 @@ export default function ExploreScreen() {
     const player = useAppSelector((s) => s.game.player);
     const styles = useMemo(() => createStyles(palette), [palette]);
 
+    const explorationLevel = player.skills?.exploration?.level ?? 0;
+
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>World Map</Text>
                 <Text style={styles.headerSubtitle}>Tap a location to travel. Where do you want to be?</Text>
+            </View>
+
+            <View style={[styles.header, { marginHorizontal: Spacing.md, marginTop: 0, marginBottom: Spacing.sm, borderRadius: Radius.lg }]}>
+                <Text style={styles.headerTitle}>Exploration Lv. {explorationLevel}</Text>
+                <Text style={styles.headerSubtitle}>Train Exploration to survey tougher regions and unlock new locations.</Text>
             </View>
 
             <ScrollView
