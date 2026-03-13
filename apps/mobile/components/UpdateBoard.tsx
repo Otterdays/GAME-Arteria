@@ -164,18 +164,27 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.6.0' ? 'The Ascended Master'
-                            : currentVersion === '0.5.3' ? 'The Legion & The Soul'
-                                : currentVersion === '0.5.2' ? 'The Celestial Expansion'
-                                    : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
-                                        : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
-                                            : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
-                                                : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
-                                                    : 'Theme Engine, Quick-Switch & Random Events'}
+                        {currentVersion === '0.6.1' ? 'The Expansions Update'
+                            : currentVersion === '0.6.0' ? 'The Ascended Master'
+                                : currentVersion === '0.5.3' ? 'The Legion & The Soul'
+                                    : currentVersion === '0.5.2' ? 'The Celestial Expansion'
+                                        : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
+                                            : currentVersion.startsWith('0.4.2') ? 'Skill Pets, Tick SFX & Polish'
+                                                : currentVersion.startsWith('0.4.1') ? 'The Anchor Man — Character, Cooking & Bestiary'
+                                                    : currentVersion.startsWith('0.4') ? 'Daily Quests, Stats, Bank Tabs & Lumina'
+                                                        : 'Theme Engine, Quick-Switch & Random Events'}
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion === '0.6.0' ? (
+                        {currentVersion === '0.6.1' ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🚀 New Expansions System</Text>
+                                    <Text style={styles.changeText}>• Patron's Pack is now Exp. 1. Added placeholders for Expansions 2, 3, and 4 in the Settings menu!</Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                            </>
+                        ) : currentVersion === '0.6.0' ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>🛡️ Stability Patch</Text>

@@ -102,8 +102,6 @@ export const GlobalActionTicker = () => {
         [palette]
     );
 
-    if (!activeTask) return null;
-
     // Detect if we are in a tab route to add offset for the tab bar
     const isInTabs = (segments as any[]).includes('(tabs)');
     const bottomOffsetBase = isInTabs ? 56 : 0;
@@ -118,7 +116,9 @@ export const GlobalActionTicker = () => {
             friction: 7,
             tension: 50,
         }).start();
-    }, [targetOffset]);
+    }, [targetOffset, animatedBottom]);
+
+    if (!activeTask) return null;
 
     const skillName = activeTask.skillId
         ? activeTask.skillId.charAt(0).toUpperCase() + activeTask.skillId.slice(1)

@@ -185,6 +185,8 @@ export interface PlayerState {
         bgmEnabled?: boolean;
         /** Patron's Pack — 7d offline cap, 100 slots, +20% XP, badge */
         isPatron?: boolean;
+        /** Unlocked expansions */
+        unlockedExpansions?: Record<string, boolean>;
         /** Ask before switching to a different task when one is already active */
         confirmTaskSwitch?: boolean;
         /** After 5 min no touch, show true-black dim overlay to save battery */
@@ -384,6 +386,7 @@ function createFreshPlayer(): PlayerState {
             sfxEnabled: true,
             bgmEnabled: true,
             isPatron: false,
+            unlockedExpansions: {},
             confirmTaskSwitch: false,
             batterySaverEnabled: false,
             notifyLevelUp: true,
@@ -530,6 +533,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
         sfxEnabled: saved.settings?.sfxEnabled ?? true,
         bgmEnabled: saved.settings?.bgmEnabled ?? true,
         isPatron: saved.settings?.isPatron ?? false,
+        unlockedExpansions: saved.settings?.unlockedExpansions ?? {},
         confirmTaskSwitch: saved.settings?.confirmTaskSwitch ?? false,
         batterySaverEnabled: saved.settings?.batterySaverEnabled ?? false,
         notifyLevelUp: saved.settings?.notifyLevelUp ?? true,
@@ -1221,6 +1225,15 @@ export const gameSlice = createSlice({
         setPatron(state, action: PayloadAction<boolean>) {
             if (!state.player.settings) state.player.settings = {};
             state.player.settings.isPatron = action.payload;
+        },
+
+        /** Unlocks an expansion pack. */
+        unlockExpansion(state, action: PayloadAction<string>) {
+            if (!state.player.settings) state.player.settings = {};
+            if (!state.player.settings.unlockedExpansions) {
+                state.player.settings.unlockedExpansions = {};
+            }
+            state.player.settings.unlockedExpansions[action.payload] = true;
         },
 
         /** Random events: record trigger for cooldown and frequency tuning. */

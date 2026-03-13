@@ -96,6 +96,8 @@ function ItemDetailModal({
     const item = useAppSelector((s) => s.game.player.inventory.find((i) => i.id === itemId));
     const customBankTabs = useAppSelector((s) => s.game.player.customBankTabs ?? []);
     const junkItemIds = useAppSelector((s) => s.game.player.junkItemIds ?? []);
+    const lifetime = useAppSelector((s) => s.game.player.lifetimeStats);
+
     if (!item) return null;
     const meta = getItemMeta(item.id);
     const isJunk = junkItemIds.includes(item.id);
@@ -135,7 +137,6 @@ function ItemDetailModal({
 
                     {/* Item Mastery Section */}
                     {(() => {
-                        const lifetime = useAppSelector(s => s.game.player.lifetimeStats);
                         const count = lifetime?.byItem?.[item.id] ?? 0;
                         const tier = getItemMasteryTier(count);
                         const speed = getItemMasterySpeedBonus(count);

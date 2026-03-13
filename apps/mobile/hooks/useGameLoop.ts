@@ -796,8 +796,22 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     const now = Date.now();
                     let offlineDelta = now - lastTickRef.current;
                     if (offlineDelta > capMs) offlineDelta = capMs;
+                    
                     if (offlineDelta > 1000) {
-                        processDelta(offlineDelta);
+                        // If offline for more than 60 seconds, show the WYWA modal
+                        if (offlineDelta > 60000) {
+                            const wasCapped = (now - lastTickRef.current) > capMs;
+                            const report: OfflineReport = {
+                                elapsedMs: offlineDelta,
+                                xpGained: {},
+                                itemsGained: [],
+                                capLabel: wasCapped ? (isPatron ? '7 days (Patron)' : '24h (F2P limit)') : undefined,
+                            };
+                            processDelta(offlineDelta, report);
+                            dispatch(gameActions.setOfflineReport(report));
+                        } else {
+                            processDelta(offlineDelta);
+                        }
                     }
                     lastTickRef.current = now;
                 }
@@ -806,5 +820,5 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         );
 
         return () => subscription.remove();
-    }, [processDelta, isPatron]);
+    }, [processDelta, isPatron, dispatch]);
 }

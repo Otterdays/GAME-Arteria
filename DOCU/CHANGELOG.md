@@ -5,6 +5,11 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+## [0.6.1] - 2026-03-13 — "The Expansions Update"
+### Added
+- **New Expansions System**: Built the framework for future expansions. Patron's Pack is now retroactively Exp. 1.
+- **Expansions Menu**: Added a dedicated Expansions page to the Settings tab to preview and manage unlocked expansions.
+
 ## [0.6.0] - 2026-03-08 — "The Ascended Master"
 ### Added
 - **Magic Hub Dashboard**: Redesigned home screen featuring magical portal buttons and a centralized game overview.

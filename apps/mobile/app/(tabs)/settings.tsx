@@ -754,18 +754,14 @@ export default function SettingsScreen() {
                     <View style={styles.sectionCard}>
                         <TouchableOpacity
                             style={styles.row}
-                            onPress={() => router.push('/patron')}
+                            onPress={() => router.push('/expansions')}
                             activeOpacity={0.7}
                         >
                             <View style={styles.rowInfo}>
-                                <Text style={styles.rowLabel}>Patron's Pack</Text>
-                                <Text style={styles.rowDesc}>7-day offline cap, 100 slots, +20% XP</Text>
+                                <Text style={styles.rowLabel}>Expansions</Text>
+                                <Text style={styles.rowDesc}>Unlock new horizons, skills, and boss encounters</Text>
                             </View>
-                            {isPatron ? (
-                                <Text style={[styles.rowLabel, { color: palette.gold, fontWeight: '700' }]}>Active</Text>
-                            ) : (
-                                <Text style={styles.arrow}>›</Text>
-                            )}
+                            <Text style={styles.arrow}>›</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

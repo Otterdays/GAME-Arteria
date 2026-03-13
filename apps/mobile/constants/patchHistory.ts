@@ -34,6 +34,8 @@ export const PATCH_HISTORY: PatchEntry[] = [
       '✂️ New Skill: Crafting. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful jewelry (Rings & Amulets).',
       '🏪 The Agora: Completely revamped the Shop tab with a premium glassmorphic merchant aesthetic, golden highlights, and improved tab/filter grouping.',
       '📜 The Chronicles of Arteria: Access a full historical changelog of every version directly from the Settings menu.',
+      '🚀 New Expansions System: Built the framework for future expansions. Patron\'s Pack is now retroactively Exp. 1.',
+      '🛒 Expansions Menu: Dedicated Expansions page in the Settings tab to preview and manage unlocked expansions.',
     ],
     changed: [
       '📉 Smooth Progress Bars: Optimized interpolation hooks to eliminate stuttering/flickering on fast action ticks.',
