@@ -30,6 +30,7 @@ const SKILL_NAMES: Partial<Record<SkillId, string>> = {
     cooking: '🍳 Cooking',
     smithing: '🔨 Smithing',
     crafting: '✂️ Crafting',
+    woodworking: '🪵 Woodworking',
     farming: '🌾 Farming',
     herblore: '🧪 Herblore',
     agility: '🏃 Agility',
@@ -188,12 +189,23 @@ export default function WhileYouWereAway() {
 
     const handleDismiss = () => {
         logger.debug('UI', 'WYWA modal dismissed');
+        // Apply offline gains (XP, items, gold) — processDelta defers to dismiss when building report
+        for (const [skillId, xp] of Object.entries(report.xpGained)) {
+            if (xp > 0) dispatch(gameActions.applyXP({ skillId: skillId as SkillId, xp }));
+        }
+        if (report.itemsGained.length > 0) {
+            dispatch(gameActions.addItems(report.itemsGained));
+        }
+        if ((report.goldGained ?? 0) > 0) {
+            dispatch(gameActions.addGold(report.goldGained!));
+        }
         dispatch(gameActions.clearOfflineReport());
     };
 
-    const xpEntries = Object.entries(report.xpGained) as [SkillId, number][];
+    const xpEntries = Object.entries(report.xpGained).filter(([, xp]) => xp > 0) as [SkillId, number][];
     const hasLoot = report.itemsGained.length > 0;
     const hasXP = xpEntries.length > 0;
+    const hasGold = (report.goldGained ?? 0) > 0;
 
     return (
         <Modal visible transparent animationType="slide">
@@ -242,7 +254,17 @@ export default function WhileYouWereAway() {
                             </View>
                         )}
 
-                        {!hasXP && !hasLoot && (
+                        {hasGold && (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Gold Earned</Text>
+                                <View style={styles.row}>
+                                    <Text style={styles.rowLabel}>💰 Gold</Text>
+                                    <Text style={[styles.rowValue, { color: palette.gold }]}>+{formatNumber(report.goldGained ?? 0)} gp</Text>
+                                </View>
+                            </View>
+                        )}
+
+                        {!hasXP && !hasLoot && !hasGold && (
                             <Text style={styles.noActivity}>
                                 No active task was set — nothing gathered while you were away.
                             </Text>

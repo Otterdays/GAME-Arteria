@@ -2,7 +2,50 @@
 
 > **Purpose:** Pre-implementation design for four upcoming skills. Fill in content details before coding.
 > **Status:** Architecting. Use `ComingSoonBadge` (red = planned, green = in progress) on UI.
-> **Last updated:** 2026-03-05
+> **Last updated:** 2026-03-07
+> **Farming:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/farming.ts`, `app/skills/farming.tsx`.
+> **Firemaking:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/firemaking.ts`, `app/skills/firemaking.tsx`. 9 burn types (Normal Log → Cosmic Wood); mastery (xp, speed, log saver).
+> **Woodworking:** ✅ Implemented (v0.6.0). See `apps/mobile/constants/woodworking.ts`, `app/skills/woodworking.tsx`. 5 recipes (Furniture, Combat, Utility); flagship workbench UI (SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock).
+
+---
+
+## 0. Skill Workbench UI Direction (v0.6.0)
+
+Woodworking introduces a **next-gen artisan screen paradigm** that should guide future skill UI updates. This "workbench" model replaces the plain card-list pattern with a more immersive, touch-friendly layout.
+
+### 0.1 Design Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Active-task storytelling** | Hero panel prominently shows current recipe, XP/hour, and progress — the player always knows what they're doing. |
+| **Input/output clarity** | Recipe cards display explicit input slots and output preview; materials are not buried in text. |
+| **One-tap affordance** | Player can instantly see whether they can craft (level gate, affordability count). |
+| **Sticky primary action** | Craft/Stop CTA stays visible at bottom; the most important control never scrolls away. |
+| **Category scanning** | Segmented chips (e.g. Furniture, Combat, Utility) enable faster browsing than a flat list. |
+
+### 0.2 Reusable Components
+
+Located in `apps/mobile/components/skill/`:
+
+| Component | Role |
+|-----------|------|
+| `SkillHeroHeader` | Skill title, level, XP bar, active recipe name, XP/hour. Large progress focus area. |
+| `SkillCategoryRail` | Horizontal chips for category filtering (Furniture, Combat, Utility, etc.). |
+| `RecipeWorkbenchCard` | Bigger cards with input slots, output preview, level gate, affordability, Craft/Stop. |
+| `StickyTaskDock` | Sticky bottom CTA; summary of materials missing or batches available. |
+
+### 0.3 Migration Path
+
+- **Woodworking** is the flagship; it uses all four primitives.
+- **Crafting, Firemaking, Herblore** (and future artisan skills) can migrate to this pattern for consistency and premium feel.
+- The component API is generic: pass `recipes`, `categories`, `skillId`, and inventory/level data. See `woodworking.tsx` for the reference implementation.
+
+### 0.4 Architecture Flow
+
+```
+SkillsTab → WoodworkingScreen → HeroPanel + CategoryRail + RecipeWorkbenchList
+RecipeWorkbenchCard → StickyTaskDock → useRequestStartTask → useGameLoop → gameSlice
+```
 
 ---
 

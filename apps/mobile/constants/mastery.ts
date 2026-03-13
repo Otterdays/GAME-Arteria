@@ -107,6 +107,24 @@ export const MASTERY_UPGRADES: Partial<Record<SkillId, MasteryUpgradeDef[]>> = {
         { id: 'herb_saver', label: '+5% save herbs', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, preservePerLevel: 5, desc: 'Chance to not consume herbs' },
         { id: 'double_brew', label: '+4% double brew', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, doubleDropPerLevel: 4, desc: 'Chance to brew 2× potions' },
     ],
+    farming: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'yield_bonus', label: '+3% yield', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, yieldPercentPerLevel: 3 },
+        { id: 'speed_bonus', label: '+4% growth speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4, desc: 'Crops grow faster' },
+        { id: 'double_harvest', label: '+5% double harvest', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, doubleDropPerLevel: 5, desc: 'Chance to harvest 2× crops' },
+        { id: 'seed_finder', label: '+3% find seeds', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, doubleDropPerLevel: 3, desc: 'Chance to get bonus seeds' },
+    ],
+    firemaking: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
+        { id: 'log_saver', label: '+5% save logs', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, preservePerLevel: 5, desc: 'Chance to not consume logs when burning' },
+    ],
+    woodworking: [
+        { id: 'xp_bonus', label: '+5% XP', cost: 1, maxLevel: 5, xpPercentPerLevel: 5 },
+        { id: 'yield_bonus', label: '+3% yield', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, yieldPercentPerLevel: 3 },
+        { id: 'speed_bonus', label: '+4% speed', cost: 2, maxLevel: 3, xpPercentPerLevel: 0, speedPercentPerLevel: 4 },
+        { id: 'log_saver', label: '+5% save logs', cost: 3, maxLevel: 3, xpPercentPerLevel: 0, preservePerLevel: 5, desc: 'Chance to not consume logs when crafting' },
+    ],
 };
 
 /// Mastery soft cap: Max 10 points per upgrade type, diminishing after 6

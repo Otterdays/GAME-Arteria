@@ -23,7 +23,7 @@ However, `TextInput` is NOT imported from `react-native`. It's a classic Referen
 ## Resolution - March 8, 2026 - 1:45 AM
 The `TextInput` import fix in `skills.tsx` resolved the crash. I also performed a quick audit of other primary navigation tabs (`bank.tsx`, `settings.tsx`, `stats.tsx`) and verified that crucial components are imported correctly. 
 
-I've bumped the version to **0.6.1 "The Stability Patch"** and synced all documentation (`CHANGELOG.md`, `SUMMARY.md`, `UpdateBoard.tsx`, `patchHistory.ts`, and the root `index.html`) to maintain a clean project record. 
+I've bumped the version to **0.6.1 "The Stability Patch"** and synced all documentation (`CHANGELOG.md`, `SUMMARY.md`, `UpdateBoard.tsx`, `patchHistory.ts`, and the root `index.html`) to maintain a clean project record. *[2026-03-07: Consolidated to v0.6.0 — all 0.6.x content now ships as 0.6.0.]* 
 
 Classic ReferenceErrors like this usually come from rapid UI iterative work (like the v0.6.0 search bar addition). A future "Pre-flight audit" script could be useful to catch missing imports before distribution.
 

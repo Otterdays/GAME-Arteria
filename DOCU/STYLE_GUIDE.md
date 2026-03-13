@@ -123,3 +123,16 @@ Import from `@/constants/theme`:
 | `THEMES.dark` | Static import | Fallback palette (e.g. ErrorBoundary outside ThemeProvider). Prefer `useTheme().palette`. |
 
 Avoid hardcoded hex in components. Use semantic tokens.
+
+---
+
+## 10. Skill Workbench UI (v0.6.0)
+
+For artisan skill screens, prefer the **workbench paradigm** over the plain card-list pattern. Components in `components/skill/`:
+
+- **SkillHeroHeader** — skill title, level, XP bar, active recipe, XP/hour.
+- **SkillCategoryRail** — segmented chips for category filtering.
+- **RecipeWorkbenchCard** — explicit input/output slots, level gate, affordability, Craft/Stop.
+- **StickyTaskDock** — sticky bottom CTA; materials summary.
+
+Woodworking is the reference implementation. See DOCU/SKILLS_ARCHITECTURE.md §0 for design principles and migration path.

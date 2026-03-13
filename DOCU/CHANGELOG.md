@@ -5,10 +5,8 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
-## [0.6.1] - 2026-03-13 — "The Expansions Update"
-### Added
-- **New Expansions System**: Built the framework for future expansions. Patron's Pack is now retroactively Exp. 1.
-- **Expansions Menu**: Added a dedicated Expansions page to the Settings tab to preview and manage unlocked expansions.
+## [Unreleased] — formerly 0.6.1
+> Consolidated into 0.6.0 (2026-03-07). Current release: 0.6.0.
 
 ## [0.6.0] - 2026-03-08 — "The Ascended Master"
 ### Added
@@ -25,9 +23,14 @@
 - **New Enemies**: Crawling Hand (Lv. 5) and Banshee (Lv. 15) added to the world meta.
 - **The Agora Shop Revamp**: Completely redesigned the merchant interface with premium glassmorphism, golden accents, and better item grouping.
 - **New Skill: Crafting**: Full implementation of the Crafting skill. Turn raw leather hides into sturdy leather armour, or combine gold bars with rare gems from mining to forge powerful rings and amulets.
+- **New Skill: Farming**: Patch-based real-time growth. Plant seeds in 3 patches (Crownlands Farm, Frostvale Greenhouse), wait for crops to grow, then harvest. 7 crops (wheat → void cap). Seeds from shop; Bank Seeds filter; stats tracking.
+- **New Skill: Firemaking**: Burn logs for XP. 9 burn types from Normal Log to Cosmic Wood. Consumes logs from inventory; higher-tier logs grant more XP. Mastery: XP bonus, speed, log saver.
+- **New Skill: Woodworking**: Turn logs into furniture, shields, and staves. Flagship workbench-style UI with category rail (Furniture, Combat, Utility), recipe cards with input/output slots, and sticky action dock. 5 recipes: Pine Stool, Maple Dining Table, Training Staff, Willow Shield, Barrel. Mastery: XP, yield, speed, log saver.
 - **Dynamic Coming Soon UI**: Added an interactive "Coming Soon" skill lock screen for unimplemented skills.
 - **Enhanced Skill Pages**: Slayer, Summoning, and Resonance have been upgraded to the "Enhanced!" UI style with navigation arrows, integrated XP bars, and gold level badges.
 - **Resonance Unified**: Relocated Resonance skill into the standard `skills/` directory to resolve routing conflicts and enable consistent navigation.
+- **New Expansions System**: Built the framework for future expansions. Patron's Pack is now retroactively Exp. 1.
+- **Expansions Menu**: Added a dedicated Expansions page to the Settings tab to preview and manage unlocked expansions.
 ### Changed
 - **Smooth Progress Bars**: Optimized interpolation logic to fix flickering/stuttering during active tasks.
 - Relocated the Skills grid to its own navigation tab to make room for the Hub portal.
@@ -39,7 +42,10 @@
 - **Descriptive Typos**: Corrected various typos in labels and skill cards.
 - **Astrology Navigation**: Fixed a critical routing bug where the right-arrow on Astrology led to an unmatched route.
 - **Ticker Shifting**: Corrected the GlobalActionTicker position to intelligently shift down when the tab bar is hidden.
+- **Random Events In-Game Only**: Random events (Blibbertooth, Genie, Goblin Peek, etc.) now only trigger during real-time play, not when opening the app or resuming from background.
+- **WYWA Offline XP Fix**: While You Were Away modal now applies XP, items, and gold when the user taps "Collect & Continue" instead of during offline calculation. Ensures offline gains are always applied correctly.
 ### Documentation
+- **Skill Workbench UI Direction**: Documented the next-gen artisan screen paradigm in SKILLS_ARCHITECTURE §0, ARCHITECTURE (Universal UI Components), TECHNICAL_USER_MANUAL (Arteria-skill-workbench-ui), and SUMMARY. Design principles: active-task storytelling, input/output clarity, one-tap affordance, sticky primary action, category scanning. Reusable components: SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock. Woodworking is the flagship; Crafting, Firemaking, Herblore can migrate.
 - **CLICKER_DESIGN.md**: Added §7 "Broaden & Deepen Ideas (Sourced)" — world-state/corruption, seasonal pulse modes, Chaos Theory crossover, companion relay, Chronicle/Timekeeper framing, shared active-play minigame framework, accessibility/feedback, economy guardrails; all subsections cite source docs. References expanded and renumbered to §8.
 
 ## [0.5.2] - 2026-03-06 — "The Celestial Expansion"

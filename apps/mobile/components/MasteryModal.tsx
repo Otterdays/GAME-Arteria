@@ -24,7 +24,7 @@ import { SKILL_META } from '@/constants/skills';
 import type { PaletteShape } from '@/constants/theme';
 
 const MASTERY_GATHERING: SkillId[] = ['mining', 'logging', 'fishing', 'harvesting', 'scavenging'];
-const MASTERY_CRAFTING: SkillId[] = ['runecrafting', 'smithing', 'forging', 'cooking', 'herblore'];
+const MASTERY_CRAFTING: SkillId[] = ['runecrafting', 'smithing', 'forging', 'cooking', 'herblore', 'woodworking'];
 
 function chunkPairs<T>(arr: T[]): T[][] {
     const out: T[][] = [];

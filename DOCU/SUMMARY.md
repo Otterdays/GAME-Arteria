@@ -44,7 +44,7 @@ These two documents are the authoritative references. All other docs supplement 
 | **CURRENT_IMPROVEMENTS.md** | Expansion opportunities using existing systems — what to add next without new architecture. |
 | **CLICKER_DESIGN.md** | Clicker (Resonance) design: layout, styling, tech, direction, crossover (§1–6). §7: broaden/deepen ideas (world state, seasonal, chaos, companions, chronicle, minigame framework, accessibility, economy) with source refs. See MASTER_DESIGN_DOC §1.3. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
-| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. Patches, courses, targets, recipes. Implementation order. |
+| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. |
 | **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
 | **FLETCHING_TAILORING.md** | Future skills: Fletching (arrows, bows from logs) and Tailoring (gloves, hats, shoes, boots from cloth). Implementation order, data structures, crossover. |
 | **MASTER_DESIGN_DOC.md** | **v2.0 — The Expanded Cosmos.** Comprehensive GDD organized in 7 Parts, 21 Chapters. **New Chapter 2: Skills Overview** — complete encyclopedia of 10 implemented + 7 coming soon + 8+ planned skills with detailed descriptions, crossover connections, and pets. New systems: Absurdity/Chaos Theory, World State/Corruption, Prestige/Transcendence, Housing/Sanctum, Chronicle System, Three Stomach consumption, Equipment Quirks.
@@ -74,7 +74,12 @@ These two documents are the authoritative references. All other docs supplement 
 - **Slayer & Summoning**: Task assignment via Master Mark and 5 binding pouches (Wolf, Dreadfowl, Bull, Spider, Badger).
 - **Companion System**: Hiring system for Barnaby and Garry the Guard.
 - **Crafting**: Leather armour and jewelry (rings/amulets).
+- **Farming**: Patch-based growth (3 patches, 7 crops). Plant seeds, wait, harvest. Seeds from shop; Bank Seeds filter.
+- **Firemaking**: Burn logs for XP. 9 burn types (normal→cosmic). Consumes logs; mastery (xp, speed, log saver).
+- **Woodworking**: Logs → furniture, shields, staves. **Flagship workbench UI** — next-gen artisan screen paradigm (hero panel, category rail, recipe cards with input/output slots, sticky action dock). 5 recipes across Furniture, Combat, Utility. See SKILLS_ARCHITECTURE §0 for UI direction.
+- **WYWA Fix**: Offline gains (XP, items, gold) apply on "Collect & Continue" dismiss; processDelta builds report only.
 - **UI & Navigation**: Enhanced UI for Slayer, Summoning, and Resonance; fixed Astrology navigation; Skills grid relocated to dedicated tab.
+- **Expansions System**: Patron's Pack is Exp. 1; dedicated Expansions page in Settings.
 
 **Play Store build (2026-03-05):** Run `4_Build_Play_Store_Cloud.bat` for AAB output. No phone or local SDK required — builds in EAS cloud. See EXPO_GUIDE §4a.
 
@@ -108,7 +113,7 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Local APK build (2026-02-27):** `2_Build_APK_Local.bat` produces release APKs without a connected device. Uses `gradlew assembleRelease` from `apps\mobile\android`. Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`. Output folder: `apps\mobile\android\app\build\outputs\apk\release\` with split APKs (`app-arm64-v8a-release.apk`, `app-armeabi-v7a-release.apk`).
 
-**Platform:** Modern Android (React Native via Expo SDK 54)
+**Platform:** Modern Android (React Native via Expo SDK 55)
 **Timeline Base:** February 26, 2026
 
 **Overview:**
@@ -122,11 +127,11 @@ A math-heavy, passive progression RPG without real-time action gameplay. The cor
 
 **Where we can go from here (quests & skills):**
 - **More quests:** Act III story quests; radiant/repeatable quests (e.g. "Bring Nick 10 copper" on cooldown). Reuse existing step auto-complete and hand-in flow.
-- **More skills:** Data + UI for **Cooking** (fish/meat → food, healing/boosts), **Harvesting** (gather herbs/plants), **Scavenging** (random loot tables). ROADMAP already lists these; implement in same pattern as Mining/Logging/Fishing (nodes, ticks, bank).
-- **Crafting queue / Alchemy:** Phase 3 items; cross-skill dependencies. Combat deferred until core skilling/quest loop is rich.
+- **More skills:** Cooking, Harvesting, Scavenging are implemented. Next: **Woodworking**, **Sorcery/Wizardry**, **Alchemy** (crafting queue). ROADMAP lists these; implement in same pattern as Mining/Logging/Fishing (nodes, ticks, bank).
+- **Crafting queue / Alchemy:** Phase 3 items; cross-skill dependencies.
 
 **Current Status (Phase 4 — The Ascended Master ✅):**
-- **v0.6.0 The Ascended Master:** Magic Hub dashboard, Thieving & Agility skills, Mastery Skill Capes (Lv. 99), Pillar-based Skills UI, "The Agora" Shop revamp (glassmorphism/gold), Smooth ProgressBar (sync fix), Summoning skill, Slayer skill (Master Mark), Companion system (Garry the Guard), Crafting (Leather/Jewelry).
+- **v0.6.0 The Ascended Master:** Magic Hub dashboard, Thieving & Agility skills, Mastery Skill Capes (Lv. 99), Pillar-based Skills UI, "The Agora" Shop revamp (glassmorphism/gold), Smooth ProgressBar (sync fix), Summoning skill, Slayer skill (Master Mark), Companion system (Garry the Guard), Crafting (Leather/Jewelry), Expansions system (Patron's Pack = Exp. 1), Random events in-game only.
 - **v0.5.2 The Celestial Expansion:** Astrology skill, Celestial items (Stardust), Unified skill navigation arrows.
 - **v0.4.2 Skill Pets & OTA Polish:** Rare skilling companions (Rocky, Timber, etc.), Pets screen, active pet emoji. Integrated `expo-updates` + fixed OTA batch pipeline (CI/LeanProd). Premium `SpecialMessageModal`. Fixed Cooking crash & Bank UI bugs.
 - **v0.5.1 THE 0.5.1 extended update:** World Exploration, Lumina Shop, Mastery expansion, Bank OSRS redesign, Combat Alpha, Prayer, Harvesting, Scavenging, Herblore, new NPCs, Technical formalization, premium themes.

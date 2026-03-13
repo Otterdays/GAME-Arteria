@@ -192,11 +192,14 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
     'cooking',
     'herblore',
     'crafting',
+    'firemaking',
+    'woodworking',
 ];
 
 export const IMPLEMENTED_SUPPORT_SKILLS: SkillId[] = [
     'agility',
     'resonance',
+    'farming',
 ];
 
 export const IMPLEMENTED_SKILLS = new Set<SkillId>([

@@ -9,7 +9,7 @@
  * - See DOCU/MASTER_DESIGN_DOC.md Chapter 6.6 for full design
  */
 
-export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'pouch' | 'summoning' | 'other';
+export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'pouch' | 'summoning' | 'seed' | 'other';
 
 export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet' | 'cape';
 
@@ -115,6 +115,15 @@ export const ITEM_META: Record<string, ItemMeta> = {
   strawberry: { emoji: '🍓', label: 'Strawberry', sellValue: 25, description: 'Sweet and fragrant. Used in potions.', type: 'other' },
   snape_grass: { emoji: '🌿', label: 'Snape Grass', sellValue: 50, description: 'Magical herb. Key ingredient for high-tier alchemy.', type: 'other' },
   void_cap_mushroom: { emoji: '🍄', label: 'Void Cap Mushroom', sellValue: 120, description: 'Grows near reality tears. Unsettling to hold.', type: 'other' },
+
+  // ── Farming (seeds) ──
+  wheat_seed: { emoji: '🌱', label: 'Wheat Seed', sellValue: 1, description: 'Plant in a farming patch to grow wheat.', type: 'seed' },
+  cabbage_seed: { emoji: '🌱', label: 'Cabbage Seed', sellValue: 2, description: 'Plant in a farming patch to grow cabbage.', type: 'seed' },
+  tomato_seed: { emoji: '🌱', label: 'Tomato Seed', sellValue: 4, description: 'Plant in a farming patch to grow tomatoes.', type: 'seed' },
+  sweetcorn_seed: { emoji: '🌱', label: 'Sweetcorn Seed', sellValue: 8, description: 'Plant in a farming patch to grow sweetcorn.', type: 'seed' },
+  strawberry_seed: { emoji: '🌱', label: 'Strawberry Seed', sellValue: 15, description: 'Plant in a farming patch to grow strawberries.', type: 'seed' },
+  snape_grass_seed: { emoji: '🌱', label: 'Snape Grass Seed', sellValue: 30, description: 'Plant in a farming patch to grow snape grass.', type: 'seed' },
+  void_cap_seed: { emoji: '🌱', label: 'Void Cap Spore', sellValue: 60, description: 'Plant in a farming patch to grow void cap mushrooms.', type: 'seed' },
 
   // ── Scavenging (ruins, debris) ──
   rusty_scrap: { emoji: '🔩', label: 'Rusty Scrap', sellValue: 3, description: 'Old metal from forgotten settlements.', type: 'other' },
@@ -241,6 +250,13 @@ export const ITEM_META: Record<string, ItemMeta> = {
   ruby_amulet: { emoji: '📿', label: 'Ruby Amulet', sellValue: 900, description: 'A beautiful ruby amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 8, maxHit: 4 } },
   diamond_amulet: { emoji: '📿', label: 'Diamond Amulet', sellValue: 1800, description: 'A beautiful diamond amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 12, maxHit: 6 } },
 
+  // ── Woodworking (Logs → Furniture, Shields, Staves) ──
+  pine_stool: { emoji: '🪑', label: 'Pine Stool', sellValue: 15, description: 'A simple wooden stool. Housing item.', type: 'other' },
+  maple_dining_table: { emoji: '🪑', label: 'Maple Dining Table', sellValue: 250, description: 'A sturdy maple table. High-tier housing.', type: 'other' },
+  training_staff: { emoji: '🪄', label: 'Training Staff', sellValue: 25, description: 'A basic oak staff for magic practice.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 2, maxHit: 1 } },
+  willow_shield: { emoji: '🛡️', label: 'Willow Shield', sellValue: 80, description: 'A lightweight wooden shield. Flexible defence.', type: 'equipment', equipSlot: 'shield', equipmentStats: { meleeDefence: 8, rangedDefence: 6, magicDefence: -2 } },
+  barrel: { emoji: '🛢️', label: 'Barrel', sellValue: 20, description: 'A wooden barrel for storage. Used in Herblore.', type: 'other' },
+
   // ── Gems (Mining rare drops) ──
   sapphire: { emoji: '💎', label: 'Sapphire', sellValue: 50, description: 'A blue gem. Found while mining iron and above.', type: 'other' },
   emerald: { emoji: '💚', label: 'Emerald', sellValue: 100, description: 'A green gem. Found while mining coal and above.', type: 'other' },
@@ -270,6 +286,7 @@ export const ITEM_META: Record<string, ItemMeta> = {
   skill_cape_cooking: { emoji: '🧥', label: 'Cooking Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Cooking.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_herblore: { emoji: '🧥', label: 'Herblore Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Herblore.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_crafting: { emoji: '🧥', label: 'Crafting Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Crafting.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_woodworking: { emoji: '🧥', label: 'Woodworking Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Woodworking.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_agility: { emoji: '🧥', label: 'Agility Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Agility.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_leadership: { emoji: '🧥', label: 'Leadership Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Leadership.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_summoning: { emoji: '🧥', label: 'Summoning Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Summoning.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
@@ -328,4 +345,11 @@ export const SHOP_CATALOG: { id: string; buyPrice: number }[] = [
   { id: 'empty_vial', buyPrice: 15 },
   { id: 'spirit_pouch', buyPrice: 50 },
   { id: 'spirit_shard', buyPrice: 2 },
+  { id: 'wheat_seed', buyPrice: 5 },
+  { id: 'cabbage_seed', buyPrice: 10 },
+  { id: 'tomato_seed', buyPrice: 20 },
+  { id: 'sweetcorn_seed', buyPrice: 40 },
+  { id: 'strawberry_seed', buyPrice: 75 },
+  { id: 'snape_grass_seed', buyPrice: 150 },
+  { id: 'void_cap_seed', buyPrice: 300 },
 ];

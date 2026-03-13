@@ -13,11 +13,12 @@ import {
     XP_BONUS_PATRON,
 } from '@/constants/game';
 import type { ThemeId } from '@/constants/theme';
-import { getMasteryXpMultiplier } from '@/constants/mastery';
+import { getMasteryXpMultiplier, getMasteryYieldMultiplier } from '@/constants/mastery';
 import { getItemMeta } from '@/constants/items';
 import { logger } from '@/utils/logger';
 import { PRAYER_MAP } from '@/constants/prayers';
 import { MOMENTUM_CAP, MOMENTUM_DECAY_PER_SECOND, PERFECT_STABILITY_FLOOR } from '@/constants/resonance';
+import { FARMING_PATCHES, getPatchById, getCropById } from '@/constants/farming';
 import type { ItemMasteryEntry } from '../../../packages/engine/src/types';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
@@ -312,6 +313,8 @@ export interface PlayerState {
     activeFamiliar?: FamiliarState | null;
     /** Resonance skill: 0–100. Global haste to all other skills when > 0. [TRACE: click_idea.md] */
     momentum?: number;
+    /** Farming patches: patchId -> { cropId, plantedAt } or null if empty. [TRACE: DOCU/SKILLS_ARCHITECTURE §1] */
+    farmingPatches?: Record<string, { cropId: string; plantedAt: number } | null>;
 }
 
 // ─── Helpers ───
@@ -434,6 +437,7 @@ function createFreshPlayer(): PlayerState {
         activeFamiliar: null,
         itemMastery: {},
         momentum: 0,
+        farmingPatches: {},
     };
 }
 
@@ -596,7 +600,11 @@ function migratePlayer(saved: PlayerState): PlayerState {
     const companions = saved.companions ?? {};
 
     const momentum = saved.momentum ?? 0;
-    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions, momentum };
+    const farmingPatches: Record<string, { cropId: string; plantedAt: number } | null> = {};
+    for (const p of FARMING_PATCHES) {
+        farmingPatches[p.id] = saved.farmingPatches?.[p.id] ?? null;
+    }
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions, momentum, farmingPatches };
     recalculateCombatStats(migrated);
     return migrated;
 }
@@ -1068,6 +1076,122 @@ export const gameSlice = createSlice({
             }
             const m = (state.player.momentum ?? 0) + momentumGain;
             state.player.momentum = Math.min(MOMENTUM_CAP, m);
+        },
+
+        /** Farming: plant a seed in a patch. [TRACE: DOCU/SKILLS_ARCHITECTURE §1] */
+        plantSeed(state, action: PayloadAction<{ patchId: string; cropId: string }>) {
+            const { patchId, cropId } = action.payload;
+            const patch = getPatchById(patchId);
+            const crop = getCropById(cropId);
+            if (!patch || !crop) return;
+            const farmingLevel = state.player.skills['farming']?.level ?? 1;
+            if (farmingLevel < patch.levelReq || farmingLevel < crop.levelReq) return;
+            const patches = state.player.farmingPatches ?? {};
+            if (patches[patchId]) return; // Patch not empty
+            const seedQty = state.player.inventory.find((i) => i.id === crop.seedId)?.quantity ?? 0;
+            if (seedQty < 1) return;
+            if (!state.player.farmingPatches) state.player.farmingPatches = {};
+            state.player.farmingPatches[patchId] = { cropId, plantedAt: Date.now() };
+            const idx = state.player.inventory.findIndex((i) => i.id === crop.seedId);
+            if (idx >= 0) {
+                state.player.inventory[idx].quantity -= 1;
+                if (state.player.inventory[idx].quantity <= 0) {
+                    state.player.inventory.splice(idx, 1);
+                }
+            }
+            state.activityLog = state.activityLog ?? [];
+            state.activityLog.unshift({
+                id: Math.random().toString(36).substring(7),
+                timestamp: Date.now(),
+                type: 'skill_start',
+                message: `Planted ${crop.emoji} ${cropId} in ${patch.name}`,
+                data: { skillId: 'farming', patchId, cropId },
+            });
+            if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+            }
+        },
+
+        /** Farming: harvest a ready patch. [TRACE: DOCU/SKILLS_ARCHITECTURE §1] */
+        harvestPatch(state, action: PayloadAction<{ patchId: string }>) {
+            const { patchId } = action.payload;
+            const patch = getPatchById(patchId);
+            if (!patch) return;
+            const patches = state.player.farmingPatches ?? {};
+            const planted = patches[patchId];
+            if (!planted) return;
+            const crop = getCropById(planted.cropId);
+            if (!crop) return;
+            const elapsed = Date.now() - planted.plantedAt;
+            if (elapsed < crop.growthMs) return; // Not ready
+            const xp = crop.xpPerHarvest;
+            const yieldQty = crop.outputQty;
+            state.player.farmingPatches![patchId] = null;
+            // Apply XP (with mastery, patron, lumina)
+            const skill = state.player.skills['farming'];
+            if (skill) {
+                const masteryMult = getMasteryXpMultiplier(state.player, 'farming');
+                const xpMultiplier = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
+                const luminaXpBoost = (state.player.xpBoostExpiresAt && state.player.xpBoostExpiresAt > Date.now()) ? 1.25 : 1;
+                const effectiveXp = Math.floor(xp * masteryMult * xpMultiplier * luminaXpBoost);
+                const oldLevel = skill.level;
+                skill.xp += effectiveXp;
+                skill.level = levelForXP(skill.xp);
+                if (skill.level > oldLevel) {
+                    if (!state.player.lifetimeStats) {
+                        state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalXpGained: 0 };
+                    }
+                    state.player.lifetimeStats.totalXpGained = (state.player.lifetimeStats.totalXpGained ?? 0) + effectiveXp;
+                    const levelsGained = skill.level - oldLevel;
+                    state.player.masteryPoints = state.player.masteryPoints ?? {};
+                    state.player.masteryPoints['farming'] = (state.player.masteryPoints['farming'] ?? 0) + levelsGained;
+                    state.levelUpQueue.push({
+                        id: Math.random().toString(36).substring(7),
+                        skillId: 'farming',
+                        level: skill.level,
+                    });
+                    state.pulseTab = 'skills';
+                    state.activityLog = state.activityLog ?? [];
+                    state.activityLog.unshift({
+                        id: Math.random().toString(36).substring(7),
+                        timestamp: Date.now(),
+                        type: 'level_up',
+                        message: `Level ${skill.level} farming`,
+                        data: { skillId: 'farming', level: skill.level },
+                    });
+                    if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                        state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+                    }
+                }
+            }
+            // Add items (apply mastery yield if available)
+            const yieldMult = getMasteryYieldMultiplier(state.player, 'farming');
+            const finalQty = Math.max(1, Math.floor(yieldQty * yieldMult));
+            const existing = state.player.inventory.find((i) => i.id === crop.outputId);
+            const slotCap = state.player.settings?.isPatron ? INVENTORY_SLOT_CAP_PATRON : INVENTORY_SLOT_CAP_F2P;
+            if (existing) {
+                existing.quantity += finalQty;
+            } else if (state.player.inventory.length < slotCap) {
+                state.player.inventory.push({ id: crop.outputId, quantity: finalQty });
+            }
+            if (state.player.lifetimeStats) {
+                state.player.lifetimeStats.byItem = state.player.lifetimeStats.byItem ?? {};
+                state.player.lifetimeStats.byItem[crop.outputId] = (state.player.lifetimeStats.byItem[crop.outputId] ?? 0) + finalQty;
+                state.player.lifetimeStats.totalItemsProduced = (state.player.lifetimeStats.totalItemsProduced ?? 0) + finalQty;
+            }
+            if (!state.player.stats) state.player.stats = { byType: {}, firstPlayedAt: Date.now(), lastPlayedAt: Date.now() };
+            state.player.stats.byType['harvest'] = (state.player.stats.byType['harvest'] ?? 0) + finalQty;
+            state.activityLog = state.activityLog ?? [];
+            state.activityLog.unshift({
+                id: Math.random().toString(36).substring(7),
+                timestamp: Date.now(),
+                type: 'random_event',
+                message: `Harvested ${crop.emoji} ${crop.outputId} (${finalQty})`,
+                data: { skillId: 'farming', patchId, outputId: crop.outputId, quantity: finalQty },
+            });
+            if (state.activityLog.length > ACTIVITY_LOG_MAX) {
+                state.activityLog = state.activityLog.slice(0, ACTIVITY_LOG_MAX);
+            }
         },
 
         /** Resonance: decay momentum over time. Level 99 Perfect Stability floors at 25%. */

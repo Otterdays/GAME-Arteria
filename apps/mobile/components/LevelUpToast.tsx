@@ -23,6 +23,7 @@ const SKILL_EMOJIS: Partial<Record<SkillId, string>> = {
     smithing: '🔨',
     forging: '🔥',
     crafting: '✂️',
+    woodworking: '🪵',
     farming: '🌾',
     herblore: '🧪',
     agility: '🏃',

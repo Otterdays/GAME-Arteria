@@ -63,6 +63,8 @@ import { CRAFTING_RECIPES } from '@/constants/crafting';
 import { AGILITY_COURSES } from '@/constants/agility';
 import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
 import { THIEVING_TARGETS } from '@/constants/thieving';
+import { FIREMAKING_BURNS } from '@/constants/firemaking';
+import { WOODWORKING_RECIPES } from '@/constants/woodworking';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -187,6 +189,28 @@ THIEVING_TARGETS.forEach((target) => {
     };
 });
 
+// Firemaking: consume logs, gain XP only
+FIREMAKING_BURNS.forEach((burn) => {
+    ACTION_DEFS[burn.id] = {
+        xpPerTick: burn.xpPerTick,
+        items: [],
+        consumedItems: [{ id: burn.logId, quantity: 1 }],
+        successRate: burn.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Woodworking: consume logs, produce furniture/shields/staves
+WOODWORKING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
 export interface UseGameLoopOptions {
@@ -228,7 +252,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
     onTickCompleteRef.current = options?.onTickComplete;
 
     // Process a delta of time.
-    // If accumulator is passed, results are added into it instead of dispatching immediately.
+    // If accumulator is passed (offline report), XP/items/gold are accumulated for WYWA; apply on dismiss.
     const processDelta = useCallback(
         (deltaMs: number, accumulator?: OfflineReport) => {
             if (!activeTask) return;
@@ -317,13 +341,13 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     }
                 }
 
-                ticksSinceLastEventRef.current += successfulTicks;
-
-                // Random events: roll once per batch (max 1 event per processDelta)
-                const canRoll =
-                    ticksSinceLastEventRef.current >= RANDOM_EVENT_COOLDOWN_TICKS;
+                // Random events: only during real-time play, not during offline catch-up
                 const bonusXpBySkill: Partial<Record<SkillId, number>> = {};
-                if (canRoll && Math.random() < RANDOM_EVENT_CHANCE_BASE * successfulTicks) {
+                if (!accumulator) {
+                    ticksSinceLastEventRef.current += successfulTicks;
+                    const canRoll =
+                        ticksSinceLastEventRef.current >= RANDOM_EVENT_COOLDOWN_TICKS;
+                    if (canRoll && Math.random() < RANDOM_EVENT_CHANCE_BASE * successfulTicks) {
                     const eventType =
                         RANDOM_EVENT_TYPES[Math.floor(Math.random() * RANDOM_EVENT_TYPES.length)];
                     ticksSinceLastEventRef.current = 0;
@@ -407,6 +431,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                         dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'A Goblin peeked out!', data: { enemyId: 'enemy_goblin' } }));
                         logger.info('Engine', 'RandomEvent: goblin_peek', { skillId });
                     }
+                    }
                 }
 
                 // Pet Roll
@@ -438,7 +463,10 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     }
                 }
 
-                dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
+                // When building offline report, defer XP/items to WYWA dismiss; otherwise apply immediately
+                if (!accumulator) {
+                    dispatch(gameActions.applyXP({ skillId, xp: totalXP }));
+                }
 
                 const masteryYield = getMasteryYieldMultiplier(playerRef.current, skillId);
                 let itemMasteryYield = 1;
@@ -470,7 +498,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                         }
                         const finalGold = Math.floor(totalGold * yieldMult);
                         if (finalGold > 0) {
-                            dispatch(gameActions.addGold(finalGold));
+                            if (!accumulator) dispatch(gameActions.addGold(finalGold));
                             if (accumulator) accumulator.goldGained = (accumulator.goldGained ?? 0) + finalGold;
                         }
                     }
@@ -552,7 +580,9 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     );
                     dispatch(gameActions.pushActivityLog({ type: 'random_event', message: 'Cosmic Sneeze!' }));
                 }
-                dispatch(gameActions.addItems(items));
+                if (!accumulator) {
+                    dispatch(gameActions.addItems(items));
+                }
 
                 // Mining rare gem drops (ore nodes only, per ORE_CHAIN_EXPANSION.md)
                 const ORE_NODE_IDS = new Set(['copper_ore', 'tin_ore', 'iron_ore', 'coal_ore', 'gold_ore', 'mithril_ore', 'adamantite_ore', 'runite_ore']);
@@ -577,7 +607,9 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                             combined[g.id] = (combined[g.id] ?? 0) + g.quantity;
                         }
                         const gemEntries = Object.entries(combined).map(([id, qty]) => ({ id, quantity: qty }));
-                        dispatch(gameActions.addItems(gemEntries));
+                        if (!accumulator) {
+                            dispatch(gameActions.addItems(gemEntries));
+                        }
                         if (accumulator) {
                             for (const item of gemEntries) {
                                 const existing = accumulator.itemsGained.find((i) => i.id === item.id);
@@ -689,9 +721,9 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                                     id: item.id,
                                     quantity: Math.max(1, Math.floor(item.quantity * success * 0.25))
                                 }));
-                                dispatch(gameActions.addItems(compItems));
+                                if (!accumulator) dispatch(gameActions.addItems(compItems));
 
-                                // Companion XP
+                                // Companion XP (always apply — companions level independently)
                                 let compSkill: SkillId = 'scavenging';
                                 if (comp.assignedTaskId.includes('ore')) compSkill = 'mining';
                                 else if (comp.assignedTaskId.includes('log')) compSkill = 'logging';
@@ -805,6 +837,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                                 elapsedMs: offlineDelta,
                                 xpGained: {},
                                 itemsGained: [],
+                                wasCapped,
                                 capLabel: wasCapped ? (isPatron ? '7 days (Patron)' : '24h (F2P limit)') : undefined,
                             };
                             processDelta(offlineDelta, report);

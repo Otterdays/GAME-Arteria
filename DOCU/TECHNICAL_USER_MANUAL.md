@@ -12,6 +12,11 @@
 ### 2. Arteria-tick-orchestrator
 *   **Location:** `apps/mobile/hooks/useGameLoop.ts`
 *   **Role:** The bridge between real-time and game logic. It manages the high-frequency `setInterval` (100ms) that drives the active task. It handles the "delta-time" calculations, ensuring that game progress remains consistent regardless of framerate or background suspension.
+*   **Offline flow:** When the app returns from background, `processDelta` builds an OfflineReport (accumulates XP, items, gold) but does *not* dispatch applyXP/addItems. The **While You Were Away** modal displays the report; on "Collect & Continue", `WhileYouWereAway` dispatches applyXP, addItems, addGold from the report. This ensures offline gains are always applied correctly.
+
+### 2a. Arteria-offline-report (WYWA)
+*   **Location:** `apps/mobile/components/WhileYouWereAway.tsx`
+*   **Role:** Presents the offline gains summary (XP per skill, items, gold) and applies them on user confirmation. Receives `OfflineReport` from `useGameLoop`; on "Collect & Continue", dispatches `applyXP`, `addItems`, `addGold` to Redux before clearing the report. Ensures gains are applied only when the user explicitly acknowledges the modal.
 
 ### 3. Arteria-state-engine
 *   **Location:** `apps/mobile/store/gameSlice.ts`
@@ -57,6 +62,10 @@
 ### 11. Arteria-ota-pipeline
 *   **Location:** `apps/mobile/app.json` & `Update_2_EAS_OTA_Update.bat`
 *   **Role:** The binary-agnostic distribution system. It leverages `expo-updates` to deliver code fixes and content patches directly to players without requiring a full app-store update, managed through a strictly versioned native runtime-policy.
+
+### 12. Arteria-skill-workbench-ui
+*   **Location:** `apps/mobile/components/skill/` (SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock)
+*   **Role:** Next-gen artisan screen paradigm (v0.6.0). Replaces the plain card-list pattern with a workbench-style layout: hero panel (active recipe, XP/hour), category rail (segmented chips), recipe workbench cards (explicit input/output slots), and sticky action dock. Woodworking is the flagship; Crafting, Firemaking, Herblore can migrate. See `DOCU/SKILLS_ARCHITECTURE.md` §0.
 
 ---
 

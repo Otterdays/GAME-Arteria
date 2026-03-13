@@ -47,6 +47,7 @@
 
 ## 4. Features (Larger)
 
+- **Skill Workbench UI migration** — Woodworking (v0.6.0) debuts the next-gen artisan screen paradigm: SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock. Crafting, Firemaking, Herblore can migrate to this pattern for consistency and premium feel. See SKILLS_ARCHITECTURE §0, ARCHITECTURE (Universal UI Components).
 - **Quest completion for real** — ✅ Done: Complete when all steps done (rewards applied); step auto-complete via engine completionRequirements + getQuestStepsToComplete.
 - **Recipe / usage from Bank** — For each item, show "Used in: [Skill name]" (e.g. Copper ore → Smithing) from a small recipe lookup (action defs → required items). Improves discovery.
 - **Idle Soundscapes** — Hook wired to all 7 skill screens; SFX (tink/thump/splash) now play on tick. Implement actual ambient loops per skill (or disable the toggle and show "Coming soon" in Settings) so the toggle isn’t misleading.

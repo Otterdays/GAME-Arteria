@@ -27,6 +27,7 @@ const SKILL_EMOJIS: Record<string, string> = {
     resonance: '🧿',
     agility: '🏃',
     thieving: '🎭',
+    woodworking: '🪵',
     leadership: '👑',
 };
 

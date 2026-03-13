@@ -34,6 +34,8 @@ export function getSfxForSkill(skillId: string): SfxType {
     case 'forging':
     case 'runecrafting':
     case 'herblore':
+    case 'woodworking':
+    case 'crafting':
       return 'tink';
     case 'logging':
     case 'cooking':

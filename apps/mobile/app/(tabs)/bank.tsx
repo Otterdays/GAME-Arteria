@@ -38,6 +38,7 @@ function getUsedInSkills(type: ItemType): string {
         other: '',
         pouch: 'Summoning',
         summoning: 'Summoning',
+        seed: 'Farming',
     };
     return map[type] ?? '';
 }
@@ -353,6 +354,7 @@ const FILTER_OPTIONS: { key: ItemType | 'all'; label: string }[] = [
     { key: 'potion', label: 'Potions' },
     { key: 'rune', label: 'Runes' },
     { key: 'equipment', label: 'Equipment' },
+    { key: 'seed', label: 'Seeds' },
     { key: 'other', label: 'Other' },
 ];
 

@@ -211,6 +211,18 @@ export default function UpdateBoard() {
                                     <Text style={styles.changeText}>• Fixed a subtle flickering bug in the skilling progress bars. Interpolation is now perfectly synced to the game engine for a buttery smooth 60fps experience.</Text>
                                 </View>
                                 <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎲 Random Events In-Game Only</Text>
+                                    <Text style={styles.changeText}>• Random events (Blibbertooth, Genie, Goblin Peek, etc.) now only trigger while actively playing, not when opening the app.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⏳ WYWA Offline XP Fix</Text>
+                                    <Text style={styles.changeText}>• Offline gains (XP, items, gold) now apply when you tap "Collect & Continue" on the While You Were Away screen. Ensures your progress is always applied correctly.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🪵 New Skill: Woodworking</Text>
+                                    <Text style={styles.changeText}>• Turn logs into furniture, shields, and staves. Flagship workbench UI with category rail (Furniture, Combat, Utility), recipe cards with input/output slots, and sticky action dock. 5 recipes: Pine Stool, Maple Dining Table, Training Staff, Willow Shield, Barrel.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>👑 Mastery Skill Capes</Text>
                                     <Text style={styles.changeText}>• Hit Level 99 in a skill? Purchase a Mastery Skill Cape from the Ascended Master in the Shop tab for 99,000 gp.</Text>
                                 </View>
@@ -229,6 +241,18 @@ export default function UpdateBoard() {
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>✂️ Crafting & Companions</Text>
                                     <Text style={styles.changeText}>• Turn leather into armour and gems into jewelry. Hire allies like Garry the Guard to assist in your journey.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🌾 New Skill: Farming</Text>
+                                    <Text style={styles.changeText}>• Plant seeds in 3 patches (Crownlands Farm, Frostvale Greenhouse), wait for crops to grow, then harvest. 7 crops from wheat to void cap. Seeds from shop; Bank Seeds filter.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🔥 New Skill: Firemaking</Text>
+                                    <Text style={styles.changeText}>• Burn logs for XP. 9 burn types from Normal Log to Cosmic Wood. Consumes logs from inventory; higher-tier logs grant more XP.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🚀 New Expansions System</Text>
+                                    <Text style={styles.changeText}>• Patron's Pack is now Exp. 1. Added a dedicated Expansions page in Settings to preview and manage unlocked expansions.</Text>
                                 </View>
                                 <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
                             </>

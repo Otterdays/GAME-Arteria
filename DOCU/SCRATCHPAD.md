@@ -1,10 +1,18 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] Doc update: Skill Workbench UI Direction (2026-03-07): SKILLS_ARCHITECTURE §0, ARCHITECTURE, TECHNICAL_USER_MANUAL §12, SUMMARY, CHANGELOG, IMPROVEMENTS. Highlighted next-gen artisan screen paradigm.
+- [x] Woodworking skill implementation (2026-03-07): Flagship workbench UI, 5 recipes (furniture, combat, utility), SkillHeroHeader, SkillCategoryRail, RecipeWorkbenchCard, StickyTaskDock. Docs updated.
+- [x] Thorough doc update (2026-03-07): CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL for WYWA fix + Firemaking.
+- [x] WYWA offline XP fix (2026-03-07): processDelta defers XP/items/gold to report when building offline; apply on "Collect & Continue" dismiss. Ensures XP always applies.
+- [x] Farming skill implementation (2026-03-07): Patches, crops, plantSeed/harvestPatch, farming.tsx, Seeds filter, stats.byType harvest.
+- [x] Docs & patch notes updated for Farming (CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY). Version kept at 0.6.0.
+- [x] Firemaking skill implementation (2026-03-07): Burn logs for XP. 9 burn types (normal→cosmic). Tick-based, consumes logs, mastery (xp, speed, log saver).
+- [x] Doc audit: CHANGELOG, SUMMARY, UpdateBoard, index.html, SCRATCHPAD, My_Thoughts, ui-audit aligned to v0.6.0 (2026-03-07)
 - [x] CLICKER_DESIGN.md §7 Broaden & Deepen added (2026-03-08)
 - [x] Safe dependency modernization pass completed (2026-03-08)
 - [x] Document work: Crossover ecosystem + Clicker design doc (2026-03-08)
-- [x] Fix `TextInput` ReferenceError in `skills.tsx` (v0.6.1)
+- [x] Fix `TextInput` ReferenceError in `skills.tsx` (v0.6.0)
 - [x] Audit primary tabs for missing core imports
 - [x] Implement enhanced UI for Slayer, Summoning, and Resonance skill pages
 - [x] Fix Astrology navigation bug and unify Resonance routing
@@ -16,14 +24,17 @@
 - **Dependency modernization (2026-03-08):** Updated root `expo` → `~55.0.5`, `expo-router` → `~55.0.4`, and `babel-preset-expo` → `^55.0.10`. Updated mobile `@react-navigation/bottom-tabs` → `^7.15.5`, `expo-dev-client` → `~55.0.11`, `expo-notifications` → `~55.0.11`, `expo-splash-screen` → `~55.0.10`, and `react-native-mmkv` → `^4.2.0`. SBOM refreshed to match.
 - **Lint tooling note (2026-03-08):** `expo lint` toolchain is compatible with ESLint 9.x here, not ESLint 10.x. Kept `apps/mobile` on `eslint@^9.39.3`; lint now runs and reports existing repo lint debt instead of crashing in plugin init.
 - **Doc work (2026-03-08):** Crossover vision and Clicker design formalized. MASTER_DESIGN_DOC §1.3 added (Crossover Ecosystem: Clicker + World Builder). ROADMAP §5.4 added (Crossover Subsystems — Resonance done, Aether/Sanctum/Construction bridge). New **CLICKER_DESIGN.md**: design, layout, styling, tech, direction, merits; references click_idea.md and click_idea_2.md. SUMMARY doc index updated with CLICKER_DESIGN.md.
+- **WYWA Fix (2026-03-07):** Offline gains (XP, items, gold) now apply when user taps "Collect & Continue" instead of during processDelta. processDelta builds report only; handleDismiss applies. Fixes XP not applying on return from offline.
 - **Stability Fix**: `TextInput` ReferenceError in `skills.tsx` resolved.
 - **Audit**: Verified component imports in `bank.tsx`, `settings.tsx`, `stats.tsx`.
 - **Docs**: Fully updated `CHANGELOG`, `SUMMARY`, `UpdateBoard`, `patchHistory`, `index.html`, and `ui-audit-2026-03-08.md`.
 
 ## History
+- 2026-03-07: Thorough doc update — WYWA fix and Firemaking documented across CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL. Added Arteria-offline-report (WYWA) to tech manual; updated Data Flow in ARCHITECTURE.
+- 2026-03-07: Doc audit — CHANGELOG merged 0.6.1 into 0.6.0, added Random events fix; UpdateBoard + index.html + SUMMARY + SCRATCHPAD + My_Thoughts + ui-audit aligned to v0.6.0. Platform SDK 54→55 in SUMMARY.
 - 2026-03-08: CLICKER_DESIGN.md §7 Broaden & Deepen (sourced ideas) added; SCRATCHPAD, CHANGELOG, SUMMARY updated.
 - 2026-03-08: Completed safe dependency modernization pass. Verified active app is `apps/mobile`, updated SBOM, and documented ESLint 10 incompatibility with current Expo lint stack.
-- 2026-03-08: Resolved "textinput" ReferenceError in `skills.tsx`. Bumped version to v0.6.1 "The Stability Patch".
+- 2026-03-08: Resolved "textinput" ReferenceError in `skills.tsx`. Consolidated all 0.6.x to v0.6.0 (Expansions, Stability Patch). Random events restricted to in-game only.
 
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
@@ -33,7 +44,7 @@
 **Active Task:**
 - [x] Implement Companion AI Behavior (v0.6.2)
 - [x] Implement Slayer Shop functionality (v0.6.2)
-- [ ] Implement Woodworking core loop (v0.6.5)
+- [x] Implement Woodworking core loop (v0.6.5)
 - [ ] Implement Sorcery/Wizardry core loops (v0.6.6)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
 
