@@ -5,8 +5,18 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
-## [Unreleased] — formerly 0.6.1
-> Consolidated into 0.6.0 (2026-03-07). Current release: 0.6.0.
+## [0.6.1] - 2026-03-13 — "The Forge & The Bow"
+### Added
+- **Skill Capes Complete:** Added 10 missing skill capes (thieving, firemaking, exploration, wizardry, sorcery, resonance, farming, fletching, tailoring). All 27 implemented skills now have purchasable capes at Lv 99.
+- **SKILL_CAPES.md:** Master reference document for the Skill Cape system — registry, vendor, cost, shop logic, future passive perks.
+- **New Skill: Fletching:** Logs + feathers + bars → arrows and bows. 7 recipes (shafts, bronze/iron/steel arrows, oak shortbow, willow longbow). Mastery: XP, yield, speed, log saver. Feathers and cloth added to shop.
+- **New Skill: Tailoring:** Cloth → gloves, cap, shoes, vest. 4 recipes. Mastery: XP, yield, speed, cloth saver. Cloth added to shop.
+- **EquipSlot expansion:** Added `hands` and `cape` slots for cloth gloves and skill capes.
+### Changed
+- **Crafting UI Redesign v2.0:** Complete visual overhaul from category-card layout to **Radial Mastery** design. Circular recipe wheel with tier-based node positioning, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench paradigm. Documented in `UI_REVISION_CRAFTING_v2.md`.
+### Documentation
+- **UI_REVISION_CRAFTING_v2.md:** Design doc for Crafting radial UI — rationale, layout, component breakdown.
+- **FLETCHING_TAILORING.md:** Status updated to implemented.
 
 ## [0.6.0] - 2026-03-08 — "The Ascended Master"
 ### Added

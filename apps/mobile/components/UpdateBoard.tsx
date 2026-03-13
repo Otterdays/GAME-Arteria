@@ -164,7 +164,7 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.6.1' ? 'The Expansions Update'
+                        {currentVersion === '0.6.1' ? 'The Forge & The Bow'
                             : currentVersion === '0.6.0' ? 'The Ascended Master'
                                 : currentVersion === '0.5.3' ? 'The Legion & The Soul'
                                     : currentVersion === '0.5.2' ? 'The Celestial Expansion'
@@ -179,8 +179,24 @@ export default function UpdateBoard() {
                         {currentVersion === '0.6.1' ? (
                             <>
                                 <View style={styles.changeBlock}>
-                                    <Text style={styles.changeHeader}>🚀 New Expansions System</Text>
-                                    <Text style={styles.changeText}>• Patron's Pack is now Exp. 1. Added placeholders for Expansions 2, 3, and 4 in the Settings menu!</Text>
+                                    <Text style={styles.changeHeader}>👑 Skill Capes Complete</Text>
+                                    <Text style={styles.changeText}>• Added 10 missing skill capes. All 27 implemented skills now have purchasable capes at Lv 99 from the Ascended Master.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🏹 New Skill: Fletching</Text>
+                                    <Text style={styles.changeText}>• Logs + feathers + bars → arrows and bows. 7 recipes from shafts to willow longbow. Mastery: XP, yield, speed, log saver. Feathers in shop.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>✂️ New Skill: Tailoring</Text>
+                                    <Text style={styles.changeText}>• Cloth → gloves, cap, shoes, vest. 4 recipes. Mastery: XP, yield, speed, cloth saver. Cloth in shop.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⭕ Crafting UI Redesign</Text>
+                                    <Text style={styles.changeText}>• Radial Mastery design: circular recipe wheel, tier-based nodes, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>🎽 EquipSlot Expansion</Text>
+                                    <Text style={styles.changeText}>• Added hands and cape slots for cloth gloves and skill capes.</Text>
                                 </View>
                                 <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
                             </>

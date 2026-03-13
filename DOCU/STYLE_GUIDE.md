@@ -3,7 +3,7 @@
 > [!WARNING]
 > **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
 
-Project-specific conventions for Arteria code and docs. For visual/UI style, see **zhip-ai-styling.md**.
+Project-specific conventions for Arteria code and docs. For visual/UI style, see **zhip-ai-styling.md**. For doc index, catalogs, and checklists, see [SUMMARY.md](SUMMARY.md) §Documentation Index.
 
 ---
 

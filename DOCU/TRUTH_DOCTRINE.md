@@ -43,7 +43,7 @@ The gameplay revolves around 5 interconnected pillars (25 skills total):
 ## IV. DOCUMENTATION ARCHITECTURE
 
 The repository uses the `DOCU/` folder as its brain. When auditing or working, refer to these specific artifacts:
-- **`SUMMARY.md`**: High-level project state and documentation index.
+- **`SUMMARY.md`**: High-level project state and documentation index. **For catalogs and checklists** (SBOM, skilling_guides, CLICKER_CHECKLIST, MASTER_DESIGN_DOC §A.6/§D.5), see SUMMARY §Documentation Index — Catalog & Checklist Docs.
 - **`ROADMAP.md`**: The Master Phased Plan (Phases 0 to 9+). NEVER shrink it.
 - **`MASTER_DESIGN_DOC.md`**: Deep lore, exact skill mechanics, questlines, and monetization details.
 - **`ARCHITECTURE.md`**: Technical scaffolding, data flows, and state management notes.

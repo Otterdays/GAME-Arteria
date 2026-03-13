@@ -65,6 +65,8 @@ import { ASTROLOGY_CONSTELLATIONS } from '@/constants/astrology';
 import { THIEVING_TARGETS } from '@/constants/thieving';
 import { FIREMAKING_BURNS } from '@/constants/firemaking';
 import { WOODWORKING_RECIPES } from '@/constants/woodworking';
+import { FLETCHING_RECIPES } from '@/constants/fletching';
+import { TAILORING_RECIPES } from '@/constants/tailoring';
 import { EXPLORATION_EXPEDITIONS } from '@/constants/exploration';
 import { WIZARDRY_STUDIES } from '@/constants/wizardry';
 import { SORCERY_SPELLS } from '@/constants/sorcery';
@@ -241,6 +243,28 @@ SORCERY_SPELLS.forEach((spell) => {
         items: [],
         consumedItems: spell.consumedItems,
         successRate: spell.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Fletching: consume logs/feathers/bars, produce arrows/bows
+FLETCHING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
+// Tailoring: consume cloth, produce gloves/caps/shoes
+TAILORING_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
         masteryXp: 1,
     };
 });

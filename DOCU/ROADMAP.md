@@ -5,6 +5,8 @@
 
 > **🤖 AI: When implementing features from this roadmap, update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json` version.
 
+**For doc index, catalogs (SBOM, skilling_guides), and checklists (CLICKER_CHECKLIST, MASTER_DESIGN_DOC §A.6):** See [SUMMARY.md](SUMMARY.md) §Documentation Index.
+
 **Synthesized from:** `MASTER_DESIGN_DOC.md` (Aetheria: The Idle Chronicles)
 **Last Updated:** 2026-02-26
 **Philosophy:** KISS · YAGNI · Ship the core loop first, but plan for the entire cosmos.

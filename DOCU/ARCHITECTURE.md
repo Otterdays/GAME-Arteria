@@ -17,6 +17,8 @@ All architectural decisions must align with:
 
 These documents provide the design truth; this document describes the technical implementation.
 
+**For full doc index, catalogs (SBOM, skilling_guides), and checklists (CLICKER_CHECKLIST, MASTER_DESIGN_DOC §A.6/§D.5):** See [SUMMARY.md](SUMMARY.md) §Documentation Index.
+
 ---
 
 ## Tech Stack (as of Feb 2026)

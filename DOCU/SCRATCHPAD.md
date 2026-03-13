@@ -1,6 +1,10 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] **Doc update & git push prep (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped to 0.6.1. Ready to push.
+- [x] **Crafting UI Redesign v2.0 (2026-03-13):** Complete visual overhaul from category-card layout to **Radial Mastery** design. Circular recipe wheel with tier-based node positioning, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench paradigm. Documented in `UI_REVISION_CRAFTING_v2.md`.
+- [x] **Skill Capes Complete (2026-03-13):** Added 10 missing skill capes (thieving, firemaking, exploration, wizardry, sorcery, resonance, farming, fletching, tailoring). Created `SKILL_CAPES.md` master reference.
+- [x] **Fletching & Tailoring Skills (2026-03-13):** Full implementation with recipes, items, screens, game loop registration, mastery upgrades, soundscape support. Added to IMPLEMENTED_CRAFTING_SKILLS.
 - [x] Doc audit per rules (2026-03-07): Top-down updates; refreshed ARCHITECTURE, TECHNICAL_USER_MANUAL, SUMMARY, MASTER_DESIGN_DOC, CHANGELOG for Exploration, Wizardry, Sorcery. Version held at 0.6.0.
 - [x] Sorcery & Wizardry implementation (2026-03-07): Wizardry 3 study nodes (XP only); Sorcery 3 spells (consume runes for XP). Both skill screens, mastery, game loop, docs and release surfaces updated.
 - [x] Exploration skill implementation (2026-03-07): Expeditions (6), discovery items (6), skill screen, world-map level gating (Exploration level unlocks locations), mastery, docs and release surfaces updated.
@@ -34,6 +38,7 @@
 - **Docs**: Fully updated `CHANGELOG`, `SUMMARY`, `UpdateBoard`, `patchHistory`, `index.html`, and `ui-audit-2026-03-08.md`.
 
 ## History
+- 2026-03-13: v0.6.1 "The Forge & The Bow" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped. Skill capes complete, Fletching & Tailoring, Crafting Radial UI.
 - 2026-03-07: Thorough doc update — WYWA fix and Firemaking documented across CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL. Added Arteria-offline-report (WYWA) to tech manual; updated Data Flow in ARCHITECTURE.
 - 2026-03-07: Doc audit — CHANGELOG merged 0.6.1 into 0.6.0, added Random events fix; UpdateBoard + index.html + SUMMARY + SCRATCHPAD + My_Thoughts + ui-audit aligned to v0.6.0. Platform SDK 54→55 in SUMMARY.
 - 2026-03-08: CLICKER_DESIGN.md §7 Broaden & Deepen (sourced ideas) added; SCRATCHPAD, CHANGELOG, SUMMARY updated.
@@ -662,6 +667,7 @@
 
 ## Documentation & AI Developer Guidelines
 > **For future standard AI assistants:**
+> 0. **Catalogs & Checklists:** For reference data and status tracking, see [SUMMARY.md](SUMMARY.md) §Documentation Index — skilling_guides (node/recipe/item catalogs), CLICKER_CHECKLIST.md, SBOM.md, MASTER_DESIGN_DOC §A.6/§D.5.
 > 1. **Dev Logging:** ALWAYS use the `logger.ts` wrapper (`import { logger } from '@/utils/logger'`). Log format is `logger.info('Module', 'Message', {data})`. Do not use naked `console.log`.
 > 2. **Versioning & Update Board:** When shipping a new feature phase, bump the version in `apps/mobile/app.json`. The user sees the **Update Board** (in-app changelog modal) upon relaunch when `lastSeenVersion !== currentVersion`. Update the hardcoded changelog inside `apps/mobile/components/UpdateBoard.tsx` for whatever features you just built.
 > 3. **Patch History:** Update `apps/mobile/constants/patchHistory.ts` when shipping a new version — it powers the "Patch Notes" screen in Settings (full changelog from v0.1.0).

@@ -5,7 +5,7 @@
 
 > **🤖 AI: When implementing new features, ALWAYS update:** (1) **Update Board** (`apps/mobile/components/UpdateBoard.tsx`) — in-app changelog modal; (2) **Website** (`index.html` §Changelog); (3) **patchHistory.ts** — Patch Notes screen; (4) **CHANGELOG.md**; (5) **app.json** version. See SCRATCHPAD §Versioning.
 
-> **Version 0.6.0 retained (2026-03-07):** All features (Exploration, Wizardry, Sorcery, Resonance level unlocks, etc.) consolidated under 0.6.0. No version bump. See CHANGELOG, patchHistory.
+> **Version 0.6.1 (2026-03-13):** "The Forge & The Bow" — Skill Capes complete, Fletching & Tailoring skills, Crafting Radial Mastery UI redesign. See CHANGELOG, patchHistory.
 
 **Project:** Arteria — The AFK RPG
 
@@ -47,24 +47,32 @@ These two documents are the authoritative references. All other docs supplement 
 | **CLICKER_DESIGN.md** | Clicker (Resonance) design: layout, styling, tech, direction, crossover (§1–6). §7: broaden/deepen ideas (world state, seasonal, chaos, companions, chronicle, minigame framework, accessibility, economy) with source refs. See MASTER_DESIGN_DOC §1.3. |
 | **CLICKER_CHECKLIST.md** | Live checklist for Resonance clicker features — implemented vs planned. Multi-Pulse, Soul Cranking, Anchor Energy, Kinetic Feedback, Perfect Stability. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
-| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. **Implemented:** Exploration (§2a), Wizardry (§12), Sorcery (§11). |
+| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. **Implemented:** Exploration (§2a), Wizardry (§12), Sorcery (§11), Fletching, Tailoring. |
+| **SKILL_CAPES.md** | Master reference for the Skill Cape system — all 27 capes, vendor (Ascended Master), cost (99,000 gp), shop logic, future passive perks. |
+| **UI_REVISION_CRAFTING_v2.md** | Crafting Radial Mastery UI design — rationale, layout, component breakdown, tier-based recipe wheel. |
 | **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
 | **FLETCHING_TAILORING.md** | Future skills: Fletching (arrows, bows from logs) and Tailoring (gloves, hats, shoes, boots from cloth). Implementation order, data structures, crossover. |
 | **MASTER_DESIGN_DOC.md** | **v2.0 — The Expanded Cosmos.** Comprehensive GDD organized in 7 Parts, 21 Chapters. **New Chapter 2: Skills Overview** — complete encyclopedia of 10 implemented + 7 coming soon + 8+ planned skills with detailed descriptions, crossover connections, and pets. New systems: Absurdity/Chaos Theory, World State/Corruption, Prestige/Transcendence, Housing/Sanctum, Chronicle System, Three Stomach consumption, Equipment Quirks.
 | **STYLE_GUIDE.md** | Project conventions: trace tags, limits, naming, touch targets, theming (useTheme + migration pattern). |
 | **THEMING.md** | Theme architecture: PaletteShape, THEMES registry, ThemeContext, migration path. |
 | **zhip-ai-styling.md** | UI/UX style guide (Melvor-like): layout, colors, components, screens. |
+| **skilling_guides/** | Skill/item reference catalogs: `mining_reference.md`, `logging_reference.md`, `smithing_reference.md`, `logging_master_item_list.md`, `smithing_master_item_list.md`. Use when implementing or extending gathering/crafting skills. |
 | **tools/info_scraper/** | Web scraper with GUI — fetch URLs, save content. See `tools/info_scraper/README.md`. |
 | **debugs/** | Issue tracking (e.g. `audit-2026-02-26.md`). |
 | **README.md** (root) | User-facing project intro; links to DOCS. |
 | **tests/README.md** | Test suite structure, commands (test, test:coverage, test:engine, test:suite), 80% coverage target. |
 | **apps/mobile/README.md** | Expo app quick start (boilerplate). |
 
+**🤖 Catalog & Checklist Docs (for AI utilization):** When implementing features, consult these for reference data and status tracking:
+- **Catalogs:** `SBOM.md` (package inventory), `skilling_guides/` (node/recipe/item lists for Mining, Logging, Smithing).
+- **Checklists:** `CLICKER_CHECKLIST.md` (Resonance implemented vs planned), `MASTER_DESIGN_DOC.md` §A.6 (Pre-Implementation Checklist), §D.5 (Implementation Checklist).
+- **Doc index:** This table — use SUMMARY as the entry point to find any doc.
+
 *Doc updates: add to top; never delete. Refresh stale sections when touching a doc. **Always be documenting** — keeps AI and humans in sync during creative work.*
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration path), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.6.0** "The Ascended Master". Post-0.6.0: Companion AI behavior, Slayer shop, Summoning special moves.
+**Version scheme:** 0.x.x. Current **0.6.1** "The Forge & The Bow". Post-0.6.1: Companion AI behavior, Slayer shop, Summoning special moves.
 
 **Implementation plans:** `.cursor/plans/` — exploration_grand_plan, sorcery_wizardry_plan (phased execution specs for lesser agents).
 

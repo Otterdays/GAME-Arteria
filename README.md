@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://otterdays.github.io/GAME-Arteria">🌐 Live Site</a> ·
-  <a href="DOCU/SUMMARY.md">📚 Docs</a> ·
+  <a href="DOCU/SUMMARY.md">📚 Docs</a> (index, catalogs, checklists) ·
   <a href="DOCU/ROADMAP.md">🗺️ Roadmap</a> ·
   <a href="https://github.com/Otterdays/GAME-Arteria/releases">📦 Releases</a>
 </p>

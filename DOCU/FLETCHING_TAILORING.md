@@ -1,8 +1,8 @@
-# Fletching & Tailoring — Future Implementation
+# Fletching & Tailoring — Implementation Complete
 
-> **Purpose:** Design doc for two planned crafting skills. Wood-based ranged gear (Fletching) and cloth-based armour (Tailoring).
-> **Status:** Planned. Add to Skills grid with ComingSoonBadge (red). See MASTER_DESIGN_DOC §2.
-> **Last updated:** 2026-03-05
+> **Purpose:** Design doc for two crafting skills. Wood-based ranged gear (Fletching) and cloth-based armour (Tailoring).
+> **Status:** Implemented (v0.6.1). Fletching: 7 recipes (shafts, arrows, bows). Tailoring: 4 recipes (gloves, cap, shoes, vest). See `constants/fletching.ts`, `constants/tailoring.ts`, `app/skills/fletching.tsx`, `app/skills/tailoring.tsx`.
+> **Last updated:** 2026-03-13
 
 ---
 

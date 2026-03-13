@@ -1274,6 +1274,8 @@ The cosmic comedy tone differentiates it in a market of serious fantasy idle gam
 
 ## A.6 Pre-Implementation Checklist (Per Feature)
 
+> **For other checklists and catalogs:** See [SUMMARY.md](SUMMARY.md) §Documentation Index — CLICKER_CHECKLIST.md, skilling_guides/, SBOM.md.
+
 Before coding any new feature:
 - [ ] Content details filled in (items, IDs, XP, recipes)
 - [ ] Item/recipe/node IDs defined if new

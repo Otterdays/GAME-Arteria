@@ -3,6 +3,8 @@
 > [!IMPORTANT]
 > This document provides a technical taxonomy of the Arteria Engine ecosystem. It identifies each subsystem by its official technical designation and describes its role within the sequentially evolved program stack.
 
+**For doc index, catalogs (SBOM, skilling_guides), and checklists (CLICKER_CHECKLIST.md, MASTER_DESIGN_DOC §A.6 Pre-Implementation):** See [SUMMARY.md](SUMMARY.md) §Documentation Index.
+
 ## 🛠️ Engine Taxonomy
 
 ### 1. Arteria-game-engine

@@ -115,8 +115,8 @@ export interface InventoryItem {
 }
 
 export type EquipSlot =
-    | 'head' | 'body' | 'legs' | 'feet'
-    | 'weapon' | 'shield' | 'ring' | 'amulet';
+    | 'head' | 'body' | 'legs' | 'feet' | 'hands'
+    | 'weapon' | 'shield' | 'ring' | 'amulet' | 'cape';
 
 interface CombatStats {
     maxHitpoints: number;

@@ -2,7 +2,7 @@
  * Patch History — Full changelog from CHANGELOG.md.
  * Hardcoded patch history for Arteria.
  * Displayed in the in-game Settings -> Patch Notes screen.
- * Current release: 0.6.0 "The Ascended Master"
+ * Current release: 0.6.1 "The Forge & The Bow"
  */
 
 export interface PatchEntry {
@@ -14,6 +14,20 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.6.1',
+    date: '2026-03-13',
+    added: [
+      '👑 Skill Capes Complete: Added 10 missing skill capes (thieving, firemaking, exploration, wizardry, sorcery, resonance, farming, fletching, tailoring). All 27 implemented skills now have purchasable capes at Lv 99.',
+      'SKILL_CAPES.md: Master reference document for the Skill Cape system.',
+      '🏹 New Skill: Fletching. Logs + feathers + bars → arrows and bows. 7 recipes (shafts, bronze/iron/steel arrows, oak shortbow, willow longbow). Mastery: XP, yield, speed, log saver. Feathers added to shop.',
+      '✂️ New Skill: Tailoring. Cloth → gloves, cap, shoes, vest. 4 recipes. Mastery: XP, yield, speed, cloth saver. Cloth added to shop.',
+      'EquipSlot expansion: Added hands and cape slots for cloth gloves and skill capes.',
+    ],
+    changed: [
+      'Crafting UI Redesign v2.0: Complete visual overhaul to Radial Mastery design. Circular recipe wheel with tier-based nodes, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench paradigm.',
+    ],
+  },
   {
     version: '0.6.0',
     date: '2026-03-08',

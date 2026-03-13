@@ -3,6 +3,7 @@
 > **Purpose:** Snapshot of current systems and prioritized UX/GUI/feature improvements. Use for sprint planning; append new ideas, do not delete existing entries.
 > **Last reviewed:** 2026-03-05
 > **See also:** `CURRENT_IMPROVEMENTS.md` — expansion opportunities that build on existing systems (no new architecture).
+> **For catalogs & checklists:** See [SUMMARY.md](SUMMARY.md) §Documentation Index — skilling_guides, CLICKER_CHECKLIST, SBOM, MASTER_DESIGN_DOC §A.6.
 
 **Implemented (2026-03-04–05):** **Lumina Shop:** Reroll Daily Quests (5 Lumina, 2/day), XP Boost 1h (15 Lumina). Shop Buy tab shows purchasable Lumina items. applyXP applies +25% when xpBoostExpiresAt active. — **Mastery expansion:** yield_bonus (+3%/level, max 3) for all 8 skills. getMasteryYieldMultiplier in useGameLoop. Mastery UI: pillar grouping (Gathering/Crafting), skill cards, points badge, Spend/Max. — **SFX:** expo-audio; tink/thump/splash on tick; Settings → Audio "Test sound". — **Login bonus UX:** Banner shows reward; FeedbackToast on claim. — **Post-0.4.1 polish:** Bank "Used in"; Combat teaser; idle cap notification fix; Haptics; Soundscapes stub. **Bestiary groundwork:** EnemyDrop, EnemyLocation, EnemyCombatStats; Goblin/Slime/Wolf. — **v0.4.1:** Cooking, Bestiary stub, GoblinPeekModal. — **v0.4.0:** Daily quests, Stats tab, custom bank tabs, Sell All Junk, Login bonus, Lumina. — Prior: Shop Sell filters, Bank sort/empty state, Shop Buy Max, HorizonHUD Grind label, quest completion, Mastery, Idle Soundscapes "coming soon".
 

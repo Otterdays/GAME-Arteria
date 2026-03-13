@@ -11,7 +11,7 @@
 
 export type ItemType = 'ore' | 'bar' | 'log' | 'fish' | 'food' | 'rune' | 'equipment' | 'potion' | 'pouch' | 'summoning' | 'seed' | 'other';
 
-export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'weapon' | 'shield' | 'ring' | 'amulet' | 'cape';
+export type EquipSlot = 'head' | 'body' | 'legs' | 'feet' | 'hands' | 'weapon' | 'shield' | 'ring' | 'amulet' | 'cape';
 
 export interface EquipmentStats {
   accuracy?: number;
@@ -258,6 +258,21 @@ export const ITEM_META: Record<string, ItemMeta> = {
   ruby_amulet: { emoji: '📿', label: 'Ruby Amulet', sellValue: 900, description: 'A beautiful ruby amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 8, maxHit: 4 } },
   diamond_amulet: { emoji: '📿', label: 'Diamond Amulet', sellValue: 1800, description: 'A beautiful diamond amulet.', type: 'equipment', equipSlot: 'amulet', equipmentStats: { accuracy: 12, maxHit: 6 } },
 
+  // ── Fletching (Logs + Feathers + Bars → Arrows, Bows) ──
+  arrow_shaft: { emoji: '📏', label: 'Arrow Shaft', sellValue: 2, description: 'A wooden shaft for arrows. Fletch with feathers and tips.', type: 'other' },
+  bronze_arrows: { emoji: '🏹', label: 'Bronze Arrows', sellValue: 8, description: 'Basic arrows with bronze tips. Consumed by Ranged combat.', type: 'other' },
+  iron_arrows: { emoji: '🏹', label: 'Iron Arrows', sellValue: 18, description: 'Sturdy arrows with iron tips.', type: 'other' },
+  steel_arrows: { emoji: '🏹', label: 'Steel Arrows', sellValue: 35, description: 'Sharp steel-tipped arrows.', type: 'other' },
+  oak_shortbow: { emoji: '🏹', label: 'Oak Shortbow', sellValue: 50, description: 'A compact oak bow. Good for beginners.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 2400, accuracy: 3, maxHit: 2 } },
+  willow_longbow: { emoji: '🏹', label: 'Willow Longbow', sellValue: 120, description: 'A flexible willow longbow. Greater range.', type: 'equipment', equipSlot: 'weapon', equipmentStats: { attackSpeed: 3000, accuracy: 6, maxHit: 4 } },
+
+  // ── Tailoring (Cloth → Gloves, Hats, Shoes) ──
+  cloth: { emoji: '🧵', label: 'Cloth', sellValue: 5, description: 'Basic fabric for tailoring. Buy from Nick or find in ruins.', type: 'other' },
+  cloth_gloves: { emoji: '🧤', label: 'Cloth Gloves', sellValue: 15, description: 'Simple cloth hand coverings. Light armour.', type: 'equipment', equipSlot: 'hands', equipmentStats: { meleeDefence: 1, rangedDefence: 2, magicDefence: 3 } },
+  cloth_cap: { emoji: '🧢', label: 'Cloth Cap', sellValue: 20, description: 'A soft cloth cap. Mage-friendly.', type: 'equipment', equipSlot: 'head', equipmentStats: { meleeDefence: 1, rangedDefence: 2, magicDefence: 4 } },
+  cloth_shoes: { emoji: '👟', label: 'Cloth Shoes', sellValue: 18, description: 'Light cloth footwear. Agile and quiet.', type: 'equipment', equipSlot: 'feet', equipmentStats: { meleeDefence: 1, rangedDefence: 2, magicDefence: 2 } },
+  cloth_vest: { emoji: '🧥', label: 'Cloth Vest', sellValue: 35, description: 'A light cloth chestpiece. Mage-friendly armour.', type: 'equipment', equipSlot: 'body', equipmentStats: { meleeDefence: 4, rangedDefence: 6, magicDefence: 8 } },
+
   // ── Woodworking (Logs → Furniture, Shields, Staves) ──
   pine_stool: { emoji: '🪑', label: 'Pine Stool', sellValue: 15, description: 'A simple wooden stool. Housing item.', type: 'other' },
   maple_dining_table: { emoji: '🪑', label: 'Maple Dining Table', sellValue: 250, description: 'A sturdy maple table. High-tier housing.', type: 'other' },
@@ -299,6 +314,15 @@ export const ITEM_META: Record<string, ItemMeta> = {
   skill_cape_leadership: { emoji: '🧥', label: 'Leadership Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Leadership.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_summoning: { emoji: '🧥', label: 'Summoning Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Summoning.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
   skill_cape_slayer: { emoji: '🧥', label: 'Slayer Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Slayer.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_thieving: { emoji: '🧥', label: 'Thieving Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Thieving.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_firemaking: { emoji: '🧥', label: 'Firemaking Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Firemaking.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_exploration: { emoji: '🧥', label: 'Exploration Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Exploration.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_wizardry: { emoji: '🧥', label: 'Wizardry Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Wizardry.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_sorcery: { emoji: '🧥', label: 'Sorcery Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Sorcery.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_resonance: { emoji: '🧥', label: 'Resonance Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Resonance.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_farming: { emoji: '🧥', label: 'Farming Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Farming.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_fletching: { emoji: '🧥', label: 'Fletching Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Fletching.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
+  skill_cape_tailoring: { emoji: '🧥', label: 'Tailoring Cape', sellValue: 10000, description: 'A majestic cape signifying total mastery over Tailoring.', type: 'equipment', equipSlot: 'cape', equipmentStats: { meleeDefence: 15, rangedDefence: 15, magicDefence: 15 } },
 
 };
 
@@ -360,4 +384,6 @@ export const SHOP_CATALOG: { id: string; buyPrice: number }[] = [
   { id: 'strawberry_seed', buyPrice: 75 },
   { id: 'snape_grass_seed', buyPrice: 150 },
   { id: 'void_cap_seed', buyPrice: 300 },
+  { id: 'feathers', buyPrice: 3 },
+  { id: 'cloth', buyPrice: 12 },
 ];

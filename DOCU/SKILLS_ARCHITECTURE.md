@@ -10,6 +10,8 @@
 > **Wizardry:** ✅ Implemented (v0.6.0). Cosmic support. See `apps/mobile/constants/wizardry.ts`, `app/skills/wizardry.tsx`. 3 study nodes (Basic Scroll, Tome of Void, Celestial Almanac).
 > **Sorcery:** ✅ Implemented (v0.6.0). Cosmic magic. See `apps/mobile/constants/sorcery.ts`, `app/skills/sorcery.tsx`. 3 spells (Lumina Spark, Voidmire Bolt, Astral Storm) consume runes for XP. No Mana in Phase 1.
 
+**For item-level catalogs (nodes, recipes, outputs):** See `DOCU/skilling_guides/` — `mining_reference.md`, `logging_reference.md`, `smithing_reference.md`, `logging_master_item_list.md`, `smithing_master_item_list.md`. For full doc index and checklists, see [SUMMARY.md](SUMMARY.md).
+
 ---
 
 ## 0. Skill Workbench UI Direction (v0.6.0)

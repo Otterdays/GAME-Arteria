@@ -1,28 +1,6 @@
-export type SkillId =
-    | 'agility'
-    | 'astrology'
-    | 'resonance'
-    | 'cooking'
-    | 'crafting'
-    | 'farming'
-    | 'firemaking'
-    | 'woodworking'
-    | 'exploration'
-    | 'wizardry'
-    | 'sorcery'
-    | 'fishing'
-    | 'forging'
-    | 'harvesting'
-    | 'herblore'
-    | 'logging'
-    | 'mining'
-    | 'runecrafting'
-    | 'scavenging'
-    | 'smithing'
-    | 'thieving'
-    | 'leadership'
-    | 'summoning'
-    | 'slayer';
+import type { SkillId } from '@/store/gameSlice';
+
+export type { SkillId };
 
 export const SKILL_NAV_ORDER: SkillId[] = [
     'agility' /* a */,
@@ -34,7 +12,9 @@ export const SKILL_NAV_ORDER: SkillId[] = [
     'cooking' /* c */,
     'crafting',
     'farming' /* f */,
+    'fletching',
     'firemaking',
+    'tailoring',
     'woodworking',
     'fishing',
     'forging',
