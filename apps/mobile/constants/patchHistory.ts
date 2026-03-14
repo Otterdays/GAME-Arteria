@@ -2,7 +2,7 @@
  * Patch History — Full changelog from CHANGELOG.md.
  * Hardcoded patch history for Arteria.
  * Displayed in the in-game Settings -> Patch Notes screen.
- * Current release: 0.6.1 "The Forge & The Bow"
+ * Current release: 0.6.2 "The Profile"
  */
 
 export interface PatchEntry {
@@ -14,6 +14,14 @@ export interface PatchEntry {
 }
 
 export const PATCH_HISTORY: PatchEntry[] = [
+  {
+    version: '0.6.2',
+    date: '2026-03-13',
+    added: [
+      'Profile screen: Local-first account hub (Settings → Character → Profile). Identity (display name, patron, pet, total level, title), progress snapshot (gold, Lumina, combat stats, first/last played), rewards & entitlements (login streak, XP boost, expansions), quick actions (edit nickname, Pets, Expansions, Patch notes).',
+      'selectedTitle: Optional PlayerState field for displayed title; setSelectedTitle action.',
+    ],
+  },
   {
     version: '0.6.1',
     date: '2026-03-13',

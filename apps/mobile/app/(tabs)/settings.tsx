@@ -527,6 +527,19 @@ export default function SettingsScreen() {
                     <View style={styles.sectionCard}>
                         <Pressable
                             style={styles.row}
+                            onPress={() => router.push('/profile')}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Profile</Text>
+                                <Text style={styles.rowDesc}>
+                                    Identity, progress, and quick actions
+                                </Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.row}
                             onPress={() => {
                                 setNicknameEdit(playerName || '');
                                 setNicknameModalOpen(true);

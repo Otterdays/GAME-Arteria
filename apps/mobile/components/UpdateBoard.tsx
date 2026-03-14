@@ -164,8 +164,9 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.6.1' ? 'The Forge & The Bow'
-                            : currentVersion === '0.6.0' ? 'The Ascended Master'
+                        {currentVersion === '0.6.2' ? 'The Profile'
+                            : currentVersion === '0.6.1' ? 'The Forge & The Bow'
+                                : currentVersion === '0.6.0' ? 'The Ascended Master'
                                 : currentVersion === '0.5.3' ? 'The Legion & The Soul'
                                     : currentVersion === '0.5.2' ? 'The Celestial Expansion'
                                         : currentVersion.startsWith('0.5') ? 'THE 0.5.1 extended update directors cut remix - alpha'
@@ -176,7 +177,19 @@ export default function UpdateBoard() {
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion === '0.6.1' ? (
+                        {currentVersion === '0.6.2' ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>Profile Screen</Text>
+                                    <Text style={styles.changeText}>• New account hub (Settings → Character → Profile). Identity, progress snapshot, rewards & entitlements, quick actions (edit nickname, Pets, Expansions, Patch notes).</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>Selected Title</Text>
+                                    <Text style={styles.changeText}>• Optional displayed title on your profile; set via setSelectedTitle.</Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                            </>
+                        ) : currentVersion === '0.6.1' ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>👑 Skill Capes Complete</Text>

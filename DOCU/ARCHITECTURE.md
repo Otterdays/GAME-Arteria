@@ -146,6 +146,7 @@ Arteria/
 - **Settings UI:** Settings → About → "Check for Updates" — manual OTA check via `Updates.checkForUpdateAsync()` / `fetchUpdateAsync()` / `reloadAsync()`. Shows status (checking, downloading, ready, up to date, error, dev mode). Disabled in dev builds.
 
 ## Global Components & Modals
+- **Profile screen:** Local-first account hub at `app/profile.tsx` (route `/profile`). Launched from Settings → Character → Profile. Shows identity (display name, patron badge, active pet, total level, selected title), progress snapshot (gold earned, Lumina, combat stats, first/last played), rewards & entitlements (login streak, XP boost, expansions), and quick actions (edit nickname, Pets, Expansions, Patch notes). Nickname edit via in-screen modal. Uses existing `PlayerState`; optional `selectedTitle` for displayed title. No backend/auth.
 - **Mastery:** Opened from the Skills screen header (📖 button next to activity log 📜) via `MasteryModal` in `components/MasteryModal.tsx`. Two-column Gathering/Crafting layout. Mastery row was removed from Settings.
 - **Update Board:** In-app modal (`UpdateBoard.tsx`) that pops when `lastSeenVersion !== currentVersion` (from `app.json`). Shows changelog for the new version.
 - **Special Message Modal:** A premium animated modal (`SpecialMessageModal.tsx`) for global announcements or milestone celebrations. Triggered via `testMessage` state in `AppShell` (root layout). Supports spring entry, bouncing emojis, and shimmering border glows.

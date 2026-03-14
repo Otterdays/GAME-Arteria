@@ -1,6 +1,7 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] **Doc & updates for v0.6.2 (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped to 0.6.2. Profile screen documented.
 - [x] **Doc update & git push prep (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped to 0.6.1. Ready to push.
 - [x] **Crafting UI Redesign v2.0 (2026-03-13):** Complete visual overhaul from category-card layout to **Radial Mastery** design. Circular recipe wheel with tier-based node positioning, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench paradigm. Documented in `UI_REVISION_CRAFTING_v2.md`.
 - [x] **Skill Capes Complete (2026-03-13):** Added 10 missing skill capes (thieving, firemaking, exploration, wizardry, sorcery, resonance, farming, fletching, tailoring). Created `SKILL_CAPES.md` master reference.
@@ -38,6 +39,7 @@
 - **Docs**: Fully updated `CHANGELOG`, `SUMMARY`, `UpdateBoard`, `patchHistory`, `index.html`, and `ui-audit-2026-03-08.md`.
 
 ## History
+- 2026-03-13: v0.6.2 "The Profile" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped. Profile screen documented.
 - 2026-03-13: v0.6.1 "The Forge & The Bow" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped. Skill capes complete, Fletching & Tailoring, Crafting Radial UI.
 - 2026-03-07: Thorough doc update — WYWA fix and Firemaking documented across CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL. Added Arteria-offline-report (WYWA) to tech manual; updated Data Flow in ARCHITECTURE.
 - 2026-03-07: Doc audit — CHANGELOG merged 0.6.1 into 0.6.0, added Random events fix; UpdateBoard + index.html + SUMMARY + SCRATCHPAD + My_Thoughts + ui-audit aligned to v0.6.0. Platform SDK 54→55 in SUMMARY.

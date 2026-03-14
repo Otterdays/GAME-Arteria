@@ -87,7 +87,9 @@ export default function CraftingScreen() {
     const activeRecipeId = isCrafting ? activeTask.actionId : null;
     const activeRecipe = CRAFTING_RECIPES.find((r) => r.id === activeRecipeId);
 
-    const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(activeRecipeId);
+    const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(
+        activeRecipeId ?? CRAFTING_RECIPES[0]?.id ?? null
+    );
     const [popTrigger, setPopTrigger] = React.useState(0);
     const lastXp = React.useRef(craftSkill.xp);
     const lastGain = React.useRef(0);
@@ -457,9 +459,9 @@ export default function CraftingScreen() {
         [palette, craftColor, insets.bottom]
     );
 
-    // Calculate positions for recipes in concentric circles
+    // Calculate positions for recipes in concentric circles (tiers 2 and 3 had same radius — caused overlap)
     const getNodePosition = (index: number, total: number, tier: number): { left: number; top: number } => {
-        const radius = tier === 0 ? WHEEL_SIZE * 0.28 : tier === 1 ? WHEEL_SIZE * 0.38 : tier === 2 ? WHEEL_SIZE * 0.42 : WHEEL_SIZE * 0.42;
+        const radius = tier === 0 ? WHEEL_SIZE * 0.28 : tier === 1 ? WHEEL_SIZE * 0.38 : tier === 2 ? WHEEL_SIZE * 0.42 : WHEEL_SIZE * 0.48;
         const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
         const center = WHEEL_SIZE / 2 - 28; // node size/2
         return {
@@ -672,7 +674,9 @@ export default function CraftingScreen() {
                                     ? 'Stop Crafting'
                                     : craftSkill.level < selectedRecipe.levelReq
                                         ? `Unlock at Lv. ${selectedRecipe.levelReq}`
-                                        : 'Start Crafting'}
+                                        : selectedRecipe.requirement && !meetsNarrativeRequirement(player, selectedRecipe.requirement)
+                                            ? 'Locked'
+                                            : 'Start Crafting'}
                             </Text>
                         </TouchableOpacity>
                     </>

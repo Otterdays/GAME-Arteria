@@ -5,6 +5,10 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+## [0.6.2] - 2026-03-13 — "The Profile"
+### Added
+- **Profile screen:** Local-first account hub (Settings → Character → Profile). Identity (display name, patron, pet, total level, title), progress snapshot (gold, Lumina, combat stats, first/last played), rewards & entitlements (login streak, XP boost, expansions), quick actions (edit nickname, Pets, Expansions, Patch notes). Optional `selectedTitle` on `PlayerState` for displayed title; `setSelectedTitle` action.
+
 ## [0.6.1] - 2026-03-13 — "The Forge & The Bow"
 ### Added
 - **Skill Capes Complete:** Added 10 missing skill capes (thieving, firemaking, exploration, wizardry, sorcery, resonance, farming, fletching, tailoring). All 27 implemented skills now have purchasable capes at Lv 99.

@@ -221,6 +221,8 @@ export interface PlayerState {
     dontPushCount?: number;
     /** Unlocked display titles (e.g. "The Stubborn") */
     unlockedTitles?: string[];
+    /** Currently displayed title (must be in unlockedTitles). Profile-only. */
+    selectedTitle?: string;
     /** Random events: cooldown and completion tracking for frequency tuning. */
     randomEvents?: {
         lastTriggeredAt: number;
@@ -413,6 +415,7 @@ function createFreshPlayer(): PlayerState {
         },
         dontPushCount: 0,
         unlockedTitles: [],
+        selectedTitle: undefined,
         randomEvents: {
             lastTriggeredAt: 0,
             ticksSinceLastEvent: 0,
@@ -569,6 +572,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
 
     const dontPushCount = saved.dontPushCount ?? 0;
     const unlockedTitles = saved.unlockedTitles ?? [];
+    const selectedTitle = saved.selectedTitle;
     const randomEvents = saved.randomEvents ?? {
         lastTriggeredAt: 0,
         ticksSinceLastEvent: 0,
@@ -614,7 +618,7 @@ function migratePlayer(saved: PlayerState): PlayerState {
     for (const p of FARMING_PATCHES) {
         farmingPatches[p.id] = saved.farmingPatches?.[p.id] ?? null;
     }
-    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions, momentum, farmingPatches };
+    const migrated = { ...saved, name, skills: skills as Record<SkillId, SkillState>, settings, narrative, dontPushCount, unlockedTitles, selectedTitle, randomEvents, masteryPoints, masterySpent, stats, lifetimeStats, customBankTabs, lastBankTab, junkItemIds, loginBonus, lumina, luminaShopRerollsUsedToday, luminaShopRerollDate, xpBoostExpiresAt, seenEnemies, pets, totalDailyQuestsCompleted, inventory, slayerTask, companions, momentum, farmingPatches };
     recalculateCombatStats(migrated);
     return migrated;
 }
@@ -822,6 +826,17 @@ export const gameSlice = createSlice({
         /** Change player nickname (Settings). */
         setPlayerName(state, action: PayloadAction<string>) {
             state.player.name = (action.payload ?? '').trim();
+        },
+
+        /** Profile: set displayed title (must be in unlockedTitles). */
+        setSelectedTitle(state, action: PayloadAction<string | null>) {
+            const title = action.payload?.trim() || null;
+            if (title) {
+                const unlocked = state.player.unlockedTitles ?? [];
+                if (unlocked.includes(title)) state.player.selectedTitle = title;
+            } else {
+                state.player.selectedTitle = undefined;
+            }
         },
 
         /** Bestiary: record that the player has spotted an enemy. */

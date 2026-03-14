@@ -99,6 +99,7 @@ function AppShell() {
           <BatterySaver>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="profile" options={{ headerShown: false }} />
               <Stack.Screen name="location/[id]" options={{ headerShown: false }} />
               <Stack.Screen name="patches" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />

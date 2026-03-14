@@ -5,7 +5,7 @@
 
 > **🤖 AI: When implementing new features, ALWAYS update:** (1) **Update Board** (`apps/mobile/components/UpdateBoard.tsx`) — in-app changelog modal; (2) **Website** (`index.html` §Changelog); (3) **patchHistory.ts** — Patch Notes screen; (4) **CHANGELOG.md**; (5) **app.json** version. See SCRATCHPAD §Versioning.
 
-> **Version 0.6.1 (2026-03-13):** "The Forge & The Bow" — Skill Capes complete, Fletching & Tailoring skills, Crafting Radial Mastery UI redesign. See CHANGELOG, patchHistory.
+> **Version 0.6.2 (2026-03-13):** "The Profile" — Profile screen (Settings → Character → Profile). Identity, progress snapshot, rewards & entitlements, quick actions. Optional selectedTitle. See CHANGELOG, patchHistory.
 
 **Project:** Arteria — The AFK RPG
 
@@ -72,7 +72,7 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration path), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.6.1** "The Forge & The Bow". Post-0.6.1: Companion AI behavior, Slayer shop, Summoning special moves.
+**Version scheme:** 0.x.x. Current **0.6.2** "The Profile". Post-0.6.2: Companion AI behavior, Slayer shop, Summoning special moves.
 
 **Implementation plans:** `.cursor/plans/` — exploration_grand_plan, sorcery_wizardry_plan (phased execution specs for lesser agents).
 
