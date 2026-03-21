@@ -4,6 +4,7 @@ export type { SkillId };
 
 export const SKILL_NAV_ORDER: SkillId[] = [
     'agility' /* a */,
+    'alchemy',
     'astrology',
     'resonance',
     'exploration',

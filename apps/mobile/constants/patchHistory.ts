@@ -15,6 +15,24 @@ export interface PatchEntry {
 
 export const PATCH_HISTORY: PatchEntry[] = [
   {
+    version: '0.7.0',
+    date: '2026-03-22',
+    added: [
+      'Anchor Timeline Selection System: Multi-slot character account system designed to isolate play sessions.',
+      'Character Selection Screen: Create or switch between multiple local character profiles with isolated persistence states.',
+      'Alchemy Skill: Skill activated and added to the crafting pool. Start brewing and experimenting with transmutations!',
+    ],
+  },
+  {
+    version: '0.6.3',
+    date: '2026-03-22',
+    added: [
+      'Crafting Queue System: You can now queue up multiple consecutive skilling or crafting actions. useGameLoop.ts has been supercharged with a robust processQueueDelta engine that securely processes multiple ticks inside an offline/background catch-up.',
+      'Crafting Queue UI Hub: Added a Glassmorphic sticky queue manager featuring real-time timers, Estimated Time to Completion (ETC), and individual cancel buttons. Integrated persistently across crafting and artisan screens.',
+      'Offline Combat Record: The While You Were Away (WYWA) report has been updated to capture and display enemies defeated off-screen.',
+    ],
+  },
+  {
     version: '0.6.2',
     date: '2026-03-13',
     added: [

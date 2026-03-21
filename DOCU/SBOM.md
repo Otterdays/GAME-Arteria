@@ -9,8 +9,12 @@
 
 ---
 
-## Verification Update (2026-03-08)
+## Verification Update (2026-03-21)
 
+- **Audit performed:** Executed dependency audit suite (`Audit_Deps.bat`).
+- **Fixes applied:** Patched 2 high severity vulnerabilities (`flatted`, `svgo`) via `npm audit fix`.
+- **Status:** 0 vulnerabilities remaining.
+- **Previous Update (2026-03-08):**
 - **Verified against:** root `package.json`, workspace manifests, lockfiles, `npm outdated`, and live package resolution from each workspace.
 - **Active app truth:** the current mobile app is `apps/mobile`, not the separate legacy `mobile/` folder.
 - **Legacy note:** `mobile/package.json` still exists and is on the older Expo 54 / React 19.1 / React Native 0.81 stack, but it is **not** in the root workspaces list.

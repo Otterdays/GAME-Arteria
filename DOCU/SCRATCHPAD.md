@@ -1,6 +1,19 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] **Dependency Audit Suite (2026-03-22):** Created `Audit_Deps.bat` and `DOCU/DEP_AUDIT_SUITE.md` to guide AI agents and engineers on how to conduct and document future dependency audits. Ran an audit pass and patched 2 high-severity vulnerabilities (`flatted`, `svgo`). Updated `SBOM.md` to reflect status.
+- [x] **Gradle + TS Error Fixes (2026-03-21):** Resolved all IDE errors:
+  - `packages/engine/src/types.ts`: Added `'resonance'` to engine `SkillId` union (was missing, causing `PlayerState` type mismatch in `useGameLoop.ts` line 988).
+  - `apps/mobile/tsconfig.json`: Fixed `extends` path from `expo/tsconfig.base` → `../../node_modules/expo/tsconfig.base` (monorepo root resolution fix). Added `"types": []` to suppress phantom `hammerjs` type.
+  - `packages/engine/tsconfig.json`: Added `"types": []` to suppress phantom `hammerjs` type resolution.
+  - `android/gradle/wrapper/gradle-wrapper.properties`: Downgraded Gradle `9.0.0` → `8.13`. RN 0.83.x's `@react-native/gradle-plugin` uses `JavaVendorSpec.JVM_EXTERN` which was removed in Gradle 9.0 API — known incompatibility, RN 0.83 targets Gradle 8.x.
+- [x] **Anchor Timeline Selection System (v0.7.0 — 2026-03-21):** Multi-slot character account system. Implementation complete. Version bumped and docs updated.
+  - Files created: `store/anchorSlice.ts`, `store/persistence.ts` (rewrite), `hooks/usePersistence.ts` (refactor), `components/CreateAnchorModal.tsx`, `app/character-select.tsx`
+  - Files modified: `store/index.ts` (added anchorSlice), `app/_layout.tsx` (gating + Stack.Screen), `utils/logger.ts` (added 'Persistence' module)
+  - Settings "Switch Anchor" button (minor, deferred). Backups verified. Docs consolidated.
+  - ⚠️ Next step for user: `npm run mobile` to boot dev server and test on device
+- [x] **Activate Alchemy Skill (2026-03-22):** Added to `IMPLEMENTED_CRAFTING_SKILLS` and `SKILL_NAV_ORDER` constants. Verified and activated.
+- [x] **Doc doc updates for v0.6.3 (2026-03-22):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped to 0.6.3. Crafting Queue & WYWA Report documented.
 - [x] **Doc & updates for v0.6.2 (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped to 0.6.2. Profile screen documented.
 - [x] **Doc update & git push prep (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped to 0.6.1. Ready to push.
 - [x] **Crafting UI Redesign v2.0 (2026-03-13):** Complete visual overhaul from category-card layout to **Radial Mastery** design. Circular recipe wheel with tier-based node positioning, center orb with XP ring, bottom detail panel. Competes with Woodworking workbench paradigm. Documented in `UI_REVISION_CRAFTING_v2.md`.
@@ -39,6 +52,8 @@
 - **Docs**: Fully updated `CHANGELOG`, `SUMMARY`, `UpdateBoard`, `patchHistory`, `index.html`, and `ui-audit-2026-03-08.md`.
 
 ## History
+- 2026-03-22: v0.7.0 "Timelines & Alchemy" — app.json, UpdateBoard, patchHistory, CHANGELOG, index.html updated. Anchor system and Alchemy documented.
+- 2026-03-22: v0.6.3 "The Queue" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped. Crafting Queue & WYWA enhancements documented.
 - 2026-03-13: v0.6.2 "The Profile" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped. Profile screen documented.
 - 2026-03-13: v0.6.1 "The Forge & The Bow" — CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, FLETCHING_TAILORING, app.json bumped. Skill capes complete, Fletching & Tailoring, Crafting Radial UI.
 - 2026-03-07: Thorough doc update — WYWA fix and Firemaking documented across CHANGELOG, SUMMARY, ARCHITECTURE, patchHistory, UpdateBoard, index.html, SKILLS_ARCHITECTURE, TECHNICAL_USER_MANUAL. Added Arteria-offline-report (WYWA) to tech manual; updated Data Flow in ARCHITECTURE.
@@ -58,8 +73,14 @@
 - [x] Implement Woodworking core loop (v0.6.5)
 - [x] Implement Sorcery/Wizardry core loops (v0.6.6)
 - [x] Update Docs: MASTER_DESIGN_DOC.md, SKILLS_ARCHITECTURE.md, SUMMARY.md, CHANGELOG.md
+- [x] Implement Crafting Queue (Redux setup complete, game loop integration complete)
 
 **Completed Task:** Fully implemented **The Ascended Master** (v0.6.0).
+
+## [2026-03-22] Crafting Queue Architecture & Offline Combat Report
+- **Redux:** Added `queuedTasks: QueuedAction[]` to `PlayerState`. Added `enqueueTask` and `cancelQueuedTask` reducers in `gameSlice.ts`.
+- **Engine:** Added `QueuedAction` interface.
+- **Offline Report:** Added `enemiesDefeated` to `OfflineReport` and displayed it in `WhileYouWereAway.tsx`.
 
 ## [2026-03-07] v0.6.0 "The Ascended Master"
 - **Magic Hub Dashboard**: Redesigned home screen into a magical portal hub for faster navigation between systems.

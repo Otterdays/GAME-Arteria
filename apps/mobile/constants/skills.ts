@@ -196,6 +196,7 @@ export const IMPLEMENTED_CRAFTING_SKILLS: SkillId[] = [
     'woodworking',
     'fletching',
     'tailoring',
+    'alchemy',
 ];
 
 export const IMPLEMENTED_SUPPORT_SKILLS: SkillId[] = [

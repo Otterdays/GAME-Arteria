@@ -48,7 +48,8 @@ export type SkillId =
     | 'chronomancy'
     | 'constitution'
     | 'firemaking'
-    | 'magic';
+    | 'magic'
+    | 'resonance';
 
 /** Item mastery: track totalProduced, masteryTier, isPerfect per item. */
 export interface ItemMasteryEntry {
@@ -175,6 +176,16 @@ export interface ActiveTask {
     partialTickMs: number;
 }
 
+export interface QueuedAction {
+    id: string; // unique identifier
+    skillId: SkillId;
+    actionId: string;
+    targetQty: number;      // how many to produce
+    completedQty: number;   // how many have been produced
+    intervalMs: number;     // calculated tick interval at time of queueing
+    partialTickMs: number;  // progress on the current item
+}
+
 /** Result of processing one or more ticks */
 export interface TickResult {
     xpGained: Record<SkillId, number>;
@@ -190,6 +201,10 @@ export interface OfflineReport {
     xpGained: Record<string, number>;
     itemsGained: InventoryItem[];
     levelsGained: Record<string, number>;
+    wasCapped?: boolean;
+    capLabel?: string;
+    goldGained?: number;
+    enemiesDefeated?: number;
 }
 
 /** Global game configuration constants */

@@ -192,10 +192,10 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 > **Goal:** Let players process what they gathered. Building complex inter-skill dependencies.
 
 ### 3.1 — Crafting Queue Architecture 🔴
-- [ ] 🔴 **Queue System State:** Support an 8-hour max queue of crafting actions in Redux/Engine. 
+- [x] 🔴 **Queue System State:** Support an 8-hour max queue of crafting actions in Redux/Engine. 
 - [ ] 🟡 **Speed Modifiers:** F2P capped at base rate, active play (app open) grants 1.5x-2x speed multiplier.
-- [ ] 🔴 **Bank Integration:** Subtract inputs on queue start (reserve them), grant outputs on queue complete (or partial completion if interrupted).
-- [ ] 🟡 **Offline Queue Processing:** Ensure `processOffline` handles completing multiple queued items over elapsed time.
+- [x] 🔴 **Bank Integration:** Subtract inputs on queue start (reserve them), grant outputs on queue complete (or partial completion if interrupted).
+- [x] 🟡 **Offline Queue Processing:** Ensure `processOffline` handles completing multiple queued items over elapsed time.
 
 ### 3.2 — Core Crafting Skills (Data & UI) 🟡
 - [x] 🟡 **Smithing (Smelting):** Ore → bars. 7 recipes (Bronze→Runite). Runite narrative-gated. (v0.3.0)
@@ -207,7 +207,7 @@ Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄─�
 - [ ] 🟢 **Fletching:** Arrows, bows, throwable cosmos.
 - [x] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time). (Implemented v0.2.7)
 - [ ] 🔴 **Construction:** Housing, storage. *Blueprint System:* Requires multi-skill inputs (e.g., Nails from Smithing + Planks from Logging).
-- [ ] 🟢 **Crafting queue UI:** List of queued items with name, progress bar, ETA, cancel button.
+- [x] 🟢 **Crafting queue UI:** List of queued items with name, progress bar, ETA, cancel button.
 - [ ] 🟢 **Recipe browser:** Per-skill list of recipes with inputs/outputs and level requirement.
 - [ ] 🟡 **Partial queue completion:** If offline interrupted, grant outputs for completed items and refund or retain partial inputs (design decision + impl).
 - [ ] 🟢 **Crafting speed indicator:** Show "1x offline" vs "1.5x active" in UI.

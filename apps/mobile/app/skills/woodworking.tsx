@@ -151,6 +151,27 @@ export default function WoodworkingScreen() {
         }
     };
 
+    const handleEnqueue = (recipe: WoodworkingRecipe, quantity: number) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        dispatch(gameActions.enqueueTask({
+            task: {
+                id: Math.random().toString(36).substr(2, 9),
+                skillId: 'woodworking',
+                actionId: recipe.id,
+                targetQty: quantity,
+                completedQty: 0,
+                intervalMs: recipe.baseTickMs,
+                partialTickMs: 0,
+            },
+            inputsToDeduct: recipe.consumedItems.map(c => ({ id: c.id, quantity: c.quantity * quantity }))
+        }));
+        showFeedbackToast({
+            type: 'success',
+            title: 'Queued',
+            message: `Added ${quantity}x ${recipe.name} to the queue.`,
+        });
+    };
+
     const handleDockStop = () => {
         if (isWoodworking) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
@@ -244,6 +265,7 @@ export default function WoodworkingScreen() {
                         isActive={activeRecipeId === recipe.id}
                         activeTask={activeTask}
                         onPress={() => handleRecipePress(recipe)}
+                        onEnqueue={(qty) => handleEnqueue(recipe, qty)}
                     />
                 ))}
             </ScrollView>

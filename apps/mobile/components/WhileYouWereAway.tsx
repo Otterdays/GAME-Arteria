@@ -206,6 +206,7 @@ export default function WhileYouWereAway() {
     const hasLoot = report.itemsGained.length > 0;
     const hasXP = xpEntries.length > 0;
     const hasGold = (report.goldGained ?? 0) > 0;
+    const hasEnemies = (report.enemiesDefeated ?? 0) > 0;
 
     return (
         <Modal visible transparent animationType="slide">
@@ -264,7 +265,17 @@ export default function WhileYouWereAway() {
                             </View>
                         )}
 
-                        {!hasXP && !hasLoot && !hasGold && (
+                        {hasEnemies && (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Combat Overview</Text>
+                                <View style={styles.row}>
+                                    <Text style={styles.rowLabel}>⚔️ Enemies Defeated</Text>
+                                    <Text style={[styles.rowValue, { color: palette.accentPrimary }]}>{formatNumber(report.enemiesDefeated ?? 0)}</Text>
+                                </View>
+                            </View>
+                        )}
+
+                        {!hasXP && !hasLoot && !hasGold && !hasEnemies && (
                             <Text style={styles.noActivity}>
                                 No active task was set — nothing gathered while you were away.
                             </Text>

@@ -16,7 +16,8 @@ import { Spacing, FontSize, Radius, FontCinzelBold, THEME_OPTIONS, HeaderShadow,
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { gameActions } from '@/store/gameSlice';
-import { deleteSave } from '@/store/persistence';
+import { deleteSave, saveManifest } from '@/store/persistence';
+import { anchorActions } from '@/store/anchorSlice';
 import { getLoginBonusStatus, LOGIN_BONUS_DAYS } from '@/constants/loginBonus';
 import { getDisplayName, PROTAGONIST_CANONICAL_NAME } from '@/constants/character';
 import { useSfx } from '@/utils/sounds';
@@ -458,6 +459,7 @@ export default function SettingsScreen() {
     const hasStubbornTitle = unlockedTitles.includes('The Stubborn');
     const playerName = useAppSelector((s) => s.game.player.name);
     const displayName = getDisplayName(playerName);
+    const manifest = useAppSelector((s: any) => s.anchor.manifest);
     const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
     const [nicknameEdit, setNicknameEdit] = useState('');
     // OTA update check state
@@ -550,6 +552,26 @@ export default function SettingsScreen() {
                                 <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Nickname</Text>
                                 <Text style={styles.rowDesc}>
                                     You are {PROTAGONIST_CANONICAL_NAME}. Friends call you: <Text style={{ fontWeight: '700', color: palette.gold }}>{displayName}</Text>
+                                </Text>
+                            </View>
+                            <Text style={styles.arrow}>›</Text>
+                        </Pressable>
+                        {/* Switch Anchor — returns to The Docking Station */}
+                        <Pressable
+                            style={styles.row}
+                            onPress={() => {
+                                if (!manifest) return;
+                                const updated = { ...manifest, activeAnchorId: null };
+                                saveManifest(updated);
+                                dispatch(anchorActions.setActiveAnchorId(null));
+                                dispatch(anchorActions.loadManifestAction(updated));
+                            }}
+                            android_ripple={{ color: palette.bgCardHover }}
+                        >
+                            <View style={styles.rowInfo}>
+                                <Text style={[styles.rowLabel, { color: palette.textPrimary }]}>Switch Anchor</Text>
+                                <Text style={styles.rowDesc}>
+                                    Return to The Docking Station — select or create another timeline
                                 </Text>
                             </View>
                             <Text style={styles.arrow}>›</Text>

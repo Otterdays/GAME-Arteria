@@ -5,6 +5,27 @@
 
 > **🤖 AI: When adding a new release entry here, also update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `app.json` version.
 
+## [0.7.0] - 2026-03-22 — "Timelines & Alchemy"
+### Added
+- **Anchor Timeline Selection System:** Multi-slot character account system designed to isolate play sessions. Includes a dedicated `character-select.tsx` landing zone and upgraded multi-tenant save handling powered by the new anchor-based storage module.
+- **Alchemy Skill Activated:** Added to `IMPLEMENTED_CRAFTING_SKILLS` and `SKILL_NAV_ORDER` indices for fully supported interface navigation and skill calculations.
+
+### Security
+- **Dependency Audit Suite:** Created `Audit_Deps.bat` and `DOCU/DEP_AUDIT_SUITE.md` to standardize dependency audits for AI agents and engineers.
+- **Vulnerability Patch:** Patched 2 high severity vulnerabilities (`flatted`, `svgo`) via automated npm audit resolutions. SBOM has been updated.
+
+### Fixed
+- **Type Mismatch (`useGameLoop.ts`):** Added `'resonance'` to engine `SkillId` union to align with `gameSlice` PlayerState.
+- **Path Resolution (`apps/mobile/tsconfig.json`):** Corrected `extends` path from `expo/tsconfig.base` to `../../node_modules/expo/tsconfig.base` for absolute monorepo pathing.
+- **Phantom Type Safety:** Added `"types": []` to prevent auto-resolving missing `@types/hammerjs`.
+- **Gradle Version Freeze:** Downgraded Gradle back from `9.0.0` to `8.13` to preserve `@react-native/gradle-plugin` API compatibility with `JavaVendorSpec`.
+
+## [0.6.3] - 2026-03-22 — "The Queue"
+### Added
+- **Crafting Queue System:** You can now queue up multiple consecutive skilling or crafting actions. `useGameLoop.ts` has been supercharged with a robust `processQueueDelta` engine that securely processes multiple ticks inside an offline/background catch-up.
+- **Crafting Queue UI Hub:** Added a Glassmorphic sticky queue manager featuring real-time timers, Estimated Time to Completion (ETC), and individual cancel buttons. Integrated persistently across crafting and artisan screens.
+- **Offline Combat Record:** The While You Were Away (WYWA) report has been updated to capture and display enemies defeated off-screen.
+
 ## [0.6.2] - 2026-03-13 — "The Profile"
 ### Added
 - **Profile screen:** Local-first account hub (Settings → Character → Profile). Identity (display name, patron, pet, total level, title), progress snapshot (gold, Lumina, combat stats, first/last played), rewards & entitlements (login streak, XP boost, expansions), quick actions (edit nickname, Pets, Expansions, Patch notes). Optional `selectedTitle` on `PlayerState` for displayed title; `setSelectedTitle` action.

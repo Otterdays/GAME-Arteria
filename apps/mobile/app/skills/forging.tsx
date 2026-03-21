@@ -369,6 +369,36 @@ export default function ForgingScreen() {
         }
     };
 
+    const handleEnqueue = (recipe: ForgingRecipe, quantity: number) => {
+        if (!canAffordRecipe(inventory, recipe)) {
+            showFeedbackToast({
+                type: 'warning',
+                title: 'No Materials',
+                message: `You do not have enough materials to queue ${quantity}x ${recipe.name}.`,
+            });
+            return;
+        }
+
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        dispatch(gameActions.enqueueTask({
+            task: {
+                id: Math.random().toString(36).substr(2, 9),
+                skillId: 'forging',
+                actionId: recipe.id,
+                targetQty: quantity,
+                completedQty: 0,
+                intervalMs: recipe.baseTickMs,
+                partialTickMs: 0,
+            },
+            inputsToDeduct: recipe.consumedItems.map(c => ({ id: c.id, quantity: c.quantity * quantity }))
+        }));
+        showFeedbackToast({
+            type: 'success',
+            title: 'Queued',
+            message: `Added ${quantity}x ${recipe.name} to the queue.`,
+        });
+    };
+
     const recipesByTier = useMemo(() => {
         const map: Record<string, ForgingRecipe[]> = {};
         for (const tier of METAL_TIERS) {

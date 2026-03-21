@@ -153,6 +153,28 @@ export default function CraftingScreen() {
         }
     }, [selectedRecipe, activeRecipeId, craftSkill.level, inventory, player, showFeedbackToast, dispatch, requestStartTask]);
 
+    const handleEnqueue = useCallback((quantity: number) => {
+        if (!selectedRecipe) return;
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        dispatch(gameActions.enqueueTask({
+            task: {
+                id: Math.random().toString(36).substr(2, 9),
+                skillId: 'crafting',
+                actionId: selectedRecipe.id,
+                targetQty: quantity,
+                completedQty: 0,
+                intervalMs: selectedRecipe.baseTickMs,
+                partialTickMs: 0,
+            },
+            inputsToDeduct: selectedRecipe.consumedItems.map(c => ({ id: c.id, quantity: c.quantity * quantity }))
+        }));
+        showFeedbackToast({
+            type: 'success',
+            title: 'Queued',
+            message: `Added ${quantity}x ${selectedRecipe.name} to the queue.`,
+        });
+    }, [selectedRecipe, dispatch, showFeedbackToast]);
+
     // Group recipes into tiers for the radial layout
     const recipesByTier = useMemo(() => {
         const tiers: CraftingRecipe[][] = [[], [], [], []];
@@ -650,35 +672,46 @@ export default function CraftingScreen() {
                             </View>
                         </View>
 
-                        <TouchableOpacity
-                            style={[
-                                styles.craftButton,
-                                activeRecipeId !== selectedRecipe.id &&
-                                    (craftSkill.level < selectedRecipe.levelReq || !canAffordRecipe(inventory, selectedRecipe)) &&
-                                    styles.craftButtonDisabled,
-                                activeRecipeId === selectedRecipe.id && styles.craftButtonActive,
-                            ]}
-                            onPress={handleCraftPress}
-                            disabled={
-                                craftSkill.level < selectedRecipe.levelReq ||
-                                (!!selectedRecipe.requirement && !meetsNarrativeRequirement(player, selectedRecipe.requirement))
-                            }
-                        >
-                            <IconSymbol
-                                name={activeRecipeId === selectedRecipe.id ? 'stop.fill' : 'hammer.fill'}
-                                size={18}
-                                color={palette.white}
-                            />
-                            <Text style={styles.craftButtonText}>
-                                {activeRecipeId === selectedRecipe.id
-                                    ? 'Stop Crafting'
-                                    : craftSkill.level < selectedRecipe.levelReq
-                                        ? `Unlock at Lv. ${selectedRecipe.levelReq}`
-                                        : selectedRecipe.requirement && !meetsNarrativeRequirement(player, selectedRecipe.requirement)
-                                            ? 'Locked'
-                                            : 'Start Crafting'}
-                            </Text>
-                        </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.craftButton,
+                                    { flex: 2 },
+                                    activeRecipeId !== selectedRecipe.id &&
+                                        (craftSkill.level < selectedRecipe.levelReq || !canAffordRecipe(inventory, selectedRecipe)) &&
+                                        styles.craftButtonDisabled,
+                                    activeRecipeId === selectedRecipe.id && styles.craftButtonActive,
+                                ]}
+                                onPress={handleCraftPress}
+                                disabled={
+                                    craftSkill.level < selectedRecipe.levelReq ||
+                                    (!!selectedRecipe.requirement && !meetsNarrativeRequirement(player, selectedRecipe.requirement))
+                                }
+                            >
+                                <IconSymbol
+                                    name={activeRecipeId === selectedRecipe.id ? 'stop.fill' : 'hammer.fill'}
+                                    size={18}
+                                    color={palette.white}
+                                />
+                                <Text style={styles.craftButtonText}>
+                                    {activeRecipeId === selectedRecipe.id
+                                        ? 'Stop'
+                                        : craftSkill.level < selectedRecipe.levelReq
+                                            ? `Lv. ${selectedRecipe.levelReq}`
+                                            : 'Start'}
+                                </Text>
+                            </TouchableOpacity>
+
+                            {activeRecipeId !== selectedRecipe.id && craftSkill.level >= selectedRecipe.levelReq && canAffordRecipe(inventory, selectedRecipe) && (
+                                <TouchableOpacity
+                                    style={[styles.craftButton, { flex: 1, backgroundColor: `${palette.accentPrimary}33`, borderColor: palette.accentPrimary, borderWidth: 1 }]}
+                                    onPress={() => handleEnqueue(10)}
+                                >
+                                    <IconSymbol name="plus.square" size={18} color={palette.accentPrimary} />
+                                    <Text style={[styles.craftButtonText, { color: palette.accentPrimary }]}>+10</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     </>
                 ) : (
                     <View style={styles.detailPanelEmpty}>

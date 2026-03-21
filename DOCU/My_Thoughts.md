@@ -58,3 +58,10 @@ The user reported that the `LevelUpToast` had issues appearing when multiple lev
    - **Consistency Audit**: Identified that Slayer, Summoning, and Resonance were lagging behind the "Enhanced!" UI style seen in Mining/Fishing. Upgraded them with custom headers, matching palettes, and gold level badges.
    - **Navigation Unification**: Fixed a major UX flaw in Astrology where the right arrow led to an invalid route. Consolidated Resonance into the `/skills` folder to fix deep-link and breadcrumb issues.
    - **Ticker Visibility**: The GlobalActionTicker now intelligently detects if the user is in a `(tabs)` route to shift its position, preventing it from being obscured by the bottom tab bar.
+
+## Implementation (Crafting Queue Architecture) - March 22, 2026
+Building out a crafting queue (as well as handling offline processing limits) required a delicate touch. Specifically within `useGameLoop.ts`, my process was:
+1. Ensure the loop doesn't simply spam individual actions to Redux, which causes major state lag and flashing.
+2. Constructed `processQueueDelta`, a parallel engine to `processDelta`. This new loop analyzes `playerRef.current.queuedTasks` continuously until `deltaMs` (or offline elapsed times up to 8 hours) decays into `0 ms`. 
+3. Any excess `leftoverMs` drops to the NEXT queued item dynamically, granting frame/tick-perfect precision for back-to-back crafting actions.
+4. The offline engine bundles up the rewards and delegates to `gameActions.applyQueueUpdates` as one single batch payload, which trims finished tasks from the UI gracefully and pushes only the necessary log toasts.

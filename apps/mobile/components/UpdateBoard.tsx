@@ -164,8 +164,10 @@ export default function UpdateBoard() {
                     <Text style={styles.boardLabel}>Update Board</Text>
                     <Text style={styles.title}>Arteria v{PATCH_HISTORY[0].version}</Text>
                     <Text style={styles.subtitle}>
-                        {currentVersion === '0.6.2' ? 'The Profile'
-                            : currentVersion === '0.6.1' ? 'The Forge & The Bow'
+                        {currentVersion === '0.7.0' ? 'The Timelines'
+                            : currentVersion === '0.6.3' ? 'The Queue'
+                                : currentVersion === '0.6.2' ? 'The Profile'
+                                : currentVersion === '0.6.1' ? 'The Forge & The Bow'
                                 : currentVersion === '0.6.0' ? 'The Ascended Master'
                                 : currentVersion === '0.5.3' ? 'The Legion & The Soul'
                                     : currentVersion === '0.5.2' ? 'The Celestial Expansion'
@@ -177,7 +179,39 @@ export default function UpdateBoard() {
                     </Text>
 
                     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-                        {currentVersion === '0.6.2' ? (
+                        {currentVersion === '0.7.0' ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⏳ Anchor Timelines</Text>
+                                    <Text style={styles.changeText}>• Multi-slot character account system. Create and manage isolated character profiles (Anchors) with isolated saves.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>Characters Switcher</Text>
+                                    <Text style={styles.changeText}>• Landing page setup to force accurate account allocation before hitting the core loop dashboards.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚗️ Alchemy Skill Activated</Text>
+                                    <Text style={styles.changeText}>• Alchemy is now fully integrated into the implementation pool. Start testing the transmutative recipes in the craft section.</Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                            </>
+                        ) : currentVersion === '0.6.3' ? (
+                            <>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>⚙️ Crafting Queue System</Text>
+                                    <Text style={styles.changeText}>• You can now queue up multiple consecutive skilling or crafting actions. Sit back and watch your character train automatically!</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📱 Crafting Queue UI Hub</Text>
+                                    <Text style={styles.changeText}>• Sticky Glassmorphic queue dock featuring real-time timers, Estimated Time to Completion (ETC), and individual cancel buttons to manage tasks efficiently.</Text>
+                                </View>
+                                <View style={styles.changeBlock}>
+                                    <Text style={styles.changeHeader}>📜 WYWA Combat Report</Text>
+                                    <Text style={styles.changeText}>• The While You Were Away report evaluates offline battle gains and now displays your defeated enemies count natively.</Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: palette.border, marginVertical: Spacing.sm, opacity: 0.3 }} />
+                            </>
+                        ) : currentVersion === '0.6.2' ? (
                             <>
                                 <View style={styles.changeBlock}>
                                     <Text style={styles.changeHeader}>Profile Screen</Text>

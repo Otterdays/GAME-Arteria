@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, InteractionManager } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack, Redirect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Cinzel_400Regular, Cinzel_700Bold } from '@expo-google-fonts/cinzel';
 import 'react-native-reanimated';
+import { useAppSelector } from '@/store/hooks';
 
 import { paletteToNavigationTheme } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -27,7 +28,6 @@ import { GlobalActionTicker } from '@/components/GlobalActionTicker';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DialogueOverlay } from '@/components/DialogueOverlay';
 import GoblinPeekModal from '@/components/GoblinPeekModal';
-import NameEntryModal from '@/components/NameEntryModal';
 import { BatterySaver } from '@/components/BatterySaver';
 import { QuickSwitchProvider } from '@/contexts/QuickSwitchContext';
 import { ThemeProvider as AppThemeProvider } from '@/contexts/ThemeContext';
@@ -74,6 +74,10 @@ function AppShell() {
   useGameLoop({ onTickComplete: playForSkill });
   usePersistence();
 
+  // Manifest-based gating — redirect to character select if no anchor is active
+  const isManifestLoaded = useAppSelector((s: any) => s.anchor.isManifestLoaded);
+  const activeAnchorId   = useAppSelector((s: any) => s.anchor.manifest?.activeAnchorId ?? null);
+
   const [announcement, setAnnouncement] = useState<SpecialMessage | null>(null);
   const hasHiddenSplash = useRef(false);
 
@@ -81,8 +85,6 @@ function AppShell() {
     if (!fontsLoaded && !fontError) return;
     if (hasHiddenSplash.current) return;
     hasHiddenSplash.current = true;
-    // Defer hide until after first layout/paint to avoid Android SplashScreenManager
-    // predraw cancelAndRedraw loop (performTraversals boot loop).
     InteractionManager.runAfterInteractions(() => {
       SplashScreen.hideAsync();
     });
@@ -92,12 +94,18 @@ function AppShell() {
     return <View style={{ flex: 1, backgroundColor: '#000000' }} />;
   }
 
+  // Manifest loaded but no active anchor → go to selection screen
+  if (isManifestLoaded && !activeAnchorId) {
+    return <Redirect href="/character-select" />;
+  }
+
   return (
     <AppThemeProvider>
       <NavThemeWrapper>
         <QuickSwitchProvider>
           <BatterySaver>
             <Stack>
+              <Stack.Screen name="character-select" options={{ headerShown: false, animation: 'fade' }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="profile" options={{ headerShown: false }} />
               <Stack.Screen name="location/[id]" options={{ headerShown: false }} />
@@ -114,7 +122,6 @@ function AppShell() {
             <QuickSwitchSidebar />
             <DialogueOverlay />
             <GoblinPeekModal />
-            <NameEntryModal />
             <SpecialMessageModal message={announcement} onDismiss={() => setAnnouncement(null)} />
             <StatusBarFromTheme />
           </BatterySaver>

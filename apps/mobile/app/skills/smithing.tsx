@@ -284,6 +284,23 @@ export default function SmithingScreen() {
                     fontWeight: 'bold',
                     fontSize: FontSize.base,
                 },
+                enqueueButton: {
+                    marginTop: Spacing.sm,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    paddingVertical: 8,
+                    borderRadius: Radius.md,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary + '44',
+                    backgroundColor: palette.accentPrimary + '11',
+                },
+                enqueueButtonText: {
+                    color: palette.accentPrimary,
+                    fontWeight: '700',
+                    fontSize: FontSize.xs,
+                },
             }),
         [palette]
     );
@@ -334,6 +351,27 @@ export default function SmithingScreen() {
                 partialTickMs: 0,
             });
         }
+    };
+
+    const handleEnqueue = (recipe: SmeltingRecipe, quantity: number) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        dispatch(gameActions.enqueueTask({
+            task: {
+                id: Math.random().toString(36).substr(2, 9),
+                skillId: 'smithing',
+                actionId: recipe.id,
+                targetQty: quantity,
+                completedQty: 0,
+                intervalMs: recipe.baseTickMs,
+                partialTickMs: 0,
+            },
+            inputsToDeduct: recipe.consumedItems.map(c => ({ id: c.id, quantity: c.quantity * quantity }))
+        }));
+        showFeedbackToast({
+            type: 'success',
+            title: 'Queued',
+            message: `Added ${quantity}x ${recipe.name} to the queue.`,
+        });
     };
 
     return (

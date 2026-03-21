@@ -40,6 +40,9 @@ const MAPPING = {
   'bag.fill': 'bag-personal',
   'clock': 'clock-outline',
   'waveform.circle.fill': 'pulse',
+  'stack': 'layers-triple',
+  'trash': 'trash-can-outline',
+  'plus.square': 'plus-box',
 } as Record<string, ComponentProps<typeof MaterialCommunityIcons>['name']>;
 
 export type IconSymbolName = keyof typeof MAPPING;

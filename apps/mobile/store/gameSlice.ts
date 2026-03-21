@@ -27,7 +27,7 @@ import {
     SOUL_CRANKING_XP_GAIN,
 } from '@/constants/resonance';
 import { FARMING_PATCHES, getPatchById, getCropById } from '@/constants/farming';
-import type { ItemMasteryEntry } from '../../../packages/engine/src/types';
+import type { ItemMasteryEntry, QueuedAction } from '../../../packages/engine/src/types';
 
 // ─── Inline types (mirrors @arteria/engine types) ───
 // We inline these so the mobile app doesn't need to resolve
@@ -177,6 +177,8 @@ export interface PlayerState {
     gold: number;
     combatStats: CombatStats;
     activeTask: ActiveTask | null;
+    /** Up to 8 hours of queued actions (Crafting / Smithing / etc) */
+    queuedTasks?: QueuedAction[];
     lastSaveTimestamp: number;
     /** Story progression, quests, and flags */
     narrative: {
@@ -630,6 +632,7 @@ export interface OfflineReport {
     xpGained: Partial<Record<SkillId, number>>;
     itemsGained: InventoryItem[];
     goldGained?: number;
+    enemiesDefeated?: number;
     wasCapped: boolean;
     /** When wasCapped: "24h (F2P)" or "7 days (Patron)" */
     capLabel?: string;
@@ -872,6 +875,64 @@ export const gameSlice = createSlice({
         /** Clear the active task */
         stopTask(state) {
             state.player.activeTask = null;
+        },
+
+        /** Enqueue a crafting task. Deducts inputs immediately (reserving them). */
+        enqueueTask(state, action: PayloadAction<{ task: QueuedAction; inputsToDeduct: InventoryItem[] }>) {
+            const { task, inputsToDeduct } = action.payload;
+            state.player.queuedTasks = state.player.queuedTasks || [];
+            
+            // Deduct inputs
+            for (const input of inputsToDeduct) {
+                const existing = state.player.inventory.find((i) => i.id === input.id);
+                if (existing) {
+                    existing.quantity -= input.quantity;
+                }
+            }
+            state.player.inventory = state.player.inventory.filter((i) => i.quantity > 0);
+            
+            state.player.queuedTasks.push(task);
+            
+            logger.info('Queue', 'task_enqueued', { actionId: task.actionId, qty: task.targetQty });
+        },
+
+        /** Cancel a queued task. Refunds the remaining resources for uncrafted items. */
+        cancelQueuedTask(state, action: PayloadAction<{ id: string; refundItems: InventoryItem[] }>) {
+            if (!state.player.queuedTasks) return;
+            const index = state.player.queuedTasks.findIndex(q => q.id === action.payload.id);
+            if (index !== -1) {
+                state.player.queuedTasks.splice(index, 1);
+                
+                // Refund remaining inputs
+                for (const refund of action.payload.refundItems) {
+                    if (refund.quantity <= 0) continue;
+                    const existing = state.player.inventory.find(i => i.id === refund.id);
+                    if (existing) {
+                        existing.quantity += refund.quantity;
+                    } else {
+                        state.player.inventory.push({ id: refund.id, quantity: refund.quantity });
+                    }
+                }
+                
+                logger.info('Queue', 'task_cancelled', { id: action.payload.id });
+            }
+        },
+
+        /** Apply a batch of queue progress updates from the game loop */
+        applyQueueUpdates(state, action: PayloadAction<{ id: string; addTicks: number; leftoverMs: number; isFinished: boolean }[]>) {
+            if (!state.player.queuedTasks) return;
+            for (const update of action.payload) {
+                const taskIndex = state.player.queuedTasks.findIndex(q => q.id === update.id);
+                if (taskIndex !== -1) {
+                    const task = state.player.queuedTasks[taskIndex];
+                    task.completedQty += update.addTicks;
+                    task.partialTickMs = update.leftoverMs;
+                    if (update.isFinished) {
+                        state.player.queuedTasks.splice(taskIndex, 1);
+                        logger.info('Queue', 'task_finished', { id: task.id, actionId: task.actionId });
+                    }
+                }
+            }
         },
 
         /** Apply XP gains from a tick result (auto-computes level). Patron gets +20%. Lumina XP boost +25%. */
@@ -2204,11 +2265,11 @@ export const gameSlice = createSlice({
             }
         },
         /** Process combat tick: called with deltaMs from game loop. */
-        processCombatTick(state, action: PayloadAction<{ deltaMs: number }>) {
+        processCombatTick(state, action: PayloadAction<{ deltaMs: number; report?: OfflineReport }>) {
             const combat = state.player.activeCombat;
             if (!combat) return;
 
-            const { deltaMs } = action.payload;
+            const { deltaMs, report } = action.payload;
             const playerStats = state.player.combatStats;
             const playerAttackSpeed = playerStats.attackSpeed || 2400;
 
@@ -2226,12 +2287,14 @@ export const gameSlice = createSlice({
                 if (state.player.prayerPoints <= 0) {
                     state.player.prayerPoints = 0;
                     state.player.activePrayers = [];
-                    state.combatLog.push({
-                        id: combatLogIdCounter++,
-                        message: 'Your prayer points have been exhausted.',
-                        type: 'info',
-                        timestamp: Date.now(),
-                    });
+                    if (!report) {
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: 'Your prayer points have been exhausted.',
+                            type: 'info',
+                            timestamp: Date.now(),
+                        });
+                    }
                 }
             }
 
@@ -2260,6 +2323,12 @@ export const gameSlice = createSlice({
                 const xpMult = state.player.settings?.isPatron ? XP_BONUS_PATRON : 1;
                 const luminaBoost = (state.player.xpBoostExpiresAt && state.player.xpBoostExpiresAt > Date.now()) ? 1.25 : 1;
                 const effectiveXp = Math.floor(xp * masteryMult * xpMult * luminaBoost);
+
+                if (report) {
+                    report.xpGained[skillId] = (report.xpGained[skillId] ?? 0) + effectiveXp;
+                    return; // Skip levelling events during offline projection
+                }
+
                 const skill = state.player.skills[skillId];
                 if (!skill) return;
                 const oldLevel = skill.level;
@@ -2315,25 +2384,32 @@ export const gameSlice = createSlice({
                         state.player.lifetimeStats.highestHit = damage;
                     }
 
-                    state.combatLog.push({
-                        id: combatLogIdCounter++,
-                        message: `You hit ${combat.enemyName} for ${damage} damage.`,
-                        type: 'player_hit',
-                        timestamp: Date.now(),
-                    });
+                    if (!report) {
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `You hit ${combat.enemyName} for ${damage} damage.`,
+                            type: 'player_hit',
+                            timestamp: Date.now(),
+                        });
+                    }
 
                     // Enemy killed?
                     if (combat.enemyCurrentHp <= 0) {
                         combat.killCount += 1;
+                        if (report) {
+                            report.enemiesDefeated = (report.enemiesDefeated ?? 0) + 1;
+                        }
                         // lifetime stats tracking
                         state.player.lifetimeStats.enemiesDefeated = (state.player.lifetimeStats.enemiesDefeated ?? 0) + 1;
 
-                        state.combatLog.push({
-                            id: combatLogIdCounter++,
-                            message: `${combat.enemyName} defeated! (Kill #${combat.killCount})`,
-                            type: 'kill',
-                            timestamp: Date.now(),
-                        });
+                        if (!report) {
+                            state.combatLog.push({
+                                id: combatLogIdCounter++,
+                                message: `${combat.enemyName} defeated! (Kill #${combat.killCount})`,
+                                type: 'kill',
+                                timestamp: Date.now(),
+                            });
+                        }
 
                         // Slayer progress
                         const task = state.player.slayerTask;
@@ -2350,12 +2426,14 @@ export const gameSlice = createSlice({
                                 const bonus = (monster?.slayerXpPerKill ?? 10) * task.targetAmount * 0.5;
                                 applyCombatXP('slayer', bonus);
                                 state.player.slayerTask = null;
-                                state.feedbackToastQueue.push({
-                                    id: Math.random().toString(36).substring(7),
-                                    type: 'lucky',
-                                    title: 'Slayer Task Complete!',
-                                    message: `You finished your ${monster?.name} bounty!`,
-                                });
+                                if (!report) {
+                                    state.feedbackToastQueue.push({
+                                        id: Math.random().toString(36).substring(7),
+                                        type: 'lucky',
+                                        title: 'Slayer Task Complete!',
+                                        message: `You finished your ${monster?.name} bounty!`,
+                                    });
+                                }
                                 if (!state.player.lifetimeStats) {
                                     state.player.lifetimeStats = { enemiesDefeated: 0, totalGoldEarned: 0, totalDeaths: 0, highestHit: 0, totalItemsProduced: 0, byItem: {}, totalSlayerTasksCompleted: 0 };
                                 }
@@ -2404,34 +2482,47 @@ export const gameSlice = createSlice({
                             for (const drop of enemyMeta.drops) {
                                 if (Math.random() < (drop.chance * lootMult)) {
                                     const qty = drop.minQty + Math.floor(Math.random() * (drop.maxQty - drop.minQty + 1));
-                                    const existing = state.player.inventory.find(i => i.id === drop.itemId);
-                                    if (existing) {
-                                        existing.quantity += qty;
+                                    if (report) {
+                                        const existing = report.itemsGained.find(i => i.id === drop.itemId);
+                                        if (existing) {
+                                            existing.quantity += qty;
+                                        } else {
+                                            report.itemsGained.push({ id: drop.itemId, quantity: qty });
+                                        }
                                     } else {
-                                        state.player.inventory.push({ id: drop.itemId, quantity: qty });
+                                        const existing = state.player.inventory.find(i => i.id === drop.itemId);
+                                        if (existing) {
+                                            existing.quantity += qty;
+                                        } else {
+                                            state.player.inventory.push({ id: drop.itemId, quantity: qty });
+                                        }
+                                        state.combatLog.push({
+                                            id: combatLogIdCounter++,
+                                            message: `Loot: ${drop.itemId.replace(/_/g, ' ')} x${qty}`,
+                                            type: 'loot',
+                                            timestamp: Date.now(),
+                                        });
                                     }
-                                    state.combatLog.push({
-                                        id: combatLogIdCounter++,
-                                        message: `Loot: ${drop.itemId.replace(/_/g, ' ')} x${qty}`,
-                                        type: 'loot',
-                                        timestamp: Date.now(),
-                                    });
                                 }
                             }
                         }
 
                         // Gold drop (enemy HP * 1-3)
                         const goldDrop = Math.floor(combat.enemyMaxHp * (1 + Math.random() * 2));
-                        state.player.gold += goldDrop;
-                        if (state.player.lifetimeStats) {
-                            state.player.lifetimeStats.totalGoldEarned += goldDrop;
+                        if (report) {
+                            report.goldGained = (report.goldGained ?? 0) + goldDrop;
+                        } else {
+                            state.player.gold += goldDrop;
+                            if (state.player.lifetimeStats) {
+                                state.player.lifetimeStats.totalGoldEarned += goldDrop;
+                            }
+                            state.combatLog.push({
+                                id: combatLogIdCounter++,
+                                message: `+${goldDrop} gold`,
+                                type: 'loot',
+                                timestamp: Date.now(),
+                            });
                         }
-                        state.combatLog.push({
-                            id: combatLogIdCounter++,
-                            message: `+${goldDrop} gold`,
-                            type: 'loot',
-                            timestamp: Date.now(),
-                        });
 
                         // HP regen on kill (10% of max)
                         const healAmount = Math.floor(playerStats.maxHitpoints * 0.1);
@@ -2457,19 +2548,21 @@ export const gameSlice = createSlice({
                                     combat.enemyAccuracy = eliteMeta.combat.accuracy ?? 0.8;
                                     combat.enemyAttackSpeed = eliteMeta.combat.attackSpeed ?? 2400;
 
-                                    state.feedbackToastQueue.push({
-                                        id: Math.random().toString(36).substring(7),
-                                        type: 'warning',
-                                        title: 'ELITE SPAWNED!',
-                                        message: `A ${eliteMeta.name} has appeared!`,
-                                    });
+                                    if (!report) {
+                                        state.feedbackToastQueue.push({
+                                            id: Math.random().toString(36).substring(7),
+                                            type: 'warning',
+                                            title: 'ELITE SPAWNED!',
+                                            message: `A ${eliteMeta.name} has appeared!`,
+                                        });
 
-                                    state.combatLog.push({
-                                        id: combatLogIdCounter++,
-                                        message: `🚨 A ${eliteMeta.name} ambushes you!`,
-                                        type: 'info',
-                                        timestamp: Date.now(),
-                                    });
+                                        state.combatLog.push({
+                                            id: combatLogIdCounter++,
+                                            message: `🚨 A ${eliteMeta.name} ambushes you!`,
+                                            type: 'info',
+                                            timestamp: Date.now(),
+                                        });
+                                    }
 
                                     // Reset timers
                                     combat.playerAttackTimerMs = 0;
@@ -2500,12 +2593,14 @@ export const gameSlice = createSlice({
                         combat.enemyAttackTimerMs = 0;
                     }
                 } else {
-                    state.combatLog.push({
-                        id: combatLogIdCounter++,
-                        message: `You miss ${combat.enemyName}.`,
-                        type: 'player_miss',
-                        timestamp: Date.now(),
-                    });
+                    if (!report) {
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `You miss ${combat.enemyName}.`,
+                            type: 'player_miss',
+                            timestamp: Date.now(),
+                        });
+                    }
                 }
             }
 
@@ -2528,12 +2623,14 @@ export const gameSlice = createSlice({
                     // Prayer defence bonus applies to melee defence check above
                     playerStats.currentHitpoints -= damage;
 
-                    state.combatLog.push({
-                        id: combatLogIdCounter++,
-                        message: `${combat.enemyName} hits you for ${damage} damage.`,
-                        type: 'enemy_hit',
-                        timestamp: Date.now(),
-                    });
+                    if (!report) {
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `${combat.enemyName} hits you for ${damage} damage.`,
+                            type: 'enemy_hit',
+                            timestamp: Date.now(),
+                        });
+                    }
 
                     // Player dies?
                     if (playerStats.currentHitpoints <= 0) {
@@ -2541,24 +2638,28 @@ export const gameSlice = createSlice({
                         if (state.player.lifetimeStats) {
                             state.player.lifetimeStats.totalDeaths += 1;
                         }
-                        state.combatLog.push({
-                            id: combatLogIdCounter++,
-                            message: 'You have been defeated! Respawning...',
-                            type: 'died',
-                            timestamp: Date.now(),
-                        });
+                        if (!report) {
+                            state.combatLog.push({
+                                id: combatLogIdCounter++,
+                                message: 'You have been defeated! Respawning...',
+                                type: 'died',
+                                timestamp: Date.now(),
+                            });
+                        }
                         // Stop combat on death — deactivate prayers
                         state.player.activeCombat = null;
                         state.player.activePrayers = [];
                         return;
                     }
                 } else {
-                    state.combatLog.push({
-                        id: combatLogIdCounter++,
-                        message: `${combat.enemyName} misses you.`,
-                        type: 'enemy_miss',
-                        timestamp: Date.now(),
-                    });
+                    if (!report) {
+                        state.combatLog.push({
+                            id: combatLogIdCounter++,
+                            message: `${combat.enemyName} misses you.`,
+                            type: 'enemy_miss',
+                            timestamp: Date.now(),
+                        });
+                    }
                 }
             }
 

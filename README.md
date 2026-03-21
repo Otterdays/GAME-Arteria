@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Arteria-0.6.0-8b5cf6?style=for-the-badge&labelColor=0a0b0f" alt="Version" />
+  <img src="https://img.shields.io/badge/Arteria-0.6.3-8b5cf6?style=for-the-badge&labelColor=0a0b0f" alt="Version" />
   <img src="https://img.shields.io/badge/Expo-SDK_55-000020?style=for-the-badge&logo=expo&logoColor=fff" alt="Expo" />
   <img src="https://img.shields.io/badge/React_Native-0.83-61dafb?style=for-the-badge&logo=react&logoColor=fff" alt="React Native" />
   <img src="https://img.shields.io/badge/TypeScript-5.9-3178c6?style=for-the-badge&logo=typescript&logoColor=fff" alt="TypeScript" />
@@ -54,18 +54,14 @@ A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for *
 
 ---
 
-## 🚀 Latest — v0.6.0 "The Ascended Master"
+## 🚀 Latest — v0.6.3 "The Queue"
 
 | System | Details |
 |--------|---------|
-| **🗺️ Exploration** | Survey routes, chart regions. 6 expeditions tied to world locations. Discovery items. World Map level gates. |
-| **📜 Wizardry** | Study tomes and scrolls for XP. 3 nodes: Basic Scroll, Tome of the Void, Celestial Almanac. |
-| **🪄 Sorcery** | Cast spells by consuming runes. Lumina Spark, Voidmire Bolt, Astral Storm. Runes from Runecrafting. |
-| **〰️ Resonance** | Clicker skill. Multi-Pulse (Lv 20), Soul Cranking (Lv 60), Anchor Energy. Momentum → global Haste. |
-| **🪵 Woodworking** | Flagship workbench UI. Logs → furniture, shields, staves. 5 recipes. |
-| **🔥 Firemaking** | Burn logs for XP. 9 burn types. |
-| **🌾 Farming** | Patch-based growth. 3 patches, 7 crops. |
-| **🏠 Magic Hub** | Redesigned home screen. Pillar grouping, search bar, mastery badges. |
+| **⚙️ Crafting Queue** | Queue up multiple consecutive skilling or crafting actions to run back-to-back. |
+| **🌙 WYWA Report** | While You Were Away report now natively tracks and displays enemies defeated. |
+| **👤 The Profile** | New account hub. Identity, progress snapshot, rewards & entitlements, quick actions. Optional selected title. |
+| **🏹 The Forge & The Bow** | Fletching (arrows, bows), Tailoring (cloth gear), and 10 missing skill capes added. |
 
 ---
 

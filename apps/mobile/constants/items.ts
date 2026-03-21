@@ -155,6 +155,12 @@ export const ITEM_META: Record<string, ItemMeta> = {
   natures_blessing: { emoji: '🌿', label: "Nature's Blessing", sellValue: 350, description: 'A powerful restorative. Brewed from snape grass.', type: 'potion' },
   void_resistance_potion: { emoji: '🕳️', label: 'Void Resistance', sellValue: 600, description: 'Reduces void damage. Brewed from void cap mushroom.', type: 'potion' },
 
+  // -- Alchemy --
+  greater_healing_potion: { emoji: '🧪', label: 'Greater Healing Potion', sellValue: 60, description: 'Concentrated restorative power. Heals significantly more.', type: 'potion', healAmount: 100 },
+  luck_elixir: { emoji: '🍀', label: 'Luck Elixir', sellValue: 150, description: 'Increises the chance of finding rare loot for a short duration.', type: 'potion' },
+  fire_bomb: { emoji: '💣', label: 'Fire Bomb', sellValue: 120, description: 'Explodes on impact, dealing fire damage.', type: 'other' },
+  void_grenade: { emoji: '🌀', label: 'Void Grenade', sellValue: 450, description: 'A volatile orb that deals massive void damage.', type: 'other' },
+
   // ── Monster Drops ──
   bones: { emoji: '🦴', label: 'Bones', sellValue: 1, description: 'Burying gives prayer experience.', type: 'other' },
   raw_chicken: { emoji: '🍗', label: 'Raw Chicken', sellValue: 5, description: 'Plucked poultry.', type: 'food' },

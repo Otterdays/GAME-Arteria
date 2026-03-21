@@ -4,10 +4,12 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import { gameSlice } from './gameSlice';
+import { anchorSlice } from './anchorSlice';
 
 export const store = configureStore({
     reducer: {
         game: gameSlice.reducer,
+        anchor: anchorSlice.reducer,
     },
 });
 

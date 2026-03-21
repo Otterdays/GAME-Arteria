@@ -70,6 +70,7 @@ import { TAILORING_RECIPES } from '@/constants/tailoring';
 import { EXPLORATION_EXPEDITIONS } from '@/constants/exploration';
 import { WIZARDRY_STUDIES } from '@/constants/wizardry';
 import { SORCERY_SPELLS } from '@/constants/sorcery';
+import { ALCHEMY_RECIPES } from '@/constants/alchemy';
 import {
     RANDOM_EVENT_CHANCE_BASE,
     RANDOM_EVENT_COOLDOWN_TICKS,
@@ -269,6 +270,17 @@ TAILORING_RECIPES.forEach((recipe) => {
     };
 });
 
+// Alchemy: consume ingredients, produce potions/bombs/transmutes
+ALCHEMY_RECIPES.forEach((recipe) => {
+    ACTION_DEFS[recipe.id] = {
+        xpPerTick: recipe.xpPerTick,
+        items: recipe.items,
+        consumedItems: recipe.consumedItems,
+        successRate: recipe.successRate,
+        masteryXp: 1,
+    };
+});
+
 const TICK_INTERVAL_MS = 100; // Process check every 100ms for smooth progress
 
 export interface UseGameLoopOptions {
@@ -290,6 +302,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
     const skills = useAppSelector((s) => s.game.player.skills);
     const player = useAppSelector((s) => s.game.player);
     const activeCombat = useAppSelector((s) => s.game.player.activeCombat);
+    const hasQueuedTasks = useAppSelector((s) => (s.game.player.queuedTasks?.length ?? 0) > 0);
 
     const lastTickRef = useRef<number>(Date.now());
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
@@ -817,6 +830,157 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         [activeTask, dispatch, isPatron]
     );
 
+    const processQueueDelta = useCallback((deltaMs: number, accumulator?: OfflineReport) => {
+        const queue = playerRef.current.queuedTasks;
+        if (!queue || queue.length === 0) return;
+
+        let remainingMs = deltaMs;
+        const queueUpdates: { id: string; addTicks: number; leftoverMs: number; isFinished: boolean }[] = [];
+
+        for (let i = 0; i < queue.length; i++) {
+            if (remainingMs <= 0) break;
+
+            const task = queue[i];
+            const actionDef = ACTION_DEFS[task.actionId];
+            if (!actionDef) {
+                queueUpdates.push({ id: task.id, addTicks: 0, leftoverMs: 0, isFinished: true });
+                continue;
+            }
+
+            const baseInterval = task.intervalMs;
+            const speedMult = task.skillId ? getMasterySpeedMultiplier(playerRef.current, task.skillId as SkillId) : 1;
+            let itemMasterySpeed = 1;
+            if (actionDef.items.length > 0) {
+                const primaryItem = actionDef.items[0].id;
+                const count = playerRef.current.lifetimeStats?.byItem?.[primaryItem] ?? 0;
+                itemMasterySpeed = getItemMasterySpeedBonus(count);
+            }
+            const momentum = playerRef.current.momentum ?? 0;
+            const resonanceHaste = getHasteMultiplier(momentum);
+            
+            const interval = baseInterval / (speedMult * itemMasterySpeed * resonanceHaste);
+
+            // Calculate how much time this task gets
+            const partialMs = (i === 0 ? task.partialTickMs : 0) + remainingMs;
+            const potentialTicks = Math.floor(partialMs / interval);
+            const leftover = partialMs - potentialTicks * interval;
+
+            const remainingToProduce = task.targetQty - task.completedQty;
+
+            if (potentialTicks > 0) {
+                const actualTicks = Math.min(potentialTicks, remainingToProduce);
+
+                // Roll success
+                let successfulTicks = 0;
+                for (let t = 0; t < actualTicks; t++) {
+                    if (Math.random() <= actionDef.successRate) {
+                        successfulTicks++;
+                    }
+                }
+
+                if (successfulTicks > 0) {
+                    const totalXP = actionDef.xpPerTick * successfulTicks;
+
+                    // Items Calculation 
+                    const masteryYield = task.skillId ? getMasteryYieldMultiplier(playerRef.current, task.skillId as SkillId) : 1;
+                    let itemMasteryYield = 1;
+                    if (actionDef.items.length > 0) {
+                        const primaryItem = actionDef.items[0].id;
+                        const count = playerRef.current.lifetimeStats?.byItem?.[primaryItem] ?? 0;
+                        itemMasteryYield = getItemMasteryYieldBonus(count);
+                    }
+                    const yieldMult = masteryYield * itemMasteryYield;
+
+                    let items = actionDef.items.map((item) => {
+                        return {
+                            id: item.id,
+                            quantity: Math.floor(item.quantity * successfulTicks * yieldMult),
+                        };
+                    });
+
+                    // Double drops
+                    const doubleChance = task.skillId ? getMasteryDoubleDropChance(playerRef.current, task.skillId as SkillId) : 0;
+                    if (doubleChance > 0) {
+                        let doubleCount = 0;
+                        for (let t = 0; t < successfulTicks; t++) {
+                            if (Math.random() < doubleChance) doubleCount++;
+                        }
+                        if (doubleCount > 0) {
+                            items = items.map((item) => ({
+                                ...item,
+                                quantity: item.quantity + Math.floor((item.quantity / successfulTicks) * doubleCount),
+                            }));
+                        }
+                    }
+
+                    // Perfect cooks
+                    if (task.skillId === 'cooking' && actionDef.items.length > 0) {
+                        const primary = actionDef.items[0];
+                        const chance = getPerfectCookChance(playerRef.current, primary.id);
+                        let perfectCount = 0;
+                        for (let t = 0; t < successfulTicks; t++) {
+                            if (Math.random() < chance) perfectCount++;
+                        }
+                        if (perfectCount > 0) {
+                            const originalId = primary.id;
+                            const perfectId = (actionDef as any).perfectId; 
+                            if (perfectId) {
+                                items = items.map(it => {
+                                    if (it.id === originalId) {
+                                        const qtyPerTick = Math.floor(it.quantity / successfulTicks);
+                                        return { ...it, quantity: it.quantity - (perfectCount * qtyPerTick) };
+                                    }
+                                    return it;
+                                });
+                                items.push({ id: perfectId, quantity: perfectCount });
+                            }
+                        }
+                    }
+
+                    if (!accumulator) {
+                        if (task.skillId) dispatch(gameActions.applyXP({ skillId: task.skillId as SkillId, xp: totalXP }));
+                        if (items.length > 0) dispatch(gameActions.addItems(items));
+                    } else {
+                        const effectiveXp = isPatron ? Math.floor(totalXP * XP_BONUS_PATRON) : totalXP;
+                        if (task.skillId) {
+                            accumulator.xpGained[task.skillId as SkillId] = (accumulator.xpGained[task.skillId as SkillId] ?? 0) + effectiveXp;
+                        }
+                        for (const item of items) {
+                            const existing = accumulator.itemsGained.find((i) => i.id === item.id);
+                            if (existing) existing.quantity += item.quantity;
+                            else accumulator.itemsGained.push({ ...item });
+                        }
+                    }
+
+                    if (task.skillId) onTickCompleteRef.current?.(task.skillId as string);
+                }
+
+                const isFinished = actualTicks >= remainingToProduce;
+                queueUpdates.push({ 
+                    id: task.id, 
+                    addTicks: actualTicks, 
+                    leftoverMs: isFinished ? 0 : leftover, 
+                    isFinished 
+                });
+
+                if (isFinished) {
+                    const timeSpent = actualTicks * interval;
+                    remainingMs = remainingMs - timeSpent + leftover; 
+                } else {
+                    remainingMs = 0;
+                }
+
+            } else {
+                queueUpdates.push({ id: task.id, addTicks: 0, leftoverMs: partialMs, isFinished: false });
+                remainingMs = 0;
+            }
+        }
+
+        if (queueUpdates.length > 0) {
+            dispatch(gameActions.applyQueueUpdates(queueUpdates));
+        }
+    }, [dispatch, isPatron]);
+
     // Independent polling interval for quest auto-completion (every 1s)
     useEffect(() => {
         if (!isLoaded) return;
@@ -841,6 +1005,7 @@ export function useGameLoop(options?: UseGameLoopOptions) {
             const delta = now - lastTickRef.current;
             lastTickRef.current = now;
             if (activeTask) processDelta(delta);
+            if (hasQueuedTasks) processQueueDelta(delta);
             if (playerRef.current.activeCombat) {
                 dispatch(gameActions.processCombatTick({ deltaMs: delta }));
             }
@@ -848,11 +1013,11 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         }, TICK_INTERVAL_MS);
 
         return () => clearInterval(intervalId);
-    }, [activeTask, activeCombat, isLoaded, processDelta, dispatch]);
+    }, [activeTask, activeCombat, hasQueuedTasks, isLoaded, processDelta, processQueueDelta, dispatch]);
 
     // Handle initial offline catch-up when app loads
     useEffect(() => {
-        if (isLoaded && !hasProcessedOfflineRef.current && activeTask) {
+        if (isLoaded && !hasProcessedOfflineRef.current && (activeTask || activeCombat || hasQueuedTasks)) {
             hasProcessedOfflineRef.current = true;
 
             const now = Date.now();
@@ -872,12 +1037,20 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                     wasCapped,
                     capLabel: wasCapped ? (isPatron ? '7 days (Patron)' : '24h (F2P limit)') : undefined,
                 };
-                processDelta(elapsed, report);
+                if (activeTask) {
+                    processDelta(elapsed, report);
+                }
+                if (hasQueuedTasks) {
+                    processQueueDelta(elapsed, report);
+                }
+                if (activeCombat) {
+                    dispatch(gameActions.processCombatTick({ deltaMs: elapsed, report }));
+                }
                 dispatch(gameActions.setOfflineReport(report));
-                logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)}s. Items: ${report.itemsGained.length}`);
+                logger.info('Engine', `Caught up ${Math.floor(elapsed / 1000)}s.`);
             }
         }
-    }, [isLoaded, activeTask, lastSaveTimestamp, processDelta, isPatron]);
+    }, [isLoaded, activeTask, activeCombat, hasQueuedTasks, lastSaveTimestamp, processDelta, processQueueDelta, isPatron, dispatch]);
 
     // Handle app going to background / foreground
     useEffect(() => {
@@ -904,10 +1077,26 @@ export function useGameLoop(options?: UseGameLoopOptions) {
                                 wasCapped,
                                 capLabel: wasCapped ? (isPatron ? '7 days (Patron)' : '24h (F2P limit)') : undefined,
                             };
-                            processDelta(offlineDelta, report);
+                            if (activeTask) {
+                                processDelta(offlineDelta, report);
+                            }
+                            if (hasQueuedTasks) {
+                                processQueueDelta(offlineDelta, report);
+                            }
+                            if (activeCombat) {
+                                dispatch(gameActions.processCombatTick({ deltaMs: offlineDelta, report }));
+                            }
                             dispatch(gameActions.setOfflineReport(report));
                         } else {
-                            processDelta(offlineDelta);
+                            if (activeTask) {
+                                processDelta(offlineDelta);
+                            }
+                            if (hasQueuedTasks) {
+                                processQueueDelta(offlineDelta);
+                            }
+                            if (activeCombat) {
+                                dispatch(gameActions.processCombatTick({ deltaMs: offlineDelta }));
+                            }
                         }
                     }
                     lastTickRef.current = now;
@@ -917,5 +1106,5 @@ export function useGameLoop(options?: UseGameLoopOptions) {
         );
 
         return () => subscription.remove();
-    }, [processDelta, isPatron, dispatch]);
+    }, [processDelta, processQueueDelta, activeTask, activeCombat, hasQueuedTasks, isPatron, dispatch]);
 }

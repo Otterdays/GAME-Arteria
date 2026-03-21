@@ -5,6 +5,7 @@
 
 > **🤖 AI: When implementing new features, ALWAYS update:** (1) **Update Board** (`apps/mobile/components/UpdateBoard.tsx`) — in-app changelog modal; (2) **Website** (`index.html` §Changelog); (3) **patchHistory.ts** — Patch Notes screen; (4) **CHANGELOG.md**; (5) **app.json** version. See SCRATCHPAD §Versioning.
 
+> **Version 0.6.3 (2026-03-22):** "The Queue" — Crafting Queue System (multiple queued skilling/crafting actions) and WYWA Combat Report enhancements. See CHANGELOG, patchHistory.
 > **Version 0.6.2 (2026-03-13):** "The Profile" — Profile screen (Settings → Character → Profile). Identity, progress snapshot, rewards & entitlements, quick actions. Optional selectedTitle. See CHANGELOG, patchHistory.
 
 **Project:** Arteria — The AFK RPG
@@ -47,7 +48,7 @@ These two documents are the authoritative references. All other docs supplement 
 | **CLICKER_DESIGN.md** | Clicker (Resonance) design: layout, styling, tech, direction, crossover (§1–6). §7: broaden/deepen ideas (world state, seasonal, chaos, companions, chronicle, minigame framework, accessibility, economy) with source refs. See MASTER_DESIGN_DOC §1.3. |
 | **CLICKER_CHECKLIST.md** | Live checklist for Resonance clicker features — implemented vs planned. Multi-Pulse, Soul Cranking, Anchor Energy, Kinetic Feedback, Perfect Stability. |
 | **WORLD_EXPLORATION.md** | Explorative world design for Arteria — idle-friendly locations (Frostvale, Fey Markets, etc.), instant travel, seasonal unlocks. |
-| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. **Implemented:** Exploration (§2a), Wizardry (§12), Sorcery (§11), Fletching, Tailoring. |
+| **SKILLS_ARCHITECTURE.md** | Pre-implementation design for Farming, Agility, Thieving, Crafting. **§0 Skill Workbench UI Direction** — next-gen artisan screen paradigm (hero, category rail, recipe cards, sticky dock). Woodworking flagship; Crafting/Firemaking/Herblore migration path. **Implemented:** Exploration (§2a), Wizardry (§12), Sorcery (§11), Fletching, Tailoring, Alchemy. |
 | **SKILL_CAPES.md** | Master reference for the Skill Cape system — all 27 capes, vendor (Ascended Master), cost (99,000 gp), shop logic, future passive perks. |
 | **UI_REVISION_CRAFTING_v2.md** | Crafting Radial Mastery UI design — rationale, layout, component breakdown, tier-based recipe wheel. |
 | **ORE_CHAIN_EXPANSION.md** | Depth options for Mining/Smithing/Forging: Runite forging, weapon types (dagger, shortsword, longsword, scimitar, 2H Longblade), gems, pickaxes, fuel crossover, scrap recycling, Heat Management, Quirks. |
@@ -72,7 +73,7 @@ These two documents are the authoritative references. All other docs supplement 
 
 **Styling & theme docs:** STYLE_GUIDE (§7 Theming, §9 Tokens), THEMING.md (architecture, migration path), zhip-ai-styling.md (visual/UX reference).
 
-**Version scheme:** 0.x.x. Current **0.6.2** "The Profile". Post-0.6.2: Companion AI behavior, Slayer shop, Summoning special moves.
+**Version scheme:** 0.x.x. Current **0.6.3** "The Queue". Post-0.6.3: Companion AI behavior, Slayer shop, Summoning special moves.
 
 **Implementation plans:** `.cursor/plans/` — exploration_grand_plan, sorcery_wizardry_plan (phased execution specs for lesser agents).
 

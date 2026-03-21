@@ -42,6 +42,7 @@ export interface RecipeWorkbenchCardProps {
     isActive: boolean;
     activeTask?: { partialTickMs: number; intervalMs: number } | null;
     onPress: () => void;
+    onEnqueue?: (quantity: number) => void;
 }
 
 function canAfford(inventory: { id: string; quantity: number }[], consumed: RecipeInput[]): boolean {
@@ -77,6 +78,7 @@ export function RecipeWorkbenchCard({
     isActive,
     activeTask,
     onPress,
+    onEnqueue,
 }: RecipeWorkbenchCardProps) {
     const { palette } = useTheme();
     const isLevelLocked = playerLevel < levelReq;
@@ -185,6 +187,23 @@ export function RecipeWorkbenchCard({
                     borderColor: palette.border,
                 },
                 trainButtonText: { color: palette.white, fontWeight: 'bold', fontSize: FontSize.base },
+                enqueueButton: {
+                    marginTop: Spacing.sm,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    paddingVertical: 8,
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: palette.accentPrimary + '44',
+                    backgroundColor: palette.accentPrimary + '11',
+                },
+                enqueueText: {
+                    color: palette.accentPrimary,
+                    fontWeight: '700',
+                    fontSize: FontSize.xs,
+                },
             }),
         [palette, skillColor]
     );
@@ -293,9 +312,20 @@ export function RecipeWorkbenchCard({
                     ]}
                 >
                     <Text style={styles.trainButtonText}>
-                        {isActive ? 'Stop' : outOfMaterials ? 'Need Materials' : 'Craft'}
+                        {isActive ? 'Stop' : outOfMaterials ? 'Need Materials' : 'Craft Now'}
                     </Text>
                 </View>
+            )}
+
+            {!isLevelLocked && !isActive && !outOfMaterials && onEnqueue && (
+                <BouncyButton
+                    style={styles.enqueueButton}
+                    onPress={() => onEnqueue(10)} // Default to 10 for now
+                    accessibilityLabel="Queue 10 items"
+                >
+                    <IconSymbol name="plus.square" size={14} color={palette.accentPrimary} />
+                    <Text style={styles.enqueueText}>Queue 10</Text>
+                </BouncyButton>
             )}
             {isActive && activeTask && (
                 <SmoothProgressBar

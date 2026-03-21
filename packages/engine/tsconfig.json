@@ -5,6 +5,7 @@
         "lib": [
             "ES2020"
         ],
+        "types": [],
         "declaration": true,
         "strict": true,
         "esModuleInterop": true,
