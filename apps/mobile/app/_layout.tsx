@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, InteractionManager } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
-import { Stack, Redirect } from 'expo-router';
+import { Stack, Redirect, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
@@ -75,8 +75,12 @@ function AppShell() {
   usePersistence();
 
   // Manifest-based gating — redirect to character select if no anchor is active
+  const segments = useSegments();
   const isManifestLoaded = useAppSelector((s: any) => s.anchor.isManifestLoaded);
-  const activeAnchorId   = useAppSelector((s: any) => s.anchor.manifest?.activeAnchorId ?? null);
+  const manifest = useAppSelector((s: any) => s.anchor.manifest);
+  const activeAnchorId = manifest?.activeAnchorId ?? null;
+  const needsCharacterSelect =
+    isManifestLoaded && (manifest == null || activeAnchorId == null);
 
   const [announcement, setAnnouncement] = useState<SpecialMessage | null>(null);
   const hasHiddenSplash = useRef(false);
@@ -94,8 +98,8 @@ function AppShell() {
     return <View style={{ flex: 1, backgroundColor: '#000000' }} />;
   }
 
-  // Manifest loaded but no active anchor → go to selection screen
-  if (isManifestLoaded && !activeAnchorId) {
+  // No manifest or no active anchor → character select (avoid infinite Redirect when already there)
+  if (needsCharacterSelect && segments[0] !== 'character-select') {
     return <Redirect href="/character-select" />;
   }
 

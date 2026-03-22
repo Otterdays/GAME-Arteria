@@ -105,7 +105,7 @@ export function saveAnchorState(id: string, state: unknown): void {
 
 /** Permanently delete an anchor's save data. */
 export function deleteAnchorState(id: string): void {
-    storage.delete(anchorKey(id));
+    storage.remove(anchorKey(id));
 }
 
 // ─── Legacy migration ──────────────────────────────────────────────────────
@@ -128,8 +128,8 @@ export function migrateV0Save(): AnchorManifest | null {
 
         // Copy to the new anchor key
         storage.set(anchorKey(LEGACY_MIGRATION_ID), rawJson);
-        // Remove the legacy key
-        storage.delete(LEGACY_KEY);
+        // Remove the legacy key (MMKV v4: remove, not delete)
+        storage.remove(LEGACY_KEY);
 
         // Derive a best-effort meta from the saved state
         const name: string = saved?.name || 'The Anchor';
@@ -177,7 +177,7 @@ export function loadPlayerState<T>(): T | null {
 
 /** @deprecated */
 export function deleteSave(): void {
-    storage.delete(anchorKey('_legacy_shim'));
+    storage.remove(anchorKey('_legacy_shim'));
 }
 
 /** Check if an old pre-v0.7 save needs migrating. */
