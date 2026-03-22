@@ -1,0 +1,19 @@
+# npm audit report
+
+flatted  <=3.4.1
+Severity: high
+flatted vulnerable to unbounded recursion DoS in parse() revive phase - https://github.com/advisories/GHSA-25h7-pfq9-p65f
+Prototype Pollution via parse() in NodeJS flatted - https://github.com/advisories/GHSA-rf6f-7fwh-wjgh
+fix available via `npm audit fix`
+node_modules/flatted
+
+svgo  3.0.0 - 3.3.2
+Severity: high
+SVGO DoS through entity expansion in DOCTYPE (Billion Laughs) - https://github.com/advisories/GHSA-xpqw-6gx7-v673
+fix available via `npm audit fix`
+node_modules/svgo
+
+2 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix

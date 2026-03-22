@@ -1,0 +1,460 @@
+# ARTERIA — EXPANDED MASTER ROADMAP
+
+> [!WARNING]
+> **ATTENTION:** Do NOT remove or delete existing texts, updates, docs, or anything else in this document. Only append, compact, or update.
+
+> **🤖 AI: When implementing features from this roadmap, update:** `UpdateBoard.tsx`, `index.html` §Changelog, `patchHistory.ts`, `CHANGELOG.md`, `app.json` version.
+
+**For doc index, catalogs (SBOM, skilling_guides), and checklists (CLICKER_CHECKLIST, MASTER_DESIGN_DOC §A.6):** See [SUMMARY.md](SUMMARY.md) §Documentation Index.
+
+**Synthesized from:** `MASTER_DESIGN_DOC.md` (Aetheria: The Idle Chronicles)
+**Last Updated:** 2026-02-26
+**Philosophy:** KISS · YAGNI · Ship the core loop first, but plan for the entire cosmos.
+
+> **🚨 URGENT:** NEVER DELETE OR REMOVE PAST FEATURES FROM THIS ROADMAP. ONLY MARK THEM AS DONE OR COMPACT THEM. THIS ROADMAP MUST GROW, NOT SHRINK.
+
+---
+
+## 🗺️ The Big Picture
+
+```text
+Phase 0 (Done) ──► Phase 1 (Core) ──► Phase 2 (Gather) ──► Phase 3 (Craft) ──► Phase 4 (Combat) 
+                                                                                        │
+Phase 8 (Post) ◄── Phase 7 (Eco/Launch) ◄── Phase 6 (Story) ◄── Phase 5 (Support/Comps) ◄──┘
+```
+
+**Difficulty Markers:**
+🟢 Low (UI/Data Entry)
+🟡 Medium (Logic/State Management)
+🔴 High (Complex Systems/Math/Architecture)
+
+---
+
+## ✅ Phase 0 — Foundation (COMPLETE)
+> **Completed:** Feb 25, 2026 (v0.1.0)
+> The scaffolding is done. Do not rebuild unless absolutely necessary.
+- [x] 🟢 Expo SDK 54 monorepo (npm workspaces)
+- [x] 🟢 TypeScript strict mode
+- [x] 🟡 Redux Toolkit (`gameSlice` — skills, inventory, gold, active actions)
+- [x] 🟡 MMKV persistence layer for offline saving
+- [x] 🔴 Engine package (`XPTable`, `TickSystem`, `GameEngine`)
+- [x] 🟢 All 5 tab screen skeletons (Skills, Combat, Bank, Shop, Settings)
+- [x] 🟢 Dark Melvor theme + design tokens
+- [x] 🟡 EAS Dev Build (APK on phone) + dev server workflows
+
+### Phase 0 — Optional polish (backlog, do not block)
+- [x] 🟢 Root Jest multi-project + `npm test` (engine + tests/); 25 tests, 7 suites. test:coverage for engine. Documented in tests/README.md, ARCHITECTURE, index.html.
+- [ ] 🟢 Error boundary wrapper around root layout (graceful crash UI).
+- [ ] 🟢 Lint/format on pre-commit or CI (ESLint, Prettier if desired).
+- [ ] 🟢 STYLE_GUIDE.md creation (trace tags, line limits, comment rules) if not yet in repo.
+
+---
+
+## ✅ Phase 1 — "The Core Engine" (COMPLETE)
+> **Completed:** Feb 26, 2026 (v0.2.0)
+> **Goal:** The vertical slice. One skill working end-to-end with real persistence and UI.
+
+### 1.1 — Game Loop & App Lifecycle 🔴
+- [x] 🟡 **AppState Event Listener:** Hook into React Native's `AppState` to detect background/foreground transitions.
+- [x] 🟢 **Background Trigger:** Save `PlayerState` + `Date.now()` timestamp to MMKV when backgrounded.
+- [x] 🔴 **Foreground Trigger (Welcome Back):** 
+  - Compute `elapsed = Date.now() - lastSaved`.
+  - Enforce 24-hour offline cap (or 48h for premium).
+  - Run `GameEngine.processOffline(elapsed)`.
+  - Dispatch "While You Were Away" report (XP gained, items looted) to Redux.
+- [x] 🔴 **Real-time Loop:** Foreground `setInterval` (~100ms) calling `engine.processRealtime`.
+- [x] 🟡 **Tick Dispatch:** Dispatch processed ticks to Redux to update UI state smoothly.
+
+### 1.2 — Mining: The Foundation Skill 🟡
+- [x] 🟢 **Data definitions:** Define initial Ore veins (Copper, Iron, Silver, Gold, Cosmic Stone) with XP yields, tick durations, and level requirements in `engine/data/mining.ts`.
+- [x] 🟢 **UI Implementation:** Mining skill screen with a list of nodes (Card layout).
+- [x] 🟡 **Action State:** "Train" button sets the active `PlayerAction` (e.g., `{ type: 'MINING', targetId: 'iron_vein' }`) in Redux.
+- [x] 🟡 **Progression:** XP bar fills up, calculates level-ups, unlocks new veins dynamically based on current skill level.
+- [ ] 🔴 **Vein Depletion Mechanic:** Implement the "Vein Exhaustion" array (veins deplete after X actions and respawn over time).
+- [x] 🟢 **Mining tooltips:** Per-vein tooltip with name, level req, XP/item, base tick time.
+- [x] 🟢 **Locked vein state:** Grey out or hide veins above current Mining level; show "Unlocks at level X".
+- [x] 🟢 **Active node highlight:** Clear visual state for "currently training" vein (e.g. border or accent).
+
+### 1.3 — Bank & Inventory UI 🟡
+- [x] 🟢 **Grid System:** Render a responsive grid (using `FlatList` or `FlashList`) of owned items (ores, materials).
+- [x] 🟢 **Item Badges:** Visual count indicators on item icons.
+- [x] 🟢 **Gold Currency UI:** Persistent gold tracking at the top of the Bank screen.
+- [x] 🟡 **Data Roundtrip Test:** Verify player mines item -> item appears in Bank -> item persists after restarting app.
+- [x] 🟡 **Item Details Modal:** Tap item to see description, sell value, and "used in" recipes. (Including Selling support!)
+- [ ] 🟢 **Empty slots:** Show placeholder or empty cell for unused bank slots (if slot limit exists).
+- [x] 🟢 **Sort/filter placeholder:** UI hook for "All / Ores / Bars / Other" or sort by name/quantity (can stub).
+
+### 1.4 — Welcome Back & Offline UX 🟡
+- [x] 🟢 **"While You Were Away" modal:** Show on foreground after offline calc (XP gained, items looted, time elapsed).
+- [x] 🟢 **Dismiss/ack:** Single "Got it" or "Collect" so modal doesn’t reappear until next return.
+- [x] 🟡 **Cap messaging:** If player was away >24h, mention "Capped at 24h offline progress (F2P)."
+- [x] 🟢 **MMKV round-trip test on device:** Confirm save on background, load on foreground, state matches.
+
+### 1.5 — Phase 1 polish & hooks (small bits)
+- [x] 🟢 **Haptic feedback:** Light haptic on Train/Stop (expo-haptics already in stack).
+- [x] 🟢 **Toast/snackbar:** "Mining started: Iron" / "Level up: Mining 12" (non-blocking).
+- [x] 🟢 **Analytics/events placeholder:** Log or no-op for "skill_started", "level_up" (for future analytics).
+- [x] 🟢 **Accessibility:** Ensure skill cards and main CTAs have accessible labels; touch targets ≥44px where possible.
+- [x] 🟢 **Settings persistence:** If any new settings (e.g. sound on/off), persist via MMKV or existing store.
+
+---
+
+## ✨ QoL — Polish & Improvements (Ongoing)
+> Small, high-impact improvements that can be done any time. Prioritise when a phase is complete or between sprints.
+
+### Skills Screen
+- [x] 🟢 **A. Skill Pillars/Grouping** — Dividers grouping skills into ⛏️ Gathering / ⚔️ Combat / 🔨 Crafting / ✨ Support.
+- [x] 🟢 **B. Total Level Badge** — Sum of all skill levels shown in the header (e.g. "Total Lv. 247").
+- [x] 🟢 **C. Coming Soon Tags** — Replace Alert popup with an inline locked-card style + "Phase 2 ›" tag for unimplemented skills.
+- [x] 🟡 **D. XP/hr Estimate** — Show "~1,200 XP/hr" under each active node. Math: `xpPerTick * (1000 / intervalMs) * 3600`. Uses `formatNumber` utility.
+- [x] 🟢 **E. Ticks-to-level** — Under the active node, show "~14 more actions to level up". Math: `Math.ceil((nextLevelXp - currentXp) / xpPerAction)`.
+- [ ] 🟡 **F. Skill Progression Icon Bar** — Sleek horizontal icon strip at the bottom of the skill header to show node progression (locked/unlocked emojis). *Partially implemented in Mining/Logging.*
+
+### Persistence
+- [x] 🟡 **F. Restore Active Task on Relaunch** — Verified: `usePersistence` saves full `player` (incl. `activeTask`) on background/30s auto-save. Works by design.
+
+### Accessibility & Readability
+- [x] 🟢 **G. Haptic on level-up** — Already fires in LevelUpToast via `Haptics.notificationAsync`. Verified fires for any skill. No code change needed.
+- [x] 🟢 **H. Long-number formatting** — `utils/formatNumber.ts` created. Applied to XP bars (Skills screen), XP/hr (Mining screen), XP gains (WYWA modal).
+- [x] 🟢 **I. Settings: Reset Save** — "Wipe Save Data" button added to Settings screen behind a two-step destructive Alert.
+- [x] 🟢 **J. Persistent Level Up Toast Fix** — Fixed bug where toast would get stuck or clear its own timer.
+- [x] 🟢 **K. Android Bottom Insets** — Fixed tab bar overlap with gesture navigation bar using `useSafeAreaInsets`.
+- [x] 🟢 **L. XP [current/next] Display** — Replaced flat XP with more informative "current / goal" format.
+- [x] 🟢 **M. Full Card Navigation** — Tapping anywhere on a skill card now navigates into the skill.
+
+### 🎨 VFX & Feedback
+- [x] 🟡 **N. XP Floating Pop-ups** — When XP is gained, show a floating `+XP [Icon]` animation below the XP bar areas. (Includes node icon!)
+- [x] 🟢 **O. XP Bar "Pulse"** — Subtle glow or flash effect on the XP bar fill when it moves.
+- [x] 🟢 **SFX (tick sounds)** — Tink/thump/splash play on skill tick (expo-audio, `utils/sounds.ts`, `useGameLoop` onTickComplete). Settings → Test sound. (2026-03-05)
+
+### ⚡ Juice & Polish (QoL Backlog)
+- [x] 🟢 **P. Haptic Heartbeat** — Subtle haptic pulse when a progress bar reaches 100% and resets.
+- [ ] 🟢 **Q. Screen Shake (Gentle)** — Tiny "thud" shake effect when completing a heavy action (e.g. crushing a rock).
+- [ ] 🟢 **R. Contextual Ambience** — Subtle loop icons/animations (birds for logging, waves for fishing) in the screen background.
+- [x] 🟢 **S. "Loot Vacuum" Animation** — When gaining an item, show a small icon flying from the action area toward the Bank tab.
+- [ ] 🟢 **T. Critical Hit VFX** — Larger, golden pop-up for "Critical Gains" (double loot/xp random procs).
+- [x] 🟢 **U. Quick-Switch Sidebar** — Floating pill on left edge; slide-in drawer to jump Mining/Logging/Fishing/Runecrafting. (v0.3.0)
+- [x] 🟢 **V. Inventory Full Warning** — Persistent "!" on the Bank tab if the player is capped (preventing further gathering).
+- [x] 🟡 **W. Universal Action Ticker** — A persistent, slim progress bar at the top/bottom of the screen showing the *current action loop* (e.g., a 4-second bar for Mining Iron) with the skill emoji. Keeps the "heartbeat" of the game visible even in the Bank/Settings.
+
+### 🌟 Advanced UX & Immersion
+- [x] 🟢 **X. Pulsing Tab Glow** — Tab icons pulse gold when a level-up occurs or a task finishes until the user visits that screen.
+- [ ] 🟡 **Y. Adaptive App Shortcuts** — Support for Android app icon shortcuts to jump directly into the active skill or Bank.
+- [x] 🟢 **Z. Advanced Bank Search** — Add a real-time search bar and "Type" filters (Ore, Bar, Item) to the Bank UI.
+- [ ] 🟢 **ZA. Action Haptic Sequence** — A unique rhythmic vibration pattern when starting/stopping different types of skills.
+- [ ] 🟢 **ZB. Skill-Specific Ambience** — Subtle background soundscapes (birds, echoes, waves) that activate based on the open skill screen.
+
+### 🎲 Random Events (Design in FUTURE_NOTES.md)
+- [x] 🟡 **Random Events MVP** — Blibbertooth Blessing (bonus XP), Cosmic Sneeze (duplicate item). Per-tick roll ~0.5%; uses FeedbackToast. (v0.3.0)
+- [ ] 🟡 **Dialogue Randoms** — Mysterious Stranger (Odd One Out), Nick's Cousin (gift offer). Reuse DialogueOverlay + narrative trees.
+- [ ] 🔴 **Skill Guardians** — Rock Spirit (mining), Wood Wraith (logging), Void Nibble (fishing). Fight or ignore. Requires Phase 4 combat.
+- [ ] 🟢 **Hazard Events** — Cursed Vein, Tangled Roots, Big Catch. Temporary tick modifiers.
+
+---
+
+## 🌾 Phase 2 — "The Gathering Pillar & Horizon"
+> **Goal:** Expand gathering options and implement the core retention UI hooks.
+
+### 2.1 — Remaining Gathering Skills 🟡
+- [x] 🟢 **Astrology:** Define constellations and stardust drops. (v0.5.2)
+- [ ] 🟡 **Summoning (Soon):** Familiar binding.
+- [ ] 🟡 **Slayer (Soon):** Combat tasks and specific drops.
+- [x] 🟢 **Harvesting (Plants/Fibers):** Define nodes.
+  - [x] *Unique Mechanic (🟡):* Seasonal Rotation (server-side/device date check alters available flora).
+- [x] 🟢 **Logging (Woodcutting):** Define trees.
+  - [x] *Unique Mechanic (🟡):* Weekly Yield (Seasonal rotation implemented in `GameEngine`).
+- [x] 🟢 **Fishing:** Define nodes.
+  - [x] *Unique Mechanic (🔴):* Mythic fish probabilities. (Implemented v0.2.7)
+- [x] 🟢 **Scavenging:** Define ruins/zones.
+  - [x] *Unique Mechanic (🟡):* Curse Chance (items drop as "Cursed X" requiring Cleansing skill later).
+
+### 2.2 — The "Horizon System" UI (Core Retention) ✅
+- [x] 🟡 **Dashboard Widget Layout:** Implement the 3-tier goal HUD on the main screen component.
+- [x] 🔴 **The Immediate Logic (<15m):** Real-time progress toward the next individual drop/tick (0-100%).
+- [x] 🔴 **The Session Logic (<2h):** XP progress toward the next character level for the active skill.
+- [x] 🟡 **The Grind Logic (Daily/Weekly):** Progress toward major milestones (Decade levels or Lv. 99).
+- [x] 🟢 **Milestone Teasers:** UI to show next-level unlocks prominently displayed under active progress bars.
+- [x] 🟢 **Horizon cards:** One card per tier (Immediate / Session / Grind) with glassmorphic styling and progress bars.
+- [x] 🟢 **Seasonal/date hook:** Weekly yield logic for Logging.
+- [x] 🟢 **Gathering skill tooltips:** Same pattern as Mining (node name, level, yield, tick) for Harvesting, Logging, Fishing, Scavenging.
+
+### 2.3 — Nick's Shop (Gold Vendor) 🟡
+> **Merchant:** Nick (see DOCU/PEOPLE_TO_ADD.md). NPC vendor for gold buy/sell per zhipu-ai.md Shop System.
+- [x] 🟢 **Shop catalog data:** Define items Nick sells (e.g. ores, bars, supplies) and buy price per item (e.g. 2× base value). Shared with ITEM_META where possible. (`SHOP_CATALOG` in `constants/items.ts`.)
+- [x] 🟢 **Redux buyItem:** Action to spend gold and add item(s) to inventory; respect INVENTORY_SLOT_CAP (no buy if at cap unless stacking).
+- [x] 🟢 **Shop screen UI:** Replace placeholder with Buy/Sell toggle, category tabs (General / Resources / Equipment), item list with price and Buy/Sell. Merchant name "Nick" in header or subtitle.
+- [x] 🟢 **Sell from Shop:** Reuse existing sellItem; optional: "Sell" tab shows player inventory with sell prices (or link to Bank for selling).
+- [x] 🟡 **Sell price multiplier (optional):** Apply merchant sell ratio (e.g. 50% of ITEM_META.sellValue) when selling to Nick; document for future Barter skill hook.
+
+---
+
+## 🔨 Phase 3 — "The Crafting Engine"
+> **Goal:** Let players process what they gathered. Building complex inter-skill dependencies.
+
+### 3.1 — Crafting Queue Architecture 🔴
+- [x] 🔴 **Queue System State:** Support an 8-hour max queue of crafting actions in Redux/Engine. 
+- [ ] 🟡 **Speed Modifiers:** F2P capped at base rate, active play (app open) grants 1.5x-2x speed multiplier.
+- [x] 🔴 **Bank Integration:** Subtract inputs on queue start (reserve them), grant outputs on queue complete (or partial completion if interrupted).
+- [x] 🟡 **Offline Queue Processing:** Ensure `processOffline` handles completing multiple queued items over elapsed time.
+
+### 3.2 — Core Crafting Skills (Data & UI) 🟡
+- [x] 🟡 **Smithing (Smelting):** Ore → bars. 7 recipes (Bronze→Runite). Runite narrative-gated. (v0.3.0)
+- [x] 🟡 **Forging:** Bars → equipment. 15 recipes (daggers, half/full helmets). Metal-tier grouping. (v0.3.0)
+- [ ] 🟡 **Smithing (Heat Management):** *Future:* "Heat Management" minigame multiplier (tap to keep heat in green zone).
+- [ ] 🟡 **Alchemy:** Potions/bombs. *Active Mechanic (🔴):* "Catching Volatility" minigame for bonus absolute potency.
+- [x] 🟡 **Cooking (basic):** Raw fish → cooked food. 10 recipes (Shrimp→Cosmic Jellyfish). Bank Food filter. Daily quests. (v0.4.1) — *Future:* Food buffs, bait, companion meals, taste testing.
+- [ ] 🟢 **Tailoring:** Robes, bags, fishing nets.
+- [ ] 🟢 **Fletching:** Arrows, bows, throwable cosmos.
+- [x] 🟡 **Runecrafting:** Enchantments, scrolls. *Mechanic (🟡):* Real-world time checks (e.g., Lunar Weave only craftable at night local time). (Implemented v0.2.7)
+- [ ] 🔴 **Construction:** Housing, storage. *Blueprint System:* Requires multi-skill inputs (e.g., Nails from Smithing + Planks from Logging).
+- [x] 🟢 **Crafting queue UI:** List of queued items with name, progress bar, ETA, cancel button.
+- [ ] 🟢 **Recipe browser:** Per-skill list of recipes with inputs/outputs and level requirement.
+- [ ] 🟡 **Partial queue completion:** If offline interrupted, grant outputs for completed items and refund or retain partial inputs (design decision + impl).
+- [ ] 🟢 **Crafting speed indicator:** Show "1x offline" vs "1.5x active" in UI.
+
+---
+
+## ⚔️ Phase 4 — "The Clash" (Combat Pillar)
+> **Goal:** Develop the Instance-based Combat system and Dungeons mapping.
+
+### 4.1 — Combat Stats & Loadouts 🔴
+- [ ] 🔴 **Stats Infrastructure:** Map Attack, Strength, Defense, Ranged, Magic, Constitution skills to raw combat math (accuracy, max hit, evasion).
+- [ ] 🟡 **Equipment System:** Equip weapon, shield, armor, accessory, and limit ammo/runes slots in Redux.
+- [ ] 🟡 **Combat Styles Selector:** Toggle between The Stalwart (Shield), The Blademaster (Dual), Spellweaver, Harbinger, Warden, Trickster (affects stat weighting).
+
+### 4.2 — Encounter Flow (Instances) 🔴
+- [x] 🟢 **Scout & Prepare UI:** Screen to select zone (e.g. Farm, Goblin House, Forest, Mountain), equip loadout, and slot consumables built into Battle tab. (v0.5.1)
+- [x] 🟢 **Auto-Combat Engine (2026-03-05):** `processCombatTick` reducer. Timer-accumulator model (100ms loop). Accuracy roll → damage roll → HP update. On kill: XP split (hp/atk/str/def), loot drops, gold, enemy respawn. Player death: respawn full HP, combat stops.
+- [ ] 🟡 **The "While You Were Away" Combat Report:** Detailed summary of kills, deaths, loot drops, gold earned, and combat skill XP.
+
+### 4.3 — Active Combat Interface 🟢
+- [x] 🟢 **Combat UI (2026-03-05):** HP bars (player green→amber→red, enemy red), attack speed progress bars, kill counter, gold display, FLEE button, scrolling combat log (max 40 entries, color-coded).
+- [ ] 🟡 **Action Bar UI:** Buttons for Basic attacks, Heavy strikes (MP), Shield bashes, Items. Fixed cooldowns.
+- [ ] 🟢 **Enemy UI:** Large HP Bar, Status Effects icons (Enraged, Stunned).
+- [ ] 🔴 **Combo System:** Code manual timing logic (e.g., tracking a Stun state to apply +50% dmg modifier from next hit if specific skill used).
+
+### 4.4 — Enemy Factions & Dungeons 🟡
+- [x] 🟢 **First enemy (Goblin):** Goblin defined in `constants/enemies.ts` (ENEMY_GOBLIN, assetPath: goblin_1.svg). "Goblin Peek" random event during skilling (flavor only; no combat yet). GoblinPeekModal shows goblin SVG when event fires (react-native-svg). Asset in `apps/mobile/assets/images/goblin_1.svg`. (2026-03-03)
+- [x] 🟢 **Bestiary groundwork (2026-03-04):** `constants/enemies.ts` — EnemyDrop, EnemyLocation, EnemyCombatStats interfaces. Goblin: combat stats, drops (bronze_dagger 5%), locations (Crownlands). Placeholder enemies: Slime, Wolf (data only). Combat tab "Found in" when enemy has locations.
+- [ ] 🟢 **Data Structures:** Define the 12 Enemy Factions (The Unraveled, Celestial Constructs, Void wildlife, Astral Pirates, Cosmic Vermin, etc.) with stat blocks and loot tables.
+- [ ] 🟡 **Dungeon Modes:** Logic for Delves (5-10 min active / 1h idle clear), Expeditions (30 min / 4h idle max).
+- [ ] 🔴 **Dungeon Modifiers Engine:** Random weekly rules applied to combat math (e.g., "Gravity's Suggestion" reverses fall damage, "Blibbertooth's Blessing" causes confetti visual effects).
+- [x] 🟢 **Enemy bestiary stub:** Combat tab "Enemies Spotted" section; player.seenEnemies; recordEnemySeen when goblin_peek fires. (v0.4.1)
+- [x] 🟢 **Combat log scroll (2026-03-05):** `CombatLogEntry` type, `combatLog` in GameState (max 40). Color-coded messages: player_hit (green), enemy_hit (red), miss (muted), kill (gold), loot (accent), died (red), info (secondary).
+- [ ] 🟢 **Loot popup/toast:** On kill or dungeon clear, brief summary of gold + items gained.
+- [ ] 🟡 **Auto-combat settings UI:** HP threshold for potion use, flee-at-HP%, enable/disable auto-flee.
+
+---
+
+## 🤝 Phase 5 — "Connective Tissue" (Support & Companions)
+> **Goal:** Link systems together, introduce companions, and deepen the account meta.
+
+### 5.1 — The Protagonist (Character Creation) 🟡
+- [x] 🟢 **Nickname entry:** First-time NameEntryModal when no save; canonical name "The Anchor"; player chooses nickname (or Skip). Settings → Character to change. Skills header "Welcome, [name]". (2026-03-03)
+- [ ] 🟢 **Character Creation Flow:** Setup single-run screen. Select Ancestry (Human, Elf, Dwarf, Fey-Touched, Void-Blooded).
+- [ ] 🟡 **Affinities & Quirks:** Select Luminar/Voidmire/Balanced (modifies starting stats/xp rates). Assign a random Cosmic Quirk modifier (e.g., "Attracts sentient furniture" - mostly flavor text).
+
+### 5.2 — Support Skills 🟡
+- [x] 🟡 **Exploration (Phase 1):** Expeditions implemented — survey/scout/chart for XP and discovery items; World Map level gates use Exploration level. Future: travel-time reduction, hidden dungeons.
+- [ ] 🟡 **Cleansing:** Minigame or timer to purify "Cursed" items generated from Scavenging.
+- [ ] 🟡 **Barter:** Affects shop buy/sell ratios. Logic to unlock "Black Market" shop tab at Level 50.
+- [ ] 🔴 **Research:** Passive knowledge tree (similar to Path of Exile passive tree, but smaller) that provides global multipliers to other skills.
+- [ ] 🟢 **Leadership:** Simple integer check that dictates maximum active companions.
+
+### 5.3 — Companion System (Wandering Souls) 🔴
+- [ ] 🟢 **Companion Roster Data:** Define Barnaby the Uncertain, Scholar Yvette, Sir Reginald Pomp (stats, flavor text, unlock: Leadership 20/35/50).
+- [ ] 🟡 **Companion Tasks UI:** Drag-and-drop or select menu to assign companions to Auto-Gather or Auto-Combat.
+- [ ] 🔴 **Companion Traits Logic:** Hook traits into Engine math (e.g., Barnaby's 50% hit-self chance but 2x damage modifier).
+- [ ] 🟢 **Companion detail panel:** Tap companion to see stats, trait description, current task.
+- [ ] 🟢 **Leadership cap display:** Show "Companions: 2/3" (or current max) in UI.
+- [ ] 🟢 **Unlock teaser:** "Unlock Barnaby at Leadership 20" style messaging (Leadership gates companions; avoids vague "Level 20").
+
+### 5.4 — Crossover Subsystems (Clicker + World Builder) 🟡
+> **Goal:** One game, two complementary subsystems that feed the core idle RPG. See MASTER_DESIGN_DOC §1.3 and CLICKER_DESIGN.md.
+- [x] 🟡 **Resonance (Clicker skill):** Tap-to-build Momentum; Momentum grants global Haste to all other skills. Dedicated tab, orb UI, level unlocks (Multi-Pulse, Resonant Echo, Kinetic Feedback, Perfect Stability). Implemented as Support skill.
+- [ ] 🟡 **Aether / Sparks economy (optional):** Tap or Momentum could generate spendable Aether for temporary buffs (+% XP, Sanctum fuel) or Lumina-like shop use. Design in CLICKER_DESIGN.md.
+- [ ] 🔴 **Sanctum as world builder:** Grid/map place rooms (Smithing Room, Kitchen, Garden, etc.); Construction provides blueprints/materials. Sanctum produces passive gold, rest bonus (+% XP), companion efficiency. MASTER_DESIGN_DOC Chapter 13.
+- [ ] 🟡 **Construction bridge:** Construction skill feeds Sanctum (planks, nails, furniture); level-gates room tiers or building unlocks.
+
+---
+
+## 📜 Phase 6 — "The Narrative Framework"
+> **Goal:** Inject context, tone, and goals without blocking the core idle experience.
+
+### 6.1 — Quest Engine 🔴
+- [x] 🔴 **Radiant (Infinite) Quests:** Daily "Gather X" quests (3/day, reset midnight, templates: ores/logs/fish/runes/bars). Claim gold + Lumina. (v0.4.0) *Full procedural scaling / "Kill Y" later.*
+- [ ] 🟡 **Character Quests:** Multi-step boolean chains for Companions (e.g., curing Barnaby's self-doubt).
+- [ ] 🟡 **Main Storyline (Act I - IV):** Milestone triggers (modal popups) at specific Total Levels leading up to the "Choice" between Luminar, Voidmire, and Absurdity.
+
+### 6.2 — Factions & Dialogue 🟡
+- [x] 🟢 **Dialogue UI:** Simple, punchy text boxes (visual novel style) for The Order of the Balanced Scale, The Celestial Bureaucracy, and The Cult of Blibbertooth. (Implemented via `DialogueOverlay`).
+- [ ] 🟡 **Reputation Tracking:** Global integer state flags for decisions made, altering shop prices or available quests per faction.
+- [x] 🟢 **Quest log UI:** List active and completed quests with short description and objectives. (Implemented via `QuestsScreen` tab).
+- [ ] 🟢 **Story milestone modal:** Popup at Total Level thresholds with Act title and short flavor text.
+- [ ] 🟢 **Radiant quest reroll:** If Cosmic Essence is implemented, "Reroll daily" button and cost display.
+
+---
+
+## 💰 Phase 7 — "Economy, Polish, & Launch"
+> **Goal:** Implement the "Contextual Monetization" strategy and finalize for release.
+
+### 7.1 — Currency Architecture 🟡
+- [ ] 🟢 **Aether Shards:** Wire to epic crafting / deep dungeon drops (F2P).
+- [ ] 🟢 **Cosmic Essence:** Wire to daily quests; used for rerolls/skips (F2P/Earnable).
+- [x] 🟡 **Lumina:** Premium currency UI (Bank/Shop/Settings display; day 7 login grants 10). Shop stub "Coming soon". (v0.4.0)
+
+### 7.2 — The Lumina Shop 🟡
+- [ ] 🟢 **UI Categories:** Cosmetics, Bank Expansion, Skill Boosts (24h max), Instant Craft Skips.
+- [x] 🟡 **Patron's Pack (expansion):** One-time mock purchase. 7-day offline cap (vs 24h F2P), 100 bank slots (vs 50), +20% XP, Patron badge. `player.settings.isPatron`, `app/patron.tsx` purchase screen, Settings → Premium. Real IAP to be wired later.
+- [ ] 🟡 **The Patron's Blessing (subscription):** $9.99/mo subscription logic check (12h offline cap, +20% XP, 2x bank slots). *Strictly convenience, no raw power.*
+- [ ] 🔴 **The Treasure Hunt (Battle Pass):** Setup monthly grid-digging mechanic using daily shovels (complex UI/state).
+
+### 7.3 — Retention & Polish 🔴
+- [x] 🟡 **7-Day Login Bonus:** Escalating reward array (100–600 gp; day 7: 500 gp + 10 Lumina). Tracks consecutive days. Skills banner when claimable; Settings shows streak. (v0.4.0)
+- [ ] 🔴 **Push Notifications Architecture:** Local push notifications for "Crafting Ready" or "Idle Cap Reached" using `expo-notifications`.
+- [ ] 🔴 **Performance Audit:** React Native Flamegraph checks, eliminate re-renders in FlatLists, `npx expo-doctor`.
+- [ ] 🟡 **EAS Production:** Generate Android App Bundle (.aab), target API 36 (Android 16), update Keystores. *Note: EAS credits exhausted as of 2026 — use `2_Build_APK_Local.bat` for local APK builds.*
+- [x] 🟢 **Login bonus UI:** Banner on Skills when claimable; Settings → Login bonus & Lumina (streak, next reward). (v0.4.0)
+- [ ] 🟢 **Notification settings:** Per-type toggles (crafting done, idle cap, level up) persisted to MMKV/settings.
+- [ ] 🟢 **Sound/music placeholder:** Settings toggles for SFX and BGM; wire to no-op or minimal sounds first.
+- [ ] 🟢 **Onboarding/tutorial stub:** First-launch flow (optional): "Tap Skills → Mining → Train" (can be minimal).
+
+---
+
+## 🌌 Phase 8 — "Year 1 Post-Launch & Endgame"
+> **Goal:** The initial post-launch runway. DO NOT BUILD UNTIL LAUNCH IS STABLE.
+
+### 8.1 — Pillar V: Cosmic Skills (Endgame) 🔴
+- [ ] 🔴 **Aether Weaving:** Unlock at Level 80 in three skills. Manipulate reality for legendary crafting.
+- [ ] 🔴 **Void Walking:** Unlocked via "Touch of the Void" questline. Short-range teleportation to access hidden areas.
+- [ ] 🔴 **Celestial Binding:** Ally with Celestial Bureaucracy. Summon angelic assistants for offline automation boosts.
+- [ ] 🔴 **Chronomancy:** Discover the Temporal Archives. Speed up individual skill training, reset daily limits once per week.
+
+### 8.2 — Level 100 Content: The Anchor's Burden 🔴
+- [ ] 🔴 **Cosmic Tiers (Prestige):** Infinite scaling. Prestige individual level 100 skills for permanent account-wide bonuses.
+- [ ] 🟡 **Mentor System:** Act as a mentor for new players (basic social framework).
+- [ ] 🔴 **Blibbertooth's Ultimate Quest:** The true endgame quest: "Make the universe laugh" (extreme difficulty narrative content).
+
+### 8.3 — Year 1 Major Features 🔴
+- [ ] 🔴 **Guild System:** Shared housing, guild passive skills, weekly lockout cooperative raids. Shared progress bars for server-wide rewards.
+- [ ] 🔴 **PvP Arena:** Asynchronous AI-controlled "Defense Teams" (Companions + your Character build) attacking each other.
+- [ ] 🟡 **The Infinite Stair:** Procedurally generated endless dungeon with server-sided leaderboard chasing.
+- [ ] � **New Region: The Shimmering Sea:** Naval combat mechanics and underwater gathering skills.
+- [ ] 🟢 **Guild roster UI:** List members, roles, contribution (stub if backend not ready).
+- [ ] 🟢 **PvP defense setup UI:** Equip "defense team" loadout and companions for async attacks.
+- [ ] 🟢 **Leaderboard placeholder:** Screen or section for Infinite Stair / seasonal rankings (mock or real API).
+
+---
+
+## 🚀 Phase 9 — "Year 2 & Beyond"
+> **Goal:** Deep expansion of the game world and economy.
+
+- [ ] 🔴 **Second Kingdom:** Cross-server travel to entirely new biomes with separate and persistent rule sets.
+- [ ] 🔴 **Player Economy:** Full asynchronous Auction House and player-run shops (High risk of duping, requires rigid validation).
+- [ ] � **The Cosmic Plane:** True endgame dimension featuring roguelike elements (perma-death runs with persistent meta-progression).
+- [ ] 🔴 **Horizontal Crossover Skills:** Creating completely new interactions between existing level 99 skills.
+- [ ] 🟢 **Second Kingdom map UI:** Region selector and travel gate (stub until backend).
+- [ ] 🟢 **Auction House UI:** Browse, search, list, buy/sell (depends on validation/backend).
+- [ ] 🟢 **Cosmic Plane entry UI:** "Enter run" button, meta-progression display, run modifiers summary.
+
+---
+
+## 🔧 Cross-Cutting & Meta (Ongoing / Backlog)
+> **Goal:** Quality, maintainability, and future-proofing. Do not delete; only append.
+
+### Docs & Process
+- [x] 🟢 **STYLE_GUIDE.md:** Trace tag format, line/function limits, comment prefixes (TODO/FIXME/NOTE). Created 2026-03-03.
+- [ ] 🟢 **Doc freshness:** When touching a doc, refresh obviously stale bullets (e.g. "SDK 54" if already on 55).
+- [ ] 🟢 **SCRATCHPAD compact:** Keep SCRATCHPAD under 500 lines; compact history, keep last 5 actions + next steps.
+
+### QA & Tooling
+- [x] 🟢 **Theme Engine (Phase 2+3):** Settings → Appearance → System / Dark / Light / Sepia. Tab bar, headers, StatusBar. (v0.3.0)
+- [ ] 🟢 **Integration test placeholder:** At least one test in `tests/integration/` (e.g. load save → dispatch → assert state).
+- [ ] 🟢 **E2E placeholder:** Document or stub Playwright (or Detox) target for one critical path (e.g. open app → Skills → Train Mining).
+- [ ] 🟢 **CI checklist:** Lint, typecheck, unit tests on push/PR (when CI is added).
+- [ ] 🟢 **expo-doctor:** Run periodically; fix or document any new warnings.
+
+### Accessibility & Theming
+- [ ] 🟢 **Screen reader labels:** Ensure all interactive elements have accessible labels.
+- [ ] 🟢 **Reduce motion:** Respect system or in-app "reduce motion" for animations.
+- [ ] 🟢 **Theme tokens:** Centralize light/dark (or future "forest"/"arcane") in theme; avoid hardcoded hex in components.
+- [ ] 🟢 **Font scaling:** Support dynamic type / large text where applicable.
+
+### Localization & i18n (Future)
+- [ ] 🟢 **i18n placeholder:** Decide strategy (expo-localization, react-i18next, or JSON + key lookup); add to FUTURE_NOTES if not building yet.
+- [ ] 🟢 **String extraction:** Keep user-facing strings in one layer (e.g. `constants/strings.ts` or JSON) for future translation.
+
+### Performance Checkpoints
+- [ ] 🟢 **Bank/Inventory:** Use FlatList/FlashList with stable keys; avoid inline object creation in render.
+- [ ] 🟢 **Tick loop:** Ensure single source of truth; avoid dispatching every tick if batching is possible.
+- [ ] 🟢 **MMKV read frequency:** Don't read full save on every tick; only on foreground load and save on background.
+
+---
+
+## 💡 Brainstormed Additions & Juice Backlog
+> **Goal:** Massive list of granular ideas, deep resource sinks, and thematic absurdities to keep the game infinitely engaging.
+
+### 🎒 Bank & Inventory QoL
+- [x] 🟢 **Item Locking:** A toggle to "Lock" an item so it cannot be sold, consumed, or crafted with accidentally.
+- [ ] 🟡 **Custom Bank Tabs:** Let players buy (with gold) custom tabs and assign an emoji (⚔️, 🐟, 💎) to sort their hoard.
+- [ ] 🟢 **"Sell All Junk" Button:** A one-tap button to clear out grey/common items marked as junk.
+
+### 🎨 UI/UX Juice & Flavor
+- [ ] 🟢 **Battery Saver Mode:** Dim, 1 FPS "true black" screen mode that activates if the screen hasn't been touched in 5 minutes, saving battery while keeping the foreground loop active.
+- [ ] 🟡 **Swipe Navigation:** Swipe left/right to instantly jump between gathering skills without returning to the main menu.
+- [ ] 🟢 **Detailed Statistics Page:** A screen showing "Total Ores Mined," "Total Damage Dealt," "Days since you last touched grass," etc.
+- [ ] 🟡 **Dynamic Backgrounds:** Background color/styling subtly shifts based on real-world time of day.
+- [ ] 🟢 **The "Jackpot" Haptic:** When you roll a Mythic drop, the phone vibrates to the tune of a little fanfare.
+- [ ] 🟢 **Idle Soundscapes:** A toggle for "White Noise" (e.g., rhythmic clinking of a forge, swoosh of a fishing rod).
+- [ ] 🟢 **The "Don't Push This" Button:** A literal button deep in settings. Pressing it 1,000 times gives a unique Title: "The Stubborn".
+
+### ♻️ Deep Resource Sinks & Meta-Progression
+- [ ] 🔴 **The "Recycler" / Deconstruction:** A machine/skill to throw obsolete low-tier resources (or old gear) to generate "Cosmic Dust" for endgame upgrades.
+- [ ] 🔴 **Mastery Pools & Item Mastery:** Gain "Mastery XP" for specific items (e.g., crafting Iron Swords). At Lv 50, Copper Veins never deplete. At Lv 99, crafting Iron Sword has 10% duplicate chance.
+- [ ] 🔴 **Relics & The Museum (Collection Log):** 1 in 10,000 chance to find a "Relic" anywhere. Relics give permanent global buffs (e.g., Fossilized Pickaxe = +2% mining speed).
+- [ ] 🟡 **Pets & Familiars:** Very rare drops from activities. Examples: Rocky the Pet Rock (+1% double ore), The Void-Guppy (Eats 10% fish, poops Aether Shards).
+- [ ] 🔴 **Equipment Augmentation / Refining:** Combine 10 base Iron Swords to make an Iron Sword +1. Combine 10 +1s to make a +2. Infinite sink for crafted items.
+
+### 🌌 Cosmic & Blibbertooth Anomalies
+- [ ] 🔴 **Cosmic Weather / Anomalies:** Daily global buffs/debuffs. "Gravity is Hiccuping" (Logging takes 10% longer, Ranged combat +20% damage).
+- [ ] 🟡 **"Cursed" Mechanics (via Scavenging):** Terrible items with hidden uses. "The Heavy Helmet" (-50% attack speed, but confuses enemy turn 1). "Ring of Clumsiness" (5% chance to drop weapon for massive damage).
+
+### ⚔️ Idle Combat Staples
+- [ ] 🔴 **Idle Boss Takedowns:** Bosses with 10 Billion HP. You assign your character to "Auto-Attack" it. Takes 3 real-world days to chip away to 0, granting a massive chest.
+- [ ] 🔴 **The Gambit System (Auto-Combat Programming):** Program offline combat logic. "IF HP < 30% -> USE Health Potion." "IF Enemy Stunned -> USE Heavy Attack."
+- [ ] 🔴 **Offline Raiding Parties:** Assemble a "B-Team" of Companions and send them on a 12-hour real-time Expedition. Return with a report and loot.
+
+---
+
+## 🎨 Phase 10 — "Arteria Refined" (UX & Tactical UI)
+> **Goal:** Elevate the visual identity and tactical feedback of every screen.
+> **Philosophy:** Depth, Micro-interactions, and Information Density.
+
+### 10.1 — The Arteria Depth System 🟡
+- [x] 🟢 **Dynamic Shadows:** Multi-layered shadow system (`ShadowSubtle` to `ShadowDeep`) for premium card depth.
+- [x] 🟢 **Inset Surfaces:** `InsetStyle` tokens for stat pills and recessed UI elements.
+- [x] 🟢 **Header Elevation:** Casting downward shadows from skill headers to separate "Player Context" from "Action Content".
+
+### 10.2 — Tactical Progression UI 🔴
+- [x] 🟡 **Skill Progression Bar:** Horizontal icon strip in skill headers showing unlocked/locked nodes (Mining/Logging MVP).
+- [ ] 🟡 **Rolling Rollout:** Implement the Progression Bar across ALL skills (Harvesting, Fishing, Smithing, etc.).
+- [ ] 🔴 **Visual Rarity:** Unique glow/particle effects on the Progression Bar icons for Rare or Mythic node unlocks.
+- [x] 🟢 **Compact Headers:** Compressed level indicators ("Lv. X") integrated into titles to reclaim vertical screen space.
+
+### 10.3 — Feedback & Communication 🟡
+- [x] 🟢 **Update Board Redux:** Renamed and accessible via Settings version tap for on-demand changelog viewing.
+- [ ] 🟡 **Interactive Changelog:** Searchable patch history with "Compare Versions" UI.
+- [ ] 🟢 **Tactical Haptics:** Rhythmic haptic pulses tied to completion and milestone unlocks.
+
+---
+
+## 🎯 Current Target
+**We are here → Phase 2.1 (Gathering Expanded) ✅ + Phase 4 Combat Alpha Groundwork ✅**
+
+v0.5.2 (2026-03-06): **The Celestial Expansion.** Added **Astrology** skill with constellations, Stardust, and Meteorite items. Integrated with game loop and progression UI. Unified skill navigation. Fixed critical style and type linting issues.
+
+v0.4.1 (2026-03-03): **The Anchor Man.** Main character & nickname (The Anchor). Goblin first enemy + Peek modal. **Cooking** skill (10 fish→cooked recipes). **Bestiary stub** (Combat tab Enemies Spotted). Bank fix. Next: **Crafting queue** (Smithing/Alchemy 8-hour queue), more quests/skills (Act III, Harvesting), Phase 4 combat.
+
+v0.4.0 (2026-03-03): Daily quests, Stats tab, custom bank tabs, Sell All Junk, login bonus, Lumina UI shipped.
+
+---

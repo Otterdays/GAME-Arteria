@@ -1,0 +1,27 @@
+# Gradle
+.gradle/
+build/
+
+# Local SDK path (never commit)
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+
+# NDK / CMake (when enabled)
+.cxx/
+.externalNativeBuild/
+
+# Packaged APKs / bundles (assemble + build-apk-for-transfer.ps1 output)
+*.apk
+*.aab
+dist/
+
+# Signing
+*.jks
+*.keystore
+
+# OS / debug
+.DS_Store
+*.hprof

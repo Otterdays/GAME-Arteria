@@ -23,3 +23,18 @@ coverage/
 
 # Local build mode cache (dev vs prod app name/package). See EXPO_GUIDE §Dev/Prod.
 **/.arteria-build-mode
+
+# Android / Gradle / NDK (prebuild at repo root, caches under node_modules, etc.)
+.gradle/
+.kotlin/
+.cxx/
+local.properties
+*.hprof
+/android/
+/ios/
+
+# Native Gradle Edition projects (module build trees; each project also has .gitignore)
+Arteria-Gradle-Edition-v1.2/**/build/
+Artera-Gradle-Edition/**/build/
+*.apk
+*.aab
