@@ -1,6 +1,9 @@
 # SCRATCHPAD
 
 ## Current Tasks
+- [x] **Android release QoL (2026-03-22):** RN autolinking cache ignored `ARTERIA_LEAN_PROD` → dev Expo modules could still configure on prod APK builds; added `Invalidate_RN_Autolinking_Cache.bat` + calls from `1_`/`2_` build bats. `chcp 65001` in those bats for UTF-8 console. Enabled R8 + shrink in `apps/mobile/android/gradle.properties` (was default off despite script copy); Hermes JNI keeps in `proguard-rules.pro`. EXPO_GUIDE §4b updated.
+- [x] **Android SDK local.properties (2026-03-22):** Gradle failed: `sdk.dir` pointed at non-existent `C:/Users/home/AppData/Local/Android/Sdk` (bad fallback when `ANDROID_HOME` was unset). Added root `Ensure_Android_LocalProps.bat` (detect SDK via ANDROID_HOME, ANDROID_SDK_ROOT, `%LOCALAPPDATA%\Android\Sdk`, or valid existing `sdk.dir`); `1_Run_Local_Android_Build.bat` and `2_Build_APK_Local.bat` call it every run. EXPO_GUIDE §4b documents behavior. [AMENDED 2026-03-22]: Maintainer **changed machines** — Windows username differed from the bogus `Users/home` template; `local.properties` is gitignored and must be regenerated per PC (`C:\Users\<user>\AppData\Local\Android\Sdk`). Future AI: do not trust committed or copied absolute `sdk.dir` paths across machines.
+- [x] **Gradle settings.gradle autolink (2026-03-22):** `Process 'command cmd' exit 1` at `settings.gradle:29` traced to `expo-modules-autolinking react-native-config` failing: Babel duplicate plugins `react-native-worklets/plugin` + `react-native-reanimated/plugin`. Fix: `apps/mobile/babel.config.js` — keep only `react-native-reanimated/plugin` (Reanimated 4 bundles worklets).
 - [x] **Dependency Audit Suite (2026-03-22):** Created `Audit_Deps.bat` and `DOCU/DEP_AUDIT_SUITE.md` to guide AI agents and engineers on how to conduct and document future dependency audits. Ran an audit pass and patched 2 high-severity vulnerabilities (`flatted`, `svgo`). Updated `SBOM.md` to reflect status.
 - [x] **Gradle + TS Error Fixes (2026-03-21):** Resolved all IDE errors:
   - `packages/engine/src/types.ts`: Added `'resonance'` to engine `SkillId` union (was missing, causing `PlayerState` type mismatch in `useGameLoop.ts` line 988).
@@ -12,6 +15,7 @@
   - Files modified: `store/index.ts` (added anchorSlice), `app/_layout.tsx` (gating + Stack.Screen), `utils/logger.ts` (added 'Persistence' module)
   - Settings "Switch Anchor" button (minor, deferred). Backups verified. Docs consolidated.
   - ⚠️ Next step for user: `npm run mobile` to boot dev server and test on device
+- [x] **Native Android Build Fixed (react-native-nitro-modules & mmkv):** Resolved the `react-native-nitro-modules` CMake header race condition for Android builds alongside `react-native-mmkv`. By running `npm install` post-engine-fix and using Gradle to trigger `generateCodegenArtifactsFromSchema`, the headers are successfully generated and CMake can cross-compile mmkv and nitromodules for all 4 architectures cleanly on Windows.
 - [x] **Activate Alchemy Skill (2026-03-22):** Added to `IMPLEMENTED_CRAFTING_SKILLS` and `SKILL_NAV_ORDER` constants. Verified and activated.
 - [x] **Doc doc updates for v0.6.3 (2026-03-22):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped to 0.6.3. Crafting Queue & WYWA Report documented.
 - [x] **Doc & updates for v0.6.2 (2026-03-13):** CHANGELOG, patchHistory, UpdateBoard, index.html, SUMMARY, app.json bumped to 0.6.2. Profile screen documented.

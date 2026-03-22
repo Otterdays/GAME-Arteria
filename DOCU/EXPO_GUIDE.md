@@ -97,11 +97,21 @@ When EAS is unavailable (concurrency limit or credits exhausted), use the **loca
 
 **Requirements:** Android Studio + Android SDK installed (same as `1_Run_Local_Android_Build.bat`).
 
+**SDK path (`sdk.dir`):** Gradle reads `apps/mobile/android/local.properties`. Root scripts call `Ensure_Android_LocalProps.bat`, which writes `sdk.dir` from, in order: `ANDROID_HOME`, `ANDROID_SDK_ROOT`, the default Studio location `%LOCALAPPDATA%\Android\Sdk`, or an existing `sdk.dir` only if that folder contains `platform-tools`. If you previously had a bogus path (for example `C:/Users/home/...`), re-run the build script to regenerate the file. You can also set `ANDROID_HOME` to your SDK root in Windows Environment Variables.
+
+**For future debugging / new PC (AI + humans):** `local.properties` is **machine-local** (listed in `apps/mobile/android/.gitignore`). The absolute SDK path always includes the Windows profile, e.g. `C:\Users\<username>\AppData\Local\Android\Sdk`. After **switching machines** or **changing Windows usernames**, any old `sdk.dir` from another account (or a bad template like `C:/Users/home/...`) will not exist on disk — Gradle then reports *SDK location not found* or *Directory does not exist*. Do not assume the path from a previous machine; run `2_Build_APK_Local.bat` / `1_Run_Local_Android_Build.bat` (they call `Ensure_Android_LocalProps.bat`) or set `ANDROID_HOME` on the new box.
+
 **Run:** `2_Build_APK_Local.bat`
 
 This runs `expo prebuild --clean` (when needed) with `ARTERIA_LEAN_PROD=1`, then `gradlew assembleRelease` from `apps\mobile\android` (no device required). Output app name: **Arteria**. Root `index.js` redirects Metro (which resolves from Arteria) to `apps/mobile/index.js`, fixing "Unable to resolve module ./index.js".
 
 `2_Build_APK_Local.bat` sets `ARTERIA_LEAN_PROD=1` so: (1) app name/package are prod (`Arteria`, `com.anonymous.arteria`); (2) Expo autolinking excludes dev-client native modules in release builds (smaller APKs).
+
+**Lean autolinking vs Gradle cache:** React Native’s `settings.gradle` caches autolinking output under `apps/mobile/android/build/generated/autolinking/` and only invalidates it when certain lockfiles change — **not** when `ARTERIA_LEAN_PROD` changes. Without a refresh, a release build can still configure `expo-dev-client` and friends from an earlier dev graph. `1_Run_Local_Android_Build.bat` and `2_Build_APK_Local.bat` call `Invalidate_RN_Autolinking_Cache.bat` before Gradle so `app.config.js` excludes take effect.
+
+**Windows console:** If Expo/Gradle logs show mojibake instead of emoji (e.g. `Γä╣` or `Γûô`), the batch files set UTF-8 (`chcp 65001`) to improve that. Harmless warnings from dependencies (deprecated APIs, `package=` in a library manifest, Soloader meta-data) are normal unless the build fails.
+
+**Release minify:** `android/gradle.properties` sets `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` for R8. If a release APK crashes on open, toggle those to `false` temporarily and extend `app/proguard-rules.pro`.
 
 APK output folder:
 ```

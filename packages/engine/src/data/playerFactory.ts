@@ -79,5 +79,6 @@ export function createNewPlayer(name: string = 'Adventurer'): PlayerState {
         },
         slayerTask: null,
         companions: {},
+        itemMastery: {},
     };
 }
