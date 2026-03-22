@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul 2>&1
 title Arteria Local APK Build (Shareable)
 color 0e
 REM [TRACE: DOCU/EXPO_GUIDE.md — Dev/Prod Coexistence]
@@ -46,16 +47,15 @@ if not "%CURRENT_MODE%"=="prod" (
     echo Native project already in PROD mode. Skipping prebuild.
 )
 
-REM Ensure local.properties exists ^(prebuild --clean removes it^)
-set "LOCAL_PROPS=%~dp0apps\mobile\android\local.properties"
-if not exist "%LOCAL_PROPS%" (
-    if defined ANDROID_HOME (
-        echo sdk.dir=%ANDROID_HOME:\=/%> "%LOCAL_PROPS%"
-    ) else (
-        echo sdk.dir=C:/Users/home/AppData/Local/Android/Sdk> "%LOCAL_PROPS%"
-    )
-    echo Created local.properties for SDK path.
+REM Always refresh local.properties so a bad sdk.dir ^(e.g. stale placeholder^) is fixed.
+call "%~dp0Ensure_Android_LocalProps.bat"
+if errorlevel 1 (
+    cd /d "%~dp0"
+    pause
+    exit /b 1
 )
+
+call "%~dp0Invalidate_RN_Autolinking_Cache.bat"
 
 cd /d "%~dp0\apps\mobile\android"
 if errorlevel 1 (
