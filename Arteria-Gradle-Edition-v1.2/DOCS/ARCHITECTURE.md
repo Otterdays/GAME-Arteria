@@ -8,6 +8,8 @@
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | `ARCHITECTURE.md`, `SBOM.md`, RN vs Gradle 9.x analysis, supersession notices, doc suite (SCRATCHPAD, ROADMAP, MIGRATION_SPEC, REFERENCES). |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | §7a directory tree: added `Gradle_Tool_Chain_Migration.md`. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | §2 identity table amended (package, minSdk, engine/graphics status); §3/§4 amended (Compose shell reality); §5 Gradle files table amended; §7b source layout amended; §7c package note amended. |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | §4 module inventory: Compose UI + theme/Cinzel row; MainActivity row amended (`ArteriaTheme`). |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | §4 Compose UI row amended: animated `DockingBackground` note. |
 
 *Future contributors: append a row here when you materially change this doc.*
 
@@ -138,7 +140,9 @@ Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two m
 
 | Module | File | Status |
 |--------|------|--------|
-| **MainActivity** | `app/src/main/java/com/arteria/game/MainActivity.kt` | Live — `ComponentActivity` + Compose shell |
+| **MainActivity** | `app/src/main/java/com/arteria/game/MainActivity.kt` | Live — `ComponentActivity` + Compose shell (`ArteriaTheme`, `enableEdgeToEdge`) |
+| **Compose UI** | `app/.../ui/**` (`ArteriaApp`, `account/*`, `components/*`) | Live — Docking Station–style account flow; NavHost; **`DockingBackground`** animated Canvas (stars + nebula + gradient, `InfiniteTransition`) |
+| **Theme / typography** | `ui/theme/ArteriaTheme.kt`, `res/font/cinzel.ttf` | Live — palette aligned with `apps/mobile/constants/theme.ts`; **Cinzel** titles (OFL, see `SBOM.md` **Bundled font assets**) |
 | **:core** | `core/build.gradle.kts` | Live — empty Kotlin library module, no sources yet |
 
 ---

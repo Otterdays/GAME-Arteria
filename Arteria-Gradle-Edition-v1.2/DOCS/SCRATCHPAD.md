@@ -6,6 +6,8 @@
 |------|-------|-----------------|--------------|
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Initial SCRATCHPAD — agent handoff template. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Last Actions renumbered; Next Action points at `Arteria-Gradle-Edition-v1.2/`; out-of-scope minSdk note amended. |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | Cinzel bundled + docs (SBOM, REFERENCES, ARCHITECTURE); SCRATCHPAD status. |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | Animated `DockingBackground` (twinkle, nebula, gradient breath); KDoc “way forward”. |
 
 *Future contributors: append a row when you materially change this doc.*
 
@@ -20,7 +22,7 @@ Active state for **native Android** track. Game design truth stays in repo root 
 ## Current Status
 
 - **Phase:** Phase 0 (Structure + Gradle 9.6 wrapper + Nightly URL) is **DONE [2026-03-22]**.
-- **Runnable app:** `:app` Compose shell **confirmed running on API 36.1 AVD** — shows "Welcome to Arteria Gradle Edition" [2026-03-22]. `package com.arteria.game`, `minSdk 26`, `compileSdk 36.1`, `targetSdk 36`. **Daemon JVM:** JDK **21** / **Adoptium** via `gradle/gradle-daemon-jvm.properties`. `:core` module present (empty library, no sources yet).
+- **Runnable app:** `:app` Compose **Docking Station** styling (palette from `apps/mobile/constants/theme.ts`), **Cinzel** display type (`res/font/cinzel.ttf`, OFL), **animated space backdrop** (`DockingBackground`: twinkling stars, drifting aurora blobs, breathing gradient) on menu-related screens. NavHost `ui/ArteriaApp.kt`. `package com.arteria.game`, `minSdk 26`, `compileSdk 36.1`, `targetSdk 36`. **Daemon JVM:** JDK **21** / **Adoptium** via `gradle/gradle-daemon-jvm.properties`. `:core` empty. `:app:assembleDebug` green [2026-03-22].
 - **Docs hub:** `Arteria-Gradle-Edition-v1.2/DOCS/` is the current source of truth for architecture and roadmap.
 - **Main shipping app:** Still `apps/mobile/` (Expo / RN, Gradle 8.x). Unaffected.
 
@@ -28,18 +30,22 @@ Active state for **native Android** track. Game design truth stays in repo root 
 
 ## Last Actions (most recent first)
 
-1. **2026-03-22:** **Handoff wrap-up:** Last Actions list renumbered 1–12; Next Action targets **`Arteria-Gradle-Edition-v1.2/`** and Phase 1 remaining work (navigation routes); out-of-scope package/minSdk bullets corrected; doc index calls out SBOM as single source. SBOM title fixed to *Software* Bill of Materials.
-2. **2026-03-22:** **SBOM cleanup:** Removed all deprecated/stale tables. SBOM is now one clean source of truth with correct values only.
-3. **2026-03-22:** **Doc accuracy pass:** `ARCHITECTURE.md` amended (identity, diagram, Gradle files, source layout, package note). `SCRATCHPAD.md` status strengthened. `ROADMAP.md` Phase 1 annotated `[IN PROGRESS]`.
-4. **2026-03-22:** **SBOM audit:** Canonical dependency inventory (Declared / Latest known / Checked); populated from all Gradle files. (Superseded by **SBOM cleanup** entry above: deprecated tables removed entirely.)
-5. **2026-03-22:** **JVM 21 for app bytecode:** `app` + `core` `compileOptions` → `JavaVersion.VERSION_21` (matches daemon JDK 21). SBOM amended; `Gradle_Tool_Chain_Migration.md` note updated. `:app:assembleDebug` OK.
-6. **2026-03-22:** **Gradle Daemon toolchain:** Android Studio *Migrate* applied; `gradle/gradle-daemon-jvm.properties` pins **JDK 21** / **ADOPTIUM** (Foojay URLs). Docs updated: `Gradle_Tool_Chain_Migration.md` (preservation header + current state), `SBOM.md` toolchain row, `REFERENCES.md` daemon link, `ARCHITECTURE.md` §7a file list; SCRATCHPAD status refreshed.
-7. **2026-03-22:** Raised compile/target to **Android 16**: `compileSdk { release(36) { minorApiLevel = 1 } }` (36.1 / Baklava, matches AVD), `targetSdk { release(36) }`, `core` compileSdk aligned; manifest `tools:targetApi="36"`. SBOM §Android SDK Targets amended with AGP 9.1 / migration doc links.
-8. **2026-03-22:** AGP 9.1 **built-in Kotlin** migration: removed `org.jetbrains.kotlin.android` from root/app/core (duplicate `kotlin` extension); `:app` uses `org.jetbrains.kotlin.plugin.compose` only; dropped `kotlinOptions` (JVM target follows `compileOptions`). Fixed missing launcher mipmaps: `AndroidManifest` + `res/drawable/ic_launcher.xml` vector. `:app:assembleDebug` verified green.
-9. **2026-03-22:** Added local APK packaging scripts at v1.2 root: `build-apk-for-transfer.bat` / `build-apk-for-transfer.ps1` — runs `:app:assembleDebug` (default) or `release`, optional `clean`, copies newest `.apk` to `dist/Arteria-v1.2-<variant>-<timestamp>.apk` for Drive/sideload transfer.
-10. **2026-03-22:** Added agent continuity suite: `ROADMAP.md`, `MIGRATION_SPEC.md`, `REFERENCES.md`, `SCRATCHPAD.md`; agent credits on `ARCHITECTURE.md` / `SBOM.md`; expanded target directory layout in `ARCHITECTURE.md` §7.
-11. **2026-03-22:** Documented React Native incompatibility with Gradle 9.x; superseded RN-centric execution of `whitepaper.md` (see `ARCHITECTURE.md` §9 and `SBOM.md` whitepaper notice).
-12. **2026-03-22:** Established v1.2 as **future direction**: Kotlin + Compose (UI), C++/OpenGL (GPU island), port of engine logic from `packages/engine/`.
+1. **2026-03-22:** **Animated main-menu sky:** `DockingBackground` — dual `InfiniteTransition` loops (26s cosmic / 5.2s twinkle), **78** stars with per-star phase/speed, **3** soft radial **nebula** blobs (accent blue / purple / luminar) drifting slowly, **lerp**-shifted vertical gradient “breath.” KDoc lists roadmap: reduced motion, parallax, shader fog, battery hooks. Used on account select / create / session screens.
+2. **2026-03-22:** **Cinzel font:** Bundled variable `res/font/cinzel.ttf` (Google Fonts OFL, parity with Expo `Cinzel_400Regular` / `Cinzel_700Bold`). `ArteriaTheme.kt` uses Cinzel for display / titles / pretag; body remains sans-serif. Docs: `SBOM.md` **Bundled font assets**, `REFERENCES.md` typography section, `ARCHITECTURE.md` §4 rows. `:app:compileDebugKotlin` OK.
+3. **2026-03-22:** **Docking Station UI:** Palette + starfield + gradient account cards inspired by `apps/mobile/app/character-select.tsx` and `constants/theme.ts`.
+4. **2026-03-22:** **Account UI (stub):** NavHost — account selection, creation (Standard mode), session placeholder. Files: `ui/ArteriaApp.kt`, `ui/account/*`, `navigation/NavRoutes.kt`.
+5. **2026-03-22:** **Handoff wrap-up:** Next Action targets **`Arteria-Gradle-Edition-v1.2/`**; SBOM single source; title *Software* Bill of Materials.
+6. **2026-03-22:** **SBOM cleanup:** Single source of truth tables.
+7. **2026-03-22:** **Doc accuracy pass:** `ARCHITECTURE.md`, `SCRATCHPAD.md`, `ROADMAP.md` Phase 1 `[IN PROGRESS]`.
+8. **2026-03-22:** **SBOM audit:** Canonical dependency inventory.
+9. **2026-03-22:** **JVM 21** app bytecode + daemon.
+10. **2026-03-22:** **Gradle Daemon toolchain** JDK 21 / ADOPTIUM.
+11. **2026-03-22:** **Android 16** compileSdk 36.1 / targetSdk 36.
+12. **2026-03-22:** AGP 9.1 **built-in Kotlin** migration; launcher icon fix.
+13. **2026-03-22:** `build-apk-for-transfer` scripts.
+14. **2026-03-22:** Agent continuity suite (ROADMAP, MIGRATION_SPEC, REFERENCES, SCRATCHPAD).
+15. **2026-03-22:** React Native vs Gradle 9.x documented; `whitepaper.md` superseded for execution.
+16. **2026-03-22:** Established v1.2 **future direction**: Kotlin + Compose, C++/OpenGL GPU island.
 
 ---
 

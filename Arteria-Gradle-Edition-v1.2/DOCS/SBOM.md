@@ -10,6 +10,7 @@
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | SBOM audit: canonical dependency tables (declared vs latest-known columns); deprecated stale runtime/test/native rows annotated. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | SBOM cleanup: removed deprecated/stale tables; single source of truth for new agents. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Title corrected to **Software** Bill of Materials (industry-standard SBOM expansion). |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | **Bundled fonts** section: Cinzel variable TTF in `res/font/`; SBOM + license pointer. |
 
 *Future contributors: append a row here when you materially change this doc.*
 
@@ -42,6 +43,18 @@
 | targetSdk | **36** | `targetSdk { version = release(36) }` — opts into [Android 16 behaviors](https://developer.android.com/about/versions/16/migration) |
 | minSdk | **26** | Android 8.0 — broadened for real-world reach |
 | SDK Build Tools | 36.0.0 | Required by [AGP 9.1](https://developer.android.com/build/releases/agp-9-1-0-release-notes); max supported API is **36.1** |
+
+---
+
+## Bundled font assets (not on Maven)
+
+Shipped as **`app/src/main/res/font/`** resources (no Gradle coordinate). Update this table when adding or replacing font files.
+
+| Asset | File | License | Upstream / notes |
+|-------|------|---------|------------------|
+| Cinzel (variable, wght axis) | `cinzel.ttf` | **SIL Open Font License 1.1** | [google/fonts `ofl/cinzel`](https://github.com/google/fonts/tree/main/ofl/cinzel) — same family as Expo `@expo-google-fonts/cinzel` / `FontCinzel` in `apps/mobile/constants/theme.ts`. Full license text: [`OFL.txt` in that folder](https://github.com/google/fonts/blob/main/ofl/cinzel/OFL.txt). |
+
+**Compose usage:** `FontFamily(Font(R.font.cinzel, …))` in `ui/theme/ArteriaTheme.kt` for display titles, app bar titles, and gold pretag (`labelSmall`). Body copy uses `FontFamily.SansSerif`.
 
 ---
 

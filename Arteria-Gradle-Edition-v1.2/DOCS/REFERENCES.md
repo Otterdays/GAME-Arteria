@@ -6,6 +6,7 @@
 |------|-------|-----------------|--------------|
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Initial REFERENCES.md (expanded from `gradle_website_links.md`). |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Gradle Build Daemon / JVM criteria link. |
+| 2026-03-22 | Cursor Agent (Composer) | Cursor | Cinzel font upstream + Expo parity (`theme.ts`). |
 
 *Future contributors: append a row when you materially change this doc.*
 
@@ -37,6 +38,13 @@ Curated links for **Gradle 9.6 nightly**, Android native UI, GameActivity, and m
 - **Compose setup (Kotlin):** [https://developer.android.com/jetpack/compose/setup](https://developer.android.com/jetpack/compose/setup)
 - **Navigation Compose:** [https://developer.android.com/jetpack/compose/navigation](https://developer.android.com/jetpack/compose/navigation)
 - **State and ViewModel:** [https://developer.android.com/topic/libraries/architecture/viewmodel](https://developer.android.com/topic/libraries/architecture/viewmodel)
+
+---
+
+## Typography / brand parity (Expo → native)
+
+- **Cinzel (Google Fonts, OFL):** [https://fonts.google.com/specimen/Cinzel](https://fonts.google.com/specimen/Cinzel) — v1.2 bundles variable `cinzel.ttf` from [google/fonts `ofl/cinzel`](https://github.com/google/fonts/tree/main/ofl/cinzel) to match `Cinzel_400Regular` / `Cinzel_700Bold` usage in `apps/mobile/app/_layout.tsx` and `constants/theme.ts` (`FontCinzel`, `FontCinzelBold`).
+- **Arteria dark palette reference:** `apps/mobile/constants/theme.ts` (`DARK_PALETTE`, `THEMES`) — Compose colors in `ui/theme/ArteriaTheme.kt` + Docking Station screens.
 
 ---
 
