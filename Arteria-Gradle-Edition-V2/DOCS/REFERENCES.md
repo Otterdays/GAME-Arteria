@@ -7,12 +7,13 @@
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Initial REFERENCES.md (expanded from `gradle_website_links.md`). |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Gradle Build Daemon / JVM criteria link. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Cinzel font upstream + Expo parity (`theme.ts`). |
+| 2026-03-30 | Cursor Agent | Composer | Title V2; wrapper path note → `Arteria-Gradle-Edition-V2/gradle/wrapper/`. |
 
 *Future contributors: append a row when you materially change this doc.*
 
 ---
 
-# References — Arteria v1.2 Gradle Edition
+# References — Arteria Gradle Edition V2
 
 Curated links for **Gradle 9.6 nightly**, Android native UI, GameActivity, and migration work. Prefer official sources over third-party tutorials.
 
@@ -20,7 +21,7 @@ Curated links for **Gradle 9.6 nightly**, Android native UI, GameActivity, and m
 
 ## Gradle
 
-- **Nightly distributions:** [https://gradle.org/nightly/](https://gradle.org/nightly/) — lists current nightlies; this project pins an exact snapshot URL in `Artera-Gradle-Edition/gradle/wrapper/gradle-wrapper.properties`.
+- **Nightly distributions:** [https://gradle.org/nightly/](https://gradle.org/nightly/) — lists current nightlies; this project pins an exact snapshot URL in `Arteria-Gradle-Edition-V2/gradle/wrapper/gradle-wrapper.properties`.
 - **Gradle releases / compatibility:** [https://docs.gradle.org/current/userguide/compatibility.html](https://docs.gradle.org/current/userguide/compatibility.html)
 - **Wrapper:** [https://docs.gradle.org/current/userguide/gradle_wrapper.html](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - **Build Daemon (JVM the daemon uses; criteria / toolchain):** [https://docs.gradle.org/current/userguide/build_daemon.html](https://docs.gradle.org/current/userguide/build_daemon.html) — matches Android Studio *Migrate to Gradle Daemon toolchain* and `gradle/gradle-daemon-jvm.properties`.

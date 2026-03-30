@@ -1,8 +1,10 @@
 <!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
 
-# Design Translation Audit & Index — V1 to v1.2
+# Design Translation Audit & Index — V1 to Gradle Edition V2
 
 This document indexes the **Content, Registries, and UI Elements** found in the V1 (React Native) monorepo that must be ported to v1.2 (Kotlin / Compose). It builds upon `MIGRATION_SPEC.md` to map exact file structures and audit data splits.
+
+**`[AMENDED 2026-03-30]:`** Product / folder name **Arteria Gradle Edition V2** (`Arteria-Gradle-Edition-V2/`). Column **"V1.2 Port Status"** below means **native V2 port status** (header not renamed to avoid table churn).
 
 ---
 

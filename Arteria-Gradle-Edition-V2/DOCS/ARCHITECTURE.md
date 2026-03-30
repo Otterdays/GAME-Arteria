@@ -10,16 +10,18 @@
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | §2 identity table amended (package, minSdk, engine/graphics status); §3/§4 amended (Compose shell reality); §5 Gradle files table amended; §7b source layout amended; §7c package note amended. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | §4 module inventory: Compose UI + theme/Cinzel row; MainActivity row amended (`ArteriaTheme`). |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | §4 Compose UI row amended: animated `DockingBackground` note. |
+| 2026-03-30 | Cursor Agent | Composer | Title + identity: **Gradle Edition V2**; Gradle root = `Arteria-Gradle-Edition-V2/`. |
 
 *Future contributors: append a row here when you materially change this doc.*
 
 ---
 
-# Arteria v1.2 — Gradle Edition: Architecture
+# Arteria Gradle Edition V2 — Architecture
 
-> **Status:** Scaffold — native Kotlin + C++/OpenGL ES 3 on bleeding-edge Android tooling
-> **Last updated:** 2026-03-22
-> **Direction:** This is the future for Arteria. Pure native. No React Native.
+> **Status:** Scaffold — native Kotlin + Jetpack Compose on bleeding-edge Android tooling; optional C++/OpenGL ES island planned per sections below.
+> **Last updated:** 2026-03-30 (title amended; technical body unchanged unless noted)
+> **Direction:** Parallel native product. Pure native in this folder. No React Native.
+> **`[AMENDED 2026-03-30]:`** On-disk project root is **`Arteria-Gradle-Edition-V2/`** (`settings.gradle.kts` at this level). Older paths (`Artera-Gradle-Edition/`, `Arteria-Gradle-Edition-V2/`) are legacy labels in historical paragraphs.
 
 ---
 
@@ -27,9 +29,9 @@
 
 React Native's Gradle plugin (`@react-native/gradle-plugin`) uses internal Gradle APIs (`JavaVendorSpec.JVM_EXTERN` and others) that were **removed in Gradle 9.0**. The RN team targets Gradle 8.x; there is no announced timeline for Gradle 9 support. This was confirmed firsthand when the main Arteria RN app had to downgrade from Gradle 9.0 to 8.13 to build at all.
 
-Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two major versions ahead of what RN supports. Combining them is not possible without gutting the toolchain advantage.
+**Arteria Gradle Edition V2** targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two major versions ahead of what RN supports. Combining them is not possible without gutting the toolchain advantage.
 
-**Decision:** Arteria v1.2 is a native-first Android project. UI via **Kotlin + Jetpack Compose** (when added). Rendering via **C++/OpenGL ES 3** through `GameActivity`. No JS bridge, no Metro, no Hermes, no Expo.
+**Decision:** V2 is a native-first Android project. UI via **Kotlin + Jetpack Compose** (live). Rendering via **C++/OpenGL ES 3** remains **planned** (GPU island, Phase 5+); current entry is **ComponentActivity + Compose**, not `GameActivity`. No JS bridge, no Metro, no Hermes, no Expo.
 
 ---
 
@@ -37,7 +39,7 @@ Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two m
 
 | Field | Value |
 |-------|-------|
-| **Name** | Arteria V1.2 — Gradle Edition |
+| **Name** | Arteria Gradle Edition V2 |
 | **Package** | `com.example.arteriav15_gradleedition` |
 | **Build system** | Gradle 9.6.0-nightly (snapshot `20260322000231+0000`) |
 | **AGP** | 9.1.0 |
@@ -49,7 +51,7 @@ Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two m
 | **JDK** | 21 (foojay toolchain auto-provisioning) |
 | **React Native** | **Not used. Incompatible with Gradle 9.x.** |
 
-`[AMENDED 2026-03-22]:` Current state of **`Arteria-Gradle-Edition-v1.2/`** (the live project):
+`[AMENDED 2026-03-22]:` Current state of **`Arteria-Gradle-Edition-V2/`** (the live project) `[path label amended 2026-03-30]`:
 
 | Field | Current value |
 |-------|--------------|
@@ -86,7 +88,7 @@ Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two m
 └─────────────────────────────────────────────────────┘
 ```
 
-`[AMENDED 2026-03-22]:` The diagram above describes the **intended future** architecture (C++/OpenGL GPU island). The **current running app** (`Arteria-Gradle-Edition-v1.2/`) is a **Jetpack Compose shell** — no native `.so`, no EGL, no CMake wired yet:
+`[AMENDED 2026-03-22]:` The diagram above describes the **intended future** architecture (C++/OpenGL GPU island). The **current running app** (`Arteria-Gradle-Edition-V2/`) is a **Jetpack Compose shell** — no native `.so`, no EGL, no CMake wired yet:
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -136,7 +138,7 @@ Artera-Gradle-Edition targets **Gradle 9.6 nightly** and **AGP 9.1.0** — two m
 | **AndroidOut** | `AndroidOut.h/cpp` | `aout` — `std::ostream` wrapper around `__android_log_write` |
 | **MainActivity** | `MainActivity.kt` | `GameActivity` subclass, immersive system UI flags |
 
-`[AMENDED 2026-03-22]:` The C++ modules above describe the **planned** GPU island (Phase 5+). **Current live modules** in `Arteria-Gradle-Edition-v1.2/`:
+`[AMENDED 2026-03-22]:` The C++ modules above describe the **planned** GPU island (Phase 5+). **Current live modules** in `Arteria-Gradle-Edition-V2/`:
 
 | Module | File | Status |
 |--------|------|--------|
@@ -168,7 +170,7 @@ Gradle 9.6.0-nightly ──► AGP 9.1.0 ──► CMake 3.22.1 ──► NDK (c
 | `gradle/wrapper/gradle-wrapper.properties` | Gradle 9.6.0 nightly snapshot URL |
 | `gradle/gradle-daemon-jvm.properties` | JDK 21 toolchain URLs (foojay, all platforms) |
 
-`[AMENDED 2026-03-22]:` Actual files in `Arteria-Gradle-Edition-v1.2/` (no version catalog; no CMake/prefab in `:app` yet):
+`[AMENDED 2026-03-22]:` Actual files in `Arteria-Gradle-Edition-V2/` (no version catalog; no CMake/prefab in `:app` yet):
 
 | File | Purpose |
 |------|---------|
@@ -194,10 +196,10 @@ Gradle 9.6.0-nightly ──► AGP 9.1.0 ──► CMake 3.22.1 ──► NDK (c
 
 The main Arteria app (`apps/mobile/`) is a React Native / Expo SDK 55 idle RPG (v0.7.0) locked to Gradle 8.13. This Gradle Edition is a **separate, standalone native Android project** that:
 
-- Lives at `Arteria/Arteria-Gradle-Edition-v1.2/` (docs) and `Arteria/Artera-Gradle-Edition/` (source scaffold) — shares **zero code** with the RN app.
-- Targets bleeding-edge tooling (API 36, Gradle 9.6 nightly, AGP 9.1.0).
-- Runs a native C++/OpenGL ES 3 render loop via `GameActivity`.
-- Represents the **future direction** for Arteria — native Kotlin + C++ engine, no JS layer.
+- Lives at `Arteria/Arteria-Gradle-Edition-V2/` (Gradle root + `DOCS/` — **one tree**). Shares **zero Kotlin/TS source** with the RN app; design specs are shared via `Arteria/DOCU/`.
+- Targets bleeding-edge tooling (API 36.x, Gradle 9.6 nightly, AGP 9.1.0).
+- **`[AMENDED 2026-03-30]:`** Current builds use **Compose** only; C++/OpenGL via `GameActivity` is **planned**, not active.
+- Represents the **future direction** for Arteria — native Kotlin engine in `:core`, optional C++ GPU island, no JS layer.
 
 ### Migration Path (RN → Native)
 
@@ -214,55 +216,41 @@ This is a long-term migration, not an immediate task.
 
 ## 7. Directory Layout
 
-### 7a. Documentation hub (`Arteria-Gradle-Edition-v1.2/`)
+### 7a. Gradle project + documentation (`Arteria-Gradle-Edition-V2/`)
 
-Agent continuity and planning (no Gradle project here):
-
-```
-Arteria-Gradle-Edition-v1.2/
-└── DOCS/
-    ├── ARCHITECTURE.md      # Stack, constraints, conventions (this file)
-    ├── SBOM.md              # Versions and dependency inventory
-    ├── ROADMAP.md           # Phases 0–6 — what to build next
-    ├── MIGRATION_SPEC.md    # TS / Redux → Kotlin / Flow mapping + file index
-    ├── REFERENCES.md        # Official external links (Gradle, AGP, Compose, GameActivity)
-    ├── SCRATCHPAD.md        # Live status, blockers, last actions
-    ├── Gradle_Tool_Chain_Migration.md  # Daemon JVM toolchain (Studio Migrate) + repo state
-    ├── whitepaper.md        # Vision doc — not a pinned runbook for versions
-    └── gradle_website_links.md  # Legacy stub; see REFERENCES.md
-```
-
-### 7b. Source scaffold today (`Artera-Gradle-Edition/`)
-
-Current Android Studio project (GameActivity + C++/OpenGL demo). Matches on-disk layout **before** Phase 1 module split.
+**Android Studio** opens **`Arteria-Gradle-Edition-V2/`** (folder with `settings.gradle.kts`). Agent docs live in **`DOCS/`** inside the same tree.
 
 ```
-Artera-Gradle-Edition/
+Arteria-Gradle-Edition-V2/
+├── DOCS/
+│   ├── SUMMARY.md           # [2026-03-30] AI hub — read first
+│   ├── ARCHITECTURE.md      # Stack, constraints, conventions (this file)
+│   ├── SBOM.md              # Versions and dependency inventory
+│   ├── ROADMAP.md           # Phases 0–10 — platform + features / QoL / UI
+│   ├── MIGRATION_SPEC.md    # TS / Redux → Kotlin / Flow mapping + file index
+│   ├── REFERENCES.md        # Official external links (Gradle, AGP, Compose)
+│   ├── SCRATCHPAD.md        # Live status, blockers, last actions
+│   ├── Gradle_Tool_Chain_Migration.md  # Daemon JVM toolchain + repo state
+│   ├── whitepaper.md        # Vision doc — not a pinned runbook for versions
+│   └── gradle_website_links.md  # Legacy stub; see REFERENCES.md
 ├── app/
-│   ├── build.gradle.kts
-│   ├── proguard-rules.pro
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── assets/
-│       ├── cpp/                 # Native engine / renderer (CMake)
-│       ├── java/.../MainActivity.kt
-│       └── res/
-├── build.gradle.kts
-├── settings.gradle.kts
-├── gradle.properties
+├── core/
 ├── gradle/
-│   ├── libs.versions.toml
-│   ├── wrapper/
-│   └── gradle-daemon-jvm.properties
-├── gradlew
-├── gradlew.bat
-└── local.properties             # gitignored
+├── settings.gradle.kts
+├── gradlew / gradlew.bat
+└── …
 ```
 
-`[AMENDED 2026-03-22]:` The **live** Android Studio project is `Arteria-Gradle-Edition-v1.2/` (this repo folder), not `Artera-Gradle-Edition/`. Current on-disk layout:
+### 7b. Historical: `Artera-Gradle-Edition/` (removed)
+
+`[SUPERSEDED 2026-03-30]:` An early **GameActivity + C++/OpenGL** demo path used the folder name **`Artera-Gradle-Edition/`**. That tree is **not** in the monorepo anymore; do not search for it. **Current** native work is entirely under **`Arteria-Gradle-Edition-V2/`** below.
+
+### 7c. Source layout today (Compose shell)
+
+`[AMENDED 2026-03-22, path 2026-03-30]:` The **live** Android Studio project is `Arteria-Gradle-Edition-V2/`. Current on-disk layout:
 
 ```
-Arteria-Gradle-Edition-v1.2/
+Arteria-Gradle-Edition-V2/
 ├── app/
 │   ├── build.gradle.kts         # compileSdk 36.1, minSdk 26, Compose BOM
 │   ├── proguard-rules.pro
@@ -288,7 +276,7 @@ Arteria-Gradle-Edition-v1.2/
 └── local.properties             # gitignored
 ```
 
-### 7c. Target application layout (after ROADMAP Phase 1+)
+### 7d. Target application layout (after ROADMAP Phase 1+)
 
 Place new Kotlin code under the app module (or a future `:core` module) using packages like:
 
@@ -332,6 +320,6 @@ app/src/main/java/com/arteria/game/
 |----------|--------|--------|
 | `DOCS/whitepaper.md` | **Superseded** | Describes bare React Native CLI migration (Expo → RN 0.83, Hermes, Skia, Zustand). RN's Gradle plugin is incompatible with Gradle 9.x — APIs removed in 9.0. Retained for historical reference only. |
 
-[AMENDED 2026-03-22]: Arteria v1.2 is native Kotlin + C++/OpenGL. No JS layer. The whitepaper's RN approach does not apply to this project.
+[AMENDED 2026-03-22, title 2026-03-30]: **Arteria Gradle Edition V2** is native Kotlin + Compose today; C++/OpenGL is planned. No JS layer. The whitepaper's RN approach does not apply to this project.
 
 [AMENDED 2026-03-22]: `whitepaper.md` may describe native Kotlin at a high level. **Authoritative** pinned versions remain in `SBOM.md` and `gradle/wrapper/gradle-wrapper.properties` in the source scaffold; **execution order** is `ROADMAP.md` + `MIGRATION_SPEC.md`, not the whitepaper prose.

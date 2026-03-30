@@ -27,6 +27,7 @@ These two documents are the authoritative references. All other docs supplement 
 
 | Doc | Purpose |
 |-----|---------|
+| **Arteria-Gradle-Edition-V2/DOCS/SUMMARY.md** | Parallel **native Android** line (Kotlin, Jetpack Compose, Gradle 9.x). Start here for V2: handoff order, `../DOCU/` as design authority, ROADMAP Phases 0–10 (platform + features / QoL / UI). |
 | **SUMMARY.md** | This file — project status, quick links, doc index. |
 | **ROADMAP.md** | Phased feature roadmap (Phases 0–9+). Do not delete items; only append or mark done. |
 | **ARCHITECTURE.md** | Tech stack, monorepo layout, data flow, offline progression, Babel/Metro notes. |

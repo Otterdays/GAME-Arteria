@@ -5,12 +5,13 @@
 | Date | Agent | Model / Tooling | Contribution |
 |------|-------|-----------------|--------------|
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Initial MIGRATION_SPEC — TS/Redux → Kotlin patterns and file map. |
+| 2026-03-30 | Cursor Agent | Composer | Title amended to **Gradle Edition V2**; scope unchanged. |
 
 *Future contributors: append a row when you materially change this doc.*
 
 ---
 
-# Migration Spec — React Native Monorepo → Native Kotlin (v1.2)
+# Migration Spec — React Native Monorepo → Native Kotlin (Gradle Edition V2)
 
 This document tells **future AI agents** how to translate the existing Arteria implementation into the Gradle 9.6 / Kotlin / Compose codebase. It does **not** prescribe copying files; it prescribes **parity of behavior**.
 
@@ -20,7 +21,7 @@ This document tells **future AI agents** how to translate the existing Arteria i
 
 ## 1. Architectural mapping
 
-| RN / TS concept | Native v1.2 target | Notes |
+| RN / TS concept | Native V2 target | Notes |
 |-----------------|-------------------|--------|
 | Redux `createSlice` + `configureStore` | `ViewModel` + `StateFlow` / `MutableStateFlow` | One VM per screen or a single `GameViewModel` early on; avoid `GlobalScope`. |
 | RTK selectors | Flow combinators or derived `StateFlow` in VM | Keep derived state out of Composables. |

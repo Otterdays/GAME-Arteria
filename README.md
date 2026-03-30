@@ -81,6 +81,7 @@ A **cosmic idle RPG** inspired by **Melvor Idle** and **RuneScape**. Built for *
 
 | Path | Purpose |
 |------|---------|
+| `Arteria-Gradle-Edition-V2/` | **Native Android (V2)** — Kotlin + Compose; Gradle root. Docs: `DOCS/SUMMARY.md`, `DOCS/ROADMAP.md`. Separate from Expo `apps/mobile/`. |
 | `DOCU/` | Specs, design docs, architecture, roadmaps |
 | `DOCU/TECHNICAL_USER_MANUAL.md` | Engine taxonomy — Arteria subsystems |
 | `DOCU/MASTER_DESIGN_DOC.md` | Full GDD: 7 Parts, 21 Chapters |

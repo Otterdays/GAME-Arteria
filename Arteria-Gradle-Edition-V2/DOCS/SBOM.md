@@ -11,13 +11,15 @@
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | SBOM cleanup: removed deprecated/stale tables; single source of truth for new agents. |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | Title corrected to **Software** Bill of Materials (industry-standard SBOM expansion). |
 | 2026-03-22 | Cursor Agent (Composer) | Cursor | **Bundled fonts** section: Cinzel variable TTF in `res/font/`; SBOM + license pointer. |
+| 2026-03-30 | Cursor Agent | Composer | Title note: product **Gradle Edition V2**; folder `Arteria-Gradle-Edition-V2/`. |
 
 *Future contributors: append a row here when you materially change this doc.*
 
 ---
 
-# SBOM (Software Bill of Materials) — Arteria v1.2 Gradle Edition
+# SBOM (Software Bill of Materials) — Arteria Gradle Edition V2
 
+> **`[AMENDED 2026-03-30]:`** Same document as historically titled "v1.2" — repo path **`Arteria-Gradle-Edition-V2/`**.
 > **Last updated:** 2026-03-22
 > **Status:** Single source of truth for toolchain, SDK targets, and all declared dependencies.
 
@@ -168,4 +170,4 @@ Shipped as **`app/src/main/res/font/`** resources (no Gradle coordinate). Update
 
 ## Whitepaper Supersession Notice
 
-The `whitepaper.md` in this DOCS folder describes a React Native CLI migration (Expo to RN 0.83, Hermes, Skia, Zustand). That approach is **superseded** — RN's Gradle plugin is incompatible with Gradle 9.x. Arteria v1.2 is native Kotlin + Compose. The whitepaper is retained for historical reference only; do not execute its instructions.
+The `whitepaper.md` in this DOCS folder describes a React Native CLI migration (Expo to RN 0.83, Hermes, Skia, Zustand). That approach is **superseded** — RN's Gradle plugin is incompatible with Gradle 9.x. Arteria Gradle Edition V2 is native Kotlin + Compose. The whitepaper is retained for historical reference only; do not execute its instructions.
