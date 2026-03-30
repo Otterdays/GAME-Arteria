@@ -82,6 +82,7 @@ Active state for **native Android** track. Game design truth stays in repo root 
 | `SBOM.md` | Single source: toolchain, SDK targets, dependency inventory, update policy |
 | `ROADMAP.md` | Phased delivery 0–6 |
 | `MIGRATION_SPEC.md` | How to port from RN monorepo |
+| `DESIGN_TRANSLATION_AUDIT.md` | Detailed checklist of Split data / skills / content files from V1 |
 | `REFERENCES.md` | External links (Gradle, AGP, Compose, GameActivity, etc.) |
 | `SCRATCHPAD.md` | This file — live handoff |
 | `whitepaper.md` | Vision / rhetoric — do not treat as runbook |
